@@ -38,9 +38,24 @@ import eclox.doxyfile.node.Tag;
  */
 public class Loader {
 	/**
-	 * @brief	The input object for the loader.
+	 * The input object for the loader.
 	 */
 	private Tokenizer m_tokenizer;
+	
+	/**
+	 * The class of the next node to create with the text buffer.
+	 */
+	private Class m_nextNodeClass = null;
+	
+	/**
+	 * A string containing the text of the next node.
+	 */
+	private String m_nextNodeText = new String();
+	
+	/**
+	 * The object that is current group in the doxyfile.
+	 */
+	private Group m_currentGroup = null;
 	
 	/**
 	 * Constructor.
@@ -60,14 +75,114 @@ public class Loader {
 	 * 
 	 * @author gbrocker
 	 */
-	public Doxyfile load() throws IOException {
+	public Doxyfile load() throws LoaderException {
 		Doxyfile	doxyfile = new Doxyfile();
-		Group		currentParent = doxyfile;
 		
-		// Initialize the tokenizer.
-		//m_tokenizer.getToken();
+		m_currentGroup = doxyfile;
+		
+		for(;;) {
+			// Read the next token.
+			try {
+				m_tokenizer.readToken();
+			}
+			catch( IOException ioException ) {
+				throw new LoaderException( "Read error.", ioException );
+			}
+			
+			int	tokenType = m_tokenizer.getTokenType(); 
+			
+			if( tokenType == Tokenizer.NONE ) {
+				createNextNode();
+				// Stop the load.
+				break;
+			}
+			else if( tokenType == Tokenizer.COMMENT ) {
+				if( m_nextNodeClass == null ) {
+					m_nextNodeClass = Comment.class;
+					m_nextNodeText = m_tokenizer.getTokenText();
+				}
+				else if( m_nextNodeClass == Section.class ) {
+					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
+				}
+				else if( m_nextNodeClass == Comment.class ) {
+					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );	
+				}
+				else {
+					createNextNode();
+					m_nextNodeClass = Comment.class;
+					m_nextNodeText = m_tokenizer.getTokenText();
+				}
+			}
+			else if( tokenType == Tokenizer.TAG ) {
+				if( m_nextNodeClass == null ) {
+					m_nextNodeClass = Tag.class;
+					m_nextNodeText = m_tokenizer.getTokenText();
+				}
+				else {
+					createNextNode();
+					m_nextNodeClass = Comment.class;
+					m_nextNodeText = m_tokenizer.getTokenText();
+				}
+			}
+			else if( tokenType == Tokenizer.TAG_INCREMENT ) {
+				if( m_nextNodeClass == Tag.class ) {
+					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
+				}
+				else {
+					throw new LoaderException(
+						"Parse error at line " + m_tokenizer.getLine() + ": unexpected '" + m_tokenizer.getTokenText() + "'.",
+						null );
+				}
+			}
+			else if( tokenType == Tokenizer.SECTION_BORDER ) {
+				if( m_nextNodeClass == null ) {
+					m_nextNodeClass = Section.class;
+					m_nextNodeText = m_tokenizer.getTokenText();
+				}
+				else if( m_nextNodeClass == Section.class ) {
+					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
+				}
+				else {
+					createNextNode();
+					m_nextNodeClass = Comment.class;
+					m_nextNodeText = m_tokenizer.getTokenText();
+				}
+			}
+		}
 		
 		return doxyfile;
+	}
+	
+	/**
+	 * Create the next node from the owned next node class and text
+	 * and store it in the current group.
+	 *
+	 * @todo	Throw a relevant exception when class not found.
+	 */
+	private void createNextNode() {
+		// Create the next node.
+		Node	result;
+		
+		if( m_nextNodeClass == Section.class ) {
+			result = new Section( m_nextNodeText );
+		}
+		else if( m_nextNodeClass == Comment.class ) {
+			result = new Comment( m_nextNodeText );
+		}
+		else if( m_nextNodeClass == Tag.class ) {
+			result = new Tag( m_nextNodeText );
+		}
+		else {
+			result = null;
+		}
+		
+		// Store the next node.
+		m_currentGroup.addChild( result );
+		m_currentGroup = result.getClass() == Section.class ? (Group) result : m_currentGroup;
+		
+		// Reset the next node class and text.
+		m_nextNodeClass = null;
+		m_nextNodeText = null;
 	}
 	
 	/**
@@ -145,30 +260,5 @@ public class Loader {
 			nodeClass = null;
 		}
 		return nodeClass;
-	}*/
-	
-	/**
-	 * @brief	Retrieve a node instance from the specified class and text.
-	 * 
-	 * @param	nodeClass	A class of node to create.
-	 * @param	nodeText	The text of the node.
-	 */
-	/*private Node getNodeFromClass( Class nodeClass, String nodeText ) {
-		Node	result;
-		
-		if( nodeClass == Section.class ) {
-			result = new Section( nodeText );
-		}
-		else if( nodeClass == Comment.class ) {
-			result = new Comment( nodeText );
-		}
-		else if( nodeClass == Tag.class ) {
-			result = new Tag( nodeText );
-		}
-		else {
-			result = null;
-		}
-		
-		return result;
 	}*/
 }
