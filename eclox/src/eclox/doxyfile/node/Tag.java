@@ -123,6 +123,7 @@ public class Tag extends Leaf {
 		} 
 		result += "= ";
 		result += m_value.toString();
+		result += "\r\n";
 		return result;
 	}
 	

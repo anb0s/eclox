@@ -102,7 +102,7 @@ public class Saver extends InputStream implements Visitor {
 		if( m_buffer.length() == 0 && m_nodes.isEmpty() == false ){
 			Node	node = (Node) m_nodes.remove( 0 );
 	
-			m_buffer = node.toString() + "\r\n\r\n";
+			m_buffer = node.toString() + "\r\n";
 		}
 		
 		// Get the next stream char.
