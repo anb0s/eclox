@@ -84,13 +84,13 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	}
 		
 	/**
-	 * @todo	Implement !
+	 * TODO	Implement !
 	 */	
 	public void gotoMarker( org.eclipse.core.resources.IMarker marker) {
 	}
 	
 	/**
-	 * @todo	Implement !
+	 * TODO	Implement !
 	 */	
 	public void setFocus() {
 	}
@@ -115,6 +115,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 				
 				site.setSelectionProvider(selectionProvider);
 				selectionProvider.setDoxyfile(fileInput.getFile());
+				this.setPartName(input.getName());
 			}
 			catch( Throwable throwable ) {
 				throw new org.eclipse.ui.PartInitException( "Unable to load doxyfile. " + throwable.getMessage(), throwable );
@@ -234,40 +235,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		return true;
 	}
 	
-	public boolean isSaveOnCloseNeeded() {
-		return false;
-	}
-	
-	
-	/*
-	 * IWorkbenchPart interface implementation.
-	 */
-	
-	
-	public String getTitle() {
-		String	title = new String();
-		
-		if( getEditorInput() != null )	{
-			title = getEditorInput().getName();
-		}			
-		return title;
-	}
-	
-	public org.eclipse.swt.graphics.Image getTitleImage() {
-		org.eclipse.swt.graphics.Image	image = null;
-		
-		if( getEditorInput()!= null ) {
-			image = getEditorInput().getImageDescriptor().createImage();		
-		}
-		return image;
-	}
-	
-	public String getTitleToolTip() {
-		String	titleToolTip = new String();
-		
-		if( getEditorInput() != null ) {
-			titleToolTip = getEditorInput().getToolTipText();
-		}
-		return titleToolTip;
-	}
+//	public boolean isSaveOnCloseNeeded() {
+//		return false;
+//	}
 }
