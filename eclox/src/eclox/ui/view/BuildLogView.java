@@ -150,7 +150,7 @@ public class BuildLogView extends ViewPart {
 			DoxyfileSelectionProvider selectionProvider = ((DoxyfileSelectionProvider)getViewSite().getSelectionProvider());
 			
 			selectionProvider.setDoxyfile(doxyfile);
-			setTitle("Doxygen Build Log - " + doxyfile.getFullPath().toString());
+			setContentDescription(doxyfile.getFullPath().toString());
 		}
 	}
 	

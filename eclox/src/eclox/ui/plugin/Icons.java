@@ -21,14 +21,13 @@
 
 package eclox.ui.plugin;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
+import org.osgi.framework.Bundle;
 
 import eclox.ui.Plugin;
 
@@ -41,7 +40,7 @@ public class Icons {
 	/**
 	 * A string containing the icon repository path.
 	 */
-	static private final String repositoryPath = "icons/";
+	static private final String repositoryPath = "/icons/";
 	
 	/**
 	 * The big question mark.
@@ -66,21 +65,18 @@ public class Icons {
 		iconNames.add(Icons.STOP);
 		
 		// Create all these icons.
-		URL			installURL = Plugin.getDefault().getDescriptor().getInstallURL();
+		Bundle		bundle = Plugin.getDefault().getBundle();
 		Iterator	iconNameIt = iconNames.iterator();
 
 		while(iconNameIt.hasNext()) {
 			String			iconName = (String) iconNameIt.next();
 			ImageDescriptor iconDescriptor = null;
-						
-			try {
-				URL iconURL = new URL(installURL, Icons.repositoryPath + iconName);
-		
-				iconDescriptor = ImageDescriptor.createFromURL(iconURL);
-			}
-			catch( MalformedURLException malformedURLException) {
-				iconDescriptor = ImageDescriptor.getMissingImageDescriptor();
-			}
+
+			iconDescriptor = ImageDescriptor.createFromURL(
+				bundle.getEntry(
+					Icons.repositoryPath + iconName
+				)
+			);
 			reg.put(iconName, iconDescriptor);
 		}
 	}
