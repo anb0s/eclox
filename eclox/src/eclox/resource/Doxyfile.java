@@ -26,12 +26,36 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
+import eclox.resource.content.DoxyfileContent;
+import eclox.resource.content.io.Deserializer;
+import eclox.resource.content.io.Serializer;
+
 /**
  * Implement global services for doxyfiles.
  * 
  * @author gbrocker
  */
 public final class Doxyfile {
+	/**
+	 * Retreieve the doxyfile content of the specified file.
+	 * 
+	 * @param doxyfile	the doxyfile to parse
+	 * 
+	 * @return	the content of the doxyfile
+	 * 
+	 * @throws	DoxyfileException	error while reading the doxyfile content
+	 */
+	public static DoxyfileContent getContent(IFile file) throws DoxyfileException {
+		try {
+			Deserializer deserializer = new Deserializer(file);
+			
+			return deserializer.createDoxyfile();
+		}
+		catch(Throwable throwable) {
+			throw new DoxyfileException("Error while loading the doxyfile.", throwable);
+		}
+	}
+	
 	/**
 	 * Tells if the specified resource is a doxyfile.
 	 * 
@@ -56,5 +80,26 @@ public final class Doxyfile {
 		contentType = Platform.getContentTypeManager().findContentTypeFor(file.toString());
 		
 		return contentType != null ? contentType.getId().equals("eclox.doxyfile") : false;
+	}
+	
+	/**
+	 * Set a doxyfile content into the specified file.
+	 * 
+	 * @param	content			the doxyfile content to save
+	 * @param	file			the file that will receive the doxyfile content
+	 * @param	progressMonitor	a progress monitor
+	 * 
+	 * @throws	DoxyfileException	error while saving the doxyfile content 
+	 */
+	public static void setContent(DoxyfileContent content, IFile file, org.eclipse.core.runtime.IProgressMonitor progressMonitor) throws DoxyfileException {
+		try {
+			Serializer saver = new Serializer();
+			
+			content.accept(saver);
+			file.setContents(saver, true, true, progressMonitor);
+		}
+		catch(Throwable throwable) {
+			throw new DoxyfileException("Error while write doxyfile content.", throwable);
+		}		
 	}
 }

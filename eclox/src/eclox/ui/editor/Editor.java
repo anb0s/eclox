@@ -21,16 +21,15 @@
 
 package eclox.ui.editor;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import eclox.resource.Doxyfile;
 import eclox.resource.content.NodeEvent;
 import eclox.resource.content.NodeListener;
-import eclox.resource.content.io.Deserializer;
-import eclox.resource.content.io.Serializer;
+import eclox.ui.Plugin;
 import eclox.ui.editor.parts.Hint;
 import eclox.ui.editor.parts.Sections;
 import eclox.ui.editor.parts.Tags;
@@ -97,12 +96,9 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		if( input instanceof org.eclipse.ui.IFileEditorInput ) {			
 			try{
 				// Load the doxyfile.
-				org.eclipse.ui.IFileEditorInput	fileInput;
-				Deserializer					deserializer;
+				org.eclipse.ui.IFileEditorInput	fileInput = (org.eclipse.ui.IFileEditorInput) input;
 				
-				fileInput = (org.eclipse.ui.IFileEditorInput) input;
-				deserializer = new Deserializer(fileInput.getFile());
-				m_settings = deserializer.createDoxyfile();
+				m_settings = Doxyfile.getContent(fileInput.getFile());
 				m_settings.addNodeListener( new SettingsListener() );
 				
 				// Set the selection provider.
@@ -197,21 +193,13 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	 * 
 	 * @param	progressMonitor	The monitor to use to report te save progress.
 	 */
-	public void doSave( org.eclipse.core.runtime.IProgressMonitor progressMonitor ) {
+	public void doSave(org.eclipse.core.runtime.IProgressMonitor progressMonitor) {
 		try {
-			Serializer					saver;
-			IFile					file;
-			
-			// Get the file content.
-			saver = new Serializer();
-			m_settings.accept( saver );
-			// Save the file content.
-			file = ((org.eclipse.ui.IFileEditorInput)getEditorInput()).getFile();
-			file.setContents( saver, true, true, progressMonitor );
-			// Set the nodes as clean.
+			Doxyfile.setContent(this.m_settings, ((org.eclipse.ui.IFileEditorInput)getEditorInput()).getFile(), progressMonitor);
 			m_settings.setClean();
 		}
-		catch( Exception exceptoin ) {
+		catch(Throwable throwable) {
+			Plugin.getDefault().showError(throwable);
 		}
 	}
 	
@@ -230,8 +218,4 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	public boolean isSaveAsAllowed() {
 		return true;
 	}
-	
-//	public boolean isSaveOnCloseNeeded() {
-//		return false;
-//	}
 }
