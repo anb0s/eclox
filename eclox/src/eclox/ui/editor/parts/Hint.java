@@ -22,8 +22,8 @@
 package eclox.ui.editor.parts;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
+//import org.eclipse.swt.graphics.Image;
+//import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
 import eclox.doxyfile.node.Tag;
@@ -79,7 +79,7 @@ public class Hint extends Part {
 	public void createContent() {
 		m_hintCtrl = new Text( getContentParent(), SWT.MULTI|SWT.WRAP|SWT.V_SCROLL|SWT.READ_ONLY );
 		setContent( m_hintCtrl );
-		setImage( new Image( Display.getCurrent(), getClass().getResourceAsStream("help.gif")));
+		//setImage( new Image( Display.getCurrent(), getClass().getResourceAsStream("help.gif")));
 		setTitle( "Hint" );		
 	}
 }
