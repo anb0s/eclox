@@ -120,20 +120,22 @@ public class Tag extends Leaf {
 	 * @return	The previous value.
 	 */
 	public eclox.doxyfile.node.value.Value setValue( eclox.doxyfile.node.value.Value value ) {
-		eclox.doxyfile.node.value.Value	oldValue;
+		// Save the old value.
+		eclox.doxyfile.node.value.Value	oldValue = m_value;
 		
-		// Swap values.
-		oldValue = m_value;
-		m_value = value;
-		
-		// Update the listeners.
-		if(oldValue != null) {
-			oldValue.removeListener(m_listener);
+		// If the new value is different.
+		if(m_value == null || m_value.toString().compareTo(value.toString()) != 0) {
+			m_value = value;
+			
+			// Update the listeners.
+			if(oldValue != null) {
+				oldValue.removeListener(m_listener);
+			}
+			m_value.addListener(m_listener);
+			
+			// Mark that the value has been changed.
+			setDirtyInternal();
 		}
-		m_value.addListener(m_listener);
-		
-		// End.
-		setDirtyInternal();
 		return oldValue;
 	}
 	
