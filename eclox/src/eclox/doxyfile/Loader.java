@@ -21,17 +21,102 @@
 
 package eclox.doxyfile;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+
+import eclox.doxyfile.node.Comment;
+import eclox.doxyfile.node.Node;
+import eclox.doxyfile.node.Section;
+import eclox.doxyfile.node.Tag;
+
 /**
  * Creates doxygen setting.
  * 
  * @author gbrocker
  */
 public class Loader {
-
+	
 	/**
-	 * The input stream used for the settings construction.
+	 * @brief	Defines the input reader.	
 	 */
-	private java.io.BufferedReader m_in;
+	private class Reader
+	{
+		/**
+		 * The input stream used for the settings construction.
+		 */
+		private BufferedReader m_in;
+		
+		/**
+		 * @brief	A line of text that has been previewed..
+		 */
+		private String m_preview = null;
+		
+		/**
+		 * @brief	Constructor.
+		 * 
+		 * @param	input	The The input stream to read.
+		 */
+		public Reader( InputStream input )
+		{
+			m_in = new java.io.BufferedReader( new java.io.InputStreamReader( input ) );	
+		}
+		
+		/**
+		 * @brief	Retrieve the next line of text..
+		 * 
+		 * @return	A string containing the next line of or null if the end of file
+		 * 			has been reached.
+		 */
+		public String getLine() throws java.io.IOException {
+			String	result;
+			
+			if( m_preview == null ) {
+				result = readLine();
+			}
+			else {
+				result = m_preview;
+				m_preview = null;
+			}
+			return result;
+		}
+		
+		/**
+		 * @brief	Preview the next line of text. The line of text is read
+		 * 			and returned but kept back for the next line retrieval.
+		 * 
+		 * @return	A string containing the next line of text, or null if the end of
+		 * 			file has been reached.
+		 */
+		public String previewLine() throws java.io.IOException {
+			if( m_preview == null ) {
+				m_preview = readLine();
+			}
+			return m_preview;
+		}
+		
+		/**
+		 * @brief	Read the next line of text.
+		 * 
+		 * @return	A string containing the next line of text.
+		 * 
+		 * @throws java.io.IOException	Error while reading.
+		 */
+		private String readLine()  throws java.io.IOException {
+			String	line = m_in.readLine();
+			
+			if( line != null )
+			{
+				line = line.concat("\r\n");
+			}
+			return line;
+		}
+	};
+	
+	/**
+	 * @brief	The input object for the loader.
+	 */
+	private Reader m_in;
 	
 	/**
 	 * Constructor.
@@ -41,7 +126,7 @@ public class Loader {
 	 * @author gbrocker
 	 */
 	public Loader( java.io.InputStream input ) {
-		m_in = new java.io.BufferedReader( new java.io.InputStreamReader( input ) );
+		m_in = new Reader( input );
 	}
 	
 	/**
@@ -51,30 +136,20 @@ public class Loader {
 	 * 
 	 * @author gbrocker
 	 */
-	public eclox.doxyfile.node.Doxyfile load() throws SettingsCreationError {
+	public eclox.doxyfile.node.Doxyfile load() throws IOException {
 		eclox.doxyfile.node.Doxyfile	doxyfile;
-		String							nextItemText;
+		Node							nextNode;
 		eclox.doxyfile.node.Group		curParent;
 		
 		doxyfile = new eclox.doxyfile.node.Doxyfile(); 
 		curParent = doxyfile;
 		
-		for( nextItemText = getNextItemText(); nextItemText != null; nextItemText = getNextItemText() ) {
-			String	head = nextItemText.substring( 0, 2 );
-						
-			if( head.equals( "# " ) ) {
-				eclox.doxyfile.node.Comment	comment = new eclox.doxyfile.node.Comment( nextItemText );
-				
-				curParent.addChild( comment );
-			}
-			else if( head.equals( "#-" ) ) {
-				eclox.doxyfile.node.Section	section = new eclox.doxyfile.node.Section( nextItemText );
-				 
-				doxyfile.addChild( section );
-				curParent = section;
+		for( nextNode = getNextNode(); nextNode != null; nextNode = getNextNode() ) {
+			if( nextNode.getClass() == Section.class ) {
+				doxyfile.addChild( nextNode );
 			}
 			else {
-				curParent.addChild( new eclox.doxyfile.node.Tag( nextItemText ) );
+				curParent.addChild( nextNode );
 			}
 		}
 		
@@ -82,57 +157,104 @@ public class Loader {
 	}
 	
 	/**
-	 * Retrieves the text block for the next doxyfile item.
+	 * @brief	Retrieve the next doxyfeil object.
 	 * 
-	 * @return	A string containing the next item item, or null if the end of the doxyfile
-	 *			has been reached.
+	 * @return	The next doxyfile object.
+	 *
+	 * @throws java.io.IOException	Error while reading.
 	 */
-	private String getNextItemText() throws SettingsCreationError {
-		String	itemText = null;
+	private Node getNextNode() throws java.io.IOException {
+		String	nodeText = null;
+		Class	nodeClass = null;
 
-		for(;;)
-		{
-			String line = readLine();
-						
+		for(;;)	{
+			String line = m_in.getLine();
+			
 			// We have reached the file end.
 			if( line == null )
 			{
 				break;
 			}
-			// We are on an empty line, so the text item has been retrieved.	
-			else if( line.length() == 0 )
-			{
-				break;
+			// Or jump empty lines.
+			else if( line.equals("\r\n") ) {
+				continue;
 			}
-			else
-			{
+			
+			// We will update the node text and class.
+			if( nodeClass == null )	{
+				nodeText = line;
+				nodeClass = getNodeClass( line );
+			}
+			else {
+				nodeText = nodeText.concat( line );
+			}
+						
+			// We check if the next line will sweet to the current node class.
+			String	preview = m_in.previewLine();
+			Class	previewClass = getNodeClass( preview );
+			
+			if( previewClass == Comment.class && nodeClass == Comment.class ) {
+				continue;
+			}
+			else if( previewClass == Comment.class && nodeClass == Section.class ) {
+				continue;
+			}
+			else if( previewClass == Section.class && nodeClass == Section.class ) {
+				continue;
+			}
+			else {
 				break;
 			}
 		}
-			
-		return itemText;
+		return getNodeFromClass( nodeClass, nodeText );
 	}
 	
 	/**
-	 * @brief	Retrieve a line of text from the input stream.
-	 *
-	 * @return	A string containing the text line or null if the stream end
-	 * 			has been reached.
+	 * @brief	Retrieve the class of node corresponding to the specified line of text.
+	 * 
+	 * @return	The class of the node corresponding to the spcified line of text.
 	 */
-	private String readLine() throws SettingsCreationError {
-		try
-		{
-			String line = m_in.readLine();
-			
-			if( line != null )
-			{
-				line = line.concat( "\r\n" );
-			}
-			return line;
+	private static Class getNodeClass( String line ) {	
+		String	head = line.substring( 0, 2 );
+		Class	nodeClass;
+		
+		if( head.equals( "#-" ) == true ) {
+			nodeClass = Section.class;
 		}
-		catch( java.io.IOException ioException )
-		{
-			throw new SettingsCreationError( ioException );
+		else if( head.equals( "# " ) == true || head.equals( "#\r") == true ) {
+			nodeClass = Comment.class;
 		}
+		else if( head.equals("\r\n") == false ) {
+			nodeClass = Tag.class;
+		}
+		else {
+			nodeClass = null;
+		}
+		return nodeClass;
+	}
+	
+	/**
+	 * @brief	Retrieve a node instance from the specified class and text.
+	 * 
+	 * @param	nodeClass	A class of node to create.
+	 * @param	nodeText	The text of the node.
+	 */
+	private Node getNodeFromClass( Class nodeClass, String nodeText ) {
+		Node	result;
+		
+		if( nodeClass == Section.class ) {
+			result = new Section( nodeText );
+		}
+		else if( nodeClass == Comment.class ) {
+			result = new Comment( nodeText );
+		}
+		else if( nodeClass == Tag.class ) {
+			result = new Tag( nodeText );
+		}
+		else {
+			result = null;
+		}
+		
+		return result;
 	}
 }
