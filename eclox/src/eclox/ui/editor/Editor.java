@@ -87,12 +87,6 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	/**
 	 * TODO	Implement !
 	 */	
-	public void gotoMarker( org.eclipse.core.resources.IMarker marker) {
-	}
-	
-	/**
-	 * TODO	Implement !
-	 */	
 	public void setFocus() {
 	}
 	
