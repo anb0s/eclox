@@ -121,38 +121,42 @@ public class Deserializer {
 			Description description = null;
 			Collection sections = null;
 			
-			this.tokenizer.getNextToken();
-			
-			if(this.tokenizer.getTokenType() == Tokenizer.VERSION) {
-				version = new Description(this.tokenizer.getTokenText());
-				this.tokenizer.expurgeToken();
-				
-				description = this.parseDescription();
-				if(description == null) {
-					throw new SyntaxError("Syntax error.", this.tokenizer.getLine());
-				}
-				sections = this.parseSections();
-				if(sections == null) {
-					throw new SyntaxError("Syntax error.", this.tokenizer.getLine());
-				}
+			// Parses the doxyfile content.
+			version = this.parseVersion();
+			description = this.parseDescription();
+			sections = this.parseSections();
+			if(sections == null) {
+				throw new SyntaxError("Syntax error.", this.tokenizer.getLine());
 			}
-			else {
-				sections = this.parseSections();	
-				if(sections == null) {
-					throw new SyntaxError("Syntax error.", this.tokenizer.getLine());
-				}
-			}
-			
+
+			// Creation of the doxyfile.
 			DoxyfileContent	doxyfile = new DoxyfileContent();
-			
 			doxyfile.setVersion(version);
 			doxyfile.setDescription(description);
 			doxyfile.addChildren(sections);
 			return doxyfile;
 		}
 		catch(IOException ioException) {
-			throw new ParseException("Unexpected error.", ioException);
+			throw new ParseException("Unexpected error. " + ioException.getMessage(), ioException);
 		}
+	}
+	
+	/**
+	 * Parses a docyfile version header.
+	 * 
+	 * @return	a description instance containing the doxyfile version.
+	 * 
+	 * @throws ParseException
+	 */
+	private Description parseVersion() throws ParseException, IOException {
+		Description	version = null;
+		
+		this.tokenizer.getNextToken();
+		if(this.tokenizer.getTokenType() == Tokenizer.VERSION) {
+			version = new Description(this.tokenizer.getTokenText());
+			this.tokenizer.expurgeToken();
+		}
+		return version;		
 	}
 	
 	/**
@@ -162,7 +166,7 @@ public class Deserializer {
 	 * 
 	 * @throws	ParseException	an error occured while parsing
 	 */
-	private Section parseSection() throws ParseException {
+	private Section parseSection() throws ParseException, IOException {
 		Section section = null;
 		Description	description = null;
 		
@@ -187,37 +191,32 @@ public class Deserializer {
 	 * 
 	 * @throws ParseException	an error occured while parsing
 	 */
-	private Description parseSectionDescription() throws ParseException {
-		try {
-			Description description = null;
+	private Description parseSectionDescription() throws ParseException, IOException {
+		Description description = null;
+		
+		this.tokenizer.getNextToken();
+		if(this.tokenizer.getTokenType() == Tokenizer.SECTION_BORDER) {
+			String	startLine;
+			
+			startLine = this.tokenizer.getTokenText();
+			this.tokenizer.expurgeToken();
+			
+			Description subDescription;
+			subDescription = this.parseDescription();
 			
 			this.tokenizer.getNextToken();
 			if(this.tokenizer.getTokenType() == Tokenizer.SECTION_BORDER) {
-				String	startLine;
+				String	buffer = new String();
 				
-				startLine = this.tokenizer.getTokenText();
+				buffer += startLine;
+				buffer += subDescription.toString();
+				buffer += this.tokenizer.getTokenText();
+				
 				this.tokenizer.expurgeToken();
-				
-				Description subDescription;
-				subDescription = this.parseDescription();
-				
-				this.tokenizer.getNextToken();
-				if(this.tokenizer.getTokenType() == Tokenizer.SECTION_BORDER) {
-					String	buffer = new String();
-					
-					buffer += startLine;
-					buffer += subDescription.toString();
-					buffer += this.tokenizer.getTokenText();
-					
-					this.tokenizer.expurgeToken();
-					description = new Description(buffer);				
-				}			
-			}
-			return description;
+				description = new Description(buffer);				
+			}			
 		}
-		catch(IOException ioExcpetion) {
-			throw new ParseException("Unexpected error", ioExcpetion);
-		}
+		return description;
 	}
 	
 	/**
@@ -227,7 +226,7 @@ public class Deserializer {
 	 * 
 	 * @throws	ParseException	an error occured while parsing
 	 */
-	private Collection parseSections() throws ParseException {
+	private Collection parseSections() throws ParseException, IOException {
 		Collection sections = null;
 		Section section = null;
 				
@@ -251,24 +250,19 @@ public class Deserializer {
 	 * 
 	 * @throws ParseException	an error occured while parsing
 	 */
-	private Tag parseTag() throws ParseException {
-		try {
-			Tag	tag = null;
-			
-			Description description = null;
-			description = this.parseDescription();
-			
-			this.tokenizer.getNextToken();
-			if(this.tokenizer.getTokenType() == Tokenizer.TAG) {
-				tag = new Tag(this.tokenizer.getTokenText());
-				this.tokenizer.expurgeToken();
-				tag.setDescription(description);
-			}		
-			return tag;
-		}
-		catch(IOException ioException) {
-			throw new ParseException("Unexpected error.", ioException);
-		}
+	private Tag parseTag() throws ParseException, IOException {
+		Tag	tag = null;
+		
+		Description description = null;
+		description = this.parseDescription();
+		
+		this.tokenizer.getNextToken();
+		if(this.tokenizer.getTokenType() == Tokenizer.TAG) {
+			tag = new Tag(this.tokenizer.getTokenText());
+			this.tokenizer.expurgeToken();
+			tag.setDescription(description);
+		}		
+		return tag;
 	}
 	
 	/**
@@ -278,7 +272,7 @@ public class Deserializer {
 	 * 
 	 * @throws ParseException	an error occured while parsing
 	 */
-	private Collection parseTags() throws ParseException {
+	private Collection parseTags() throws ParseException, IOException {
 		Collection	tags = null;
 		
 		Tag	tag;

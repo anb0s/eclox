@@ -131,10 +131,10 @@ class Tokenizer {
 				if( text.matches("# Doxyfile.+\r?\n") ) {
 					m_tokenType = VERSION;
 				}
-				else if( text.matches("\\w+\\s*=.+\r?\n") ) {
+				else if( text.matches("\\w+\\s*=.*\r?\n") ) {
 					m_tokenType = TAG;
 				}
-				else if( text.matches("\\w+\\s+\\+=.+\r?\n")) {
+				else if( text.matches("\\w+\\s+\\+=.*\r?\n")) {
 					m_tokenType = TAG_INCREMENT;
 				}
 				else if( text.matches("#-+\r?\n") ) {

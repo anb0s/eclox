@@ -1,3 +1,8 @@
+eclox-0.3.2 (06-sep-2004):
+    o Bug fixed. Loading doxyfile crashed on tags without values.
+    o Bug fixed. Saving doxyfile crashed on tags having no description bloc.
+    o Improvement of error reports while loading doxyfiles.
+
 eclox-0.3.1 (28-jun-2004):
     o Fixed invalid build launched from the toolbar build button when the last
       doxyfile has been deleted.
