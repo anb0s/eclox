@@ -139,6 +139,7 @@ public class Loader {
 				}
 			}
 			while( tokenType != Tokenizer.NONE );
+			m_doxyfile.setClean();
 		}
 		catch( LoaderException loaderException ) {
 			throw loaderException;

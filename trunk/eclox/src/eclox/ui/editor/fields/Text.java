@@ -48,7 +48,7 @@ public class Text extends Field {
 			org.eclipse.swt.widgets.Text	textCtrl;
 			
 			textCtrl = (org.eclipse.swt.widgets.Text) event.widget;
-			getEditedTag().getValue().fromString( textCtrl.getText() );
+			getValue().fromString( textCtrl.getText() );
 		}
 	}
 	
@@ -90,7 +90,7 @@ public class Text extends Field {
 		org.eclipse.swt.widgets.Text	textCtrl;
 		
 		textCtrl = new org.eclipse.swt.widgets.Text( parent, 0 );
-		textCtrl.setText( getEditedTag().getValue().toString() );
+		textCtrl.setText( getValue().toString() );
 		textCtrl.selectAll();
 		textCtrl.addModifyListener( new TextListener() );
 		textCtrl.addKeyListener( new TextKeyListener() );		

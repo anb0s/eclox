@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Composite;
 
 import eclox.util.ListenerManager;
-import eclox.doxyfile.node.Tag;
+import eclox.doxyfile.node.value.Value;
 
 /**
  * The abstract field class.
@@ -34,14 +34,9 @@ import eclox.doxyfile.node.Tag;
  */
 public abstract class Field extends ListenerManager {
 	/**
-	 * The tag that is being edited.
+	 * The tag value to edit.
 	 */
-	Tag m_tag = null;
-	
-	/**
-	 * The tag value backup.
-	 */
-	String m_tagValueBackup;
+	Value m_value;
 	
 	/**
 	 * Constructor.
@@ -80,29 +75,7 @@ public abstract class Field extends ListenerManager {
 	 *
 	 */
 	public void cancelEdition() {
-		m_tag.getValue().fromString(m_tagValueBackup);
-		m_tag.setClean();
 		notifyFieldEditionCanceled();
-	}
-	
-	/**
-	 * Tell the field to attach to the specified tag. This method is called only once, just after
-	 * the field creation.
-	 * 
-	 * @param	tag	The tag to attach to.
-	 */
-	public void editTag( Tag tag ) {
-		m_tag = tag;
-		m_tagValueBackup = m_tag.getValue().toString();
-	}
-	
-	/**
-	 * Retrieve the tag being edited.
-	 * 
-	 * @return	The tag being edited.
-	 */
-	public Tag getEditedTag() {
-		return m_tag;
 	}
 	
 	/**
@@ -114,6 +87,23 @@ public abstract class Field extends ListenerManager {
 	 */
 	public abstract Control createControl( Composite parent );
 	
+	/**
+	 * Retrieve the value being edited.
+	 * 
+	 * @return	The tag being edited.
+	 */
+	public Value getValue() {
+		return m_value;
+	}
+	
+	/**
+	 * Set the value being edited.
+	 * 
+	 * @param	value	The new value to edit.
+	 */
+	public void setValue( Value value ) {
+		m_value = value;
+	}
 	/**
 	 * Notify all listeners that the edition has been canceled.
 	 * 
