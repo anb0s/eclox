@@ -46,7 +46,7 @@ public class Icons {
 	/**
 	 * The big question mark.
 	 */
-	public static final String QUESTION_BIG = "question-big.gif";
+	public static final String LOGO_BIG = "logo-big.gif";
 
 	/**
 	 * The stop icon key.
@@ -62,7 +62,7 @@ public class Icons {
 		// Initialize the icon names to create.
 		Collection iconNames = new ArrayList();
 		
-		iconNames.add(Icons.QUESTION_BIG);
+		iconNames.add(Icons.LOGO_BIG);
 		iconNames.add(Icons.STOP);
 		
 		// Create all these icons.

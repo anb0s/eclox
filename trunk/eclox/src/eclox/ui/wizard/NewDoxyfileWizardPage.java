@@ -43,6 +43,6 @@ public class NewDoxyfileWizardPage extends WizardNewFileCreationPage {
 		super("page", selection);
 		setTitle("Doxygen Configuration");
 		setDescription("Creates a new Doxygen configuration file.");
-		setImageDescriptor(Plugin.getDefault().getImageRegistry().getDescriptor(Icons.QUESTION_BIG));
+		setImageDescriptor(Plugin.getDefault().getImageRegistry().getDescriptor(Icons.LOGO_BIG));
 	}
 }

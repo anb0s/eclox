@@ -27,7 +27,7 @@
          point="org.eclipse.ui.views">
       <view
             name="Doxygen Build Log"
-            icon="icons/icon_small.gif"
+            icon="icons/file.gif"
             class="eclox.ui.view.BuildLogView"
             id="eclox.ui.views.buildLog">
       </view>
@@ -37,7 +37,7 @@
       <editor
             name="eclox.ui.editor.Editor"
             default="false"
-            icon="icons/icon_small.gif"
+            icon="icons/file.gif"
             extensions="dox, cfg, doxyfile"
             filenames="doxyfile"
             class="eclox.ui.editor.Editor"
@@ -48,7 +48,7 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             name="Doxygen Configuration"
-            icon="icons/icon_small.gif"
+            icon="icons/new.gif"
             class="eclox.ui.wizard.NewDoxyfileWizard"
             id="eclox.ui.DoxyfileCreationWizard">
       </wizard>
@@ -84,7 +84,7 @@
                label="Build"
                pulldown="true"
                style="pulldown"
-               icon="icons/icon_small.gif"
+               icon="icons/build.gif"
                class="eclox.ui.action.BuildActionDelegate"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
                id="eclox.ui.action.build">
@@ -99,7 +99,7 @@
             id="eclox.ui.doxyfilepopup">
          <action
                label="Build"
-               icon="icons/icon_small.gif"
+               icon="icons/build.gif"
                class="eclox.ui.action.BuildPopupActionDelegate"
                id="eclox.ui.action.build">
          </action>
