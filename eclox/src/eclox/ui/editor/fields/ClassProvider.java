@@ -37,7 +37,7 @@ public class ClassProvider {
 	 */
 	public ClassProvider() {
 		m_fieldClasses.put( eclox.doxyfile.node.value.String.class, Text.class );
-		m_fieldClasses.put( eclox.doxyfile.node.value.Boolean.class, Boolean.class );
+		//m_fieldClasses.put( eclox.doxyfile.node.value.Boolean.class, Boolean.class );
 	}
 	
 	/**
