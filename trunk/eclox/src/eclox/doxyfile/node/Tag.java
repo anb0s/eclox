@@ -21,7 +21,10 @@
 
 package eclox.doxyfile.node;
 
+import org.eclipse.ui.views.properties.IPropertySource;
+
 import eclox.doxyfile.Doxyfile;
+import eclox.doxyfile.adapter.TagPropertySource;
 
 /**
  * Implements a doxygen setting tag.
@@ -97,6 +100,24 @@ public class Tag extends Leaf {
 	 */
 	public void accept( Visitor visitor ) throws VisitorException {
 		visitor.process( this );
+	}
+	
+	/**
+	 * Returns an object which is an instance of the given class
+	 * associated with this object. Returns <code>null</code> if
+	 * no such object can be found.
+	 *
+	 * @param adapter the adapter class to look up
+	 * @return a object castable to the given class, 
+	 *    or <code>null</code> if this object does not
+	 *    have an adapter for the given class
+	 */
+	public Object getAdapter(Class adapter) {
+		Object	result = null;
+		if(adapter.equals(IPropertySource.class) == true ) {
+			result = new TagPropertySource(this);
+		}
+		return result;
 	}
 	
 	/**

@@ -63,6 +63,13 @@ public class Comment extends Leaf {
 	}
 	
 	/**
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		return null;
+	}
+	
+	/**
 	 * Retrieves the comment text.
 	 * 
 	 * @return	A string containing the comment text.

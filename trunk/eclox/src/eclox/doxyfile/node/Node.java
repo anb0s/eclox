@@ -21,6 +21,8 @@
 
 package eclox.doxyfile.node;
 
+import org.eclipse.core.runtime.IAdaptable;
+
 import eclox.doxyfile.Doxyfile;
 import eclox.util.ListenerManager;
 
@@ -29,7 +31,7 @@ import eclox.util.ListenerManager;
  * 
  * @author gbrocker
  */
-public abstract class Node extends ListenerManager {
+public abstract class Node extends ListenerManager implements IAdaptable {
 	/**
 	 * The doxyfile the node belongs to.
 	 */
@@ -77,7 +79,7 @@ public abstract class Node extends ListenerManager {
 	 * @author gbrocker
 	 */
 	public abstract java.util.Collection getChildren();
-	
+		
 	/**
 	 * Retrieves the node's doxyfile.
 	 * 
