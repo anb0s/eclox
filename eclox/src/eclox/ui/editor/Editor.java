@@ -176,7 +176,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		// Create the detail part.
 		Hint details;
 		
-		details = new Hint( tags );
+		details = new Hint( sections, tags );
 		curControl = details.createControl( container );
 		layoutData = new GridData( GridData.FILL_HORIZONTAL );
 		layoutData.heightHint = 75;
