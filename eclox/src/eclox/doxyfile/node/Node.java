@@ -70,13 +70,6 @@ public abstract class Node extends ListenerManager {
 	public abstract java.util.Collection getChildren();
 	
 	/**
-	 * Add text to the node.
-	 * 
-	 * @param	text	The text to add to the node.
-	 */
-	public abstract void addText( String text );
-	
-	/**
 	 * Tell if the node is dirty or note.
 	 * 
 	 * @return
