@@ -128,22 +128,22 @@ class Tokenizer {
 			
 			if( text != null ) {
 				m_tokenText = text;
-				if( text.matches("# Doxyfile.+\r?\n") ) {
+				if( text.matches("# Doxyfile.+(\r\n|\n|\r)") ) {
 					m_tokenType = VERSION;
 				}
-				else if( text.matches("\\w+\\s*=.*\r?\n") ) {
+				else if( text.matches("\\w+\\s*=.*(\r\n|\n|\r)") ) {
 					m_tokenType = TAG;
 				}
-				else if( text.matches("\\w+\\s+\\+=.*\r?\n")) {
+				else if( text.matches("\\w+\\s+\\+=.*(\r\n|\n|\r)")) {
 					m_tokenType = TAG_INCREMENT;
 				}
-				else if( text.matches("#-+\r?\n") ) {
+				else if( text.matches("#-+(\r\n|\n|\r)") ) {
 					m_tokenType = SECTION_BORDER;
 				}
-				else if( text.matches("#.*\r?\n") ) {
+				else if( text.matches("#.*(\r\n|\n|\r)") ) {
 					m_tokenType = DESCRIPTION;
 				}
-				else if( text.matches("\r?\n") ) {
+				else if( text.matches("(\r\n|\n|\r)") ) {
 					continue;
 				}
 				else {
@@ -178,7 +178,7 @@ class Tokenizer {
 			}
 			else {
 				line = line.concat( String.valueOf( (char) nextChar ) );
-				if( line.matches(".*\r?\n") ) {
+				if( line.matches(".*(\r\n|\n|\r)") ) {
 					m_lineNumber++;
 					break;
 				}

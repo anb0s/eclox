@@ -89,7 +89,7 @@ public class Tag extends Node {
 	 * @param	text	the text of the tag
 	 */
 	public Tag(String text) {
-		String cleaned = text.replaceAll("\r\n", "");
+		String cleaned = text.replaceAll("[\r\n]", "");
 		String[] parts = cleaned.split("\\s*=\\s*");
 		
 		this.setName(parts[0]);
