@@ -36,6 +36,8 @@ import eclox.util.ListenerManager;
 /**
  * Implements the build wrapper class.
  * 
+ * TODO cleanup member variables.
+ * 
  * @author gbrocker
  */
 public class Builder extends ListenerManager {
@@ -158,6 +160,11 @@ public class Builder extends ListenerManager {
 	private int m_state = Build.STATE_READY;
 	
 	/**
+	 * The current doxyfile being built.
+	 */
+	private IFile doxyfile;
+	
+	/**
 	 * Constructor.
 	 */
 	private Builder() {
@@ -215,6 +222,7 @@ public class Builder extends ListenerManager {
 			try {
 				m_buildProcess = Doxygen.build( file );
 				m_state = Build.STATE_RUNNING;
+				this.doxyfile = file;
 				
 				new OutputMonitor( Build.ERROR_OUTPUT );
 				new OutputMonitor( Build.STANDARD_OUTPUT );
@@ -242,25 +250,25 @@ public class Builder extends ListenerManager {
 	 * Notify listeners that a build as started.
 	 */
 	private void fireBuildStarted() {
-		super.fireEvent( new BuildEvent( this ), "buildStarted" );
+		super.fireEvent(new BuildEvent(this, this.doxyfile), "buildStarted");
 	}
 	
 	/**
 	 * Notify the listeners that a build has been stopped.
 	 */
 	private void fireBuilStopped() {
-		super.fireEvent( new BuildEvent( this ), "buildStopped" );
+		super.fireEvent(new BuildEvent(this, this.doxyfile), "buildStopped");
 	}
 	
 	/**
 	 * Notify listeners that a build has been ended.
 	 */
 	private void fireBuildEnded() {
-		super.fireEvent( new BuildEvent( this ), "buildEnded" );
+		super.fireEvent(new BuildEvent(this, this.doxyfile), "buildEnded");
 	}
 	
 	private void fireBuildOutputChanged( String output ) {
-		super.fireEvent( new BuildEvent( this, new String( output )), "buildOutputChanged" );
+		super.fireEvent(new BuildEvent(this, this.doxyfile, new String( output )), "buildOutputChanged" );
 	}
 	
 	/**

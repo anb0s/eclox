@@ -29,8 +29,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -51,6 +49,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 
+import eclox.doxyfile.Doxyfile;
 import eclox.ui.Plugin;
 
 
@@ -103,9 +102,7 @@ public class DoxyfileSelecterDialog {
 					break;
 					
 				case IResource.FILE:
-					Pattern pattern = Pattern.compile(".*doxyfile.*", Pattern.CASE_INSENSITIVE);
-					Matcher matcher = pattern.matcher(proxy.getName());
-					if(matcher.matches() == true) {
+					if(Doxyfile.isFileNameValid(proxy.getName()) == true) {
 						m_doxyfiles.add(proxy.requestResource());
 					}
 					result = false;
@@ -308,7 +305,7 @@ public class DoxyfileSelecterDialog {
 	/**
 	 * The selection dialog.
 	 */
-	ElementTreeSelectionDialog selectionDialog;
+	private ElementTreeSelectionDialog selectionDialog;
 
 	/**
 	 * Constructor.
@@ -321,6 +318,13 @@ public class DoxyfileSelecterDialog {
 			new DoxyfileLabelProvider(),
 			new DoxyfileContentProvider()
 		);
+	}
+	
+	/**
+	 * Dispose all resources.
+	 */
+	public void dispose() {
+		this.selectionDialog.close();
 	}
 	
 	/**
@@ -338,8 +342,6 @@ public class DoxyfileSelecterDialog {
 	 * @return	the dialog return value.
 	 * 
 	 * @throws CoreException
-	 * 
-	 * TODO	Complete comments.
 	 */
 	public int open() throws CoreException {
 		DoxyfileCollector	collector = new DoxyfileCollector();

@@ -28,7 +28,7 @@
       <view
             name="Doxygen Build Log"
             icon="icons/icon_small.gif"
-            class="eclox.ui.BuildLogView"
+            class="eclox.ui.view.BuildLogView"
             id="eclox.ui.views.buildLog">
       </view>
    </extension>
@@ -82,11 +82,10 @@
          </action>
          <action
                label="Build"
-               pulldown="false"
-               style="push"
+               pulldown="true"
+               style="pulldown"
                icon="icons/icon_small.gif"
                class="eclox.ui.action.BuildActionDelegate"
-               menubarPath="org.eclipse.ui.run/eclox.ui.menu.doxygen/additions"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
                id="eclox.ui.action.build">
          </action>

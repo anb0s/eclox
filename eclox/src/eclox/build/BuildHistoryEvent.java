@@ -23,53 +23,24 @@ package eclox.build;
 
 import java.util.EventObject;
 
-import org.eclipse.core.resources.IFile;
-
 /**
- * Implements the build event class.
+ * Implement the build history event object.
  * 
  * @author gbrocker
  */
-public class BuildEvent extends EventObject {
+public class BuildHistoryEvent extends EventObject {
 	/**
 	 * The builder that is concerned by the event. 
 	 */
-	public Builder builder;
-	
-	/**
-	 * The current doxyfile being built.
-	 */
-	public IFile doxyfile;
-	
-	/**
-	 * The value carried by the event.
-	 */
-	public final Object value;
-	
+	public BuildHistory history;
+
 	/**
 	 * Constructor.
 	 *
-	 * @param	source		The builder that is concerned by the event.
-	 * @param	doxyfile	The doxyfile being built. 
+	 * @param	source	The build history that is concerned by the event. 
 	 */
-	public BuildEvent(Builder source, IFile doxyfile) {
-		super(source);
-		this.builder = source;
-		this.doxyfile = doxyfile;
-		this.value = null;
-	}
-	
-	/**
-	 * Constructor.
-	 *
-	 * @param	source		The builder that is concerned by the event. 
-	 * @param	doxyfile	The doxyfile being built. 
-	 * @param	value		The value that is carried by the event. The object type depends on the event name.
-	 */
-	public BuildEvent(Builder source, IFile doxyfile, Object value) {
+	public BuildHistoryEvent(BuildHistory source) {
 		super( source );
-		this.builder = source;
-		this.doxyfile = doxyfile;
-		this.value = value;
+		this.history = source;
 	}
 }

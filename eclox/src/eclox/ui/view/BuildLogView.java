@@ -20,13 +20,15 @@
 */
 
 
-package eclox.ui;
+package eclox.ui.view;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -35,6 +37,8 @@ import org.eclipse.ui.part.ViewPart;
 import eclox.build.BuildEvent;
 import eclox.build.BuildListener;
 import eclox.build.Builder;
+import eclox.doxyfile.DoxyfileSelectionProvider;
+import eclox.ui.Plugin;
 import eclox.ui.action.StopAction;
 
 import org.eclipse.ui.IActionBars;
@@ -58,6 +62,7 @@ public class BuildLogView extends ViewPart {
 			m_text.setText( "" );
 			stopAction.setEnabled(true);
 			appendText( "Running doxygen...\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
+			setDoxyfile(event.doxyfile);
 		}
 		
 		public void buildOutputChanged( BuildEvent event ) {
@@ -74,7 +79,7 @@ public class BuildLogView extends ViewPart {
 			appendText( "Doxygen work stopped by user !\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
 		}
 	}
-	
+		
 	/**
 	 * The text control that will receive the log text.
 	 */
@@ -113,6 +118,18 @@ public class BuildLogView extends ViewPart {
 	}
 	
 	/**
+	 * Initializes this view with the given view site.
+	 * 
+	 * @param	site	the view site
+	 * 
+	 * @throws	PartInitException	if this view was not initialized successfully
+	 */
+	public void init(IViewSite site) throws PartInitException {
+		super.init(site);
+		site.setSelectionProvider(new DoxyfileSelectionProvider());
+	}
+
+	/**
 	 * Create the control of the view.
 	 * 
 	 * @param	parent	The parent widget.
@@ -138,21 +155,6 @@ public class BuildLogView extends ViewPart {
 	}
 	
 	/**
-	 * Initialize the view actions for the specified site.
-	 */
-	private void createActions() {
-		try {
-			IActionBars		actionBars = getViewSite().getActionBars();
-		
-			actionBars.setGlobalActionHandler("eclox.ui.action.stop", this.stopAction);
-			actionBars.getToolBarManager().add(this.stopAction);
-		}
-		catch( Throwable throwable ) {
-			Plugin.getDefault().showError(throwable);
-		}
-	}
-	
-	/**
 	 * Appends some text to log view.
 	 * 
 	 * @param text	The text to append.
@@ -168,5 +170,32 @@ public class BuildLogView extends ViewPart {
 		}
 		m_text.setSelection( m_text.getCharCount() );
 		m_text.showSelection();
+	}
+	
+	/**
+	 * Initialize the view actions for the specified site.
+	 */
+	private void createActions() {
+		try {
+			IActionBars		actionBars = getViewSite().getActionBars();
+		
+			actionBars.setGlobalActionHandler("eclox.ui.action.stop", this.stopAction);
+			actionBars.getToolBarManager().add(this.stopAction);
+		}
+		catch( Throwable throwable ) {
+			Plugin.getDefault().showError(throwable);
+		}
+	}
+	
+	/**
+	 * Set the current doxyfile
+	 * 
+	 * @param	doxyfile	The new current doxyfile.
+	 */
+	private void setDoxyfile(IFile doxyfile) {
+		DoxyfileSelectionProvider selectionProvider = ((DoxyfileSelectionProvider)getViewSite().getSelectionProvider());
+		
+		selectionProvider.setDoxyfile(doxyfile);
+		this.setTitle("Doxygen Build Log - " + doxyfile.getFullPath().toString());
 	}
 }

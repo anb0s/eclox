@@ -1,5 +1,5 @@
-/*
-	eclox : Doxygen plugin for Eclipse.
+/**
+	eclox
 	Copyright (C) 2003-2004 Guillaume Brocker
 
 	This file is part of eclox.
@@ -19,34 +19,20 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
+package eclox.build;
 
-package eclox.ui.outline;
-
+import java.util.EventListener;
 
 /**
- * Implements the content outliner class.
+ * Define the build history listener interface.
  * 
  * @author gbrocker
  */
-public class Outliner extends org.eclipse.ui.views.contentoutline.ContentOutlinePage {
+public interface BuildHistoryListener extends EventListener {
 	/**
-	 * The setting to outline.
-	 */
-	private eclox.doxyfile.Doxyfile m_settings;
-	
-	/**
-	 * Constructor.
+	 * Notify that a build history has changed.
 	 * 
-	 * @param	settings	The settings to outline. 
+	 * @param	event	The buld event object.
 	 */
-	public Outliner( eclox.doxyfile.Doxyfile settings ) {
-		m_settings = settings;
-	}
-	
-	public void createControl( org.eclipse.swt.widgets.Composite parent ) {
-		super.createControl( parent );
-		getTreeViewer().setContentProvider( new ContentProvider() );
-		getTreeViewer().setLabelProvider( new LabelProvider() );
-		getTreeViewer().setInput( m_settings );
-	}
+	public void buildHistoryChanged(BuildHistoryEvent event);
 }

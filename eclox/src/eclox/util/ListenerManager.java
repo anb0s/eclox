@@ -1,4 +1,4 @@
-/*
+/**
 	eclox
 	Copyright (C) 2003-2004 Guillaume Brocker
 
@@ -62,6 +62,15 @@ public class ListenerManager {
 	}
  
 	/**
+	 * Register a new listener.
+	 * 
+	 * @param	listener	The new listener to register.
+	 */
+	protected void addListener( Object listener ) {
+		m_listeners.add( listener );
+	}
+
+	/**
 	 * Remove a listener.
 	 * 
 	 * @param	listener	The listener to remove.
@@ -70,6 +79,15 @@ public class ListenerManager {
 		m_listeners.remove( listener );
 	}
 	 
+	/**
+	 * Remove a listener.
+	 * 
+	 * @param	listener	The listener to remove.
+	 */
+	protected void removeListener( Object listener ) {
+		m_listeners.remove( listener );
+	}
+	
 	/**
 	 * Fire the specified event among registered listeners, using the
 	 * method specified by ots name.
@@ -88,6 +106,7 @@ public class ListenerManager {
 			fireEvent( event, method );
 		}
 		catch( NoSuchMethodException noSuchMethod ) {
+			// TODO do something :)
 		}
 	}
 	 
@@ -109,6 +128,7 @@ public class ListenerManager {
 				method.invoke( listenerPointer.next(), args );
 			}
 			catch( Exception exception ){
+				// TODO do something :)
 			}
 		}
 	}
