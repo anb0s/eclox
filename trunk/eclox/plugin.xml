@@ -51,9 +51,10 @@
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            name="Doxygen Configuration"
-            icon="icons/new.gif"
             class="eclox.ui.wizard.NewDoxyfileWizard"
+            icon="icons/new.gif"
+            project="false"
+            name="Doxygen Configuration"
             id="eclox.ui.DoxyfileCreationWizard">
       </wizard>
    </extension>

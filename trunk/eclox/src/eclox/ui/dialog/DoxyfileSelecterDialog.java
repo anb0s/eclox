@@ -285,7 +285,7 @@ public class DoxyfileSelecterDialog {
 			if(selection.length == 1 && selection[0] instanceof IFile) {
 				result = new Status(
 					Status.OK,
-					Plugin.getDefault().getDescriptor().getUniqueIdentifier(),
+					Plugin.getDefault().getBundle().getSymbolicName(),
 					0,
 					"",
 					null
@@ -294,7 +294,7 @@ public class DoxyfileSelecterDialog {
 			else {
 				result = new Status(
 					Status.ERROR,
-					Plugin.getDefault().getDescriptor().getUniqueIdentifier(),
+					Plugin.getDefault().getBundle().getSymbolicName(),
 					0,
 					"You must choose a Doxyfile to build.",
 					null);

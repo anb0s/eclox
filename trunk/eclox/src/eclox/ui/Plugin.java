@@ -21,14 +21,13 @@
 
 package eclox.ui;
 
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 import eclox.build.BuildJob;
 import eclox.ui.plugin.Icons;
@@ -48,9 +47,8 @@ public class Plugin extends AbstractUIPlugin {
 	/**
 	 * Constructor.
 	 */
-	public Plugin( IPluginDescriptor descriptor ) {
-		super( descriptor );
-		
+	public Plugin() {
+		super();
 		if( m_defaultInstance == null ) {
 			m_defaultInstance = this;
 		}
@@ -89,9 +87,9 @@ public class Plugin extends AbstractUIPlugin {
 	/**
 	 * Overrides the default shutdown to stop any buld in progress.
 	 */
-	public void shutdown() throws CoreException {
+	public void stop(BundleContext bundleContext) throws Exception {
 		BuildJob.getDefault().cancel();
-		super.shutdown();
+		super.stop(bundleContext);
 	}
 	
 	/**
