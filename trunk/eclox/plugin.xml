@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="eclox"
+   name="Doxygen in eclipse"
+   version="1.0.0"
+   provider-name=""
+   class="eclox.ui.Plugin">
+
+   <runtime>
+      <library name="eclox.jar"/>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+   </requires>
+
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*.cfg*"
+            id="doxe.PopupMenu">
+         <action
+               label="Build documentation"
+               icon="icon_small.gif"
+               class="eclox.ui.PopupMenuDelegate"
+               id="eclox.ui.PopupMenuDelegate">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Doxygen"
+            class="eclox.ui.PreferencePage"
+            id="eclox.ui.PreferencePage">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Doxygen Build Log"
+            icon="icon_small.gif"
+            class="eclox.ui.BuildLogView"
+            id="eclox.ui.BuildLogView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="eclox.ui.editor.Editor"
+            icon="icon_small.gif"
+            extensions="cfg"
+            contributorClass="eclox.ui.editor.ActionBarContributor"
+            class="eclox.ui.editor.Editor"
+            id="eclox.ui.editor.Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            name="Doxygen Configuration"
+            icon="icon_small.gif"
+            class="eclox.ui.wizard.NewDoxyfileWizard"
+            id="eclox.ui.DoxyfileCreationWizard">
+      </wizard>
+   </extension>
+
+</plugin>

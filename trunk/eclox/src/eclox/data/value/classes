@@ -1,0 +1,152 @@
+# eclox
+# Copyright (C) 2003 Guillaume Brocker
+#
+# This file is part of eclox.
+#
+# eclox is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# eclox is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with eclox; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
+# Eclox tag value class definition file
+#
+# This file defines for each doxygen tag the associated value class.
+# A value class defines how a tag string value is to be interpreted.
+#
+# Each line of the file defines one association of the form
+# <tag name><separator><value class>
+#
+# <tag name> is the name of a doxygen configuration file tag, respecting
+# the original case. <separator> can be any combinaison of spaces and
+# tabulations. <value class> defines the class of value to use. Currently
+# supported value classes are String, Boolean and Integer.
+
+PROJECT_NAME			String
+PROJECT_NUMBER			String
+OUTPUT_DIRECTORY		String
+OUTPUT_LANGUAGE			String
+EXTRACT_ALL				Boolean
+EXTRACT_PRIVATE			Boolean
+EXTRACT_STATIC			Boolean
+HIDE_UNDOC_MEMBERS		Boolean
+HIDE_UNDOC_CLASSES		Boolean
+BRIEF_MEMBER_DESC		Boolean
+REPEAT_BRIEF			Boolean
+ALWAYS_DETAILED_SEC		Boolean
+FULL_PATH_NAMES			Boolean
+STRIP_FROM_PATH			String
+INTERNAL_DOCS			Boolean
+CLASS_DIAGRAMS			Boolean
+SOURCE_BROWSER			Boolean
+INLINE_SOURCES			Boolean
+STRIP_CODE_COMMENTS		Boolean
+CASE_SENSE_NAMES		Boolean
+SHORT_NAMES				Boolean
+HIDE_SCOPE_NAMES		Boolean
+VERBATIM_HEADERS		Boolean
+SHOW_INCLUDE_FILES		Boolean
+JAVADOC_AUTOBRIEF		Boolean
+INHERIT_DOCS			Boolean
+INLINE_INFO				Boolean
+SORT_MEMBER_DOCS		Boolean
+DISTRIBUTE_GROUP_DOC	Boolean
+TAB_SIZE				Integer
+ENABLED_SECTIONS		Boolean
+GENERATE_TODOLIST		Boolean
+GENERATE_TESTLIST		Boolean
+GENERATE_BUGLIST		Boolean
+ALIASES					String
+MAX_INITIALIZER_LINES	Integer
+OPTIMIZE_OUTPUT_FOR_C	Boolean
+SHOW_USED_FILES			Boolean
+QUIET					Boolean
+WARNINGS				Boolean
+WARN_IF_UNDOCUMENTED	Boolean
+WARN_FORMAT				String
+WARN_LOGFILE			String
+INPUT					String
+FILE_PATTERNS			String
+RECURSIVE				Boolean
+EXCLUDE					String
+EXCLUDE_PATTERNS		String
+EXAMPLE_PATH			String
+EXAMPLE_PATTERNS		String
+IMAGE_PATH				String
+INPUT_FILTER			String
+FILTER_SOURCE_FILES		Boolean
+ALPHABETICAL_INDEX		Boolean
+COLS_IN_ALPHA_INDEX		Integer
+IGNORE_PREFIX			String
+GENERATE_HTML			Boolean
+HTML_OUTPUT				String
+HTML_HEADER				String
+HTML_FOOTER				String
+HTML_STYLESHEET			String
+HTML_ALIGN_MEMBERS		Boolean
+GENERATE_HTMLHELP		Boolean
+GENERATE_CHI			Boolean
+BINARY_TOC				Boolean
+TOC_EXPAND				Boolean
+DISABLE_INDEX			Boolean
+ENUM_VALUES_PER_LINE	Integer
+GENERATE_TREEVIEW		Boolean
+TREEVIEW_WIDTH			Integer
+GENERATE_LATEX			Boolean
+LATEX_OUTPUT			String
+COMPACT_LATEX			Boolean
+PAPER_TYPE				String
+EXTRA_PACKAGES			String
+LATEX_HEADER			String
+PDF_HYPERLINKS			Boolean
+USE_PDFLATEX			Boolean
+LATEX_BATCHMODE			Boolean
+GENERATE_RTF			Boolean
+RTF_OUTPUT				String
+COMPACT_RTF				Boolean
+RTF_HYPERLINKS			Boolean
+RTF_STYLESHEET_FILE		String
+RTF_EXTENSIONS_FILE		String
+GENERATE_MAN			Boolean
+MAN_OUTPUT				String
+MAN_EXTENSION			String
+MAN_LINKS				Boolean
+ENABLE_PREPROCESSING	Boolean
+MACRO_EXPANSION			Boolean
+EXPAND_ONLY_PREDEF		Boolean
+SEARCH_INCLUDES			Boolean
+INCLUDE_PATH			String
+INCLUDE_FILE_PATTERNS	String
+PREDEFINED				String
+EXPAND_AS_DEFINED		String
+TAGFILES				String
+GENERATE_TAGFILE		String
+ALLEXTERNALS			Boolean
+PERL_PATH				String
+HAVE_DOT				Boolean
+CLASS_GRAPH				Boolean
+COLLABORATION_GRAPH		Boolean
+INCLUDE_GRAPH			Boolean
+INCLUDED_BY_GRAPH		Boolean
+GRAPHICAL_HIERARCHY		Boolean
+DOT_PATH				String
+MAX_DOT_GRAPH_WIDTH		Integer
+MAX_DOT_GRAPH_HEIGHT	Integer
+GENERATE_LEGEND			Boolean
+DOT_CLEANUP				Boolean
+SEARCHENGINE			Boolean
+CGI_NAME				String
+CGI_URL					String
+DOC_URL					String
+DOC_ABSPATH				String
+BIN_ABSPATH				String
+EXT_DOC_PATHS			String
