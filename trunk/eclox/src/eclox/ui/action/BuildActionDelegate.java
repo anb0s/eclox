@@ -31,6 +31,9 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -39,7 +42,6 @@ import eclox.build.BuildHistory;
 import eclox.build.BuildHistoryEvent;
 import eclox.build.BuildHistoryListener;
 import eclox.build.BuildJob;
-import eclox.doxyfile.Doxyfile;
 import eclox.ui.Plugin;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
 import eclox.ui.view.BuildLogView;
@@ -152,29 +154,12 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		try {
-			// Test if the current selection is not empty.
-			if(selection != null) {
-				if(selection.isEmpty() == true) {
-					this.nextDoxyfile = null;
-				}
-				if(selection instanceof IStructuredSelection) {
-					IStructuredSelection	structSel = (IStructuredSelection) selection;
-					Object					element = structSel.getFirstElement();
-	
-					this.nextDoxyfile = null;
-					if(element != null && element instanceof IFile) {
-						IFile	fileElement = (IFile) element;
-	
-						if(fileElement.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
-							this.nextDoxyfile = fileElement;
-						}
-					}
-					else if(element != null && element instanceof Doxyfile) {
-						Doxyfile	doxyfile = (Doxyfile) element;
-						
-						this.nextDoxyfile = doxyfile.getFile(); 
-					}
-				}
+			// Retrieve the next doxyfile to build from the current selection.
+			this.nextDoxyfile = this.getDoxyfileFromSelection(selection);
+			
+			// Retrieve the next doxyfile from the current editor.
+			if(this.nextDoxyfile == null) {
+				this.nextDoxyfile = this.getDoxyfileFromActiveEditor();
 			}
 			
 			// If there is no next doxyfile to build and the history is not empty
@@ -190,6 +175,8 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 				"Choose Next Doxyfile";
 				
 			action.setToolTipText(tooltipText);
+			
+			// Store the 
 		}
 		catch(Throwable throwable) {
 			Plugin.getDefault().showError(throwable);
@@ -234,5 +221,65 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 			this.menu.dispose();
 			this.menu = null;
 		}
+	}
+	
+	/**
+	 * Retrieve a doxyfile from the active editor.
+	 * 
+	 * @return	a doxfile retrieved from the active editor input.
+	 */
+	private IFile getDoxyfileFromActiveEditor() {
+		IFile doxyfile = null;
+		
+		try {
+			IEditorPart activeEditorPart;
+			
+			activeEditorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			if(activeEditorPart != null) {
+				IEditorInput activeEditorInput  = activeEditorPart.getEditorInput();
+				
+				if(activeEditorInput instanceof IFileEditorInput) {
+					IFileEditorInput fileEditorInput = (IFileEditorInput)activeEditorInput;
+					IFile file = fileEditorInput.getFile();
+					
+					if(file.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
+						doxyfile = file;
+					}
+				}	
+			}
+		}
+		catch(Throwable throwable) {
+			Plugin.getDefault().showError(throwable);
+		}
+		return doxyfile;
+	}
+	
+	/**
+	 * Retrieve a doxyfile from the specified selection.
+	 * 
+	 * @return	a doxyfile retrieved from the specified selection.
+	 */
+	private IFile getDoxyfileFromSelection(ISelection selection) {
+		IFile doxyfile = null;
+		
+		try {
+			// Test if the current selection is not empty.
+			if(selection instanceof IStructuredSelection && selection.isEmpty() == false) {
+				IStructuredSelection	structSel = (IStructuredSelection) selection;
+				Object					element = structSel.getFirstElement();
+
+				if(element != null && element instanceof IFile) {
+					IFile	fileElement = (IFile) element;
+
+					if(fileElement.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
+						doxyfile = fileElement;
+					}
+				}
+			}
+		}
+		catch(Throwable throwable) {
+			Plugin.getDefault().showError(throwable);
+		}
+		return doxyfile;
 	}
 }
