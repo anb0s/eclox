@@ -21,7 +21,6 @@
 
 package eclox.ui;
 
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
@@ -29,9 +28,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import eclox.build.BuildHistory;
 import eclox.build.BuildJob;
 import eclox.ui.plugin.Icons;
-import eclox.ui.plugin.Preferences;
 
 /**
  * Implements the plugin class.
@@ -85,10 +84,19 @@ public class Plugin extends AbstractUIPlugin {
 	}
 	
 	/**
-	 * Overrides the default shutdown to stop any buld in progress.
+	 * 
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		BuildHistory.getDefault().load();		
+	}
+	
+	/**
+	 * 
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		BuildJob.getDefault().cancel();
+		BuildHistory.getDefault().store();
 		super.stop(bundleContext);
 	}
 	
@@ -99,15 +107,6 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	static public Plugin getDefault() {
 		return m_defaultInstance;
-	}
-	
-	/**
-	 * Initializes the preferences values for the plugin.
-	 * 
-	 * @param	store	The preference store to initialize.
-	 */
-	protected void initializeDefaultPreferences( IPreferenceStore store ) {
-		Preferences.setDefault( store );
 	}
 	
 	/**
