@@ -1,3 +1,6 @@
+eclox-0.1.4 (in progress):
+    o One more improvement of the tag edition.
+    
 eclox-0.1.3 (03-may-2004):
     o The tag edition has been improved. While editing a tag, hitting ESC
       cancels the current edition, at the opposite, hitting ENTER completes
