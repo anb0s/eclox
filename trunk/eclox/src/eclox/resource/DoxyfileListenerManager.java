@@ -29,8 +29,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.content.IContentType;
 
 import eclox.ui.Plugin;
 import eclox.util.ListenerManager;
@@ -70,7 +68,7 @@ public class DoxyfileListenerManager extends ListenerManager {
 		 */
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			IResource resource = delta.getResource();
-			if(isFile(resource) == true && isDoxyfile((IFile)resource) == true) {
+			if(Doxyfile.isDoxyfile(resource) == true) {
 				IFile	doxyfile = (IFile) resource;
 				
 				if((delta.getKind() & IResourceDelta.REMOVED) != 0) {
@@ -78,34 +76,7 @@ public class DoxyfileListenerManager extends ListenerManager {
 				}
 			}
 			return true;
-		}
-		
-		/**
-		 * Tells if the specified resource is a file.
-		 * 
-		 * @param	resource	the resource to test
-		 * 
-		 * @return	<code>true</code> or <code>false</code>
-		 */
-		private boolean isFile(IResource resource) {
-			return resource instanceof IFile;
-		}
-		
-		/**
-		 * Tells if the specified file is a doxyfile.
-		 * 
-		 * @param	file	the file to test
-		 * 
-		 * @return	<code>true</code> or <code>false</code>
-		 */
-		private boolean isDoxyfile(IFile file) {
-			IContentType	contentType;
-			
-			contentType = Platform.getContentTypeManager().findContentTypeFor(file.toString());
-			
-			return contentType != null ? contentType.getId().equals("eclox.doxyfile") : false;
-		}
-		
+		}		
 	}
 	
 	/**

@@ -1,4 +1,6 @@
 eclox-0.3.1 (in progress):
+    o Fixed unexpected exception when deleting a doxyfile resource while an editor
+      was open on it.
     o Fixed a null pointer exception when launching a build from the history
       on a resource that has been removed.
     o Improvement of the properties of the doxyfile element selected in the

@@ -40,6 +40,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eclox.build.BuildHistory;
 import eclox.build.BuildJob;
+import eclox.resource.Doxyfile;
 import eclox.ui.Plugin;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
 import eclox.ui.view.BuildLogView;
@@ -231,7 +232,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 					IFileEditorInput fileEditorInput = (IFileEditorInput)activeEditorInput;
 					IFile file = fileEditorInput.getFile();
 					
-					if(file.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
+					if(Doxyfile.isDoxyfile(file) == true) {
 						doxyfile = file;
 					}
 				}	
@@ -260,10 +261,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 				if(element != null && element instanceof IFile) {
 					IFile	fileElement = (IFile) element;
 
-					if(
-						fileElement.exists() == true &&
-						fileElement.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true
-					) {
+					if(fileElement.exists() == true && Doxyfile.isDoxyfile(fileElement) == true) {
 						doxyfile = fileElement;
 					}
 				}
