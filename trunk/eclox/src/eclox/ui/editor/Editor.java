@@ -109,7 +109,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 				m_settings.addNodeListener( new SettingsListener() );
 			}
 			catch( Throwable throwable ) {
-				throw new org.eclipse.ui.PartInitException( "Unable to get doxygen settings.", throwable );
+				throw new org.eclipse.ui.PartInitException( "Unable to load doxyfile. " + throwable.getMessage(), throwable );
 			}
 		}
 		else {
