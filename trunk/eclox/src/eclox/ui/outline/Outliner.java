@@ -19,11 +19,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-
 package eclox.ui.outline;
-
-import org.eclipse.jface.viewers.ISelection;
-
 
 /**
  * Implements the content outliner class.
@@ -31,24 +27,10 @@ import org.eclipse.jface.viewers.ISelection;
  * @author gbrocker
  */
 public class Outliner extends org.eclipse.ui.views.contentoutline.ContentOutlinePage {
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#fireSelectionChanged(org.eclipse.jface.viewers.ISelection)
-	 */
-	protected void fireSelectionChanged(ISelection selection) {
-		// TODO Auto-generated method stub
-		super.fireSelectionChanged(selection);
-	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-	 */
-	public void setSelection(ISelection selection) {
-		// TODO Auto-generated method stub
-		super.setSelection(selection);
-	}
 	/**
 	 * The setting to outline.
 	 */
-	private eclox.doxyfile.Doxyfile m_settings;
+	private eclox.doxyfile.Doxyfile settings;
 	
 	/**
 	 * Constructor.
@@ -56,13 +38,13 @@ public class Outliner extends org.eclipse.ui.views.contentoutline.ContentOutline
 	 * @param	settings	The settings to outline. 
 	 */
 	public Outliner( eclox.doxyfile.Doxyfile settings ) {
-		m_settings = settings;
+		this.settings = settings;
 	}
 	
 	public void createControl( org.eclipse.swt.widgets.Composite parent ) {
 		super.createControl( parent );
 		getTreeViewer().setContentProvider( new ContentProvider() );
 		getTreeViewer().setLabelProvider( new LabelProvider() );
-		getTreeViewer().setInput( m_settings );
+		getTreeViewer().setInput( this.settings );
 	}
 }

@@ -1,4 +1,8 @@
 eclox-0.3.1 (in progress):
+    o Improvement of the properties of the doxyfile element selected in the
+      outline view.
+    o Improvement of the internal doxyfile content representation, creation of
+      a new parser to support those changes.
     o Fixed build history wich was always empty since the use of workbanch
       jobs for build processes.
     o Added properties for doxyfile elements in the default workbench
