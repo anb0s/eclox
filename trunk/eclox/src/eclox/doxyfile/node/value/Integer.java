@@ -26,12 +26,24 @@ package eclox.doxyfile.node.value;
  * 
  * @author gbrocker
  */
-public class Integer extends Abstract {
+public class Integer extends Value {
 	/**
 	 * The real integer value.
 	 */
 	private int m_value = 0;
 	
+	/**
+	 * Clone the value instance, but not the listeners.
+	 * 
+	 * @return	A cloned instance of the value.
+	 */
+	public Object clone() {
+		Integer i = new Integer();
+		
+		i.m_value = this.m_value;
+		return i;
+	}
+
 	/**
 	 * Retrieve the integer value from the specified string. The integer
 	 * must be represented in base 10.

@@ -26,7 +26,7 @@ package eclox.doxyfile.node.value;
  * 
  * @author gbrocker
  */
-public class Boolean extends Abstract {
+public class Boolean extends Value {
 	/**
 	 * The true string representation.
 	 */
@@ -57,6 +57,18 @@ public class Boolean extends Abstract {
 			notifyChanged();
 		}
 	}
+	
+	/**
+	 * Clone the value instance, but not the listeners.
+	 * 
+	 * @return	A cloned instance of the value.
+	 */
+	public Object clone() {
+		Boolean b = new Boolean();
+		
+		b.m_value = this.m_value;
+		return b;
+	} 
 	
 	/**
 	 * Retrieve the boolean value.
