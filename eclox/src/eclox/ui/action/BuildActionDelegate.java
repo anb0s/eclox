@@ -40,7 +40,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eclox.build.BuildHistory;
 import eclox.core.Services;
-import eclox.resource.Doxyfile;
+import eclox.doxyfiles.Doxyfile;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
 
 /**

@@ -49,8 +49,8 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.ide.IDE;
 
-import eclox.resource.Doxyfile;
-import eclox.ui.Plugin;
+import eclox.core.Plugin;
+import eclox.doxyfiles.Doxyfile;
 
 
 /**

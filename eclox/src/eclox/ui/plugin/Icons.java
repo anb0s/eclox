@@ -29,7 +29,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.osgi.framework.Bundle;
 
-import eclox.ui.Plugin;
+import eclox.core.Plugin;
 
 /**
  * Define all icon names for the plugin.

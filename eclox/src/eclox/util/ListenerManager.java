@@ -48,7 +48,7 @@ public class ListenerManager {
 	 * 
 	 * @param	listenerClass	The class of listener objects.
 	 */
-	protected ListenerManager( Class listenerClass ) {
+	public ListenerManager( Class listenerClass ) {
 		m_listenerClass = listenerClass;
 	}
 	
@@ -57,7 +57,7 @@ public class ListenerManager {
 	 * 
 	 * @param	listener	The new listener to register.
 	 */
-	protected void addListener( EventListener listener ) {
+	public void addListener( EventListener listener ) {
 		m_listeners.add( listener );
 	}
  
@@ -66,7 +66,7 @@ public class ListenerManager {
 	 * 
 	 * @param	listener	The new listener to register.
 	 */
-	protected void addListener( Object listener ) {
+	public void addListener( Object listener ) {
 		m_listeners.add( listener );
 	}
 
@@ -75,7 +75,7 @@ public class ListenerManager {
 	 * 
 	 * @param	listener	The listener to remove.
 	 */
-	protected void removeListener( EventListener listener ) {
+	public void removeListener( EventListener listener ) {
 		m_listeners.remove( listener );
 	}
 	 
@@ -84,7 +84,7 @@ public class ListenerManager {
 	 * 
 	 * @param	listener	The listener to remove.
 	 */
-	protected void removeListener( Object listener ) {
+	public void removeListener( Object listener ) {
 		m_listeners.remove( listener );
 	}
 	
@@ -96,7 +96,7 @@ public class ListenerManager {
 	 * @param methodName	A string containing the name of the method to call
 	 * 					for notification.
 	 */
-	protected void fireEvent( EventObject event, String methodName ) {
+	public void fireEvent( EventObject event, String methodName ) {
 		try {
 			java.lang.reflect.Method	method;
 			Class[]						args = new Class[1];

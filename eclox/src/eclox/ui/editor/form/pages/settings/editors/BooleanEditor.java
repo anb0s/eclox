@@ -1,0 +1,50 @@
+//eclox : Doxygen plugin for Eclipse.
+//Copyright (C) 2003-2005 Guillaume Brocker
+//
+//This file is part of eclox.
+//
+//eclox is free software; you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation; either version 2 of the License, or
+//any later version.
+//
+//eclox is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+//
+//You should have received a copy of the GNU General Public License
+//along with eclox; if not, write to the Free Software
+//Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
+
+package eclox.ui.editor.form.pages.settings.editors;
+
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+
+import eclox.doxyfiles.nodes.Setting;
+
+/**
+ * Implements an setting editor for boolean values
+ * 
+ * @author gbrocker
+ */
+public class BooleanEditor implements IEditor {
+
+    /**
+     * @see eclox.ui.editor.form.pages.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     */
+    public void createContent(Composite parent, FormToolkit formToolkit) {
+        formToolkit.createButton(parent, "Yes", SWT.PUSH);
+        formToolkit.createButton(parent, "No", SWT.PUSH);
+        formToolkit.createButton(parent, "Not Specified", SWT.PUSH);
+    }
+    
+    /**
+     * @see eclox.ui.editor.form.pages.settings.editors.IEditor#setInput(eclox.doxyfiles.nodes.Setting)
+     */
+    public void setInput(Setting input) {
+        // TODO implementation required !
+    }
+}
