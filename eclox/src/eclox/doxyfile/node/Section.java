@@ -19,7 +19,9 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.data;
+package eclox.doxyfile.node;
+
+import eclox.doxyfile.node.util.*;
 
 /**
  * Implements a doxygen tag section.
@@ -66,7 +68,7 @@ public class Section extends Group {
 	 * 
 	 * @param	visitor	The visitor to accept.
 	 */	
-	public void accept( eclox.data.Visitor visitor ) throws VisitorException {
+	public void accept( eclox.doxyfile.node.Visitor visitor ) throws VisitorException {
 		visitor.process( this );
 	}
 	

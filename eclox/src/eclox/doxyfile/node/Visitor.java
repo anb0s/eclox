@@ -1,5 +1,5 @@
 /*
-	eclox
+	eclox : Doxygen plugin for Eclipse.
 	Copyright (C) 2003 Guillaume Brocker
 
 	This file is part of eclox.
@@ -19,35 +19,41 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.data.value;
+
+package eclox.doxyfile.node;
+
 
 /**
- * Implement a string tag value class.
- * 
  * @author gbrocker
+ * 
+ * Interface for all visitors.
  */
-public class String extends Abstract {
+public interface Visitor {
 	/**
-	 * The string value.
+	 * Process a comment item.
+	 * 
+	 * @param comment	The comment to process.
 	 */
-	private java.lang.String m_value = new java.lang.String();
+	public void process( Comment comment ) throws VisitorException;
 	
 	/**
-	 * Retrieve the value represented in the specified string.
+	 * Process a group item.
 	 * 
-	 * @param	value	the string to parse to get the represented value.
+	 * @param group	The group to process.
 	 */
-	public void fromString( java.lang.String value ) {
-		m_value = new java.lang.String( value );
-		notifyChanged();
-	}
+	public void process( Section group ) throws VisitorException;
 	
 	/**
-	 * Retrieve the string representation of the value.
+	 * Process a tag item.
 	 * 
-	 * @return	A string containing the value as a string.
+	 * @param tag	The tag to process.
 	 */
-	public java.lang.String toString() {
-		return m_value;
-	}
+	public void process( Tag tag ) throws VisitorException;
+	
+	/**
+	 * Process a settings item.
+	 *
+	 * @param	settings	The settings to process.
+	 */
+	public void process( Root settings ) throws VisitorException;
 }

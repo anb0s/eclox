@@ -19,7 +19,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.data.value;
+package eclox.doxyfile.node.value;
 
 /**
  * Provide type objects for tags.
@@ -86,7 +86,7 @@ public class ClassProvider {
 		result = (java.lang.Class) m_types.get( tag );
 		// If not found, set the default value.
 		if( result == null ) {
-			result = eclox.data.value.String.class;
+			result = eclox.doxyfile.node.value.String.class;
 		}
 		
 		return result;

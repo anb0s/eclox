@@ -20,7 +20,7 @@
 */
 
 
-package eclox.data;
+package eclox.doxyfile.node;
 
 /**
  * Implements the doxygen settings root node.
@@ -33,7 +33,7 @@ public class Root extends Group {
 	 * 
 	 * @param	visitor	The visitor to accept.
 	 */
-	public void accept( eclox.data.Visitor visitor ) throws VisitorException {
+	public void accept( eclox.doxyfile.node.Visitor visitor ) throws VisitorException {
 		visitor.process( this );
 	}
 	

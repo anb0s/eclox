@@ -26,7 +26,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
-import eclox.data.Tag;
+import eclox.doxyfile.node.Tag;
 
 /**
  * Implement the tag detail editor part.

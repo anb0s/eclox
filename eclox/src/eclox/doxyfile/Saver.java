@@ -27,14 +27,14 @@ import java.util.List;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import eclox.data.Comment;
-import eclox.data.Group;
-import eclox.data.Node;
-import eclox.data.Root;
-import eclox.data.Section;
-import eclox.data.Tag;
-import eclox.data.Visitor;
-import eclox.data.VisitorException;
+import eclox.doxyfile.node.Comment;
+import eclox.doxyfile.node.Group;
+import eclox.doxyfile.node.Node;
+import eclox.doxyfile.node.Root;
+import eclox.doxyfile.node.Section;
+import eclox.doxyfile.node.Tag;
+import eclox.doxyfile.node.Visitor;
+import eclox.doxyfile.node.VisitorException;
 
 /**
  * Implements the default doxygen data saver. It stores the settings in plain text, as close as possible
