@@ -39,13 +39,13 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="eclox.ui.editor.Editor"
-            default="false"
-            icon="icons/file.gif"
-            extensions="dox, cfg, doxyfile"
             filenames="doxyfile"
             class="eclox.ui.editor.Editor"
-            id="eclox.ui.editor.Editor">
+            icon="icons/file.gif"
+            default="false"
+            name="Doxygen Configuration Editor"
+            id="eclox.ui.editor.Editor"
+            extensions="doxyfile">
       </editor>
    </extension>
    <extension
@@ -109,6 +109,15 @@
                id="eclox.ui.action.build">
          </action>
       </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            file-names="doxyfile"
+            file-extensions="doxyfile"
+            priority="normal"
+            name="Doxygen Configuration"
+            id="doxyfile"/>
    </extension>
 
 </plugin>

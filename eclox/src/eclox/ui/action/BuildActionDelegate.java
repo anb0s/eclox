@@ -151,44 +151,49 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 	 * Notify that the current selection changed.
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		// Test if the current selection is not empty.
-		if(selection != null) {
-			if(selection.isEmpty() == true) {
-				this.nextDoxyfile = null;
-			}
-			if(selection instanceof IStructuredSelection) {
-				IStructuredSelection	structSel = (IStructuredSelection) selection;
-				Object					element = structSel.getFirstElement();
-
-				this.nextDoxyfile = null;
-				if(element != null && element instanceof IFile) {
-					IFile	fileElement = (IFile) element;
-
-					if(Doxyfile.isFileNameValid(fileElement.getName()) == true) {
-						this.nextDoxyfile = fileElement;
+		try {
+			// Test if the current selection is not empty.
+			if(selection != null) {
+				if(selection.isEmpty() == true) {
+					this.nextDoxyfile = null;
+				}
+				if(selection instanceof IStructuredSelection) {
+					IStructuredSelection	structSel = (IStructuredSelection) selection;
+					Object					element = structSel.getFirstElement();
+	
+					this.nextDoxyfile = null;
+					if(element != null && element instanceof IFile) {
+						IFile	fileElement = (IFile) element;
+	
+						if(fileElement.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
+							this.nextDoxyfile = fileElement;
+						}
+					}
+					else if(element != null && element instanceof Doxyfile) {
+						Doxyfile	doxyfile = (Doxyfile) element;
+						
+						this.nextDoxyfile = doxyfile.getFile(); 
 					}
 				}
-				else if(element != null && element instanceof Doxyfile) {
-					Doxyfile	doxyfile = (Doxyfile) element;
-					
-					this.nextDoxyfile = doxyfile.getFile(); 
-				}
 			}
-		}
-		
-		// If there is no next doxyfile to build and the history is not empty
-		// set the first history element as the next doxyfile.
-		if(this.nextDoxyfile == null && BuildHistory.getDefault().size() != 0) {
-			IFile[]	historyFiles = BuildHistory.getDefault().toArray();
-			this.nextDoxyfile = historyFiles[0];
-		}
-		
-		// Update the action tooltip.
-		String	tooltipText = this.nextDoxyfile != null ?
-			"Build " + this.nextDoxyfile.getFullPath().toString() :
-			"Choose Next Doxyfile";
 			
-		action.setToolTipText(tooltipText);
+			// If there is no next doxyfile to build and the history is not empty
+			// set the first history element as the next doxyfile.
+			if(this.nextDoxyfile == null && BuildHistory.getDefault().size() != 0) {
+				IFile[]	historyFiles = BuildHistory.getDefault().toArray();
+				this.nextDoxyfile = historyFiles[0];
+			}
+			
+			// Update the action tooltip.
+			String	tooltipText = this.nextDoxyfile != null ?
+				"Build " + this.nextDoxyfile.getFullPath().toString() :
+				"Choose Next Doxyfile";
+				
+			action.setToolTipText(tooltipText);
+		}
+		catch(Throwable throwable) {
+			Plugin.getDefault().showError(throwable);
+		}
 	}
 	
 	/**
