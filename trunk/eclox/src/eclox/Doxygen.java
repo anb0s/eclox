@@ -21,7 +21,9 @@
 
 package eclox;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -55,13 +57,29 @@ public final class Doxygen {
 	 * 
 	 * @param	file	The configuration file to generate.
 	 */	
-	public static void generate( IFile file ) throws IOException, InterruptedException, CoreException {
-		Process	process;
-		String	command;
+	public static void generate( IFile file ) throws DoxygenException, IOException, InterruptedException, CoreException {
+		Process		process;
+		String[]	command = new String[3];
 		
-		command = getBuilderCommand() + " -g \"" + file.getLocation().toOSString() + "\"";
-		process = Runtime.getRuntime().exec( command );
-		process.waitFor();
+		// Build the command. 
+		command[0] = getBuilderCommand();
+		command[1] =  "-g";
+		command[2] = file.getLocation().toOSString();
+		
+		// Run the command and check for errors.
+		process = Runtime.getRuntime().exec( command, null );
+		if(process.waitFor() != 0) {
+			BufferedReader	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+			String			errorMsg = new String();
+			String			line;
+			
+			for(line=reader.readLine(); line != null; line=reader.readLine()) {
+				errorMsg = errorMsg.concat(line);
+			}
+			throw new DoxygenException(errorMsg);
+		}
+		
+		// Force some refresh to display the file.
 		file.refreshLocal( 0, null );
 	}
 	
