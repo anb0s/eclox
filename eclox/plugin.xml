@@ -92,5 +92,19 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            nameFilter="*doxyfile*"
+            id="eclox.ui.doxyfilepopup">
+         <action
+               label="Build"
+               icon="icons/icon_small.gif"
+               class="eclox.ui.action.BuildPopupActionDelegate"
+               id="eclox.ui.action.build">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>
