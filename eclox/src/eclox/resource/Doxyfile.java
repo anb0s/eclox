@@ -52,7 +52,7 @@ public final class Doxyfile {
 			return deserializer.createDoxyfile();
 		}
 		catch(Throwable throwable) {
-			throw new DoxyfileException("Error while loading the doxyfile.", throwable);
+			throw new DoxyfileException("Error while loading the doxyfile. " + throwable.getMessage(), throwable);
 		}
 	}
 	
@@ -99,7 +99,7 @@ public final class Doxyfile {
 			file.setContents(saver, true, true, progressMonitor);
 		}
 		catch(Throwable throwable) {
-			throw new DoxyfileException("Error while write doxyfile content.", throwable);
+			throw new DoxyfileException("Error while write doxyfile content. " + throwable.getMessage(), throwable);
 		}		
 	}
 }

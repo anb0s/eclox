@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import eclox.resource.content.Description;
 import eclox.resource.content.DoxyfileContent;
 import eclox.resource.content.Group;
 import eclox.resource.content.Node;
@@ -51,10 +52,12 @@ public class Serializer extends InputStream implements Visitor {
 	 * @param	root	The root node to process.
 	 */
 	public void process(DoxyfileContent root) throws VisitorException {
-		this.buffer += root.getVersion();
-		this.buffer += "\r\n";
-		this.buffer += root.getDescription().toString();
-		this.buffer += "\r\n";
+		Description	version = root.getVersion();
+		this.buffer += version != null ? version.toString() + "\r\n" : "";
+		
+		Description description = root.getDescription();
+		this.buffer += description != null ? description.toString() + "\r\n" : "";
+		
 		processChildren(root);
 	}
 	
@@ -75,8 +78,9 @@ public class Serializer extends InputStream implements Visitor {
 	 * @param	tag	The tag to process.
 	 */
 	public void process( Tag tag ) throws VisitorException {
-		this.buffer += tag.getDescription().toString();
-		this.buffer += "\r\n";
+		Description description = tag.getDescription();
+		this.buffer += description != null ? description.toString() + "\r\n" : "";
+		
 		this.buffer += tag.getName();
 		this.buffer += " = ";
 		this.buffer += tag.getValue().toString();
