@@ -24,7 +24,7 @@ package eclox.ui.action;
 import org.eclipse.jface.action.Action;
 
 import eclox.build.BuildJob;
-import eclox.ui.Plugin;
+import eclox.core.Plugin;
 import eclox.ui.plugin.Icons;
 
 /**

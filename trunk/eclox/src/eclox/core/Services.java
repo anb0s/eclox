@@ -22,7 +22,9 @@
 package eclox.core;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.ILog;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -31,7 +33,6 @@ import org.eclipse.ui.PlatformUI;
 
 import eclox.build.BuildInProgressError;
 import eclox.build.BuildJob;
-import eclox.ui.Plugin;
 import eclox.ui.view.BuildLogView;
 
 /**
@@ -74,6 +75,17 @@ public final class Services {
 	 */
 	public static Preferences getPreferences() {
 		return Plugin.getDefault().getPluginPreferences();
+	}
+	
+	/**
+	 * Adds the specified message into the plugin's log as warning.
+	 *  
+	 * @param message
+	 */
+	public static void logWarning(String message) {
+	    Plugin plugin = Plugin.getDefault();
+	    ILog log = plugin.getLog();
+	    log.log(new Status(Status.WARNING, plugin.getBundle().getSymbolicName(), 0, message, null));
 	}
 	
 	/**

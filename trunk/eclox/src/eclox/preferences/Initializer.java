@@ -24,7 +24,7 @@ package eclox.preferences;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 
-import eclox.ui.Plugin;
+import eclox.core.Plugin;
 
 /**
  * Implements the prefenrence initializer for the plugin.

@@ -32,10 +32,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
-import eclox.resource.DoxyfileEvent;
-import eclox.resource.DoxyfileListener;
-import eclox.resource.DoxyfileListenerManager;
-import eclox.ui.Plugin;
+import eclox.core.Plugin;
 import eclox.util.ListenerManager;
 
 /**
@@ -71,27 +68,6 @@ public class BuildHistory extends ListenerManager {
 	} 
 	
 	/**
-	 * Implements a listeners for doxyfile removal.
-	 */
-	private class DoxyfileRemovedListener implements DoxyfileListener {
-		/**
-		 * @see eclox.resource.DoxyfileListener#doxyfileRemoved(eclox.resource.DoxyfileEvent)
-		 */
-		public void doxyfileRemoved(DoxyfileEvent event) {
-			Iterator it = files.iterator();
-			
-			while(it.hasNext()) {
-				IFile curFile = (IFile)it.next();
-				
-				if(curFile.getFullPath().equals(event.doxyfile.getFullPath()) == true) {
-					files.remove(curFile);
-					break;
-				}
-			}
-		}
-	}
-	
-	/**
 	 * The current build history.
 	 */
 	private static BuildHistory currentInstance;
@@ -119,7 +95,6 @@ public class BuildHistory extends ListenerManager {
 	private BuildHistory() {
 		super(BuildHistoryListener.class);
 		Plugin.getDefault().getPreferenceStore().addPropertyChangeListener(new PreferenceChangedListener());
-		DoxyfileListenerManager.getDefault().addDoxyfileListener(new DoxyfileRemovedListener());
 	}
 	
 	/**

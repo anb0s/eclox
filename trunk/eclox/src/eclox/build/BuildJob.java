@@ -184,10 +184,10 @@ public class BuildJob extends Job {
 			result = watchException.status;
 		}
 		catch(DoxygenException doxygenException) {
-			result = new Status(Status.ERROR, eclox.ui.Plugin.getDefault().toString(), 0, doxygenException.getMessage(), null);
+			result = new Status(Status.ERROR, eclox.core.Plugin.getDefault().toString(), 0, doxygenException.getMessage(), null);
 		}
 		catch(Throwable throwable) {
-			result = new Status(Status.ERROR, eclox.ui.Plugin.getDefault().toString(), 0, "Unexpected error while building.", throwable);
+			result = new Status(Status.ERROR, eclox.core.Plugin.getDefault().toString(), 0, "Unexpected error while building.", throwable);
 		}
 		monitor.done();
 		return result;

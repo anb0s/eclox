@@ -24,7 +24,7 @@ package eclox.ui.wizard;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 
-import eclox.ui.Plugin;
+import eclox.core.Plugin;
 import eclox.ui.plugin.Icons;
 
 /**
