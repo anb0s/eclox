@@ -1,4 +1,4 @@
-echo-0.3.3 (in progress):
+echo-0.3.3 (6-oct-2004):
     o Automatic saving of all editors before buiding is now implemented and
       can be configured in the preferences.
     o The build history state is now persistent.
