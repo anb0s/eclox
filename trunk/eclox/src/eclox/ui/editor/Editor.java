@@ -26,10 +26,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import eclox.data.NodeEvent;
-import eclox.data.NodeListener;
 import eclox.doxyfile.Factory;
 import eclox.doxyfile.Saver;
+import eclox.doxyfile.node.NodeEvent;
+import eclox.doxyfile.node.NodeListener;
 import eclox.ui.editor.parts.Hint;
 import eclox.ui.editor.parts.Sections;
 import eclox.ui.editor.parts.Tags;
@@ -66,7 +66,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	/**
 	 * The Doxygen settings to edit.
 	 */
-	private eclox.data.Root m_settings;
+	private eclox.doxyfile.node.Root m_settings;
 	
 	/*
 	 * IAdapter interface implementation.

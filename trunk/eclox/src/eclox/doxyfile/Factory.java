@@ -51,13 +51,13 @@ public class Factory {
 	 * 
 	 * @author gbrocker
 	 */
-	public eclox.data.Root createSettings() throws SettingsCreationError {
-		eclox.data.Root		settings;
+	public eclox.doxyfile.node.Root createSettings() throws SettingsCreationError {
+		eclox.doxyfile.node.Root		settings;
 		String				nextItemText;
-		eclox.data.Group	curParent;
-		eclox.data.Comment	curComment;
+		eclox.doxyfile.node.Group	curParent;
+		eclox.doxyfile.node.Comment	curComment;
 		
-		settings = new eclox.data.Root(); 
+		settings = new eclox.doxyfile.node.Root(); 
 		curParent = settings;
 		curComment = null;
 		
@@ -65,20 +65,20 @@ public class Factory {
 			String	head = nextItemText.substring( 0, 2 );
 						
 			if( head.equals( "# " ) ) {
-				eclox.data.Comment	comment = new eclox.data.Comment( nextItemText );
+				eclox.doxyfile.node.Comment	comment = new eclox.doxyfile.node.Comment( nextItemText );
 				
 				curComment = comment; 
 				curParent.addChild( comment );
 			}
 			else if( head.equals( "#-" ) ) {
-				eclox.data.Section	section = new eclox.data.Section( nextItemText );
+				eclox.doxyfile.node.Section	section = new eclox.doxyfile.node.Section( nextItemText );
 				 
 				settings.addChild( section );
 				curParent = section;
 				curComment = null;
 			}
 			else {
-				curParent.addChild( new eclox.data.Tag( nextItemText, curComment ) );
+				curParent.addChild( new eclox.doxyfile.node.Tag( nextItemText, curComment ) );
 				curComment = null;
 			}
 		}

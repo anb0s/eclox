@@ -68,7 +68,7 @@ public class Boolean implements Field {
 	/**
 	 * The value to edit.
 	 */
-	private eclox.data.value.Boolean m_value;
+	private eclox.doxyfile.node.value.Boolean m_value;
 	
 	/**
 	 * Tell the field to attach to the specified tag. This method is called only once, just after
@@ -76,8 +76,8 @@ public class Boolean implements Field {
 	 * 
 	 * @param	tag	The tag to attach to.
 	 */
-	public void attachTo( eclox.data.Tag tag ) {
-		m_value = (eclox.data.value.Boolean) tag.getValue();
+	public void attachTo( eclox.doxyfile.node.Tag tag ) {
+		m_value = (eclox.doxyfile.node.value.Boolean) tag.getValue();
 	}
 	
 	/**

@@ -43,13 +43,13 @@ public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 				 
 		// Load images for the items classes.
 		m_images.put(
-			eclox.data.Section.class,
+			eclox.doxyfile.node.Section.class,
 			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OBJ_FOLDER ) );
 		m_images.put(
-			eclox.data.Comment.class,
+			eclox.doxyfile.node.Comment.class,
 			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OBJS_INFO_TSK ) );
 		m_images.put(
-			eclox.data.Tag.class,
+			eclox.doxyfile.node.Tag.class,
 			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OPEN_MARKER  ) );
 	}
 	
@@ -74,18 +74,18 @@ public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 	public String getText( Object element ) {
 		String	text = null;
 		
-		if( element instanceof eclox.data.Section ) {
-			eclox.data.Section	section = (eclox.data.Section) element;
+		if( element instanceof eclox.doxyfile.node.Section ) {
+			eclox.doxyfile.node.Section	section = (eclox.doxyfile.node.Section) element;
 				
 			text = section.getName();
 		}
-		else if( element instanceof eclox.data.Tag ) {
-			eclox.data.Tag	tag = (eclox.data.Tag) element;
+		else if( element instanceof eclox.doxyfile.node.Tag ) {
+			eclox.doxyfile.node.Tag	tag = (eclox.doxyfile.node.Tag) element;
 			
 			text = tag.getName();
 		}
-		else if( element instanceof eclox.data.Comment ) {
-			eclox.data.Comment	comment = (eclox.data.Comment) element;
+		else if( element instanceof eclox.doxyfile.node.Comment ) {
+			eclox.doxyfile.node.Comment	comment = (eclox.doxyfile.node.Comment) element;
 			
 			text = comment.getText();
 		}

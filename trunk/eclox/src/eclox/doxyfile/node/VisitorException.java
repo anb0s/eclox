@@ -1,5 +1,5 @@
 /*
-	eclox
+	eclox : Doxygen plugin for Eclipse.
 	Copyright (C) 2003 Guillaume Brocker
 
 	This file is part of eclox.
@@ -19,18 +19,31 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.data.value;
+
+package eclox.doxyfile.node;
+
 
 /**
- * Define the abstract value listener interface.
+ * The visitor generic exception.
  * 
  * @author gbrocker
  */
-public interface Listener extends java.util.EventListener {
+public class VisitorException extends Exception {
 	/**
-	 * Tell the listener that a value changed..
+	 * Constructor.
 	 * 
-	 * event	The event to process.
+	 * @param message	The exception message.
+	 */public VisitorException( String message ) {
+		super( message );
+	}
+	
+	/**
+	 * Constructor.
+	 * 
+	 * @param message	The exception message.
+	 * @param reason	The exception eason.
 	 */
-	public void valueChanged( eclox.data.value.Event event );
+	public VisitorException( String message, Throwable reason ) {
+		super( message, reason );
+	}
 }

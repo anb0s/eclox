@@ -52,14 +52,14 @@ public class Text implements Field {
 	/**
 	 * The value being edited.
 	 */
-	private eclox.data.value.Abstract m_value;
+	private eclox.doxyfile.node.value.Abstract m_value;
 	
 	/**
 	 * Attach the field to the specified tag.
 	 * 
 	 * @param	tag	The tag to attach to and thus to edit.
 	 */
-	public void attachTo( eclox.data.Tag tag ) {
+	public void attachTo( eclox.doxyfile.node.Tag tag ) {
 		m_value = tag.getValue();
 	}
 	

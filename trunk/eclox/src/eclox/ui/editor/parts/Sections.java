@@ -104,14 +104,14 @@ public class Sections extends Part {
 	 * 
 	 * @param root	The node containing all sections.
 	 */
-	public void populate( eclox.data.Root root ) {
+	public void populate( eclox.doxyfile.node.Root root ) {
 		java.util.Iterator	itemPointer = root.getChildren().iterator();
 		
 		while( itemPointer.hasNext() ) {
-			eclox.data.Node	item = (eclox.data.Node) itemPointer.next();
+			eclox.doxyfile.node.Node	item = (eclox.doxyfile.node.Node) itemPointer.next();
 			
-			if( item.getClass().equals( eclox.data.Section.class ) ) {
-				eclox.data.Section	section = (eclox.data.Section) item;
+			if( item.getClass().equals( eclox.doxyfile.node.Section.class ) ) {
+				eclox.doxyfile.node.Section	section = (eclox.doxyfile.node.Section) item;
 				
 				m_sections.add( section );
 				m_list.add( section.getName() );

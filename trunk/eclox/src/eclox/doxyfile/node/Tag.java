@@ -19,7 +19,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.data;
+package eclox.doxyfile.node;
 
 /**
  * Implements a doxygen setting tag.
@@ -31,13 +31,13 @@ public class Tag extends Leaf {
 	/**
 	 * Implement a value listener.
 	 */
-	private class ValueListener implements eclox.data.value.Listener {
+	private class ValueListener implements eclox.doxyfile.node.value.Listener {
 		/**
 		 * Process a value change event.
 		 * 
 		 * @param	event	The event to process.
 		 */	
-		public void valueChanged( eclox.data.value.Event event ) {
+		public void valueChanged( eclox.doxyfile.node.value.Event event ) {
 			setDirtyInternal();
 		}
 	}
@@ -45,7 +45,7 @@ public class Tag extends Leaf {
 	/**
 	 * The value class provider.
 	 */
-	private static eclox.data.value.ClassProvider m_valueClassProvider = new eclox.data.value.ClassProvider();
+	private static eclox.doxyfile.node.value.ClassProvider m_valueClassProvider = new eclox.doxyfile.node.value.ClassProvider();
 	
 	/**
 	 * The maximum '=' character offset over all tag lines.
@@ -67,7 +67,7 @@ public class Tag extends Leaf {
 	/**
 	 * The tag value.
 	 */
-	private eclox.data.value.Abstract m_value;
+	private eclox.doxyfile.node.value.Abstract m_value;
 	
 	/**
 	 * Constructor.
@@ -117,7 +117,7 @@ public class Tag extends Leaf {
 	 * 
 	 * @return	A string containing the tag value.
 	 */
-	public eclox.data.value.Abstract getValue() {
+	public eclox.doxyfile.node.value.Abstract getValue() {
 		return m_value;
 	}
 	
@@ -150,13 +150,13 @@ public class Tag extends Leaf {
 	 *  
 	 * @return	An value instance.
 	 */
-	private static eclox.data.value.Abstract createValueInstance( String name, String value ) {
-		eclox.data.value.Abstract	result;
+	private static eclox.doxyfile.node.value.Abstract createValueInstance( String name, String value ) {
+		eclox.doxyfile.node.value.Abstract	result;
 	
 		try {
 			Class	valueClass = m_valueClassProvider.getValueClass( name );
 		
-			result = (eclox.data.value.Abstract) valueClass.newInstance();
+			result = (eclox.doxyfile.node.value.Abstract) valueClass.newInstance();
 			result.fromString( value );	
 		}
 		catch( java.lang.Exception exception ) {

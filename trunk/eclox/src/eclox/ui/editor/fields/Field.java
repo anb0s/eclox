@@ -36,7 +36,7 @@ public interface Field {
 	 * 
 	 * @param	tag	The tag to attach to.
 	 */
-	public void attachTo( eclox.data.Tag tag );
+	public void attachTo( eclox.doxyfile.node.Tag tag );
 	
 	/**
 	 * Detach the field from the value.

@@ -32,14 +32,14 @@ public class Outliner extends org.eclipse.ui.views.contentoutline.ContentOutline
 	/**
 	 * The setting to outline.
 	 */
-	private eclox.data.Root m_settings;
+	private eclox.doxyfile.node.Root m_settings;
 	
 	/**
 	 * Constructor.
 	 * 
 	 * @param	settings	The settings to outline. 
 	 */
-	public Outliner( eclox.data.Root settings ) {
+	public Outliner( eclox.doxyfile.node.Root settings ) {
 		m_settings = settings;
 	}
 	
