@@ -46,7 +46,7 @@ public class BuildHistory extends ListenerManager {
 	 *
 	 * @author gbrocker
 	 */
-	class PreferenceChangedListener implements IPropertyChangeListener {
+	private class PreferenceChangedListener implements IPropertyChangeListener {
 		/**
 		 * Notification that a property has changed.
 		 * 
