@@ -21,7 +21,10 @@
 
 package eclox.doxyfile.node;
 
+import org.eclipse.ui.views.properties.IPropertySource;
+
 import eclox.doxyfile.Doxyfile;
+import eclox.doxyfile.adapter.SectionPropertySource;
 import eclox.doxyfile.node.util.*;
 
 /**
@@ -73,6 +76,18 @@ public class Section extends Group {
 	 */	
 	public void accept( eclox.doxyfile.node.Visitor visitor ) throws VisitorException {
 		visitor.process( this );
+	}
+	
+	/**
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		Object	result = null;
+		
+		if(adapter.equals(IPropertySource.class) == true) {
+			result = new SectionPropertySource(this);
+		}
+		return result;
 	}
 	
 	/**

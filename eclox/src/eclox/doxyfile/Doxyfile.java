@@ -74,6 +74,13 @@ public class Doxyfile extends Group {
 	}
 	
 	/**
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		return null;
+	}
+	
+	/**
 	 * Retrieve the resource file corresponding to the doxyfile.
 	 * 
 	 * @return	The resource file.
