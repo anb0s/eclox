@@ -45,10 +45,10 @@ public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 				 
 		// Load images for the items classes.
 		m_images.put(
-			eclox.doxyfile.node.Section.class,
+			eclox.resource.content.Section.class,
 			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OBJ_FOLDER ) );
 		m_images.put(
-			eclox.doxyfile.node.Tag.class,
+			eclox.resource.content.Tag.class,
 			sharedImages.getImage( IDE.SharedImages.IMG_OPEN_MARKER) );
 	}
 	
@@ -73,13 +73,13 @@ public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 	public String getText( Object element ) {
 		String	text = null;
 		
-		if( element instanceof eclox.doxyfile.node.Section ) {
-			eclox.doxyfile.node.Section	section = (eclox.doxyfile.node.Section) element;
+		if( element instanceof eclox.resource.content.Section ) {
+			eclox.resource.content.Section	section = (eclox.resource.content.Section) element;
 				
 			text = section.getName();
 		}
-		else if( element instanceof eclox.doxyfile.node.Tag ) {
-			eclox.doxyfile.node.Tag	tag = (eclox.doxyfile.node.Tag) element;
+		else if( element instanceof eclox.resource.content.Tag ) {
+			eclox.resource.content.Tag	tag = (eclox.resource.content.Tag) element;
 			
 			text = tag.getName();
 		}

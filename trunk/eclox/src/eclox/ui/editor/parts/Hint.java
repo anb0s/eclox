@@ -24,7 +24,7 @@ package eclox.ui.editor.parts;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
-import eclox.doxyfile.node.Tag;
+import eclox.resource.content.Tag;
 
 /**
  * Implement the tag detail editor part.

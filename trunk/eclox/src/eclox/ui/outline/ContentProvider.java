@@ -25,7 +25,7 @@ package eclox.ui.outline;
 
 import java.util.Collection;
 
-import eclox.doxyfile.node.Node;
+import eclox.resource.content.Node;
 
 /**
  * Implements the content provider for the outline tree view.
@@ -56,10 +56,10 @@ public class ContentProvider implements org.eclipse.jface.viewers.ITreeContentPr
 		boolean	result;
 		
 		try {
-			eclox.doxyfile.node.Node node;
+			eclox.resource.content.Node node;
 			Collection children;
 			
-			node = (eclox.doxyfile.node.Node) object;
+			node = (eclox.resource.content.Node) object;
 			children = node.getChildren(); 
 			result = children != null && children.size() != 0;
 		}
