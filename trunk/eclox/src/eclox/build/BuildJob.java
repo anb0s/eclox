@@ -167,12 +167,11 @@ public class BuildJob extends Job {
 	 */
 	protected IStatus run(IProgressMonitor monitor) {
 		IStatus	result = null;
-		
-		monitor.beginTask(this.doxyfile.getFullPath().toString(), 100);
-		BuildHistory.getDefault().log(this.doxyfile);
-		try {
+		try {				
 			Process buildProcess = Doxygen.build(this.doxyfile);
-			
+
+			monitor.beginTask(this.doxyfile.getFullPath().toString(), 100);
+			BuildHistory.getDefault().log(this.doxyfile);
 			for(;;) {
 				this.watchBuildProcessOutput(buildProcess.getInputStream());
 				this.watchBuildProcessOutput(buildProcess.getErrorStream());

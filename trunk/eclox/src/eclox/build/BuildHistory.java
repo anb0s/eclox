@@ -28,6 +28,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
+import eclox.resource.DoxyfileEvent;
+import eclox.resource.DoxyfileListener;
+import eclox.resource.DoxyfileListenerManager;
 import eclox.ui.Plugin;
 import eclox.ui.plugin.Preferences;
 import eclox.util.ListenerManager;
@@ -63,7 +66,19 @@ public class BuildHistory extends ListenerManager {
 			}	
 		}
 	} 
-
+	
+	/**
+	 * Implements a listeners for doxyfile removal.
+	 */
+	private class DoxyfileRemovedListener implements DoxyfileListener {
+		/**
+		 * @see eclox.resource.DoxyfileListener#doxyfileRemoved(eclox.resource.DoxyfileEvent)
+		 */
+		public void doxyfileRemoved(DoxyfileEvent event) {
+			files.remove(event.doxyfile);
+		}
+	}
+	
 	/**
 	 * The current build history.
 	 */
@@ -92,6 +107,7 @@ public class BuildHistory extends ListenerManager {
 	public BuildHistory() {
 		super(BuildHistoryListener.class);
 		Plugin.getDefault().getPreferenceStore().addPropertyChangeListener(new PreferenceChangedListener());
+		DoxyfileListenerManager.getDefault().addDoxyfileListener(new DoxyfileRemovedListener());
 	}
 	
 	/**
@@ -150,6 +166,15 @@ public class BuildHistory extends ListenerManager {
 	 */
 	public IFile[] toArray() {
 		return (IFile[]) this.files.toArray(new IFile[0]);
+	}
+	
+	/**
+	 * Remove the specified doxyfile from the history.
+	 *
+	 * @parapm	doxyfile	the doyfile to remove
+	 */
+	public void unlog(IFile doxyfile) {
+		this.files.remove(doxyfile);
 	}
 	
 	/**
