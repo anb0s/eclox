@@ -34,6 +34,7 @@ import org.eclipse.swt.events.MouseEvent;
 
 import eclox.ui.editor.fields.Field;
 import eclox.ui.editor.fields.ClassProvider;
+import eclox.ui.editor.fields.FieldListener;
 
 /**
  * Implement the tag management editor part.
@@ -184,7 +185,7 @@ public final class Tags extends Part {
 	 * 
 	 * @author gbrocker
 	 */
-	private class FieldManager implements MouseListener, FocusListener {
+	private class FieldManager implements MouseListener, FocusListener, FieldListener {
 		/**
 		 * The current table editor that manage the current edition field.
 		 */
@@ -194,6 +195,24 @@ public final class Tags extends Part {
 		 * The current field.
 		 */
 		private Field m_field;
+		
+		/**
+		 * Notify the listener that the field edition has been canceled.
+		 * 
+		 * @param	event	The event to process.
+		 */
+		public void fieldEditionCanceled( eclox.ui.editor.fields.FieldEvent event ) {
+			removeCurrentField();
+		}
+		
+		/**
+		 * Notify the listener that the field edition has been completed.
+		 * 
+		 * @param	event	The event to process.
+		 */
+		public void fieldEditionCompleted( eclox.ui.editor.fields.FieldEvent event ) {
+			removeCurrentField();
+		}
 		
 		/**
 		 * Process a focus gained event on the current field control.
@@ -209,7 +228,7 @@ public final class Tags extends Part {
 		 * @param	event	The event to process.
 		 */
 		public void focusLost( FocusEvent event ) {
-			removeCurrentField();			
+			m_field.completEdition();			
 		}
 		
 		/**
@@ -263,11 +282,10 @@ public final class Tags extends Part {
 		/**
 		 * Remove the current field.
 		 */
-		public void removeCurrentField() {
+		private void removeCurrentField() {
 			if( m_field != null ) {
 				m_tableEditor.getEditor().dispose();
 				m_tableEditor.dispose();
-				m_field.detach();
 				m_tableEditor = null;
 				m_field = null;				
 			}						
@@ -286,7 +304,8 @@ public final class Tags extends Part {
 				tag = (eclox.doxyfile.node.Tag) selectedItems[0].getData();
 				// Create the field.
 				m_field = createFieldInstance( tag );
-				m_field.attachTo( tag );
+				m_field.addFieldListener(this);
+				m_field.editTag( tag );
 				fieldControl = m_field.createControl(m_table);
 				fieldControl.setFocus();
 				fieldControl.addFocusListener( this );
