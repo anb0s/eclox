@@ -143,7 +143,7 @@ public class Deserializer {
 				}
 			}
 			
-			Doxyfile	doxyfile = new Doxyfile(this.file);
+			Doxyfile	doxyfile = new Doxyfile();
 			
 			doxyfile.setVersion(version);
 			doxyfile.setDescription(description);

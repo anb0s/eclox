@@ -21,8 +21,6 @@
 
 package eclox.doxyfile;
 
-import org.eclipse.core.resources.IFile;
-
 import eclox.doxyfile.node.Description;
 import eclox.doxyfile.node.Group;
 import eclox.doxyfile.node.Visitor;
@@ -41,18 +39,6 @@ public class Doxyfile extends Group {
 	private Description version;
 	
 	/**
-	 * The resource file corresponding to the doxyfile.
-	 */
-	private IFile file;
-	
-	/**
-	 * Constructor.
-	 */
-	public Doxyfile(IFile file) {
-		this.file = file;
-	}
-	
-	/**
 	 * Implement the visitor acceptence.
 	 * 
 	 * @param	visitor	The visitor to accept.
@@ -66,15 +52,6 @@ public class Doxyfile extends Group {
 	 */
 	public Object getAdapter(Class adapter) {
 		return null;
-	}
-	
-	/**
-	 * Retrieve the resource file corresponding to the doxyfile.
-	 * 
-	 * @return	The resource file.
-	 */
-	public IFile getFile() {
-		return this.file;
 	}
 	
 	/**
