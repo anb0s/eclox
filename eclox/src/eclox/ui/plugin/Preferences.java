@@ -1,6 +1,6 @@
 /*
 	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003 Guillaume Brocker
+	Copyright (C) 2003-2004 Guillaume Brocker
 
 	This file is part of eclox.
 
@@ -19,7 +19,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox;
+package eclox.ui.plugin;
 
 import org.eclipse.jface.preference.*;
 

@@ -1,6 +1,6 @@
 /*
 	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003 Guillaume Brocker
+	Copyright (C) 2003-2004 Guillaume Brocker
 
 	This file is part of eclox.
 
@@ -44,6 +44,11 @@ public class Icons {
 	static private final String repositoryPath = "icons/";
 	
 	/**
+	 * The big question mark.
+	 */
+	public static final String QUESTION_BIG = "question-big.gif";
+
+	/**
 	 * The stop icon key.
 	 */
 	static public final String STOP = "stop.gif";
@@ -57,6 +62,7 @@ public class Icons {
 		// Initialize the icon names to create.
 		Collection iconNames = new ArrayList();
 		
+		iconNames.add(Icons.QUESTION_BIG);
 		iconNames.add(Icons.STOP);
 		
 		// Create all these icons.

@@ -37,7 +37,7 @@
       <editor
             name="eclox.ui.editor.Editor"
             default="false"
-            icon="icon_small.gif"
+            icon="icons/icon_small.gif"
             extensions="dox, cfg, doxyfile"
             filenames="doxyfile"
             class="eclox.ui.editor.Editor"
@@ -48,7 +48,7 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             name="Doxygen Configuration"
-            icon="icon_small.gif"
+            icon="icons/icon_small.gif"
             class="eclox.ui.wizard.NewDoxyfileWizard"
             id="eclox.ui.DoxyfileCreationWizard">
       </wizard>
