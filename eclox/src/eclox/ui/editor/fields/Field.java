@@ -24,24 +24,86 @@ package eclox.ui.editor.fields;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Composite;
 
+import eclox.util.ListenerManager;
+import eclox.doxyfile.node.Tag;
+
 /**
  * The abstract field class.
  * 
  * @author gbrocker
  */
-public interface Field {
+public abstract class Field extends ListenerManager {
+	/**
+	 * The tag that is being edited.
+	 */
+	Tag m_tag = null;
+	
+	/**
+	 * The tag value backup.
+	 */
+	String m_tagValueBackup;
+	
+	/**
+	 * Constructor.
+	 */
+	Field() {
+		super(FieldListener.class);
+	}
+	
+	/**
+	 * Add the specified listener.
+	 * 
+	 * @param	listener	The listener to add.
+	 */
+	public void addFieldListener( FieldListener listener ) {
+		super.addListener( listener );
+	}
+
+	/**
+	 * Remove the specified listener.
+	 * 
+	 * @param	listener	The listener to remove.
+	 */
+	public void removeFieldListener( FieldListener listener ) {
+		super.removeListener( listener );
+	}
+	
+	/**
+	 * Make the field to complet its edition.
+	 */
+	public void completEdition() {
+		notifyFieldEditionCompleted();
+	}
+	
+	/**
+	 * Make the field cancel the current edition.
+	 *
+	 */
+	public void cancelEdition() {
+		m_tag.getValue().fromString(m_tagValueBackup);
+		m_tag.setClean();
+		notifyFieldEditionCanceled();
+	}
+	
 	/**
 	 * Tell the field to attach to the specified tag. This method is called only once, just after
 	 * the field creation.
 	 * 
 	 * @param	tag	The tag to attach to.
 	 */
-	public void attachTo( eclox.doxyfile.node.Tag tag );
+	public void editTag( Tag tag ) {
+		m_tag = tag;
+		m_tagValueBackup = m_tag.getValue().toString();
+	}
 	
 	/**
-	 * Detach the field from the value.
+	 * Retrieve the tag being edited.
+	 * 
+	 * @return	The tag being edited.
 	 */
-	public void detach();
+	public Tag getEditedTag() {
+		return m_tag;
+	}
 	
 	/**
 	 * Create the control of the field.
@@ -50,5 +112,23 @@ public interface Field {
 	 * 
 	 * @return	The control of the field.
 	 */
-	public Control createControl( Composite parent );
+	public abstract Control createControl( Composite parent );
+	
+	/**
+	 * Notify all listeners that the edition has been canceled.
+	 * 
+	 * @todo	Handle exceptions.
+	 */
+	private void notifyFieldEditionCanceled() {
+		super.fireEvent( new FieldEvent( this ), "fieldEditionCanceled" );	 	
+	}
+	
+	/**
+	 * Notify all listeners that the edition has been completed.
+	 * 
+	 * @todo	Handle exceptions.
+	 */
+	private void notifyFieldEditionCompleted() {
+		super.fireEvent( new FieldEvent( this ), "fieldEditionCompleted" );	 	
+	}
 }

@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @author gbrocker
  */
-public class Boolean implements Field {
+public class Boolean extends Field {
 	/**
 	 * Implement a selection listener responsible for the update of the attached
 	 * value.
