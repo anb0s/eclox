@@ -1,5 +1,6 @@
 Todos:
 
+  o Update email addresses to use gna dot org.
   o Remove a missing files from the history when building.
   o Creation of property page for doxyfiles.
   o Creation of an incremental builder that checks for compatibility with the current
