@@ -55,11 +55,9 @@ public class Loader {
 		eclox.doxyfile.node.Doxyfile	doxyfile;
 		String							nextItemText;
 		eclox.doxyfile.node.Group		curParent;
-		eclox.doxyfile.node.Comment		curComment;
 		
 		doxyfile = new eclox.doxyfile.node.Doxyfile(); 
 		curParent = doxyfile;
-		curComment = null;
 		
 		for( nextItemText = getNextItemText(); nextItemText != null; nextItemText = getNextItemText() ) {
 			String	head = nextItemText.substring( 0, 2 );
@@ -67,7 +65,6 @@ public class Loader {
 			if( head.equals( "# " ) ) {
 				eclox.doxyfile.node.Comment	comment = new eclox.doxyfile.node.Comment( nextItemText );
 				
-				curComment = comment; 
 				curParent.addChild( comment );
 			}
 			else if( head.equals( "#-" ) ) {
@@ -75,11 +72,9 @@ public class Loader {
 				 
 				doxyfile.addChild( section );
 				curParent = section;
-				curComment = null;
 			}
 			else {
-				curParent.addChild( new eclox.doxyfile.node.Tag( nextItemText, curComment ) );
-				curComment = null;
+				curParent.addChild( new eclox.doxyfile.node.Tag( nextItemText ) );
 			}
 		}
 		

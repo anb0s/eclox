@@ -60,11 +60,6 @@ public class Tag extends Leaf {
 	private String m_name;
 	
 	/**
-	 * The tag comment.
-	 */
-	private Comment m_comment;
-	
-	/**
 	 * The tag value.
 	 */
 	private eclox.doxyfile.node.value.Abstract m_value;
@@ -73,13 +68,11 @@ public class Tag extends Leaf {
 	 * Constructor.
 	 * 
 	 * @param	text	The text of the tag.
-	 * @param	comment	The tag comment. Can be null if none.
 	 */
-	public Tag( final String text, Comment comment ){
+	public Tag( final String text ){
 		String	tokens[] = text.split( "[\t =]+" );
 		
 		m_name = tokens[0];
-		m_comment = comment;
 		m_value = createValueInstance( m_name, tokens.length == 2 ? tokens[1] : "" );
 		m_value.addListener( new ValueListener() );
 		updateEqualOffset( text );	
@@ -92,15 +85,6 @@ public class Tag extends Leaf {
 	 */
 	public void accept( Visitor visitor ) throws VisitorException {
 		visitor.process( this );
-	}
-
-	/**
-	 * Retrieve the tag associated comment.
-	 * 
-	 * @return	The comment that is attached to the tag.
-	 */
-	public Comment getComment() {
-		return m_comment;
 	}
 	
 	/**
