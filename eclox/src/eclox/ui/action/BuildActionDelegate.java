@@ -19,14 +19,24 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.ui.actions;
+package eclox.ui.action;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
+import org.eclipse.ui.PlatformUI;
+
+import eclox.build.Builder;
+import eclox.ui.BuildLogView;
+import eclox.ui.Plugin;
+import eclox.ui.dialog.DoxyfileSelecterDialog;
 
 /**
  * Implement the action handling for the build action.
@@ -34,7 +44,11 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
  * @author gbrocker
  */
 public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
-
+	/**
+	 * The doxyfile history.
+	 */
+	List doxyfileHistory = new LinkedList();
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
 	 */
@@ -48,25 +62,37 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	public void dispose() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+	/**
+	 * Initialization of the action delegate.
 	 */
 	public void init(IWorkbenchWindow window) {
-		// TODO Auto-generated method stub
-
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	/**
+	 * This method is called by the proxy action when the action has been triggered.
+	 * 
+	 * @param	action	the action proxy that handles the presentation portion of the action.
 	 */
 	public void run(IAction action) {
-		// TODO Auto-generated method stub
-
+		try {
+			DoxyfileSelecterDialog	doxyfileSelecter = new DoxyfileSelecterDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+			IFile					doxyfile = null;
+			
+			doxyfileSelecter.open();
+			doxyfile = doxyfileSelecter.getDoxyfile();
+			if(doxyfile != null) {
+				BuildLogView.show();
+				Builder.getDefault().start(doxyfile);
+			}
+		}
+		
+		catch(Throwable throwable) {
+			Plugin.getDefault().showError(throwable);
+		}
 	}
 
 	/**
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
-
 }

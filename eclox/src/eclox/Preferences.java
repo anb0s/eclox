@@ -27,17 +27,19 @@ import org.eclipse.jface.preference.*;
  * Defines all preference names.
  * 
  * @author gbrocker
+ * 
+ * TODO move to pakage eclox.ui.plugin
  */
 public final class Preferences {
 	/**
 	 * Specifies the doxygen compiler path constant name.
 	 */
-	public static String COMPILER_PATH = new String( "CompilerPath" );
+	public static final String COMPILER_PATH = "CompilerPath";
 	
 	/**
 	 * Specifies the auto save document constant name.
 	 */
-	public static String AUTO_SAVE = new String( "AutoSave" );
+	public static final String AUTO_SAVE = "AutoSave";
 	
 	/**
 	 * Initialize default preference values.

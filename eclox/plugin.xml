@@ -2,7 +2,7 @@
 <plugin
    id="eclox"
    name="Doxygen in eclipse"
-   version="0.1.3"
+   version="0.2.0"
    provider-name=""
    class="eclox.ui.Plugin">
 
@@ -16,20 +16,6 @@
 
 
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            nameFilter="*Doxyfile"
-            id="doxe.PopupMenu">
-         <action
-               label="Build documentation"
-               icon="icon_small.gif"
-               class="eclox.ui.PopupMenuDelegate"
-               id="eclox.ui.PopupMenuDelegate">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             name="Doxygen"
@@ -41,9 +27,9 @@
          point="org.eclipse.ui.views">
       <view
             name="Doxygen Build Log"
-            icon="icon_small.gif"
+            icon="icons/icon_small.gif"
             class="eclox.ui.BuildLogView"
-            id="eclox.ui.BuildLogView">
+            id="eclox.ui.views.buildLog">
       </view>
    </extension>
    <extension
@@ -54,7 +40,6 @@
             icon="icon_small.gif"
             extensions="dox, cfg, doxyfile"
             filenames="doxyfile"
-            contributorClass="eclox.ui.editor.ActionBarContributor"
             class="eclox.ui.editor.Editor"
             id="eclox.ui.editor.Editor">
       </editor>
@@ -74,24 +59,37 @@
             label="Doxygen"
             description="Doxygen Action Set"
             visible="true"
-            id="eclox.DefaultActionSet">
-         <action
-               label="Build"
-               pulldown="true"
-               style="pulldown"
-               icon="icons/icon_small.gif"
-               class="eclox.ui.actions.BuildActionDelegate"
-               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
-               id="eclox.action.build">
-         </action>
+            id="eclox.actionSets.default">
          <menu
                label="Run"
                path="additions"
                id="org.eclipse.ui.run">
             <separator
-                  name="DoxygenGroup">
+                  name="doxygen">
             </separator>
          </menu>
+         <menu
+               label="Doxygen"
+               path="org.eclipse.ui.run/doxygen"
+               id="eclox.ui.menu.doxygen">
+         </menu>
+         <action
+               label="Stop"
+               icon="icons/stop.gif"
+               retarget="true"
+               menubarPath="org.eclipse.ui.run/eclox.ui.menu.doxygen/additions"
+               id="eclox.ui.action.stop">
+         </action>
+         <action
+               label="Build"
+               pulldown="false"
+               style="push"
+               icon="icons/icon_small.gif"
+               class="eclox.ui.action.BuildActionDelegate"
+               menubarPath="org.eclipse.ui.run/eclox.ui.menu.doxygen/additions"
+               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
+               id="eclox.ui.action.build">
+         </action>
       </actionSet>
    </extension>
 

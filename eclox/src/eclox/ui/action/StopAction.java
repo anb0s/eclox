@@ -19,35 +19,35 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.ui;
+package eclox.ui.action;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.resource.ImageDescriptor;
 
 import eclox.build.Builder;
+import eclox.ui.Plugin;
+import eclox.ui.plugin.Icons;
 
 /**
- * Implement an action that stop the buld under progress.
+ * Implement a stop buld action.
  * 
  * @author gbrocker
  */
-public class StopBuildAction extends Action {
+public class StopAction extends Action {
 	/**
 	 * Constructor.
 	 */
-	public StopBuildAction() {
-		super( "Stop build", ImageDescriptor.createFromFile( StopBuildAction.class, "stop.gif" ) );
-		
-		setToolTipText( "Stop Current Build" );
-		setEnabled( false );
+	public StopAction() {
+		super(
+			"Stop",
+			Plugin.getDefault().getImageRegistry().getDescriptor(Icons.STOP)
+		);
+		setEnabled(Builder.getDefault().isRunning());
 	}
 	
 	/**
-	 * Implements the action job.
+	 * Run the action.
 	 */
 	public void run() {
-		Builder builder = Builder.getDefault();
-		
-		builder.stop();
+		Builder.getDefault().stop();
 	}
 }
