@@ -22,6 +22,8 @@
 
 package eclox.ui.outline;
 
+import org.eclipse.ui.ide.IDE;
+
 
 /**
  * Implements the label provider for doxygen settings elements.
@@ -50,7 +52,7 @@ public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OBJS_INFO_TSK ) );
 		m_images.put(
 			eclox.doxyfile.node.Tag.class,
-			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OPEN_MARKER  ) );
+			sharedImages.getImage( IDE.SharedImages.IMG_OPEN_MARKER) );
 	}
 	
 	/**

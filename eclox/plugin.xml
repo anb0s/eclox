@@ -12,6 +12,8 @@
    <requires>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.views"/>
    </requires>
 
 
@@ -35,10 +37,10 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="eclox.ui.editor.Editor"
             default="false"
-            icon="icons/file.gif"
+            name="eclox.ui.editor.Editor"
             extensions="dox, cfg, doxyfile"
+            icon="icons/file.gif"
             filenames="doxyfile"
             class="eclox.ui.editor.Editor"
             id="eclox.ui.editor.Editor">
@@ -76,15 +78,15 @@
          <action
                label="Stop"
                icon="icons/stop.gif"
-               retarget="true"
                menubarPath="org.eclipse.ui.run/eclox.ui.menu.doxygen/additions"
+               retarget="true"
                id="eclox.ui.action.stop">
          </action>
          <action
                label="Build"
                pulldown="true"
-               style="pulldown"
                icon="icons/build.gif"
+               style="pulldown"
                class="eclox.ui.action.BuildActionDelegate"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
                id="eclox.ui.action.build">

@@ -143,8 +143,8 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		
 		layout = new org.eclipse.swt.layout.GridLayout();
 		layout.numColumns = 2;
-		layout.marginHeight = -1;
-		layout.marginWidth = -1;
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
 		layout.horizontalSpacing = 1;
 		layout.verticalSpacing = 1;
 		parent.setLayout( layout );

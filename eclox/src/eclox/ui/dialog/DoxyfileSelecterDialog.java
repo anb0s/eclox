@@ -48,6 +48,7 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
+import org.eclipse.ui.ide.IDE;
 
 import eclox.doxyfile.Doxyfile;
 import eclox.ui.Plugin;
@@ -236,7 +237,7 @@ public class DoxyfileSelecterDialog {
 			String	imageName = null;
 			
 			if(element instanceof IProject) {
-				imageName = ISharedImages.IMG_OBJ_PROJECT;
+				imageName = IDE.SharedImages.IMG_OBJ_PROJECT;
 			}
 			else if(element instanceof IFile) {
 				imageName = ISharedImages.IMG_OBJ_FILE;
