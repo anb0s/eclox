@@ -26,10 +26,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+import eclox.core.Services;
 import eclox.resource.Doxyfile;
 import eclox.resource.content.NodeEvent;
 import eclox.resource.content.NodeListener;
-import eclox.ui.Plugin;
 import eclox.ui.editor.parts.Hint;
 import eclox.ui.editor.parts.Sections;
 import eclox.ui.editor.parts.Tags;
@@ -199,7 +199,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 			m_settings.setClean();
 		}
 		catch(Throwable throwable) {
-			Plugin.getDefault().showError(throwable);
+			Services.showError(throwable);
 		}
 	}
 	

@@ -29,8 +29,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
+import eclox.core.Services;
 import eclox.doxygen.Doxygen;
-import eclox.ui.Plugin;
 
 /**
  * Implement the new file wizard extension.
@@ -71,7 +71,7 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 
 			doxyfile = createFile( m_page.getContainerFullPath(), m_page.getFileName() );
 			if( doxyfile.exists() ) {
-				Plugin.getDefault().showError( "The resource " + doxyfile.getFullPath().toString() + " already exists !" );
+				Services.showError( "The resource " + doxyfile.getFullPath().toString() + " already exists !" );
 				result = false;	
 			}
 			else {
@@ -80,7 +80,7 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 			}	
 		}
 		catch( Throwable throwable ) {
-			Plugin.getDefault().showError( throwable );
+			Services.showError( throwable );
 			result = false;
 		}
 		

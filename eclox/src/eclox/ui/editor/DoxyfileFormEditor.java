@@ -29,6 +29,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
+import eclox.core.Services;
 import eclox.resource.Doxyfile;
 import eclox.resource.content.DoxyfileContent;
 import eclox.resource.content.Node;
@@ -36,7 +37,6 @@ import eclox.resource.content.Section;
 import eclox.resource.content.Tag;
 import eclox.resource.content.Visitor;
 import eclox.resource.content.VisitorException;
-import eclox.ui.Plugin;
 
 /**
  * Implements a doxyfile form based editor.
@@ -112,7 +112,7 @@ public class DoxyfileFormEditor extends FormEditor {
 			this.doxyfileContent.accept(new PageFactory(this));
 		}
 		catch(Throwable throwable) {
-			Plugin.getDefault().showError(throwable);
+			Services.showError(throwable);
 		}
 	}
 

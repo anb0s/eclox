@@ -28,9 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import eclox.build.BuildJob;
-import eclox.ui.Plugin;
-import eclox.ui.view.BuildLogView;
+import eclox.core.Services;
 
 /**
  * Implement a popup menu action delegate for contextual building.
@@ -51,12 +49,10 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 				IStructuredSelection	structuredSelection = (IStructuredSelection) this.selection;
 				IFile					doxyfile = (IFile) structuredSelection.getFirstElement();
 				
-				BuildLogView.show();
-				BuildJob.getDefault().setDoxyfile(doxyfile);
-				BuildJob.getDefault().schedule();
+				Services.buildDoxyfile( doxyfile );
 			}
 			catch(Throwable throwable) {
-				Plugin.getDefault().showError(throwable);
+				Services.showError(throwable);
 			}				
 		}
 	}

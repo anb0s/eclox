@@ -22,9 +22,6 @@
 package eclox.ui;
 
 import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -50,36 +47,6 @@ public class Plugin extends AbstractUIPlugin {
 		super();
 		if( m_defaultInstance == null ) {
 			m_defaultInstance = this;
-		}
-	}
-	
-	/**
-	 * Show an error with the specified message.
-	 * 
-	 * @param message	A string containing the message to display.
-	 */
-	public void showError( String message ) {
-		Shell		shell = getWorkbench().getActiveWorkbenchWindow().getShell();
-		MessageBox	messageBox = new MessageBox( shell, SWT.ICON_ERROR | SWT.OK );
-		
-		messageBox.setText( "Eclox" );
-		messageBox.setMessage( message );
-		messageBox.open();		
-	}
-	
-	/**
-	 * Show an error message relative to the specified throwable object.
-	 * 
-	 * @param	throwable	The object for which an error message must be shown.
-	 */
-	public void showError(Throwable throwable) {
-		String	message = throwable.getMessage();
-		
-		if(message != null) {
-			showError(message);
-		}
-		else {
-			showError("Caught exception of class "+throwable.getClass().getName()+" with no messages.");
 		}
 	}
 	

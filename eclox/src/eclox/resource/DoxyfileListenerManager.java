@@ -30,7 +30,7 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
-import eclox.ui.Plugin;
+import eclox.core.Services;
 import eclox.util.ListenerManager;
 
 /**
@@ -54,7 +54,7 @@ public class DoxyfileListenerManager extends ListenerManager {
 				}
 			}
 			catch(Throwable throwable) {
-				Plugin.getDefault().showError(throwable);
+				Services.showError(throwable);
 			}
 		}
 	}

@@ -34,7 +34,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -42,10 +41,10 @@ import org.eclipse.ui.part.ViewPart;
 import eclox.build.BuildJob;
 import eclox.build.BuildOutputEvent;
 import eclox.build.BuildOutputListener;
+import eclox.core.Services;
 import eclox.resource.DoxyfileEvent;
 import eclox.resource.DoxyfileListener;
 import eclox.resource.DoxyfileListenerManager;
-import eclox.ui.Plugin;
 import eclox.ui.action.StopAction;
 import eclox.util.SelectionProvider;
 
@@ -247,22 +246,9 @@ public class BuildLogView extends ViewPart {
 	private StopAction stopAction = new StopAction();
 	
 	/**
-	 * Shows the build log view in the specified workbench page.
-	 * 
-	 * @param page	The workbench page in which the build log view will be shown.
-	 * 
-	 * @return	The shown build log view.
-	 * 
-	 * @throws PartInitException	The build log view creation failed.
-	 */
-	public static void show( IWorkbenchPage page ) throws PartInitException {
-		page.showView( "eclox.ui.BuildLogView" );		
-	}
-	
-	/**
 	 * Show the build log view in the default workbensh page.
 	 * 
-	 * @throws PartInitException	The buld log view creation failed.
+	 * @throws PartInitException	the build log view creation failed
 	 */
 	public static void show() throws PartInitException {
 		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("eclox.ui.views.buildLog");
@@ -329,7 +315,7 @@ public class BuildLogView extends ViewPart {
 			actionBars.getToolBarManager().add(this.stopAction);
 		}
 		catch( Throwable throwable ) {
-			Plugin.getDefault().showError(throwable);
+			Services.showError(throwable);
 		}
 	}
 }
