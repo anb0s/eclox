@@ -19,7 +19,7 @@
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
-            nameFilter="*.cfg*"
+            nameFilter="*Doxyfile"
             id="doxe.PopupMenu">
          <action
                label="Build documentation"
@@ -49,9 +49,11 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
+            default="false"
             name="eclox.ui.editor.Editor"
+            extensions="dox, cfg, doxyfile"
             icon="icon_small.gif"
-            extensions="cfg"
+            filenames="doxyfile"
             contributorClass="eclox.ui.editor.ActionBarContributor"
             class="eclox.ui.editor.Editor"
             id="eclox.ui.editor.Editor">

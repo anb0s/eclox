@@ -113,8 +113,8 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 		
 		filePath = containerPath.append( fileName );
 		fileExtension = filePath.getFileExtension(); 
-		if( fileExtension == null || fileExtension.compareToIgnoreCase( "cfg" ) != 0 ) {
-			filePath = filePath.addFileExtension( "cfg" );
+		if( (fileExtension == null || fileExtension.compareToIgnoreCase( "Doxyfile" ) != 0) && fileName.compareToIgnoreCase("Doxyfile") != 0 ) {
+			filePath = filePath.addFileExtension( "Doxyfile" );
 		}
 		result = ResourcesPlugin.getWorkspace().getRoot().getFile( filePath );
 		return result;

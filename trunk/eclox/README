@@ -47,9 +47,9 @@ You can now create an empty Doxygen file, using the creation wizard.
 Go to File->New->Other->Other->Doxygen Configuration. Press next and enter
 both file location and name.
 
-Eclox automatically recognize any file having ".cfg" extension as a possible
-Doxygen configuration file. When a file as been recognized as a Doxygen 
-configuration, its icon shows a yellow question mark.
+Eclox automatically recognize any file name "Doxyfile" or having the ".Doxyfile"
+extension as a possible Doxygen configuration file. When a file as been
+recognized as a Doxygen configuration, its icon shows a yellow question mark.
 
 Double-clicking on a doxygen configuration file will open the editor. Notice
 the new taskbar action that appeared (its icon shows the same yellow question
