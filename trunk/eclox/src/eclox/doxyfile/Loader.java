@@ -21,7 +21,6 @@
 
 package eclox.doxyfile;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 import eclox.doxyfile.node.Comment;
@@ -116,10 +115,27 @@ public class Loader {
 					case Tokenizer.TAG_INCREMENT:
 						processTagIncrement();
 						break;
+						
+					case Tokenizer.TAG_LIST_START:
+						processTagListStart();
+						break;
+						
+					case Tokenizer.TAG_LIST_ITEM:
+						processTagListItem();
+						break;
+
+					case Tokenizer.TAG_LIST_END:
+						processTagListEnd();
+						break;
 
 					case Tokenizer.SECTION_BORDER:
 						processSectionBorder();
 						break;
+						
+					default:
+						throw new LoaderException(
+							"Internal error. Unknown token type: " + String.valueOf(tokenType) + ".",
+							null );
 				}
 			}
 			while( tokenType != Tokenizer.NONE );
@@ -127,8 +143,10 @@ public class Loader {
 		catch( LoaderException loaderException ) {
 			throw loaderException;
 		}
-		catch( IOException ioException ) {
-			throw new LoaderException( "Unable to get doxygen settings.", ioException ); 
+		catch( Throwable throwable ) {
+			throw new LoaderException(
+				"Error while parsing doxyfile. " + throwable.getMessage(),
+				throwable ); 
 		}
 	}
 	
@@ -205,7 +223,7 @@ public class Loader {
 		}
 		else {
 			createNextNode();
-			m_nextNodeClass = Comment.class;
+			m_nextNodeClass = Section.class;
 			m_nextNodeText = m_tokenizer.getTokenText();
 		}
 	}
@@ -220,7 +238,7 @@ public class Loader {
 		}
 		else {
 			createNextNode();
-			m_nextNodeClass = Comment.class;
+			m_nextNodeClass = Tag.class;
 			m_nextNodeText = m_tokenizer.getTokenText();
 		}
 	}
@@ -237,5 +255,40 @@ public class Loader {
 				"Parse error at line " + m_tokenizer.getLine() + ": unexpected '" + m_tokenizer.getTokenText() + "'.",
 				null );
 		}
+	}
+	
+	/**
+	 * Process a tag list start token waiting in the toeknizer.
+	 */
+	private void processTagListStart() {
+		if( m_nextNodeClass != null ) {
+			createNextNode();
+		}
+		m_nextNodeClass = Tag.class;
+		m_nextNodeText = m_tokenizer.getTokenText().replaceAll("[\\\\\r\n]", "");
+	}
+	
+	/**
+	 * Process a tag list item token waiting the tokenizer.
+	 */
+	private void processTagListItem() throws LoaderException {
+		if( m_nextNodeClass != Tag.class ) {
+			throw new LoaderException(
+				"Parse error at line " + m_tokenizer.getLine() + ": unexpected '" + m_tokenizer.getTokenText() + "'.",
+				null );
+		}
+		m_nextNodeText = m_nextNodeText.concat( " " + m_tokenizer.getTokenText().replaceAll("\\A\\s+|\\s+\\z|[\\\\\r\n]", "") );
+	}
+	
+	/**
+	 * Process a tag list end token waiting the tokenizer.
+	 */
+	private void processTagListEnd() throws LoaderException {
+		if( m_nextNodeClass != Tag.class ) {
+			throw new LoaderException(
+				"Parse error at line " + m_tokenizer.getLine() + ": unexpected '" + m_tokenizer.getTokenText() + "'.",
+				null );
+		}
+		m_nextNodeText = m_nextNodeText.concat( " " + m_tokenizer.getTokenText().replaceAll("\\A\\s+|\\s+\\z", "") );
 	}
 }

@@ -37,6 +37,6 @@ public class LoaderException extends Exception {
 	 * @param	cause	The object that is the cause of the exception.
 	 */
 	public LoaderException( String text, java.lang.Throwable cause ) {
-		super( text.concat( cause.getMessage() ), cause );
+		super( text, cause );
 	}
 }
