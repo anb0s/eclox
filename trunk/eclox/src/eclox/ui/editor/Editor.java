@@ -115,7 +115,8 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 				DoxyfileSelectionProvider selectionProvider = new DoxyfileSelectionProvider();
 				
 				site.setSelectionProvider(selectionProvider);
-				selectionProvider.setSelection(new StructuredSelection(fileInput.getFile()));
+				//selectionProvider.setSelection(new StructuredSelection(fileInput.getFile()));
+				selectionProvider.setSelection(new StructuredSelection(m_settings));
 				this.setPartName(input.getName());
 			}
 			catch( Throwable throwable ) {

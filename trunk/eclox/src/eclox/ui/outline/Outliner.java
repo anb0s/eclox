@@ -22,6 +22,8 @@
 
 package eclox.ui.outline;
 
+import org.eclipse.jface.viewers.ISelection;
+
 
 /**
  * Implements the content outliner class.
@@ -29,6 +31,20 @@ package eclox.ui.outline;
  * @author gbrocker
  */
 public class Outliner extends org.eclipse.ui.views.contentoutline.ContentOutlinePage {
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.views.contentoutline.ContentOutlinePage#fireSelectionChanged(org.eclipse.jface.viewers.ISelection)
+	 */
+	protected void fireSelectionChanged(ISelection selection) {
+		// TODO Auto-generated method stub
+		super.fireSelectionChanged(selection);
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+	 */
+	public void setSelection(ISelection selection) {
+		// TODO Auto-generated method stub
+		super.setSelection(selection);
+	}
 	/**
 	 * The setting to outline.
 	 */
