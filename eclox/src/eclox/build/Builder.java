@@ -218,7 +218,7 @@ public class Builder extends ListenerManager {
 	 * @exception	BuildFaildException	The build could not be started.
 	 */
 	public void start( IFile file ) throws BuildFailedException {
-		if( m_state != Build.STATE_RUNNING ) {
+		if(m_state != Build.STATE_RUNNING) {
 			try {
 				m_buildProcess = Doxygen.build( file );
 				m_state = Build.STATE_RUNNING;
@@ -233,6 +233,9 @@ public class Builder extends ListenerManager {
 			catch( IOException ioException ) {
 				throw new BuildFailedException( "Unable to launch the documentation compilation. Ensure that doxygen is available in the system path or check the compiler path in the preferences.", ioException );
 			}
+		}
+		else {
+			throw new BuildFailedException("A build is already in progress.");
 		}
 	}
 	
