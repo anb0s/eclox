@@ -51,7 +51,7 @@ public abstract class Selection extends ListenerManager {
 	 * @param	listener	The listener to remove.
 	 */
 	public void removeSelectionListener( SelectionListener listener ) {
-		super.addListener( listener );
+		super.removeListener( listener );
 	}
 	
 	/**
