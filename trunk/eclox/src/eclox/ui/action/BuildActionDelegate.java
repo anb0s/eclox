@@ -97,11 +97,12 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		// Fill it up with the build history items.
 		IFile[]	doxyfiles = BuildHistory.getDefault().toArray();
 		for(int i=0; i < doxyfiles.length; i++) {
-			MenuItem menuItem = new MenuItem(this.menu, SWT.PUSH);
+			MenuItem	menuItem = new MenuItem(this.menu, SWT.PUSH);
+			IFile		currentDoxyfile = doxyfiles[i];
 		
-			menuItem.addSelectionListener(new MenuSelectionListener());
-			menuItem.setData(doxyfiles[i]);
-			menuItem.setText(doxyfiles[i].getFullPath().toString());				
+			menuItem.addSelectionListener( new MenuSelectionListener() );
+			menuItem.setData( currentDoxyfile );
+			menuItem.setText( currentDoxyfile.getName() + " [" + currentDoxyfile.getFullPath().toString() + "]" );
 		}
 		
 		// Add the fallback menu item to let the user choose another doxyfile.
