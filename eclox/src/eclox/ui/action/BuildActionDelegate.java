@@ -40,7 +40,6 @@ import eclox.build.BuildHistoryEvent;
 import eclox.build.BuildHistoryListener;
 import eclox.build.BuildJob;
 import eclox.doxyfile.Doxyfile;
-import eclox.doxyfile.DoxyfileSelection;
 import eclox.ui.Plugin;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
 import eclox.ui.view.BuildLogView;
@@ -157,12 +156,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 			if(selection.isEmpty() == true) {
 				this.nextDoxyfile = null;
 			}
-			if(selection instanceof DoxyfileSelection) {
-				DoxyfileSelection doxyfileSel = (DoxyfileSelection) selection;
-				
-				this.nextDoxyfile = doxyfileSel.doxyfile;
-			}
-			else if(selection instanceof IStructuredSelection) {
+			if(selection instanceof IStructuredSelection) {
 				IStructuredSelection	structSel = (IStructuredSelection) selection;
 				Object					element = structSel.getFirstElement();
 
@@ -173,6 +167,11 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 					if(Doxyfile.isFileNameValid(fileElement.getName()) == true) {
 						this.nextDoxyfile = fileElement;
 					}
+				}
+				else if(element != null && element instanceof Doxyfile) {
+					Doxyfile	doxyfile = (Doxyfile) element;
+					
+					this.nextDoxyfile = doxyfile.getFile(); 
 				}
 			}
 		}

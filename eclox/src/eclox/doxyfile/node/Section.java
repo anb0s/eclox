@@ -21,6 +21,7 @@
 
 package eclox.doxyfile.node;
 
+import eclox.doxyfile.Doxyfile;
 import eclox.doxyfile.node.util.*;
 
 /**
@@ -52,9 +53,11 @@ public class Section extends Group {
 	/**
 	 * Constructor.
 	 * 
-	 * @param	header	A string containing the group header.
+	 * @param	doxyfile	The doxyfile the section belongs to.
+	 * @param	header		A string containing the group header.
 	 */
-	public Section( String header ) {
+	public Section(Doxyfile doxyfile, String header) {
+		super(doxyfile);
 		
 		m_rawHeader = new String( header );
 		m_header = new String( header );

@@ -21,6 +21,7 @@
 
 package eclox.doxyfile.node;
 
+import eclox.doxyfile.Doxyfile;
 import eclox.util.ListenerManager;
 
 /**
@@ -30,15 +31,23 @@ import eclox.util.ListenerManager;
  */
 public abstract class Node extends ListenerManager {
 	/**
+	 * The doxyfile the node belongs to.
+	 */
+	private Doxyfile doxyfile;
+	
+	/**
 	 * The node's dirty flag.
 	 */
-	private boolean m_dirty = false;
+	private boolean dirty = false;
 	
 	/**
 	 * Constructor.
+	 * 
+	 * @param	doxyfile	The doxyfile the node belongs to.
 	 */
-	public Node() {
-		super( NodeListener.class );
+	public Node(Doxyfile doxyfile) {
+		super(NodeListener.class);
+		this.doxyfile = doxyfile;
 	}
 	 
 	/**
@@ -70,12 +79,21 @@ public abstract class Node extends ListenerManager {
 	public abstract java.util.Collection getChildren();
 	
 	/**
+	 * Retrieves the node's doxyfile.
+	 * 
+	 * @return	A doxyfile instance.
+	 */
+	public Doxyfile getDoxyfile() {
+		return this.doxyfile;
+	}
+	
+	/**
 	 * Tell if the node is dirty or note.
 	 * 
 	 * @return
 	 */
 	public boolean isDirty() {
-		return m_dirty;
+		return this.dirty;
 	}
 	
 	/**
@@ -103,7 +121,7 @@ public abstract class Node extends ListenerManager {
 	 * Mark the node as dirty.
 	 */
 	protected void setDirtyInternal() {
-		m_dirty = true;
+		this.dirty = true;
 		fireEvent( new NodeEvent( this ), "nodeDirty" );
 	}
 	
@@ -111,7 +129,7 @@ public abstract class Node extends ListenerManager {
 	 * Mark the node as clean.
 	 */
 	protected void setCleanInternal() {
-		m_dirty = false;
+		this.dirty = false;
 		fireEvent( new NodeEvent( this ), "nodeClean" );
 	}
 }

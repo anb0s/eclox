@@ -21,7 +21,8 @@
 
 package eclox.doxyfile;
 
-import java.io.InputStream;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 
 import eclox.doxyfile.node.Comment;
 import eclox.doxyfile.node.Group;
@@ -53,7 +54,7 @@ public class Loader {
 	/**
 	 * The root node of the whole configuration file.
 	 */
-	private Doxyfile m_doxyfile = new Doxyfile();
+	private Doxyfile doxyfile;
 	
 	/**
 	 * The object that is current group in the doxyfile.
@@ -64,11 +65,10 @@ public class Loader {
 	 * Constructor.
 	 * 
 	 * @param	input	The input stream from which the settings must be constructed.
-	 *  
-	 * @author gbrocker
 	 */
-	public Loader( InputStream input ) throws LoaderException {
-		m_tokenizer = new Tokenizer( input );
+	public Loader(IFile file) throws LoaderException, CoreException {
+		m_tokenizer = new Tokenizer(file.getContents());
+		this.doxyfile = new Doxyfile(file);
 		load();
 	}
 	
@@ -78,7 +78,7 @@ public class Loader {
 	 * @return	The doxyfile node containing the loaded project.		 
 	 */
 	public Doxyfile getDoxyfile() {
-		return m_doxyfile;
+		return doxyfile;
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class Loader {
 		try {
 			int	tokenType;
 			
-			m_currentGroup = m_doxyfile;
+			m_currentGroup = doxyfile;
 			
 			do {
 				m_tokenizer.readToken();
@@ -138,7 +138,7 @@ public class Loader {
 				}
 			}
 			while( tokenType != Tokenizer.NONE );
-			m_doxyfile.setClean();
+			doxyfile.setClean();
 		}
 		catch( LoaderException loaderException ) {
 			throw loaderException;
@@ -161,13 +161,13 @@ public class Loader {
 		Node	result;
 		
 		if( m_nextNodeClass == Section.class ) {
-			result = new Section( m_nextNodeText );
+			result = new Section(doxyfile, m_nextNodeText);
 		}
 		else if( m_nextNodeClass == Comment.class ) {
-			result = new Comment( m_nextNodeText );
+			result = new Comment(doxyfile, m_nextNodeText);
 		}
 		else if( m_nextNodeClass == Tag.class ) {
-			result = new Tag( m_nextNodeText );
+			result = new Tag(doxyfile, m_nextNodeText);
 		}
 		else {
 			result = null;
@@ -176,7 +176,7 @@ public class Loader {
 		// Store the next node.
 		if( result != null ) {
 			if( result.getClass() == Section.class ) {
-				m_doxyfile.addChild( result );
+				doxyfile.addChild( result );
 				m_currentGroup = (Group) result;
 			}
 			else {

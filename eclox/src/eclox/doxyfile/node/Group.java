@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import eclox.doxyfile.Doxyfile;
+
 
 /**
  * Implement a group node class.
@@ -69,6 +71,15 @@ public abstract class Group extends Node {
 	 * The child node collection.
 	 */
 	private java.util.Collection m_children = new ArrayList();
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param doxyfile	The doxyfile the group belongs to.
+	 */
+	public Group(Doxyfile doxyfile) {
+		super(doxyfile);
+	}
 	
 	/**
 	 * Add a new child node.

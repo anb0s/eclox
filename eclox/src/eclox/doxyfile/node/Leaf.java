@@ -24,12 +24,23 @@ package eclox.doxyfile.node;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import eclox.doxyfile.Doxyfile;
+
 /**
  * Implement a leaf node class.
  * 
  * @author gbrocker
  */
 public abstract class Leaf extends Node {
+	/**
+	 * Constructor.
+	 * 
+	 * @param	doxyfile	The doxyfile the leaf belongs to.
+	 */
+	public Leaf(Doxyfile doxyfile) {
+		super(doxyfile);
+	}
+	
 	/**
 	 * Retrieve the leaf children, i.e. no children.
 	 *

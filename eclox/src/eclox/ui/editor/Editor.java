@@ -22,6 +22,7 @@
 package eclox.ui.editor;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -106,7 +107,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 				org.eclipse.ui.IFileEditorInput	fileInput;
 				
 				fileInput = (org.eclipse.ui.IFileEditorInput) input; 
-				loader = new Loader( fileInput.getFile().getContents() );
+				loader = new Loader(fileInput.getFile());
 				m_settings = loader.getDoxyfile();
 				m_settings.addNodeListener( new SettingsListener() );
 				
@@ -114,7 +115,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 				DoxyfileSelectionProvider selectionProvider = new DoxyfileSelectionProvider();
 				
 				site.setSelectionProvider(selectionProvider);
-				selectionProvider.setDoxyfile(fileInput.getFile());
+				selectionProvider.setSelection(new StructuredSelection(fileInput.getFile()));
 				this.setPartName(input.getName());
 			}
 			catch( Throwable throwable ) {
