@@ -49,6 +49,7 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.ide.IDE;
 
+import eclox.resource.Doxyfile;
 import eclox.ui.Plugin;
 
 
@@ -102,7 +103,7 @@ public class DoxyfileSelecterDialog {
 					
 				case IResource.FILE:
 					IFile	file =(IFile) proxy.requestResource();
-					if(file.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
+					if(Doxyfile.isDoxyfile(file) == true) {
 						m_doxyfiles.add(file);
 					}
 					result = false;
