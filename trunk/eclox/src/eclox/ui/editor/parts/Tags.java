@@ -74,7 +74,7 @@ public final class Tags extends Part {
 					}
 				}			
 			}
-			//packColumns();
+			packColumns();
 			// Notify all listeners that the selection changed.
 			selection.notifySelectionChanged();  
 		}
@@ -403,7 +403,7 @@ public final class Tags extends Part {
 	private void packColumns() {
 		int	count = m_table.getColumnCount();
 		
-		for( int index = 0; index < count; index++ ) {
+		for( int index = 0; count >= 1 && index < 1; index++ ) {
 			m_table.getColumn( index ).pack();
 		}
 	}
