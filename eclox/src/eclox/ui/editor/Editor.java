@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import eclox.doxyfile.DoxyfileSelectionProvider;
 import eclox.doxyfile.Loader;
-import eclox.doxyfile.Saver;
+import eclox.doxyfile.io.Serializer;
 import eclox.doxyfile.node.NodeEvent;
 import eclox.doxyfile.node.NodeListener;
 import eclox.ui.editor.parts.Hint;
@@ -204,11 +204,11 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	 */
 	public void doSave( org.eclipse.core.runtime.IProgressMonitor progressMonitor ) {
 		try {
-			Saver					saver;
+			Serializer					saver;
 			IFile					file;
 			
 			// Get the file content.
-			saver = new Saver();
+			saver = new Serializer();
 			m_settings.accept( saver );
 			// Save the file content.
 			file = ((org.eclipse.ui.IFileEditorInput)getEditorInput()).getFile();
