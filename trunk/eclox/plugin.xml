@@ -2,7 +2,7 @@
 <plugin
    id="eclox"
    name="Doxygen in eclipse"
-   version="0.2.2"
+   version="0.3.0"
    provider-name=""
    class="eclox.ui.Plugin">
 
@@ -37,10 +37,10 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            default="false"
             name="eclox.ui.editor.Editor"
-            extensions="dox, cfg, doxyfile"
+            default="false"
             icon="icons/file.gif"
+            extensions="dox, cfg, doxyfile"
             filenames="doxyfile"
             class="eclox.ui.editor.Editor"
             id="eclox.ui.editor.Editor">
@@ -78,15 +78,15 @@
          <action
                label="Stop"
                icon="icons/stop.gif"
-               menubarPath="org.eclipse.ui.run/eclox.ui.menu.doxygen/additions"
                retarget="true"
+               menubarPath="org.eclipse.ui.run/eclox.ui.menu.doxygen/additions"
                id="eclox.ui.action.stop">
          </action>
          <action
                label="Build"
                pulldown="true"
-               icon="icons/build.gif"
                style="pulldown"
+               icon="icons/build.gif"
                class="eclox.ui.action.BuildActionDelegate"
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
                id="eclox.ui.action.build">
