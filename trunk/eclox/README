@@ -1,8 +1,7 @@
-eclox:    Doxygen plugin for Eclipse
-homepage: http://gna.org/projects/eclox
+          Eclox, a Doxygen frontend plugin for Eclipse.
+                <http://gna.org/projects/eclox>
 
-Licence:
---------
+
 Copyright (C) 2003-2004 Guillaume Brocker
 
 This program is free software; you can redistribute it and/or modify
@@ -20,42 +19,4 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-Features:
----------
-- Configuration of the doxygen program path.
-- New file creation wizard generating an empty Doxygen file.
-- Contextual menu action on Doxygen file for build launching.
-- Doxygen file edition.
-- Doxygen build log view reporting all messages produces while
-  building documentations.
-
-
-Help:
------
-
-To install this plugin, follow the common installation procedure consisting in
-copying the whole plugin folder into Eclise's plugin folder. For additionnal
-details, please refer to Eclise's documentation.
-
-You must ensure that Doxygen's binary is reachable in the current path. If not,
-you can update the path. Another and better solution is to specify the plugin
-where Doxygen's binary is located. To do this, open Eclipse's preference
-edition dialog window and go into the new "Doxygen" section.
-
-You can now create an empty Doxygen file, using the creation wizard.
-Go to File->New->Other->Other->Doxygen Configuration. Press next and enter
-both file location and name.
-
-Eclox automatically recognize any file name "Doxyfile" or having the ".Doxyfile"
-extension as a possible Doxygen configuration file. When a file as been
-recognized as a Doxygen configuration, its icon shows a yellow question mark.
-
-Double-clicking on a doxygen configuration file will open the editor. Notice
-the new taskbar action that appeared (its icon shows the same yellow question
-mark as the file's one). That action launches the Doxygen build using the
-configuration file being edited.
-
-When using the contextual menu on a recognized Doxygen configuration file, 
-you will see a new action called "Build Documentation". This launches the 
-doxygen documentation build process. While building, all Doxygen messages
-will be logged in a view called "Doxygen Build Log".
+See MANUAL for usage.

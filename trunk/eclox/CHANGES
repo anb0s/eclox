@@ -1,4 +1,6 @@
-eclox-0.1.4 (in progress):
+eclox-0.2.0 (03-june-2004):
+    o Creation of a new toolbar build button which asks the user for the
+      doxyfile to build.
     o One more improvement of the tag edition.
     
 eclox-0.1.3 (03-may-2004):

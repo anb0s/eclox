@@ -22,14 +22,11 @@
 
 package eclox.ui;
 
-
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -38,6 +35,9 @@ import org.eclipse.ui.part.ViewPart;
 import eclox.build.BuildEvent;
 import eclox.build.BuildListener;
 import eclox.build.Builder;
+import eclox.ui.action.StopAction;
+
+import org.eclipse.ui.IActionBars;
 
 /**
  * Implements a view displaying the doxygen build log.
@@ -55,8 +55,8 @@ public class BuildLogView extends ViewPart {
 		 * @param	event	The build event to process.
 		 */
 		public void buildStarted( BuildEvent event ) {
-			m_stopBuildAction.setEnabled( true );
 			m_text.setText( "" );
+			stopAction.setEnabled(true);
 			appendText( "Running doxygen...\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
 		}
 		
@@ -65,12 +65,12 @@ public class BuildLogView extends ViewPart {
 		}
 			
 		public void buildEnded( BuildEvent event ) {
-			m_stopBuildAction.setEnabled( false );
+			stopAction.setEnabled(false);
 			appendText( "Doxygen work done !\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
 		}
 
 		public void buildStopped( BuildEvent event ) {			
-			m_stopBuildAction.setEnabled( false );
+			stopAction.setEnabled(false);
 			appendText( "Doxygen work stopped by user !\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
 		}
 	}
@@ -81,14 +81,14 @@ public class BuildLogView extends ViewPart {
 	private StyledText m_text = null;
 	
 	/**
-	 * The stop buld action.
-	 */
-	private StopBuildAction m_stopBuildAction = new StopBuildAction();
-	
-	/**
 	 * The builder listener.
 	 */
-	private BuilderListener m_builderListener = new BuilderListener();
+	private BuilderListener builderListener = new BuilderListener();
+	
+	/**
+	 * The stop action.
+	 */
+	private StopAction stopAction = new StopAction();
 	
 	/**
 	 * Shows the build log view in the specified workbench page.
@@ -109,7 +109,7 @@ public class BuildLogView extends ViewPart {
 	 * @throws PartInitException	The buld log view creation failed.
 	 */
 	public static void show() throws PartInitException {
-		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView( "eclox.ui.BuildLogView" );
+		PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("eclox.ui.views.buildLog");
 	}
 	
 	/**
@@ -126,7 +126,7 @@ public class BuildLogView extends ViewPart {
 	 * The part is being destroyed.
 	 */
 	public void dispose() {
-		Builder.getDefault().removeListener( m_builderListener );
+		Builder.getDefault().removeListener( this.builderListener );
 		super.dispose();
 	}
 	
@@ -134,20 +134,22 @@ public class BuildLogView extends ViewPart {
 	 * The part will take the focus within the part.
 	 */
 	public void setFocus() {
-		Builder.getDefault().addListener( m_builderListener );
+		Builder.getDefault().addListener( this.builderListener );
 	}
 	
 	/**
 	 * Initialize the view actions for the specified site.
-	 * 
-	 * @param	viewSite	The view where the action should be initialized.
 	 */
 	private void createActions() {
-		IActionBars		actionBars = getViewSite().getActionBars();
-		IToolBarManager	toolBarManager = actionBars.getToolBarManager();
+		try {
+			IActionBars		actionBars = getViewSite().getActionBars();
 		
-		toolBarManager.add( m_stopBuildAction );
-		actionBars.updateActionBars();
+			actionBars.setGlobalActionHandler("eclox.ui.action.stop", this.stopAction);
+			actionBars.getToolBarManager().add(this.stopAction);
+		}
+		catch( Throwable throwable ) {
+			Plugin.getDefault().showError(throwable);
+		}
 	}
 	
 	/**

@@ -1,0 +1,40 @@
+          Eclox, a Doxygen frontend plugin for Eclipse.
+                <http://gna.org/projects/eclox>
+
+
+1. INSTALLATION
+
+  To install this plugin, follow the common installation procedure consisting
+ in copying the whole plugin folder into Eclise's plugin folder. For
+ additionnal details, please refer to Eclipse's documentation.
+
+2. CONFIGURATION
+
+  Once the plugin installed, you must ensure that the default PATH environment
+ variable makes the doxygen binary reachable for the plugin. If not, you can
+ update PATH to include to directory containing the Doxygen binary, or you can
+ tell Eclox where that binary is located on your system (which is in my opinion
+ the better solution). To do this, open Eclipse's preference edition dialog
+ window and go into the new "Doxygen" section.
+ 
+3. USAGE
+
+  You can create new Doxygen projects (also called doxyfiles) using the 
+ creation wizard. Go to "File->New->Other->Other->Doxygen Configuration". Press
+ next and set both file location and name. Then a empty doxyfile will be
+ created at the specified location, the wizard automatically adds the
+ ".Doxyfile" extension.
+
+  You should now see a file with a yellow question mark icon. This is your new
+ doxyfile. Double-clicking on it will open the editor. You can now browse and
+ edit the settings.
+ 
+  Once your have properly set all doxyfile fields, you can launch a
+ documentation build using the toolbar icon showing a yellow question mark. In 
+ the case the button is not visible in the toolbar, your current perspective
+ needs to get configured. Go to "Window->Customize perspective->Commands" and
+ in "Available command groups" check "Doxygen".
+
+  When the documentation build starts, a new view showing the build log opens.
+ In its toolbar, a button named "Stop" allows you to halt the current build
+ process.

@@ -19,12 +19,12 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-
 package eclox.ui;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -32,6 +32,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 import eclox.Preferences;
 import eclox.build.Builder;
+import eclox.ui.plugin.Icons;
 
 /**
  * Implements the plugin class.
@@ -74,8 +75,15 @@ public class Plugin extends AbstractUIPlugin {
 	 * 
 	 * @param	throwable	The object for which an error message must be shown.
 	 */
-	public void showError( Throwable throwable ) {
-		showError( throwable.getMessage() );
+	public void showError(Throwable throwable) {
+		String	message = throwable.getMessage();
+		
+		if(message != null) {
+			showError(message);
+		}
+		else {
+			showError("Caught exception of class "+throwable.getClass().getName()+" with no messages.");
+		}
 	}
 	
 	/**
@@ -104,4 +112,13 @@ public class Plugin extends AbstractUIPlugin {
 	protected void initializeDefaultPreferences( IPreferenceStore store ) {
 		Preferences.setDefault( store );
 	}
+	
+	/**
+	 * Initializes an image registry with images which are frequently used by the plugin.
+	 * 
+	 * @param	reg	The image registry to initialize.
+	 */
+	protected void initializeImageRegistry(ImageRegistry reg) {
+		Icons.initializeImageRegistry(reg);
+	} 
 }

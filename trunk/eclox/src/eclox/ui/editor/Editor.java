@@ -262,10 +262,4 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		}
 		return titleToolTip;
 	}
-	
-	/*public void removePropertyListener( org.eclipse.ui.IPropertyListener listener ) {
-	}*/
-	
-	/*public void setFocus() {
-	}*/
 }

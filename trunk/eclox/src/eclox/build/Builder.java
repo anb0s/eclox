@@ -195,6 +195,15 @@ public class Builder extends ListenerManager {
 	}
 	
 	/**
+	 * Tell if the builder is running or not.
+	 * 
+	 * @return	true if the builder is running, false otherwise.
+	 */
+	public boolean isRunning() {
+		return this.m_state == Build.STATE_RUNNING;
+	}
+	
+	/**
 	 * Start the build process.
 	 * 
 	 * @param	file	The doxygen configuration to use for the build.
