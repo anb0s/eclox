@@ -1,4 +1,4 @@
-/*
+/**
 	eclox : Doxygen plugin for Eclipse.
 	Copyright (C) 2003-2004 Guillaume Brocker
 
@@ -19,8 +19,15 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
+package eclox.doxyfile;
 
-package eclox.doxyfile.node;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import eclox.doxyfile.node.Group;
+import eclox.doxyfile.node.Visitor;
+import eclox.doxyfile.node.VisitorException;
+
 
 /**
  * Implements the doxygen settings root node.
@@ -29,11 +36,25 @@ package eclox.doxyfile.node;
  */
 public class Doxyfile extends Group {
 	/**
+	 * Tell if the specified file name is a valid doxyfile name.
+	 * 
+	 * @param	name	The doxyfile name to test.
+	 * 
+	 * @return	true or alse.
+	 */
+	public static boolean isFileNameValid(String name) {
+		Pattern pattern = Pattern.compile(".*doxyfile.*", Pattern.CASE_INSENSITIVE);
+		Matcher matcher = pattern.matcher(name);
+					
+		return matcher.matches();
+	}
+	
+	/**
 	 * Implement the visitor acceptence.
 	 * 
 	 * @param	visitor	The visitor to accept.
 	 */
-	public void accept( eclox.doxyfile.node.Visitor visitor ) throws VisitorException {
+	public void accept(Visitor visitor) throws VisitorException {
 		visitor.process( this );
 	}
 	

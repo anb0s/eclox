@@ -29,8 +29,8 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 import eclox.build.Builder;
-import eclox.ui.BuildLogView;
 import eclox.ui.Plugin;
+import eclox.ui.view.BuildLogView;
 
 /**
  * Implement a popup menu action delegate for contextual building.

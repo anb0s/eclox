@@ -30,13 +30,14 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 
 import eclox.ui.Plugin;
 import eclox.ui.plugin.Preferences;
+import eclox.util.ListenerManager;
 
 /**
  * Implement a build history.
  * 
  * @author gbrocker
  */
-public class BuildHistory {
+public class BuildHistory extends ListenerManager {
 	/**
 	 * Implement a preference change listener.
 	 * 
@@ -54,8 +55,10 @@ public class BuildHistory {
 		public void propertyChange(PropertyChangeEvent event) {
 			if(event.getProperty() == Preferences.BUILD_HISTORY_SIZE) {
 				int	size = ((Integer)event.getNewValue()).intValue();
+				
 				if(files.size() > size) {
-					files.subList(size, files.size()).clear();	
+					files.subList(size, files.size()).clear();
+					fireBuildHistoryChangedEvent();
 				}
 			}	
 		}
@@ -87,7 +90,17 @@ public class BuildHistory {
 	 * Constructor.
 	 */
 	public BuildHistory() {
+		super(BuildHistoryListener.class);
 		Plugin.getDefault().getPreferenceStore().addPropertyChangeListener(new PreferenceChangedListener());
+	}
+	
+	/**
+	 * Add a new build history listener.
+	 * 
+	 * @param listener	The build history listener instance to add.
+	 */
+	public void addBuildHistoryListener(BuildHistoryListener listener) {
+		super.addListener(listener);
 	}
 	
 	/**
@@ -107,8 +120,27 @@ public class BuildHistory {
 			this.files.subList(size-1, this.files.size()).clear();
 		}
 		
-		// Insert the file in the list.
+		// Insert the file in the list and fire somre events.
 		this.files.add(0, file);
+		this.fireBuildHistoryChangedEvent();
+	}
+	
+	/**
+	 * Remove the specified build history listener.
+	 * 
+	 * @param listener	The build history listener instance to remove.
+	 */
+	public void removeBuildHistoryListener(BuildHistoryListener listener) {
+		super.removeListener(listener);
+	}
+	
+	/**
+	 * Retrieve the hostory current size.
+	 * 
+	 * @return	The history current size
+	 */
+	public int size() {
+		return this.files.size();
 	}
 	
 	/**
@@ -118,5 +150,12 @@ public class BuildHistory {
 	 */
 	public IFile[] toArray() {
 		return (IFile[]) this.files.toArray(new IFile[0]);
+	}
+	
+	/**
+	 * Fire a build history changed event to all attached listeners.
+	 */
+	private void fireBuildHistoryChangedEvent() {
+		fireEvent(new BuildHistoryEvent(this), "buildHistoryChanged");
 	}
 }

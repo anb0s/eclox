@@ -1,10 +1,14 @@
 eclox-0.2.1 (in progress):
+    o The build toolbar action use the current selection to determine the
+      doxyfile to build (current doxyfile editor, last built doxyfile, doxyfile
+      selection in the resource explorer, ...).
+    o The build toolbar action can now prompt the build history.
     o The contextual "build" menu action on doxyfiles has been restored.
     o Added the build history (with length preference).
     o Various clean-up (plugin preference class moved, icons moved to a
       dedicated folder, copyright date updated.)
 
-eclox-0.2.0 (03-june-2004):
+eclox-0.2.0 (03-jun-2004):
     o Creation of a new toolbar build button which asks the user for the
       doxyfile to build.
     o One more improvement of the tag edition.

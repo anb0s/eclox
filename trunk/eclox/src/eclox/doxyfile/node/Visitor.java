@@ -1,4 +1,4 @@
-/*
+/**
 	eclox : Doxygen plugin for Eclipse.
 	Copyright (C) 2003-2004 Guillaume Brocker
 
@@ -19,9 +19,9 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-
 package eclox.doxyfile.node;
 
+import eclox.doxyfile.*;
 
 /**
  * @author gbrocker
