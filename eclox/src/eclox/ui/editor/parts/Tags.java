@@ -24,16 +24,17 @@ package eclox.ui.editor.parts;
 import java.util.AbstractMap;
 
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.events.FocusListener;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.FocusEvent;
-import org.eclipse.swt.events.MouseEvent;
 
-import eclox.ui.editor.fields.Field;
+import eclox.doxyfile.node.Tag;
 import eclox.ui.editor.fields.ClassProvider;
+import eclox.ui.editor.fields.Field;
 import eclox.ui.editor.fields.FieldListener;
 
 /**
@@ -126,12 +127,12 @@ public final class Tags extends Part {
 	} 
 	
 	/**
-	 * Implement a value listener. The value listener is responsible for the update of the
+	 * Implement a tag listener. The tag listener is responsible for the update of the
 	 * table items when a value changes.
 	 * 
 	 * @author gbrocker
 	 */
-	private class ValueListener implements eclox.doxyfile.node.value.Listener {
+	private class TableItemUpdater implements eclox.doxyfile.node.NodeListener {
 		/**
 		 * The association between the value to monitor and the table items.
 		 */
@@ -140,23 +141,23 @@ public final class Tags extends Part {
 		/**
 		 * Register a new value and its associated table item.
 		 */
-		public void addValue( eclox.doxyfile.node.value.Abstract value, TableItem tableItem ) {
-			m_tableItems.put( value, tableItem );
-			value.addListener( this );
+		public void addTag( eclox.doxyfile.node.Tag tag, TableItem tableItem ) {
+			m_tableItems.put( tag, tableItem );
+			tag.addNodeListener( this );
 		}
 		
 		/**
 		 * Remove all registered values.
 		 */
-		public void removeAllValues() {
-			// Unregister from all values.
+		public void removeAllTags() {
+			// Unregister from all tags.
 			java.util.Set		keys = m_tableItems.keySet();
 			java.util.Iterator	keyPointer = keys.iterator();
 			
 			while( keyPointer.hasNext() ) {
-				eclox.doxyfile.node.value.Abstract	value = (eclox.doxyfile.node.value.Abstract) keyPointer.next();
+				eclox.doxyfile.node.Tag	tag = (eclox.doxyfile.node.Tag) keyPointer.next();
 				
-				value.removeListener( this ); 
+				tag.removeNodeListener( this ); 
 			}
 			
 			// Clear the values and associated table items.  
@@ -168,14 +169,32 @@ public final class Tags extends Part {
 		 * 
 		 * @param	event	The value event to process.
 		 */
-		public void valueChanged( eclox.doxyfile.node.value.Event event ) {
+		public void nodeClean( eclox.doxyfile.node.NodeEvent event ) {
+			this.processTag((Tag) event.node);
+		}
+		
+		/**
+		 * Process a value change event.
+		 * 
+		 * @param	event	The value event to process.
+		 */
+		public void nodeDirty( eclox.doxyfile.node.NodeEvent event ) {
+			this.processTag((Tag) event.node);
+		}
+		
+		/**
+		 * Process the specified tag.
+		 * 
+		 * @param	tag	The tag to process.
+		 */
+		private void processTag( Tag tag ) {
 			TableItem	tableItem;
 			
 			// Get the table item corresponding to the channged value.
-			tableItem = (TableItem) m_tableItems.get( event.m_value );
+			tableItem = (TableItem) m_tableItems.get( tag );
 			// Update the table item.
 			if( tableItem != null ) {
-				tableItem.setText( Tags.VALUE_COL_INDEX, event.m_value.toString() );
+				tableItem.setText( Tags.VALUE_COL_INDEX, tag.getValue().toString() );
 			}
 		}
 	}
@@ -185,7 +204,7 @@ public final class Tags extends Part {
 	 * 
 	 * @author gbrocker
 	 */
-	private class FieldManager implements MouseListener, FocusListener, FieldListener {
+	private class TableItemEditor implements MouseListener, FocusListener, FieldListener {
 		/**
 		 * The current table editor that manage the current edition field.
 		 */
@@ -195,6 +214,11 @@ public final class Tags extends Part {
 		 * The current field.
 		 */
 		private Field m_field;
+		
+		/**
+		 * The current tag.
+		 */
+		private Tag m_tag;
 		
 		/**
 		 * Notify the listener that the field edition has been canceled.
@@ -211,6 +235,7 @@ public final class Tags extends Part {
 		 * @param	event	The event to process.
 		 */
 		public void fieldEditionCompleted( eclox.ui.editor.fields.FieldEvent event ) {
+			m_tag.setValue(event.field.getValue());
 			removeCurrentField();
 		}
 		
@@ -287,7 +312,8 @@ public final class Tags extends Part {
 				m_tableEditor.getEditor().dispose();
 				m_tableEditor.dispose();
 				m_tableEditor = null;
-				m_field = null;				
+				m_field = null;
+				m_tag = null;				
 			}						
 		}
 		
@@ -301,11 +327,11 @@ public final class Tags extends Part {
 				eclox.doxyfile.node.Tag	tag;
 				Control			fieldControl;
 				
-				tag = (eclox.doxyfile.node.Tag) selectedItems[0].getData();
+				m_tag = (eclox.doxyfile.node.Tag) selectedItems[0].getData();
 				// Create the field.
-				m_field = createFieldInstance( tag );
+				m_field = createFieldInstance( m_tag );
+				m_field.setValue( (eclox.doxyfile.node.value.Value) m_tag.getValue().clone() );
 				m_field.addFieldListener(this);
-				m_field.editTag( tag );
 				fieldControl = m_field.createControl(m_table);
 				fieldControl.setFocus();
 				fieldControl.addFocusListener( this );
@@ -355,12 +381,12 @@ public final class Tags extends Part {
 	/**
 	 * The object responsible for the value change management.
 	 */
-	private ValueListener m_valueListener = new ValueListener();
+	private TableItemUpdater m_tableItemUpdater = new TableItemUpdater();
 	
 	/**
 	 * The object responsible for the edition field management.
 	 */
-	private FieldManager m_fieldManager = new FieldManager();
+	private TableItemEditor m_tableItemEditor = new TableItemEditor();
 	
 	/**
 	 * The table selection manager.
@@ -386,7 +412,7 @@ public final class Tags extends Part {
 	protected void createContent() {
 		m_table = createTable( getContentParent() );
 		m_table.addSelectionListener( selection );
-		m_table.addMouseListener( m_fieldManager );
+		m_table.addMouseListener( m_tableItemEditor );
 		setContent( m_table );
 		setTitle( "Tags" );
 	}
@@ -403,7 +429,7 @@ public final class Tags extends Part {
 		item.setText( NAME_COL_INDEX, tag.getName() );
 		item.setText( VALUE_COL_INDEX, tag.getValue().toString() );
 		item.setData( tag );
-		m_valueListener.addValue( tag.getValue(), item );
+		m_tableItemUpdater.addTag( tag, item );
 	}
 	
 	/**
@@ -412,8 +438,8 @@ public final class Tags extends Part {
 	private void removeAllTags() {
 		m_table.deselectAll();
 		m_table.removeAll();
-		m_fieldManager.removeCurrentField();
-		m_valueListener.removeAllValues();
+		m_tableItemEditor.removeCurrentField();
+		m_tableItemUpdater.removeAllTags();
 	}
 	
 	/**

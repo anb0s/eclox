@@ -60,9 +60,14 @@ public class Tag extends Leaf {
 	private String m_name;
 	
 	/**
+	 * The tag value listener.
+	 */
+	ValueListener m_listener;
+	
+	/**
 	 * The tag value.
 	 */
-	private eclox.doxyfile.node.value.Abstract m_value;
+	private eclox.doxyfile.node.value.Value m_value;
 	
 	/**
 	 * Constructor.
@@ -73,8 +78,10 @@ public class Tag extends Leaf {
 		String	tokens[] = text.split( "[\t =]+", 2 );
 		
 		m_name = tokens[0];
-		m_value = createValueInstance( m_name, tokens.length == 2 ? tokens[1] : "" );
-		m_value.addListener( new ValueListener() );
+		m_listener = new ValueListener();
+		m_value = null;
+		
+		setValue(createValueInstance( m_name, tokens.length == 2 ? tokens[1] : "" ));
 		updateEqualOffset( text );	
 	}
 
@@ -101,8 +108,33 @@ public class Tag extends Leaf {
 	 * 
 	 * @return	A string containing the tag value.
 	 */
-	public eclox.doxyfile.node.value.Abstract getValue() {
+	public eclox.doxyfile.node.value.Value getValue() {
 		return m_value;
+	}
+	
+	/**
+	 * Set a new value to the tag.
+	 * 
+	 * @param	value	The new value instance.
+	 * 
+	 * @return	The previous value.
+	 */
+	public eclox.doxyfile.node.value.Value setValue( eclox.doxyfile.node.value.Value value ) {
+		eclox.doxyfile.node.value.Value	oldValue;
+		
+		// Swap values.
+		oldValue = m_value;
+		m_value = value;
+		
+		// Update the listeners.
+		if(oldValue != null) {
+			oldValue.removeListener(m_listener);
+		}
+		m_value.addListener(m_listener);
+		
+		// End.
+		setDirtyInternal();
+		return oldValue;
 	}
 	
 	/**
@@ -135,13 +167,13 @@ public class Tag extends Leaf {
 	 *  
 	 * @return	An value instance.
 	 */
-	private static eclox.doxyfile.node.value.Abstract createValueInstance( String name, String value ) {
-		eclox.doxyfile.node.value.Abstract	result;
+	private static eclox.doxyfile.node.value.Value createValueInstance( String name, String value ) {
+		eclox.doxyfile.node.value.Value	result;
 	
 		try {
 			Class	valueClass = m_valueClassProvider.getValueClass( name );
 		
-			result = (eclox.doxyfile.node.value.Abstract) valueClass.newInstance();
+			result = (eclox.doxyfile.node.value.Value) valueClass.newInstance();
 			result.fromString( value.replaceAll("[\r\n]*", "") );	
 		}
 		catch( java.lang.Exception exception ) {
