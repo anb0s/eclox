@@ -21,16 +21,9 @@
 
 package eclox.ui.editor.parts;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Text;
 
-import eclox.doxyfile.node.Comment;
-import eclox.doxyfile.node.Node;
-import eclox.doxyfile.node.Section;
 import eclox.doxyfile.node.Tag;
 
 /**
@@ -52,52 +45,8 @@ public class Hint extends Part {
 		 */
 		public void selectionChanged( SelectionEvent event ) {
 			Tag		tag = (Tag) event.selection.getSelected();
-			String	hint = null;
-			
-			if( tag != null ) {			
-				Comment	comment = (Comment) m_comments.get( tag );
-				
-				hint = comment != null ? comment.getText() : "No hint available.";
-			}
-			else {
-				hint = "No tag selected.";
-			}
-			m_hintCtrl.setText( hint );
-		}
-	}
-	
-	/**
-	 * Implement a selection listener for the sections management part.
-	 * 
-	 * @author gbrocker
-	 */
-	private class SectionsSelectionListener implements SelectionListener {
-		/**
-		 * Process the section selection changes.
-		 * 
-		 * @param	event	The selection change event to process.
-		 */
-		public void selectionChanged( SelectionEvent event ) {
-			Section	section = (Section) event.selection.getSelected();
-			
-			if( section != null ) {
-				m_comments.clear();
-				
-				// Get all comments from teh current section.
-				Iterator	nodeIterator = section.getChildren().iterator();
-				Comment		comment = null;
-				while( nodeIterator.hasNext() ) {
-					Node	curNode = (Node) nodeIterator.next();
-					
-					if( curNode.getClass() == Comment.class ) {
-						comment = (Comment) curNode;
-					}
-					else if( curNode.getClass() == Tag.class && comment != null ) {
-						m_comments.put( curNode, comment );
-						comment = null;
-					}
-				}
-			}
+
+			m_hintCtrl.setText(tag != null ? tag.getDescription().getText() : "No tag selected.");
 		}
 	}
 	
@@ -107,18 +56,11 @@ public class Hint extends Part {
 	private Text m_hintCtrl;
 	
 	/**
-	 * The map containing comments index by tag for the selected section.
-	 */
-	private Map m_comments = new HashMap();
-	
-	/**
 	 * Constructor.
 	 * 
-	 * @param	sections	The section part to attach to.
 	 * @param	tags		The tag part to attach to.
 	 */
-	public Hint( Sections sections, Tags tags ) {
-		sections.selection.addSelectionListener( new SectionsSelectionListener() );
+	public Hint(Tags tags) {
 		tags.selection.addSelectionListener( new TagsSelectionListener() );
 	}
 	

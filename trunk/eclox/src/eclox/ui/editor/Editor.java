@@ -28,7 +28,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
 import eclox.doxyfile.DoxyfileSelectionProvider;
-import eclox.doxyfile.Loader;
+import eclox.doxyfile.io.Deserializer;
 import eclox.doxyfile.io.Serializer;
 import eclox.doxyfile.node.NodeEvent;
 import eclox.doxyfile.node.NodeListener;
@@ -103,12 +103,12 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		if( input instanceof org.eclipse.ui.IFileEditorInput ) {			
 			try{
 				// Load the doxyfile.
-				eclox.doxyfile.Loader			loader;
 				org.eclipse.ui.IFileEditorInput	fileInput;
+				Deserializer					deserializer;
 				
-				fileInput = (org.eclipse.ui.IFileEditorInput) input; 
-				loader = new Loader(fileInput.getFile());
-				m_settings = loader.getDoxyfile();
+				fileInput = (org.eclipse.ui.IFileEditorInput) input;
+				deserializer = new Deserializer(fileInput.getFile());
+				m_settings = deserializer.createDoxyfile();
 				m_settings.addNodeListener( new SettingsListener() );
 				
 				// Set the selection provider.
@@ -187,7 +187,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		// Create the detail part.
 		Hint details;
 		
-		details = new Hint( sections, tags );
+		details = new Hint( tags );
 		curControl = details.createControl( container );
 		layoutData = new GridData( GridData.FILL_HORIZONTAL );
 		layoutData.heightHint = 75;

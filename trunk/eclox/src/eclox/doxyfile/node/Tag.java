@@ -25,9 +25,8 @@ import java.util.Collection;
 
 import org.eclipse.ui.views.properties.IPropertySource;
 
-import eclox.doxyfile.Doxyfile;
-import eclox.doxyfile.node.value.Value;
 import eclox.doxyfile.adapter.TagPropertySource;
+import eclox.doxyfile.node.value.Value;
 
 /**
  * Implements a doxygen setting tag.
@@ -87,10 +86,17 @@ public class Tag extends Node {
 	/**
 	 * Constructor.
 	 * 
-	 * @param	doxyfile	The doxyfile the tag belongs to.
+	 * @param	text	the text of the tag
 	 */
-	public Tag(Doxyfile doxyfile, String text) {
-		super(doxyfile);
+	public Tag(String text) {
+		String cleaned = text.replaceAll("\r\n", "");
+		String[] parts = cleaned.split("\\s*=\\s*");
+		
+		this.setName(parts[0]);
+		this.setValue(new eclox.doxyfile.node.value.String());
+		if(parts.length > 1) {
+			this.getValue().fromString(parts[1]);
+		}
 	}
 
 	/**

@@ -23,7 +23,6 @@ package eclox.doxyfile.node;
 
 import org.eclipse.core.runtime.IAdaptable;
 
-import eclox.doxyfile.Doxyfile;
 import eclox.util.ListenerManager;
 
 /**
@@ -32,11 +31,6 @@ import eclox.util.ListenerManager;
  * @author gbrocker
  */
 public abstract class Node extends ListenerManager implements IAdaptable {
-	/**
-	 * The doxyfile the node belongs to.
-	 */
-	private Doxyfile doxyfile;
-	
 	/**
 	 * The node description.
 	 */
@@ -49,12 +43,9 @@ public abstract class Node extends ListenerManager implements IAdaptable {
 	
 	/**
 	 * Constructor.
-	 * 
-	 * @param	doxyfile	The doxyfile the node belongs to.
 	 */
-	public Node(Doxyfile doxyfile) {
+	public Node() {
 		super(NodeListener.class);
-		this.doxyfile = doxyfile;
 	}
 	 
 	/**
@@ -93,16 +84,7 @@ public abstract class Node extends ListenerManager implements IAdaptable {
 	public Description getDescription() {
 		return this.description;
 	}
-		
-	/**
-	 * Retrieves the node's doxyfile.
-	 * 
-	 * @return	A doxyfile instance.
-	 */
-	public Doxyfile getDoxyfile() {
-		return this.doxyfile;
-	}
-	
+			
 	/**
 	 * Tell if the node is dirty or note.
 	 * 

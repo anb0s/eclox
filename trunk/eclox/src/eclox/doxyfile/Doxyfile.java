@@ -66,7 +66,6 @@ public class Doxyfile extends Group {
 	 * Constructor.
 	 */
 	public Doxyfile(IFile file) {
-		super(null);
 		this.file = file;
 	}
 	

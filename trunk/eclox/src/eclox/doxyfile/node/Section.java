@@ -23,8 +23,8 @@ package eclox.doxyfile.node;
 
 import org.eclipse.ui.views.properties.IPropertySource;
 
-import eclox.doxyfile.Doxyfile;
 import eclox.doxyfile.adapter.SectionPropertySource;
+import eclox.doxyfile.node.util.SectionNameProvider;
 
 /**
  * Implements a doxygen tag section.
@@ -35,28 +35,13 @@ public class Section extends Group {
 	/**
 	 * The name provider for all section instances.
 	 */
-//	private static final SectionNameProvider m_nameProvider = new SectionNameProvider();
+	private static final SectionNameProvider nameProvider = new SectionNameProvider();
 	
 	/**
 	 * The section name.
 	 */
 	private String name = "";
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param	doxyfile	The doxyfile the section belongs to.
-	 */
-	public Section(Doxyfile doxyfile) {
-		super(doxyfile);
 		
-//		m_rawHeader = new String( header );
-//		m_header = new String( header );
-//		m_header = m_header.replaceAll( "#-+[\r\n]+", "" );
-//		m_header = m_header.replaceAll( "# |[\r\n]+", "" );
-//		m_name = m_nameProvider.getName( m_header );	
-	}
-
 	/**
 	 * Accept the specified visitor.
 	 * 
@@ -88,12 +73,10 @@ public class Section extends Group {
 	}
 	
 	/**
-	 * Set the name of the section.
-	 *
-	 * @param name	a new name for the section
+	 * @see eclox.doxyfile.node.Node#setDescription(eclox.doxyfile.node.Description)
 	 */
-	public void setName(String name) {
-		this.name = name;
-		this.setDirtyInternal();
+	public void setDescription(Description description) {
+		super.setDescription(description);
+		this.name = Section.nameProvider.getName(description.toString());
 	}
 }

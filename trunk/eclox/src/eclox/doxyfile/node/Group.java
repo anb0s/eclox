@@ -22,11 +22,10 @@
 package eclox.doxyfile.node;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-
-import eclox.doxyfile.Doxyfile;
 
 
 /**
@@ -70,27 +69,28 @@ public abstract class Group extends Node {
 	/**
 	 * The child node collection.
 	 */
-	private java.util.Collection children = new ArrayList();
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param doxyfile	The doxyfile the group belongs to.
-	 */
-	public Group(Doxyfile doxyfile) {
-		super(doxyfile);
-	}
+	private Collection children = new ArrayList();
 	
 	/**
 	 * Add a new child node.
 	 * 
 	 * @param child	The child node to add.
 	 */
-	public void addChild( Node child ) {
-		this.children.add( child );
-		child.addNodeListener( new ChildNodeListener() );
+	public void addChild(Node child) {
+		this.children.add(child);
+		child.addNodeListener(new ChildNodeListener());
 	}
 	
+	/**
+	 * Add a collection of childern to the group.
+	 */
+	public void addChildren(Collection children) {
+		Iterator	it = children.iterator();
+		
+		while(it.hasNext() == true) {
+			this.addChild((Node) it.next());
+		}
+	}
 	/**
 	 * Retrieves all children of the node.
 	 * 
@@ -99,14 +99,14 @@ public abstract class Group extends Node {
 	 * @author gbrocker
 	 */
 	public java.util.Collection getChildren() {
-		return new ArrayList( children );
+		return new ArrayList(children);
 	}
 	
 	/**
 	 * Mark the group as clean.
 	 */
 	public void setClean() {
-		if( isDirty() ) {
+		if(isDirty()) {
 			Iterator	childPointer;
 			
 			childPointer = this.children.iterator();
