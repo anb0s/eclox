@@ -50,12 +50,26 @@ class Tokenizer {
 	private int m_tokenType = NONE;
 	
 	/**
+	 * An integer containing the current line number.
+	 */
+	private int m_lineNumber = 0;
+	
+	/**
 	 * Constructor.
 	 * 
 	 * @param	input	The input stream to split into token.	
 	 */
 	public Tokenizer( InputStream input ) {
 		m_input = input;
+	}
+	
+	/**
+	 * Retrieve the current tokenizer line.
+	 * 
+	 * @return	An integer containing the line number.
+	 */
+	public int getLine() {
+		return m_lineNumber;
 	}
 	
 	/**
@@ -80,7 +94,7 @@ class Tokenizer {
 	/**
 	 * Read the input and get the next token.
 	 */
-	public void getToken() throws IOException {
+	public void readToken() throws IOException {
 		for(;;) {
 			String	text = readLine();
 			
@@ -98,6 +112,7 @@ class Tokenizer {
 				else if( text.matches("#.*") ) {
 					m_tokenType = COMMENT;
 				}
+				m_lineNumber++;
 				break;
 			}
 			else if( text == null ){
@@ -125,7 +140,7 @@ class Tokenizer {
 				break;
 			}
 			else {
-				line.concat( String.valueOf( (char) nextChar ) );
+				line = line.concat( String.valueOf( (char) nextChar ) );
 				if( line.endsWith("\r\n") ) {
 					break;
 				}
