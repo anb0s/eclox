@@ -1,21 +1,15 @@
-! (Bugfix)
-+ (New feature)
-~ (Changed feature)
-- (Removed feature)
+eclox-0.1.2:
 
-0.1.1 (bombarde)
-================
+* Creation of the change log file (this file).
 
-~ Enhancement in the editor UI layout
-	Margins arround the editor controls has been removed. Spacing between these
-	controls has been decreased to 1 pixel. Look's nicer.
+eclox-0.1.1:
 
-~ New file name support
-	Now, filenames that are recognized by the plugin contain either the
-	"doxyfile" string as base name or as extension.
+* Margins arround the editor controls has been removed. Spacing between these
+  controls has been decreased to 1 pixel. Look's nicer.
+* Now, filenames that are recognized by the plugin contain either the
+  "doxyfile" string as base name or as extension.
 
+eclox-0.1.0:
 
-0.1.0 (bombarde)
-================
-
-[First available version]
+* Code name set to 'bombarde'.
+* First available version.
