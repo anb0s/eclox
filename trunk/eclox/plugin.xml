@@ -2,7 +2,7 @@
 <plugin
    id="eclox"
    name="Doxygen in eclipse"
-   version="1.0.0"
+   version="0.1.0"
    provider-name=""
    class="eclox.ui.Plugin">
 
@@ -49,10 +49,10 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            default="false"
             name="eclox.ui.editor.Editor"
-            extensions="dox, cfg, doxyfile"
+            default="false"
             icon="icon_small.gif"
+            extensions="dox, cfg, doxyfile"
             filenames="doxyfile"
             contributorClass="eclox.ui.editor.ActionBarContributor"
             class="eclox.ui.editor.Editor"
