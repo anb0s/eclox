@@ -34,7 +34,16 @@ public class BuildFailedException extends Exception {
 	 * @param	message	A string containing the explanation.
 	 * @param	reason	A throwable object that is the reason of the exception.
 	 */
-	public BuildFailedException( String message, Throwable throwable ) {
-		super( message, throwable );			
+	public BuildFailedException(String message, Throwable throwable) {
+		super(message, throwable);			
+	}
+	
+	/**
+	 * Constrcutor.
+	 * 
+	 * @param	message	A string containing the explanation.
+	 */
+	public BuildFailedException(String message) {
+		super(message);			
 	}
 }
