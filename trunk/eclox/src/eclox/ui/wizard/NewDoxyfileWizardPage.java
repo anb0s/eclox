@@ -1,6 +1,6 @@
 /*
 	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003 Guillaume Brocker
+	Copyright (C) 2003-2004 Guillaume Brocker
 
 	This file is part of eclox.
 
@@ -21,9 +21,11 @@
  
 package eclox.ui.wizard;
 
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+
+import eclox.ui.Plugin;
+import eclox.ui.plugin.Icons;
 
 /**
  * @author gbrocker
@@ -37,10 +39,10 @@ public class NewDoxyfileWizardPage extends WizardNewFileCreationPage {
 	 * 
 	 * @param selection	The current selection object.
 	 */
-	public NewDoxyfileWizardPage( IStructuredSelection selection ) {
-		super( "page", selection );
-		setTitle( "Doxygen Configuration");
-		setDescription( "Creates a new Doxygen configuration file.");
-		setImageDescriptor( ImageDescriptor.createFromFile( getClass(), "icon.gif" ) );
+	public NewDoxyfileWizardPage(IStructuredSelection selection) {
+		super("page", selection);
+		setTitle("Doxygen Configuration");
+		setDescription("Creates a new Doxygen configuration file.");
+		setImageDescriptor(Plugin.getDefault().getImageRegistry().getDescriptor(Icons.QUESTION_BIG));
 	}
 }

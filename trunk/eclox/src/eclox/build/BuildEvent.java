@@ -1,6 +1,6 @@
 /*
 	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003 Guillaume Brocker
+	Copyright (C) 2003-2004 Guillaume Brocker
 
 	This file is part of eclox.
 

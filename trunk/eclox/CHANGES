@@ -1,3 +1,7 @@
+eclox-0.2.1 (in progress):
+    o Various clean-up (plugin preference class moved, icons moved to a
+      dedicated folder, copyright date updated.)
+
 eclox-0.2.0 (03-june-2004):
     o Creation of a new toolbar build button which asks the user for the
       doxyfile to build.

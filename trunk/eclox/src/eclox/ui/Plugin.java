@@ -1,6 +1,6 @@
 /*
 	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003 Guillaume Brocker
+	Copyright (C) 2003-2004 Guillaume Brocker
 
 	This file is part of eclox.
 
@@ -30,9 +30,9 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import eclox.Preferences;
 import eclox.build.Builder;
 import eclox.ui.plugin.Icons;
+import eclox.ui.plugin.Preferences;
 
 /**
  * Implements the plugin class.
