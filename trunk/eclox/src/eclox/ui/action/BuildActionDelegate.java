@@ -39,11 +39,9 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.PlatformUI;
 
 import eclox.build.BuildHistory;
-import eclox.build.BuildJob;
+import eclox.core.Services;
 import eclox.resource.Doxyfile;
-import eclox.ui.Plugin;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
-import eclox.ui.view.BuildLogView;
 
 /**
  * Implement the action handling for the build action.
@@ -171,7 +169,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			action.setToolTipText(tooltipText);
 		}
 		catch(Throwable throwable) {
-			Plugin.getDefault().showError(throwable);
+			eclox.core.Services.showError(throwable);
 		}
 	}
 	
@@ -195,13 +193,11 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			
 			// If there is a doxyfile, build it.
 			if(doxyfile != null) {
-				BuildLogView.show();
-				BuildJob.getDefault().setDoxyfile(doxyfile);
-				BuildJob.getDefault().schedule();
+				Services.buildDoxyfile( doxyfile );
 			}
 		}
 		catch(Throwable throwable) {
-			Plugin.getDefault().showError(throwable);
+			Services.showError(throwable);
 		}
 	}
 	
@@ -241,7 +237,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			}
 		}
 		catch(Throwable throwable) {
-			Plugin.getDefault().showError(throwable);
+			Services.showError(throwable);
 		}
 		return doxyfile;
 	}
@@ -270,7 +266,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			}
 		}
 		catch(Throwable throwable) {
-			Plugin.getDefault().showError(throwable);
+			Services.showError(throwable);
 		}
 		return doxyfile;
 	}
