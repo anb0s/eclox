@@ -1,5 +1,6 @@
 eclox-0.1.3 (in progress):
 
+ * In the doxyfile editor, the tag name column adjusts to the longest name.
  * Hints of the selected tag reactivated.
  * Deactivated the boolean field of the editor since the behaviour was not very
    handy.
