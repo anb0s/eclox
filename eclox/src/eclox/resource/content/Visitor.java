@@ -1,4 +1,4 @@
-/*
+/**
 	eclox : Doxygen plugin for Eclipse.
 	Copyright (C) 2003-2004 Guillaume Brocker
 
@@ -19,32 +19,32 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.ui.outline;
+package eclox.resource.content;
 
 /**
- * Implements the content outliner class.
- * 
  * @author gbrocker
+ * 
+ * Interface for all visitors.
  */
-public class Outliner extends org.eclipse.ui.views.contentoutline.ContentOutlinePage {
+public interface Visitor {
 	/**
-	 * The setting to outline.
-	 */
-	private eclox.resource.content.DoxyfileContent settings;
-	
-	/**
-	 * Constructor.
+	 * Process a group item.
 	 * 
-	 * @param	settings	The settings to outline. 
+	 * @param group	The group to process.
 	 */
-	public Outliner( eclox.resource.content.DoxyfileContent settings ) {
-		this.settings = settings;
-	}
+	public void process( Section group ) throws VisitorException;
 	
-	public void createControl( org.eclipse.swt.widgets.Composite parent ) {
-		super.createControl( parent );
-		getTreeViewer().setContentProvider( new ContentProvider() );
-		getTreeViewer().setLabelProvider( new LabelProvider() );
-		getTreeViewer().setInput( this.settings );
-	}
+	/**
+	 * Process a tag item.
+	 * 
+	 * @param tag	The tag to process.
+	 */
+	public void process( Tag tag ) throws VisitorException;
+	
+	/**
+	 * Process a settings item.
+	 *
+	 * @param	settings	The settings to process.
+	 */
+	public void process( DoxyfileContent settings ) throws VisitorException;
 }

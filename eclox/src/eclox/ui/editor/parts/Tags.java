@@ -32,7 +32,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.TableItem;
 
-import eclox.doxyfile.node.Tag;
+import eclox.resource.content.Tag;
 import eclox.ui.editor.fields.ClassProvider;
 import eclox.ui.editor.fields.Field;
 import eclox.ui.editor.fields.FieldListener;
@@ -56,10 +56,10 @@ public final class Tags extends Part {
 		 * @param	event	The event to process.
 		 */
 		public void selectionChanged( eclox.ui.editor.parts.SelectionEvent event ) {
-			eclox.doxyfile.node.Section		section;
+			eclox.resource.content.Section		section;
 		
 			// Get the selected section.
-			section = (eclox.doxyfile.node.Section) event.selection.getSelected();
+			section = (eclox.resource.content.Section) event.selection.getSelected();
 			// Update the tag table content.
 			removeAllTags();
 			if( section != null ) {
@@ -71,8 +71,8 @@ public final class Tags extends Part {
 				while( childPointer.hasNext() ) {
 					Object	child = childPointer.next();
 		
-					if( child.getClass().equals( eclox.doxyfile.node.Tag.class ) ) {
-						addTag( (eclox.doxyfile.node.Tag) child );
+					if( child.getClass().equals( eclox.resource.content.Tag.class ) ) {
+						addTag( (eclox.resource.content.Tag) child );
 					}
 				}			
 			}
@@ -132,7 +132,7 @@ public final class Tags extends Part {
 	 * 
 	 * @author gbrocker
 	 */
-	private class TableItemUpdater implements eclox.doxyfile.node.NodeListener {
+	private class TableItemUpdater implements eclox.resource.content.NodeListener {
 		/**
 		 * The association between the value to monitor and the table items.
 		 */
@@ -141,7 +141,7 @@ public final class Tags extends Part {
 		/**
 		 * Register a new value and its associated table item.
 		 */
-		public void addTag( eclox.doxyfile.node.Tag tag, TableItem tableItem ) {
+		public void addTag( eclox.resource.content.Tag tag, TableItem tableItem ) {
 			m_tableItems.put( tag, tableItem );
 			tag.addNodeListener( this );
 		}
@@ -155,7 +155,7 @@ public final class Tags extends Part {
 			java.util.Iterator	keyPointer = keys.iterator();
 			
 			while( keyPointer.hasNext() ) {
-				eclox.doxyfile.node.Tag	tag = (eclox.doxyfile.node.Tag) keyPointer.next();
+				eclox.resource.content.Tag	tag = (eclox.resource.content.Tag) keyPointer.next();
 				
 				tag.removeNodeListener( this ); 
 			}
@@ -169,7 +169,7 @@ public final class Tags extends Part {
 		 * 
 		 * @param	event	The value event to process.
 		 */
-		public void nodeClean( eclox.doxyfile.node.NodeEvent event ) {
+		public void nodeClean( eclox.resource.content.NodeEvent event ) {
 			this.processTag((Tag) event.node);
 		}
 		
@@ -178,7 +178,7 @@ public final class Tags extends Part {
 		 * 
 		 * @param	event	The value event to process.
 		 */
-		public void nodeDirty( eclox.doxyfile.node.NodeEvent event ) {
+		public void nodeDirty( eclox.resource.content.NodeEvent event ) {
 			this.processTag((Tag) event.node);
 		}
 		
@@ -288,7 +288,7 @@ public final class Tags extends Part {
 		 * 
 		 * @return	The field instance. Note theat the field hasn't been attached to the tag yet.
 		 */
-		private Field createFieldInstance( eclox.doxyfile.node.Tag tag ) {
+		private Field createFieldInstance( eclox.resource.content.Tag tag ) {
 			Field	result;
 			
 			try {
@@ -324,13 +324,13 @@ public final class Tags extends Part {
 			TableItem	selectedItems[] = m_table.getSelection();
 			
 			if( selectedItems.length == 1 ) {
-				eclox.doxyfile.node.Tag	tag;
+				eclox.resource.content.Tag	tag;
 				Control			fieldControl;
 				
-				m_tag = (eclox.doxyfile.node.Tag) selectedItems[0].getData();
+				m_tag = (eclox.resource.content.Tag) selectedItems[0].getData();
 				// Create the field.
 				m_field = createFieldInstance( m_tag );
-				m_field.setValue( (eclox.doxyfile.node.value.Value) m_tag.getValue().clone() );
+				m_field.setValue( (eclox.resource.content.value.Value) m_tag.getValue().clone() );
 				m_field.addFieldListener(this);
 				fieldControl = m_field.createControl(m_table);
 				fieldControl.setFocus();
@@ -422,7 +422,7 @@ public final class Tags extends Part {
 	 *  
 	 * @param tag	The tag to add.
 	 */
-	private void addTag( eclox.doxyfile.node.Tag tag ) {
+	private void addTag( eclox.resource.content.Tag tag ) {
 		org.eclipse.swt.widgets.TableItem	item;
 
 		item = new TableItem( m_table, 0 );

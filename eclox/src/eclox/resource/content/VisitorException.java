@@ -19,32 +19,31 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.ui.outline;
+
+package eclox.resource.content;
+
 
 /**
- * Implements the content outliner class.
+ * The visitor generic exception.
  * 
  * @author gbrocker
  */
-public class Outliner extends org.eclipse.ui.views.contentoutline.ContentOutlinePage {
+public class VisitorException extends Exception {
 	/**
-	 * The setting to outline.
-	 */
-	private eclox.resource.content.DoxyfileContent settings;
+	 * Constructor.
+	 * 
+	 * @param message	The exception message.
+	 */public VisitorException( String message ) {
+		super( message );
+	}
 	
 	/**
 	 * Constructor.
 	 * 
-	 * @param	settings	The settings to outline. 
+	 * @param message	The exception message.
+	 * @param reason	The exception eason.
 	 */
-	public Outliner( eclox.resource.content.DoxyfileContent settings ) {
-		this.settings = settings;
-	}
-	
-	public void createControl( org.eclipse.swt.widgets.Composite parent ) {
-		super.createControl( parent );
-		getTreeViewer().setContentProvider( new ContentProvider() );
-		getTreeViewer().setLabelProvider( new LabelProvider() );
-		getTreeViewer().setInput( this.settings );
+	public VisitorException( String message, Throwable reason ) {
+		super( message, reason );
 	}
 }

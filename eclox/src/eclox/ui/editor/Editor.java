@@ -27,14 +27,14 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import eclox.doxyfile.DoxyfileSelectionProvider;
-import eclox.doxyfile.io.Deserializer;
-import eclox.doxyfile.io.Serializer;
-import eclox.doxyfile.node.NodeEvent;
-import eclox.doxyfile.node.NodeListener;
+import eclox.resource.content.NodeEvent;
+import eclox.resource.content.NodeListener;
+import eclox.resource.content.io.Deserializer;
+import eclox.resource.content.io.Serializer;
 import eclox.ui.editor.parts.Hint;
 import eclox.ui.editor.parts.Sections;
 import eclox.ui.editor.parts.Tags;
+import eclox.util.SelectionProvider;
 
 /**
  * This is the editor part implementation.
@@ -68,7 +68,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	/**
 	 * The Doxygen settings to edit.
 	 */
-	private eclox.doxyfile.Doxyfile m_settings;
+	private eclox.resource.content.DoxyfileContent m_settings;
 	
 	/*
 	 * IAdapter interface implementation.
@@ -106,7 +106,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 				m_settings.addNodeListener( new SettingsListener() );
 				
 				// Set the selection provider.
-				DoxyfileSelectionProvider selectionProvider = new DoxyfileSelectionProvider();
+				SelectionProvider selectionProvider = new SelectionProvider();
 				
 				site.setSelectionProvider(selectionProvider);
 				//selectionProvider.setSelection(new StructuredSelection(fileInput.getFile()));

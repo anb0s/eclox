@@ -24,8 +24,8 @@ package eclox.ui.editor.fields;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Composite;
 
+import eclox.resource.content.value.Value;
 import eclox.util.ListenerManager;
-import eclox.doxyfile.node.value.Value;
 
 /**
  * The abstract field class.

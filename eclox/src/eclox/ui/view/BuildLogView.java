@@ -42,12 +42,12 @@ import org.eclipse.ui.part.ViewPart;
 import eclox.build.BuildJob;
 import eclox.build.BuildOutputEvent;
 import eclox.build.BuildOutputListener;
-import eclox.doxyfile.DoxyfileSelectionProvider;
 import eclox.resource.DoxyfileEvent;
 import eclox.resource.DoxyfileListener;
 import eclox.resource.DoxyfileListenerManager;
 import eclox.ui.Plugin;
 import eclox.ui.action.StopAction;
+import eclox.util.SelectionProvider;
 
 /**
  * Implements a view displaying the doxygen build log.
@@ -137,7 +137,7 @@ public class BuildLogView extends ViewPart {
 	 */
 	private class DoxyfileUpdateTask implements Runnable {
 		public void run() {
-			DoxyfileSelectionProvider selectionProvider = ((DoxyfileSelectionProvider)getViewSite().getSelectionProvider());
+			SelectionProvider selectionProvider = ((SelectionProvider)getViewSite().getSelectionProvider());
 			
 			if(doxyfile != null) {
 				selectionProvider.setSelection(new StructuredSelection(doxyfile));
@@ -277,7 +277,7 @@ public class BuildLogView extends ViewPart {
 	 */
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
-		site.setSelectionProvider(new DoxyfileSelectionProvider());
+		site.setSelectionProvider(new SelectionProvider());
 		BuildJob.getDefault().addJobChangeListener(this.jobListener);
 		BuildJob.getDefault().addBuildOutputListener(this.outputListener);
 		DoxyfileListenerManager.getDefault().addDoxyfileListener(this.doxyfileRemovedListener);
