@@ -1,7 +1,3 @@
-Bugs:
------
-- Supporter le chargement d'un fichier doxygen où il n'y a pas de commentaires associés aux tags.
-
 Todos:
 ------
 - Emettre une alerte quand un nom de section n'a pas été trouvé.
