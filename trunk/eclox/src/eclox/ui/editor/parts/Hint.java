@@ -53,16 +53,18 @@ public class Hint extends Part {
 		 * @param	event	The selection change event to process.
 		 */
 		public void selectionChanged( SelectionEvent event ) {
-			Tag	tag = (Tag) event.selection.getSelected();
+			Tag		tag = (Tag) event.selection.getSelected();
+			String	hint = null;
 			
 			if( tag != null ) {			
 				Comment	comment = (Comment) m_comments.get( tag );
 				
-				m_hintCtrl.setText( comment.getText() );
+				hint = comment != null ? comment.getText() : "No hint available.";
 			}
 			else {
-				m_hintCtrl.setText( "No tag selected." );
+				hint = "No tag selected.";
 			}
+			m_hintCtrl.setText( hint );
 		}
 	}
 	
