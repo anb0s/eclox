@@ -28,9 +28,7 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
@@ -64,37 +62,18 @@ public class BuildLogView extends ViewPart {
 		private String logText;
 		
 		/**
-		 * Tell if the text is special
-		 */
-		boolean special;
-		
-		/**
 		 * Constructor.
 		 * 
 		 * 
 		 * @param	text	The text to append
-		 * @param	special	true if the text is special.
 		 */
-		public AppendLogTextTask(String text, boolean special) {
+		public AppendLogTextTask( String text ) {
 			this.logText = text;
-			this.special = special;
 		}
 		
 		public void run() {
-			int	previousEndOffset = text.getCharCount();
-
-			text.append(this.logText);
-			if(this.special == true) {
-				text.setStyleRange(
-					new StyleRange(
-						previousEndOffset,
-						this.logText.length(),
-						new Color(text.getDisplay(), 0, 0, 255),
-						null
-					)
-				);
-			}
-			text.setSelection(text.getCharCount());
+			text.append( this.logText );
+			text.setSelection( text.getCharCount() );
 			text.showSelection();
 		}
 	}
@@ -139,13 +118,50 @@ public class BuildLogView extends ViewPart {
 			SelectionProvider selectionProvider = ((SelectionProvider)getViewSite().getSelectionProvider());
 			
 			if(doxyfile != null) {
-				selectionProvider.setSelection(new StructuredSelection(doxyfile));
-				setContentDescription(doxyfile.getFullPath().toString());
+				selectionProvider.setSelection( new StructuredSelection(doxyfile) );
 			}
 			else {
-				selectionProvider.setSelection(new StructuredSelection());
-				setContentDescription(new String());
+				selectionProvider.setSelection( new StructuredSelection() );
 			}
+		}
+	}
+	
+	/**
+	 * Implements an UI task that updates the view content description.
+	 */
+	private class ContentDescriptionUpdateTask implements Runnable {
+		/**
+		 * An option string containing an additionnal message to display.
+		 */
+		private String message = null;
+		
+		/**
+		 * Default constructor.
+		 */
+		public ContentDescriptionUpdateTask() {
+			this.message = null;
+		}
+		
+		/**
+		 * Constructor.
+		 * 
+		 * @param	message	a string containing additionnal information to display
+		 */
+		public ContentDescriptionUpdateTask( String message ) {
+			this.message = message;
+		}
+		
+		public void run() {
+			String	contentDescription;
+			
+			if( doxyfile != null ) {
+				contentDescription = doxyfile.getName() + " [" + doxyfile.getFullPath().toString() + "]";
+				contentDescription = this.message != null ? contentDescription + " - " + this.message : contentDescription; 
+			}
+			else {
+				contentDescription = new String();
+			}
+			setContentDescription( contentDescription );
 		}
 	}
 	
@@ -156,7 +172,7 @@ public class BuildLogView extends ViewPart {
 		 * @param	event	The build output event to process.
 		 */
 		public void buildOutputChanged(BuildOutputEvent event) {
-			runUITask(new AppendLogTextTask(event.text, false));
+			runUITask( new AppendLogTextTask( event.text ) );
 		}
 	}
 	
@@ -172,19 +188,19 @@ public class BuildLogView extends ViewPart {
 			
 			switch(event.getResult().getSeverity()) {
 				case Status.CANCEL:
-					message = "Build canceled!";
+					message = "Build canceled";
 					break;
 					
 				case Status.ERROR:
-					message = "Error while building!";
+					message = "Error while building";
 					break;
 					
 				case Status.OK:
-					message = "Build done.";
+					message = "Build done";
 					break;
 			}
-			runUITask(new AppendLogTextTask(message + "\r\n", true));
-			runUITask(new EnableStopActionTask(false));
+			runUITask( new ContentDescriptionUpdateTask( message ) );
+			runUITask( new EnableStopActionTask( false ) );
 		}
 
 		/**
@@ -195,10 +211,10 @@ public class BuildLogView extends ViewPart {
 		public void running(IJobChangeEvent event) {
 			doxyfile = ((BuildJob)event.getJob()).getDoxyfile();
 			
-			runUITask(new LogResetTask());
-			runUITask(new AppendLogTextTask("Running doxygen...\r\n", true));
-			runUITask(new EnableStopActionTask(true));
-			runUITask(new DoxyfileUpdateTask());
+			runUITask( new LogResetTask() );
+			runUITask( new EnableStopActionTask(true) );
+			runUITask( new DoxyfileUpdateTask() );
+			runUITask( new ContentDescriptionUpdateTask( "Build in progress" ) );
 		}
 	}
 		
@@ -209,8 +225,9 @@ public class BuildLogView extends ViewPart {
 		public void doxyfileRemoved(DoxyfileEvent event) {
 			if(event.doxyfile.getFullPath().equals(doxyfile.getFullPath()) == true) {
 				doxyfile = null;
-				runUITask(new DoxyfileUpdateTask());
-				runUITask(new LogResetTask());
+				runUITask( new DoxyfileUpdateTask() );
+				runUITask( new LogResetTask());
+				runUITask( new ContentDescriptionUpdateTask() );
 			}
 		}
 	}
