@@ -68,5 +68,31 @@
             id="eclox.ui.DoxyfileCreationWizard">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Doxygen"
+            description="Doxygen Action Set"
+            visible="true"
+            id="eclox.DefaultActionSet">
+         <action
+               label="Build"
+               pulldown="true"
+               style="pulldown"
+               icon="icons/icon_small.gif"
+               class="eclox.ui.actions.BuildActionDelegate"
+               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
+               id="eclox.action.build">
+         </action>
+         <menu
+               label="Run"
+               path="additions"
+               id="org.eclipse.ui.run">
+            <separator
+                  name="DoxygenGroup">
+            </separator>
+         </menu>
+      </actionSet>
+   </extension>
 
 </plugin>
