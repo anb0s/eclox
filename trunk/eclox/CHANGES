@@ -1,8 +1,11 @@
 echo-0.3.3 (in progress):
+    o Automatic saving of all editors before buiding is now implemented and
+      can be configured in the preferences.
     o The build history state is now persistent.
     o When opening the toolbar build action dropdown menu, "Choose Doxyfile"
       appears even when no previous build has been done.
-    o Bug #815 fixed. The doxyfile parser now supports any possible line ending (CR, LF and CRLF).
+    o Bug #815 fixed. The doxyfile parser now supports any possible line
+      ending (CR, LF and CRLF).
     
 eclox-0.3.2 (06-sep-2004):
     o Bug fixed. Loading doxyfile crashed on tags without values.

@@ -1,6 +1,5 @@
 Todos:
 
-  o Update email addresses to use gna dot org.
   o Creation of property page for doxyfiles.
   o Creation of an incremental builder that checks for compatibility with the current
     doxygen version.
@@ -23,6 +22,5 @@ Les plus:
   o Copier le texte de la sortie de compilation.
   o Bouttons dans la barre d'outils du l'éditeur pour compiler et browser directement la documentation générée.
   o Dans le menu contextuel du fichier doxygen, ajouter des actions pour browser la documentation générée.
-  o sauvegarde automatique des fichiers du projet qui sont en cours d'édition avant la génération de la doc.
   o Recherche d'un tag par mot clé se trouvant dans le nom du tag, soit dans son commentaire associé.
   o Prévoir la localisation des textes.
