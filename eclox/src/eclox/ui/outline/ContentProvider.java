@@ -23,6 +23,8 @@
 package eclox.ui.outline;
 
 
+import java.util.Collection;
+
 import eclox.doxyfile.node.Node;
 
 /**
@@ -54,10 +56,12 @@ public class ContentProvider implements org.eclipse.jface.viewers.ITreeContentPr
 		boolean	result;
 		
 		try {
-			eclox.doxyfile.node.Node	node;
+			eclox.doxyfile.node.Node node;
+			Collection children;
 			
 			node = (eclox.doxyfile.node.Node) object;
-			result = node.getChildren().size() != 0;
+			children = node.getChildren(); 
+			result = children != null && children.size() != 0;
 		}
 		catch( ClassCastException badCast ){
 			result = false;

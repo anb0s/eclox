@@ -21,8 +21,11 @@
 
 package eclox.doxyfile.adapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import eclox.doxyfile.node.Section;
@@ -32,7 +35,7 @@ import eclox.doxyfile.node.Section;
  * 
  * @author Guillaume Brocker
  */
-public class SectionPropertySource implements IPropertySource {
+public class SectionPropertySource extends NodePropertySource {
 	/**
 	 * The section for which property will retrieved.
 	 */
@@ -54,25 +57,20 @@ public class SectionPropertySource implements IPropertySource {
 	 * @param	section	a section instance for which properties will be retrieved.
 	 */
 	public SectionPropertySource(Section section) {
+		super(section);
 		this.section = section;
-	}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#getEditableValue()
-	 */
-	public Object getEditableValue() {
-		return null;
 	}
 	
 	/**
 	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
 	 */
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		IPropertyDescriptor[] result = new IPropertyDescriptor[2];
+		Collection propertyDescriptors = new ArrayList();
 		
-		result[0] = new PropertyDescriptor(NAME_PROPERTY, "name");
-		result[1] = new PropertyDescriptor(TAG_NUMBER_PROPERTY, "number of tags");
-		return result;
+		propertyDescriptors.addAll(Arrays.asList(super.getPropertyDescriptors()));
+		propertyDescriptors.add(new PropertyDescriptor(NAME_PROPERTY, "name"));
+		propertyDescriptors.add(new PropertyDescriptor(TAG_NUMBER_PROPERTY, "number of tags"));
+		return (IPropertyDescriptor[]) propertyDescriptors.toArray(new IPropertyDescriptor[0]);
 	}
 	
 	/**
@@ -87,23 +85,9 @@ public class SectionPropertySource implements IPropertySource {
 		else if(id == TAG_NUMBER_PROPERTY) {
 			result = String.valueOf(this.section.getChildren().size());
 		}
+		else {
+			result = super.getPropertyValue(id);
+		}
 		return result;
 	}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
-	 */
-	public boolean isPropertySet(Object id) {
-		return false;
-	}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
-	 */
-	public void resetPropertyValue(Object id) {}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
-	 */
-	public void setPropertyValue(Object id, Object value) {}
 }

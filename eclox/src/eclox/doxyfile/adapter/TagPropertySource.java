@@ -21,8 +21,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 package eclox.doxyfile.adapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 
 import eclox.doxyfile.node.Tag;
@@ -32,7 +35,7 @@ import eclox.doxyfile.node.Tag;
  * 
  * @author Guillaume Brocker
  */
-public class TagPropertySource implements IPropertySource {
+public class TagPropertySource extends NodePropertySource {
 	/**
 	 * The tag for which properties are retrieved.
 	 */
@@ -47,32 +50,27 @@ public class TagPropertySource implements IPropertySource {
 	 * Type property key.
 	 */
 	public static final String TYPE_PROPERTY = "TYPE";
-	
+
 	/**
 	 * Constructor.
 	 * 
 	 * @param	tag	the tag instance for which properties must be retrieved.
 	 */
 	public TagPropertySource(Tag tag) {
+		super(tag);
 		this.tag = tag;
-	}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#getEditableValue()
-	 */
-	public Object getEditableValue() {
-		return null;
 	}
 	
 	/**
 	 * @see org.eclipse.ui.views.properties.IPropertySource#getPropertyDescriptors()
 	 */
 	public IPropertyDescriptor[] getPropertyDescriptors() {
-		IPropertyDescriptor result[] = new IPropertyDescriptor[2];
+		Collection propertyDescriptors = new ArrayList();
 		
-		result[0] = new PropertyDescriptor(NAME_PROPERTY, "name");
-		result[1] = new PropertyDescriptor(TYPE_PROPERTY, "type");
-		return result;
+		propertyDescriptors.addAll(Arrays.asList(super.getPropertyDescriptors()));
+		propertyDescriptors.add(new PropertyDescriptor(NAME_PROPERTY, "name"));
+		propertyDescriptors.add(new PropertyDescriptor(TYPE_PROPERTY, "type"));
+		return (IPropertyDescriptor[]) propertyDescriptors.toArray(new IPropertyDescriptor[0]);
 	}
 	
 	/**
@@ -87,28 +85,12 @@ public class TagPropertySource implements IPropertySource {
 		else if(id == TYPE_PROPERTY) {
 			result = new String("unknown");
 		}
-		return result;
-	}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#isPropertySet(java.lang.Object)
-	 */
-	public boolean isPropertySet(Object id) {
-		if(id == NAME_PROPERTY || id == TYPE_PROPERTY) {
-			return true;
+		else if(id == DESCRIPTION_PROPERTY) {
+			result = this.tag.getDescription().getText();
 		}
 		else {
-			return false;
+			result = super.getPropertyValue(id);
 		}
+		return result;
 	}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#resetPropertyValue(java.lang.Object)
-	 */
-	public void resetPropertyValue(Object id) {}
-	
-	/**
-	 * @see org.eclipse.ui.views.properties.IPropertySource#setPropertyValue(java.lang.Object, java.lang.Object)
-	 */
-	public void setPropertyValue(Object id, Object value) {}
 }
