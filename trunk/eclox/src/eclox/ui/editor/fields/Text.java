@@ -21,6 +21,9 @@
 
 package eclox.ui.editor.fields;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.widgets.Control;
@@ -31,7 +34,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * @author gbrocker
  */
-public class Text implements Field {
+public class Text extends Field {
 	/**
 	 * Implmenet a text control mofidy listener class.
 	 */
@@ -45,30 +48,34 @@ public class Text implements Field {
 			org.eclipse.swt.widgets.Text	textCtrl;
 			
 			textCtrl = (org.eclipse.swt.widgets.Text) event.widget;
-			m_value.fromString( textCtrl.getText() );
+			getEditedTag().getValue().fromString( textCtrl.getText() );
 		}
 	}
 	
 	/**
-	 * The value being edited.
+	 * Implement a key listener class that will process special keys.
 	 */
-	private eclox.doxyfile.node.value.Abstract m_value;
-	
-	/**
-	 * Attach the field to the specified tag.
-	 * 
-	 * @param	tag	The tag to attach to and thus to edit.
-	 */
-	public void attachTo( eclox.doxyfile.node.Tag tag ) {
-		m_value = tag.getValue();
-	}
-	
-	/**
-	 * Detach the field from the value.
-	 */
-	public void detach() {
-		if( m_value != null ) {
-			m_value = null;
+	private class TextKeyListener implements KeyListener {
+		/**
+		 * Notify thet a key has been pressed.
+		 *
+		 * @param	event	The event to process.
+		 */
+		public void keyPressed(KeyEvent event) {	
+		}
+		
+		/**
+		 * Notify that a key has been released.
+		 * 
+		 * @param	event	The event to process.
+		 */
+		public void keyReleased(KeyEvent event) {
+			if(event.keyCode == SWT.ESC) {
+				cancelEdition();
+			}
+			else if(event.keyCode == SWT.CR) {
+				completEdition();
+			}
 		}
 	}
 	
@@ -83,9 +90,10 @@ public class Text implements Field {
 		org.eclipse.swt.widgets.Text	textCtrl;
 		
 		textCtrl = new org.eclipse.swt.widgets.Text( parent, 0 );
-		textCtrl.setText( m_value.toString() );
+		textCtrl.setText( getEditedTag().getValue().toString() );
 		textCtrl.selectAll();
-		textCtrl.addModifyListener( new TextListener() );		
+		textCtrl.addModifyListener( new TextListener() );
+		textCtrl.addKeyListener( new TextKeyListener() );		
 		return textCtrl;
 	}
 }
