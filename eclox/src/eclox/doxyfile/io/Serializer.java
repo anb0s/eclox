@@ -65,6 +65,7 @@ public class Serializer extends InputStream implements Visitor {
 	 */
 	public void process(Section section) throws VisitorException {
 		this.buffer += section.getDescription().toString();
+		this.buffer += "\r\n";
 		processChildren(section);
 	}
 	
@@ -75,9 +76,11 @@ public class Serializer extends InputStream implements Visitor {
 	 */
 	public void process( Tag tag ) throws VisitorException {
 		this.buffer += tag.getDescription().toString();
+		this.buffer += "\r\n";
 		this.buffer += tag.getName();
 		this.buffer += " = ";
 		this.buffer += tag.getValue().toString();
+		this.buffer += "\r\n\r\n";
 	}
 	
 	/**

@@ -44,9 +44,8 @@ public class Description {
 	public Description(String rawText) {
 		this.rawText = new String( rawText );		
 		this.text = new String( rawText );
-		this.text = this.text.replaceAll( "# ", "" );
-		this.text = this.text.replaceAll( "#\r\n", "" );
-		this.text = this.text.replaceAll( "\r\n", " " );
+		this.text = this.text.replaceAll( "#-+[\r\n]+", "" );
+		this.text = this.text.replaceAll( "# |[\r\n]+", "" );
 	}
 	
 	/**

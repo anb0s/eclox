@@ -1,4 +1,4 @@
-package eclox.doxyfile;
+package eclox.doxyfile.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,49 +12,34 @@ import java.io.InputStreamReader;
  */
 class Tokenizer {
 	/**
-	 * Define the empty token constant.
+	 * Define the end token constant.
 	 */
-	public static final int NONE = 0;
+	public static final String END = "End";
+	
+	/**
+	 * Define the version token constant.
+	 */
+	public static final String VERSION = "Version";
+	
+	/**
+	 * Define the version token constant.
+	 */
+	public static final String DESCRIPTION = "Description";
 	
 	/**
 	 * Define the tag token constant.
 	 */
-	public static final int TAG = 1;
+	public static final String TAG = "Tag";
 	 
 	/**
 	 * Define the tag increment token constant.
 	 */
-	public static final int TAG_INCREMENT = 2;
+	public static final String TAG_INCREMENT = "TagIncrement";
 	
-	/**
-	 * Define the tag list start token constant.
-	 */
-	public static final int TAG_LIST_START = 3; 
-	
-	/**
-	 * Define the tag list item token constant.
-	 */
-	public static final int TAG_LIST_ITEM = 4;
-	
-	/**
-	 * Define the tag list start token constant.
-	 */
-	public static final int TAG_LIST_END = 5;
-	
-	/**
-	 * Define the comment token constant.
-	 */
-	public static final int COMMENT = 6;
-	 
 	/**
 	 * Define the section border constant.
 	 */
-	public static final int SECTION_BORDER = 7;
-	
-	/**
-	 * Define the empty line token.
-	 */
-	public static final int EMPTY_LINE = 8;
+	public static final String SECTION_BORDER = "SectionBorder";
 	
 	/**
 	 * The buffered reader from which text will be retrieved and parsed.
@@ -64,12 +49,12 @@ class Tokenizer {
 	/**
 	 * The next token text.
 	 */
-	private String m_tokenText = null;
+	private String m_tokenText;
 	
 	/**
 	 * The next token type.
 	 */
-	private int m_tokenType = NONE;
+	private String m_tokenType;
 	
 	/**
 	 * An integer containing the current line number.
@@ -95,6 +80,25 @@ class Tokenizer {
 	}
 	
 	/**
+	 * Expurge the current token.
+	 */
+	public void expurgeToken() {
+		this.m_tokenType = null;
+		this.m_tokenText = null;
+	}
+	
+	/**
+	 * Retrieves the next token.
+	 * 
+	 * @throws	IOException	an error occured while retrieving the next token.
+	 */
+	public void getNextToken() throws IOException {
+		if(m_tokenType == null) {
+			this.readToken();
+		}
+	}
+	
+	/**
 	 * Retrieve the current token text.
 	 * 
 	 * @return	A string containing the token text, or null if the
@@ -107,31 +111,27 @@ class Tokenizer {
 	/**
 	 * Retrieve the current token type.
 	 * 
-	 * @return	An integer representing the current token type.
+	 * @return	the current token type.
 	 */
-	public int getTokenType() {
+	public String getTokenType() {
 		return m_tokenType;
 	}
 	
 	/**
 	 * Read the input and get the next token.
+	 * 
+	 * @return	the type of the token that has been read.
 	 */
-	public void readToken() throws IOException {
+	private Object readToken() throws SyntaxError, IOException {
 		for(;;) {
 			String	text = readLine();
 			
 			if( text != null ) {
 				m_tokenText = text;
-				if( text.matches("\\w+\\s+=.+\\\\\r?\n") ) {
-					m_tokenType = TAG_LIST_START;
+				if( text.matches("# Doxyfile.+\r?\n") ) {
+					m_tokenType = VERSION;
 				}
-				else if( text.matches("\\s+.+\\\\\r?\n") ) {
-					m_tokenType = TAG_LIST_ITEM;
-				}
-				else if( text.matches("\\s+.+\r?\n")) {
-					m_tokenType = TAG_LIST_END;
-				}
-				else if( text.matches("\\w+\\s+=.+\r?\n") ) {
+				else if( text.matches("\\w+\\s*=.+\r?\n") ) {
 					m_tokenType = TAG;
 				}
 				else if( text.matches("\\w+\\s+\\+=.+\r?\n")) {
@@ -141,20 +141,23 @@ class Tokenizer {
 					m_tokenType = SECTION_BORDER;
 				}
 				else if( text.matches("#.*\r?\n") ) {
-					m_tokenType = COMMENT;
+					m_tokenType = DESCRIPTION;
 				}
 				else if( text.matches("\r?\n") ) {
-					m_tokenType = EMPTY_LINE;
+					continue;
 				}
-				m_lineNumber++;
+				else {
+					throw new SyntaxError("Syntax error.", this.getLine());
+				}
 				break;
 			}
 			else if( text == null ){
 				m_tokenText = null;
-				m_tokenType = NONE;
+				m_tokenType = END;
 				break;
 			}
 		}
+		return this.m_tokenType;
 	}
 	
 	/**
@@ -176,6 +179,7 @@ class Tokenizer {
 			else {
 				line = line.concat( String.valueOf( (char) nextChar ) );
 				if( line.matches(".*\r?\n") ) {
+					m_lineNumber++;
 					break;
 				}
 			}
