@@ -135,10 +135,10 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		
 		layout = new org.eclipse.swt.layout.GridLayout();
 		layout.numColumns = 2;
-		layout.marginHeight = 2;
-		layout.marginWidth = 2;
-		layout.horizontalSpacing = 2;
-		layout.verticalSpacing = 2;
+		layout.marginHeight = -1;
+		layout.marginWidth = -1;
+		layout.horizontalSpacing = 1;
+		layout.verticalSpacing = 1;
 		parent.setLayout( layout );
 		
 		// Create the section management part.
@@ -160,8 +160,8 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		layout = new GridLayout();
 		layout.marginHeight = 0;
 		layout.marginWidth = 0;
-		layout.horizontalSpacing = 2;
-		layout.verticalSpacing = 2;
+		layout.horizontalSpacing = 1;
+		layout.verticalSpacing = 1;
 		container.setLayout( layout );
 		container.setLayoutData( layoutData );
 		
