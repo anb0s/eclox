@@ -120,5 +120,9 @@
             name="Doxygen Configuration"
             id="doxyfile"/>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="eclox.preferences.Initializer"/>
+   </extension>
 
 </plugin>

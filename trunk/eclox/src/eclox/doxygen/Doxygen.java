@@ -30,8 +30,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.preference.IPreferenceStore;
 
-import eclox.ui.plugin.*;
-
 /**
  * Implement the doxygen frontend.
  * 
@@ -97,7 +95,7 @@ public final class Doxygen {
 	 */
 	private static String getBuilderCommand() {
 		IPreferenceStore	store = eclox.ui.Plugin.getDefault().getPreferenceStore();
-		String				command = store.getString( Preferences.COMPILER_PATH );
+		String				command = store.getString( eclox.preferences.Names.COMPILER_PATH );
 	
 		if( command.length() == 0 ) {
 			command = "doxygen";

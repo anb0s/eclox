@@ -1,12 +1,10 @@
 Todos:
 
   o Update email addresses to use gna dot org.
-  o Remove a missing files from the history when building.
   o Creation of property page for doxyfiles.
   o Creation of an incremental builder that checks for compatibility with the current
     doxygen version.
   o Creation of markers to notify problems in doxyfiles.
-  o Save the build history state.
   o Add a build launch action in the build log toolbar.
   o Emettre une alerte quand un nom de section n'a pas été trouvé.
   o Emettre une alerte quand the type d'un tag n'a pas été trouvé.

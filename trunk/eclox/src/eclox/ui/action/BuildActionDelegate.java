@@ -94,26 +94,25 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 */
 	public Menu getMenu(Control parent) {
 		disposeMenu();
-		if(BuildHistory.getDefault().size() != 0) {
-			this.menu = new Menu(parent);
+		this.menu = new Menu(parent);
+	
+		// Fill it up with the build history items.
+		IFile[]	doxyfiles = BuildHistory.getDefault().toArray();
+		for(int i=0; i < doxyfiles.length; i++) {
+			MenuItem menuItem = new MenuItem(this.menu, SWT.PUSH);
 		
-			// Fill it up with the build history items.
-			IFile[]	doxyfiles = BuildHistory.getDefault().toArray();
-			for(int i=0; i < doxyfiles.length; i++) {
-				MenuItem menuItem = new MenuItem(this.menu, SWT.PUSH);
-			
-				menuItem.addSelectionListener(new MenuSelectionListener());
-				menuItem.setData(doxyfiles[i]);
-				menuItem.setText(doxyfiles[i].getFullPath().toString());				
-			}
-			
-			// Add the fallback menu item to let the user choose another doxyfile.
-			MenuItem separatorMenuItem = new MenuItem(this.menu, SWT.SEPARATOR);
-			MenuItem chooseMenuItem = new MenuItem(this.menu, SWT.PUSH);
-			
-			chooseMenuItem.addSelectionListener(new MenuSelectionListener());
-			chooseMenuItem.setText("Choose Doxyfile...");			 
+			menuItem.addSelectionListener(new MenuSelectionListener());
+			menuItem.setData(doxyfiles[i]);
+			menuItem.setText(doxyfiles[i].getFullPath().toString());				
 		}
+		
+		// Add the fallback menu item to let the user choose another doxyfile.
+		MenuItem separatorMenuItem = new MenuItem(this.menu, SWT.SEPARATOR);
+		MenuItem chooseMenuItem = new MenuItem(this.menu, SWT.PUSH);
+		
+		chooseMenuItem.addSelectionListener(new MenuSelectionListener());
+		chooseMenuItem.setText("Choose Doxyfile...");			 
+	
 		return this.menu;
 	}
 

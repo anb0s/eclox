@@ -26,6 +26,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 
@@ -33,7 +35,6 @@ import eclox.resource.DoxyfileEvent;
 import eclox.resource.DoxyfileListener;
 import eclox.resource.DoxyfileListenerManager;
 import eclox.ui.Plugin;
-import eclox.ui.plugin.Preferences;
 import eclox.util.ListenerManager;
 
 /**
@@ -57,7 +58,7 @@ public class BuildHistory extends ListenerManager {
 		 * @param	event	the property change event object describing which property changed and how 
 		 */
 		public void propertyChange(PropertyChangeEvent event) {
-			if(event.getProperty() == Preferences.BUILD_HISTORY_SIZE) {
+			if(event.getProperty() == eclox.preferences.Names.BUILD_HISTORY_SIZE) {
 				int	size = ((Integer)event.getNewValue()).intValue();
 				
 				if(files.size() > size) {
@@ -130,6 +131,26 @@ public class BuildHistory extends ListenerManager {
 	}
 	
 	/**
+	 * Loads the history. 
+	 */
+	public void load() {
+		// Retrieves the saved file paths in an array.
+		String		savedHistoryContent;			
+		String[]	rawPaths;
+		savedHistoryContent = Plugin.getDefault().getPluginPreferences().getString( eclox.preferences.Names.BUILD_HISTORY_CONTENT );
+		rawPaths = savedHistoryContent.split(":");
+		
+		// Recreates and reinserts the files in the history.
+		IWorkspaceRoot	workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		for( int i = rawPaths.length - 1; i >= 0 ; i-- ) {
+			IFile currentFile = (IFile) workspaceRoot.findMember( rawPaths[i] );
+			if( currentFile != null ) {
+				this.log( currentFile );
+			}
+		}
+	}
+	
+	/**
 	 * Log the specified file in the history.
 	 * 
 	 * @param	file	The file to log in the history.
@@ -141,7 +162,7 @@ public class BuildHistory extends ListenerManager {
 		}
 		
 		// Make room for the new log entry.
-		int size = Plugin.getDefault().getPreferenceStore().getInt(Preferences.BUILD_HISTORY_SIZE);
+		int size = Plugin.getDefault().getPluginPreferences().getInt(eclox.preferences.Names.BUILD_HISTORY_SIZE);
 		if(this.files.size() >= size-1) {
 			this.files.subList(size-1, this.files.size()).clear();
 		}
@@ -167,6 +188,26 @@ public class BuildHistory extends ListenerManager {
 	 */
 	public int size() {
 		return this.files.size();
+	}
+	
+	/**
+	 * Stores the build history.
+	 */
+	public void store() {
+		// Build a string containing the path of all files in the build history.
+		String		savedFilePaths = new String();
+		Iterator	fileIterator = this.files.iterator();
+		while( fileIterator.hasNext() == true ) {
+			IFile	currentFile = (IFile) fileIterator.next();
+			
+			savedFilePaths = savedFilePaths.length() != 0 ? savedFilePaths + ":" : savedFilePaths;
+			savedFilePaths = savedFilePaths + currentFile.getFullPath().toString();
+		}
+		
+		// Stores the build history content.
+		Plugin.getDefault().getPluginPreferences().setValue(
+			eclox.preferences.Names.BUILD_HISTORY_CONTENT,
+			savedFilePaths );
 	}
 	
 	/**

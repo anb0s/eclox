@@ -30,8 +30,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import eclox.ui.plugin.Preferences;
-
 /**
  * Implements the plugin preference page.
  * 
@@ -57,17 +55,17 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
 		IPreferenceStore	preferenceStore = Plugin.getDefault().getPreferenceStore();
 		
 		// Create the controls.
-		FileFieldEditor	doxPath = new FileFieldEditor(Preferences.COMPILER_PATH, "Compiler path:", true, rootControl);
+		FileFieldEditor	doxPath = new FileFieldEditor(eclox.preferences.Names.COMPILER_PATH, "Compiler path:", true, rootControl);
 		doxPath.setPreferenceStore(preferenceStore);
 		addField(doxPath);
 		
-		IntegerFieldEditor buildHistorySize = new IntegerFieldEditor(Preferences.BUILD_HISTORY_SIZE, "Maximal build history size:", rootControl);
+		IntegerFieldEditor buildHistorySize = new IntegerFieldEditor(eclox.preferences.Names.BUILD_HISTORY_SIZE, "Maximal build history size:", rootControl);
 		buildHistorySize.setPreferenceStore(preferenceStore);
 		buildHistorySize.setValidRange(1, 15);
 		buildHistorySize.setErrorMessage("Value must be an integer between 1 and 15.");
 		addField(buildHistorySize);
 		
-		BooleanFieldEditor saveAll = new BooleanFieldEditor( Preferences.AUTO_SAVE, "Save changes before launching compilation.", BooleanFieldEditor.DEFAULT, rootControl );
+		BooleanFieldEditor saveAll = new BooleanFieldEditor( eclox.preferences.Names.AUTO_SAVE, "Save changes before launching compilation.", BooleanFieldEditor.DEFAULT, rootControl );
 		saveAll.setPreferenceStore( preferenceStore );
 		addField( saveAll );
 	}
