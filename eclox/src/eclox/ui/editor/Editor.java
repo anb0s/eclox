@@ -105,7 +105,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 				
 				fileInput = (org.eclipse.ui.IFileEditorInput) input; 
 				loader = new Loader( fileInput.getFile().getContents() );
-				m_settings = loader.load();
+				m_settings = loader.getDoxyfile();
 				m_settings.addNodeListener( new SettingsListener() );
 			}
 			catch( Throwable throwable ) {

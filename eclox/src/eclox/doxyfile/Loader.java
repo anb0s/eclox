@@ -51,6 +51,11 @@ public class Loader {
 	 * A string containing the text of the next node.
 	 */
 	private String m_nextNodeText = new String();
+
+	/**
+	 * The root node of the whole configuration file.
+	 */
+	private Doxyfile m_doxyfile = new Doxyfile();
 	
 	/**
 	 * The object that is current group in the doxyfile.
@@ -64,93 +69,67 @@ public class Loader {
 	 *  
 	 * @author gbrocker
 	 */
-	public Loader( InputStream input ) {
+	public Loader( InputStream input ) throws LoaderException {
 		m_tokenizer = new Tokenizer( input );
+		load();
+	}
+	
+	/**
+	 * Retrieve the loaded doxyfile.
+	 * 
+	 * @return	The doxyfile node containing the loaded project.		 
+	 */
+	public Doxyfile getDoxyfile() {
+		return m_doxyfile;
 	}
 	
 	/**
 	 * Load a doxygen file.
-	 * 
-	 * @return	The doxygen settings.
-	 * 
-	 * @author gbrocker
 	 */
-	public Doxyfile load() throws LoaderException {
-		Doxyfile	doxyfile = new Doxyfile();
-		
-		m_currentGroup = doxyfile;
-		
-		for(;;) {
-			// Read the next token.
-			try {
+	private void load() throws LoaderException {
+		try {
+			int	tokenType;
+			
+			m_currentGroup = m_doxyfile;
+			
+			do {
 				m_tokenizer.readToken();
-			}
-			catch( IOException ioException ) {
-				throw new LoaderException( "Read error.", ioException );
-			}
+				tokenType = m_tokenizer.getTokenType(); 
 			
-			int	tokenType = m_tokenizer.getTokenType(); 
-			
-			if( tokenType == Tokenizer.NONE ) {
-				createNextNode();
-				// Stop the load.
-				break;
-			}
-			else if( tokenType == Tokenizer.COMMENT ) {
-				if( m_nextNodeClass == null ) {
-					m_nextNodeClass = Comment.class;
-					m_nextNodeText = m_tokenizer.getTokenText();
-				}
-				else if( m_nextNodeClass == Section.class ) {
-					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
-				}
-				else if( m_nextNodeClass == Comment.class ) {
-					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );	
-				}
-				else {
-					createNextNode();
-					m_nextNodeClass = Comment.class;
-					m_nextNodeText = m_tokenizer.getTokenText();
-				}
-			}
-			else if( tokenType == Tokenizer.TAG ) {
-				if( m_nextNodeClass == null ) {
-					m_nextNodeClass = Tag.class;
-					m_nextNodeText = m_tokenizer.getTokenText();
-				}
-				else {
-					createNextNode();
-					m_nextNodeClass = Comment.class;
-					m_nextNodeText = m_tokenizer.getTokenText();
+				switch( tokenType ) {
+					case Tokenizer.NONE:
+						createNextNode();
+						break;
+					
+					case Tokenizer.EMPTY_LINE:
+						createNextNode();
+						break;
+					
+					case Tokenizer.COMMENT:
+						processComment();
+						break;
+				
+					case Tokenizer.TAG:
+						processTag();
+						break;
+
+					case Tokenizer.TAG_INCREMENT:
+						processTagIncrement();
+						break;
+
+					case Tokenizer.SECTION_BORDER:
+						processSectionBorder();
+						break;
 				}
 			}
-			else if( tokenType == Tokenizer.TAG_INCREMENT ) {
-				if( m_nextNodeClass == Tag.class ) {
-					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
-				}
-				else {
-					throw new LoaderException(
-						"Parse error at line " + m_tokenizer.getLine() + ": unexpected '" + m_tokenizer.getTokenText() + "'.",
-						null );
-				}
-			}
-			else if( tokenType == Tokenizer.SECTION_BORDER ) {
-				if( m_nextNodeClass == null ) {
-					m_nextNodeClass = Section.class;
-					m_nextNodeText = m_tokenizer.getTokenText();
-				}
-				else if( m_nextNodeClass == Section.class ) {
-					m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
-				}
-				else {
-					createNextNode();
-					m_nextNodeClass = Comment.class;
-					m_nextNodeText = m_tokenizer.getTokenText();
-				}
-			}
+			while( tokenType != Tokenizer.NONE );
 		}
-		
-		return doxyfile;
+		catch( LoaderException loaderException ) {
+			throw loaderException;
+		}
+		catch( IOException ioException ) {
+			throw new LoaderException( "Unable to get doxygen settings.", ioException ); 
+		}
 	}
 	
 	/**
@@ -177,8 +156,15 @@ public class Loader {
 		}
 		
 		// Store the next node.
-		m_currentGroup.addChild( result );
-		m_currentGroup = result.getClass() == Section.class ? (Group) result : m_currentGroup;
+		if( result != null ) {
+			if( result.getClass() == Section.class ) {
+				m_doxyfile.addChild( result );
+				m_currentGroup = (Group) result;
+			}
+			else {
+				m_currentGroup.addChild( result );				
+			}
+		}
 		
 		// Reset the next node class and text.
 		m_nextNodeClass = null;
@@ -186,79 +172,70 @@ public class Loader {
 	}
 	
 	/**
-	 * @brief	Retrieve the next doxyfeil object.
-	 * 
-	 * @return	The next doxyfile object.
-	 *
-	 * @throws java.io.IOException	Error while reading.
+	 * Process the comment token waiting in the toknizer.
 	 */
-	/*private Node getNextNode() throws java.io.IOException {
-		String	nodeText = null;
-		Class	nodeClass = null;
-
-		for(;;)	{
-			String line = m_in.getLine();
-			
-			// We have reached the file end.
-			if( line == null )
-			{
-				break;
-			}
-			// Or jump empty lines.
-			else if( line.equals("\r\n") ) {
-				continue;
-			}
-			
-			// We will update the node text and class.
-			if( nodeClass == null )	{
-				nodeText = line;
-				nodeClass = getNodeClass( line );
-			}
-			else {
-				nodeText = nodeText.concat( line );
-			}
-						
-			// We check if the next line will sweet to the current node class.
-			String	preview = m_in.previewLine();
-			Class	previewClass = getNodeClass( preview );
-			
-			if( previewClass == Comment.class && nodeClass == Comment.class ) {
-				continue;
-			}
-			else if( previewClass == Comment.class && nodeClass == Section.class ) {
-				continue;
-			}
-			else if( previewClass == Section.class && nodeClass == Section.class ) {
-				continue;
-			}
-			else {
-				break;
-			}
+	private void processComment() {
+		if( m_nextNodeClass == null ) {
+			m_nextNodeClass = Comment.class;
+			m_nextNodeText = m_tokenizer.getTokenText();
 		}
-		return getNodeFromClass( nodeClass, nodeText );
-	}*/
-	
-	/**
-	 * @brief	Retrieve the class of node corresponding to the specified line of text.
-	 * 
-	 * @return	The class of the node corresponding to the spcified line of text.
-	 */
-	/*private static Class getNodeClass( String line ) {	
-		String	head = line.substring( 0, 2 );
-		Class	nodeClass;
-		
-		if( head.equals( "#-" ) == true ) {
-			nodeClass = Section.class;
+		else if( m_nextNodeClass == Section.class ) {
+			m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
 		}
-		else if( head.equals( "# " ) == true || head.equals( "#\r") == true ) {
-			nodeClass = Comment.class;
-		}
-		else if( head.equals("\r\n") == false ) {
-			nodeClass = Tag.class;
+		else if( m_nextNodeClass == Comment.class ) {
+			m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );	
 		}
 		else {
-			nodeClass = null;
+			createNextNode();
+			m_nextNodeClass = Comment.class;
+			m_nextNodeText = m_tokenizer.getTokenText();
 		}
-		return nodeClass;
-	}*/
+	}
+	
+	/**
+	 * Process the section border tag waiting in the tokenizer.
+	 */
+	private void processSectionBorder() {
+		if( m_nextNodeClass == null ) {
+			m_nextNodeClass = Section.class;
+			m_nextNodeText = m_tokenizer.getTokenText();
+		}
+		else if( m_nextNodeClass == Section.class ) {
+			m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
+		}
+		else {
+			createNextNode();
+			m_nextNodeClass = Comment.class;
+			m_nextNodeText = m_tokenizer.getTokenText();
+		}
+	}
+	
+	/**
+	 * Process the tag token waiting in the toeknizer.
+	 */
+	private void processTag() {
+		if( m_nextNodeClass == null ) {
+			m_nextNodeClass = Tag.class;
+			m_nextNodeText = m_tokenizer.getTokenText();
+		}
+		else {
+			createNextNode();
+			m_nextNodeClass = Comment.class;
+			m_nextNodeText = m_tokenizer.getTokenText();
+		}
+	}
+	
+	/**
+	 * Process the tag increment token waiting in the tokenizer.
+	 */
+	private void processTagIncrement() throws LoaderException {
+		if( m_nextNodeClass == Tag.class ) {
+			m_nextNodeText = m_nextNodeText.concat( m_tokenizer.getTokenText() );
+		}
+		else {
+			throw new LoaderException(
+				"Parse error at line " + m_tokenizer.getLine() + ": unexpected '" + m_tokenizer.getTokenText() + "'.",
+				null );
+		}
+	}
 }

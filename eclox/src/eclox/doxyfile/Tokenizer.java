@@ -35,6 +35,11 @@ class Tokenizer {
 	public static final int SECTION_BORDER = 4;
 	
 	/**
+	 * Define the empty line token.
+	 */
+	public static final int EMPTY_LINE = 5;
+	
+	/**
 	 * The input stream to split into tokens.
 	 */
 	private InputStream m_input;
@@ -98,19 +103,22 @@ class Tokenizer {
 		for(;;) {
 			String	text = readLine();
 			
-			if( text != null && text != "\r\n" ) {
+			if( text != null ) {
 				m_tokenText = text;
-				if( text.matches("\\w+\\s+=.*") ) {
+				if( text.matches("\\w+\\s+=.*\r\n") ) {
 					m_tokenType = TAG;
 				}
-				else if( text.matches("\\w+\\s+\\+=.*")) {
+				else if( text.matches("\\w+\\s+\\+=.*\r\n")) {
 					m_tokenType = TAG_INCREMENT;
 				}
-				else if( text.matches("#-+.*") ) {
+				else if( text.matches("#-+\r\n") ) {
 					m_tokenType = SECTION_BORDER;
 				}
-				else if( text.matches("#.*") ) {
+				else if( text.matches("#.*\r\n") ) {
 					m_tokenType = COMMENT;
+				}
+				else if( text.matches("\r\n") ) {
+					m_tokenType = EMPTY_LINE;
 				}
 				m_lineNumber++;
 				break;
