@@ -27,14 +27,17 @@ import org.eclipse.jface.preference.*;
  * Defines all preference names.
  * 
  * @author gbrocker
- * 
- * TODO move to pakage eclox.ui.plugin
  */
 public final class Preferences {
 	/**
 	 * Specifies the doxygen compiler path constant name.
 	 */
 	public static final String COMPILER_PATH = "CompilerPath";
+	
+	/**
+	 * Specifies the doxyfile history length name.
+	 */
+	public static final String BUILD_HISTORY_SIZE = "BuildHistorySize";
 	
 	/**
 	 * Specifies the auto save document constant name.
@@ -47,7 +50,8 @@ public final class Preferences {
 	 * @param	store	The preference store where the settings sould be initialized.
 	 */	
 	public static void setDefault( IPreferenceStore store ) {
-		store.setDefault( COMPILER_PATH, "" );
-		store.setDefault( AUTO_SAVE, true );
+		store.setDefault(COMPILER_PATH, "");
+		store.setDefault(BUILD_HISTORY_SIZE, 4);
+		store.setDefault(AUTO_SAVE, true);
 	}
 }
