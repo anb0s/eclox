@@ -1,0 +1,21 @@
+! (Bugfix)
++ (New feature)
+~ (Changed feature)
+- (Removed feature)
+
+0.1.1 (bombarde)
+================
+
+~ Enhancement in the editor UI layout
+	Margins arround the editor controls has been removed. Spacing between these
+	controls has been decreased to 1 pixel. Look's nicer.
+
+~ New file name support
+	Now, filenames that are recognized by the plugin contain either the
+	"doxyfile" string as base name or as extension.
+
+
+0.1.0 (bombarde)
+================
+
+[First available version]
