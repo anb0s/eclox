@@ -1,3 +1,6 @@
+echo-0.3.3 (in progress):
+    o Bug #815 fixed. The doxyfile parser now supports any possible line ending (CR, LF and CRLF).
+    
 eclox-0.3.2 (06-sep-2004):
     o Bug fixed. Loading doxyfile crashed on tags without values.
     o Bug fixed. Saving doxyfile crashed on tags having no description bloc.
