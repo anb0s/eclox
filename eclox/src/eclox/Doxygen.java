@@ -75,7 +75,7 @@ public final class Doxygen {
 		String				command = store.getString( Preferences.COMPILER_PATH );
 	
 		if( command.length() == 0 ) {
-			command = "Doxygen";
+			command = "doxygen";
 		}
 	
 		return command;
