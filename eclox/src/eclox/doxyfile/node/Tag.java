@@ -141,7 +141,7 @@ public class Tag extends Leaf {
 			Class	valueClass = m_valueClassProvider.getValueClass( name );
 		
 			result = (eclox.doxyfile.node.value.Abstract) valueClass.newInstance();
-			result.fromString( value );	
+			result.fromString( value.replaceAll("[\r\n]*", "") );	
 		}
 		catch( java.lang.Exception exception ) {
 			result = null;
