@@ -219,6 +219,8 @@ public class Builder extends ListenerManager {
 				new OutputMonitor( Build.ERROR_OUTPUT );
 				new OutputMonitor( Build.STANDARD_OUTPUT );
 				new LifeMonitor();
+				
+				BuildHistory.getDefault().log(file);
 			}
 			catch( IOException ioException ) {
 				throw new BuildFailedException( "Unable to launch the documentation compilation. Ensure that doxygen is available in the system path or check the compiler path in the preferences.", ioException );

@@ -1,4 +1,5 @@
 eclox-0.2.1 (in progress):
+    o Added the build history (with length preference).
     o Various clean-up (plugin preference class moved, icons moved to a
       dedicated folder, copyright date updated.)
 
