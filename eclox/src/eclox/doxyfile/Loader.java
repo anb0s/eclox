@@ -82,49 +82,57 @@ public class Loader {
 	}
 	
 	/**
-	 * Retrieves the text block for the next doxygen configuration item.
+	 * Retrieves the text block for the next doxyfile item.
 	 * 
-	 * @return	A string containing the next item text block, or null if the end of the doxygen
-	 * 			oncifguration has been reached.
+	 * @return	A string containing the next item item, or null if the end of the doxyfile
+	 *			has been reached.
 	 */
 	private String getNextItemText() throws SettingsCreationError {
-		String	result = null;
-		
+		String	itemText = null;
+
+		for(;;)
+		{
+			String line = readLine();
+						
+			// We have reached the file end.
+			if( line == null )
+			{
+				break;
+			}
+			// We are on an empty line, so the text item has been retrieved.	
+			else if( line.length() == 0 )
+			{
+				break;
+			}
+			else
+			{
+				break;
+			}
+		}
+			
+		return itemText;
+	}
+	
+	/**
+	 * @brief	Retrieve a line of text from the input stream.
+	 *
+	 * @return	A string containing the text line or null if the stream end
+	 * 			has been reached.
+	 */
+	private String readLine() throws SettingsCreationError {
 		try
 		{
-			String	itemText = new String();
+			String line = m_in.readLine();
 			
-			for(;;)
+			if( line != null )
 			{
-				String	line = m_in.readLine();
-	
-				if( line == null )
-				{
-					break;
-				}
-				else if( line.length() == 0 && itemText.length() != 0 )
-				{
-					break;
-				}
-				else if( line.length() != 0 )
-				{
-					if( itemText.length() != 0 )
-					{
-						itemText += "\r\n";
-					}
-					itemText += line;
-				}
+				line = line.concat( "\r\n" );
 			}
-			if( itemText.length() != 0 )
-			{
-				result = itemText;
-			}
+			return line;
 		}
 		catch( java.io.IOException ioException )
 		{
 			throw new SettingsCreationError( ioException );
 		}
-		
-		return result;
 	}
 }
