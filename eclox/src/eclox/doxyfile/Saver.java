@@ -30,7 +30,7 @@ import java.util.LinkedList;
 import eclox.doxyfile.node.Comment;
 import eclox.doxyfile.node.Group;
 import eclox.doxyfile.node.Node;
-import eclox.doxyfile.node.Root;
+import eclox.doxyfile.node.Doxyfile;
 import eclox.doxyfile.node.Section;
 import eclox.doxyfile.node.Tag;
 import eclox.doxyfile.node.Visitor;
@@ -67,7 +67,7 @@ public class Saver extends InputStream implements Visitor {
 	 * 
 	 * @param	root	The root node to process.
 	 */
-	public void process( Root root ) throws VisitorException {
+	public void process( Doxyfile root ) throws VisitorException {
 		processChildren( root );
 	}
 	

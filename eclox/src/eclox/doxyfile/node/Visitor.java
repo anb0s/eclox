@@ -55,5 +55,5 @@ public interface Visitor {
 	 *
 	 * @param	settings	The settings to process.
 	 */
-	public void process( Root settings ) throws VisitorException;
+	public void process( Doxyfile settings ) throws VisitorException;
 }
