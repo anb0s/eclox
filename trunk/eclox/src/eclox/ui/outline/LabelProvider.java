@@ -48,9 +48,6 @@ public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 			eclox.doxyfile.node.Section.class,
 			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OBJ_FOLDER ) );
 		m_images.put(
-			eclox.doxyfile.node.Comment.class,
-			sharedImages.getImage( org.eclipse.ui.ISharedImages.IMG_OBJS_INFO_TSK ) );
-		m_images.put(
 			eclox.doxyfile.node.Tag.class,
 			sharedImages.getImage( IDE.SharedImages.IMG_OPEN_MARKER) );
 	}
@@ -85,11 +82,6 @@ public class LabelProvider extends org.eclipse.jface.viewers.LabelProvider {
 			eclox.doxyfile.node.Tag	tag = (eclox.doxyfile.node.Tag) element;
 			
 			text = tag.getName();
-		}
-		else if( element instanceof eclox.doxyfile.node.Comment ) {
-			eclox.doxyfile.node.Comment	comment = (eclox.doxyfile.node.Comment) element;
-			
-			text = comment.getText();
 		}
 		else {
 			text = super.getText( element );

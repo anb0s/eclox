@@ -38,6 +38,11 @@ public abstract class Node extends ListenerManager implements IAdaptable {
 	private Doxyfile doxyfile;
 	
 	/**
+	 * The node description.
+	 */
+	private Description description;
+	
+	/**
 	 * The node's dirty flag.
 	 */
 	private boolean dirty = false;
@@ -79,6 +84,15 @@ public abstract class Node extends ListenerManager implements IAdaptable {
 	 * @author gbrocker
 	 */
 	public abstract java.util.Collection getChildren();
+	
+	/**
+	 * Retrieve the node description.
+	 * 
+	 * @return	a description of the node.
+	 */
+	public Description getDescription() {
+		return this.description;
+	}
 		
 	/**
 	 * Retrieves the node's doxyfile.
@@ -113,11 +127,14 @@ public abstract class Node extends ListenerManager implements IAdaptable {
 	public abstract void setClean(); 
 	
 	/**
-	 * Converts the node to its text representation.
+	 * Set the node description.
 	 * 
-	 * @return	A string containing the text representation of the node.
+	 * @param	description	the new node description
 	 */
-	public abstract String toString();
+	public void setDescription(Description description) {
+		this.description = description;
+		this.setDirtyInternal();
+	}
 	
 	/**
 	 * Mark the node as dirty.

@@ -21,45 +21,32 @@
 
 package eclox.doxyfile.node;
 
-import eclox.doxyfile.Doxyfile;
-
 /**
+ * Implement a doxyfile node description
  * @author gbrocker
  */
-public class Comment extends Leaf {
+public class Description {
 	/**
 	 * The comment text.
 	 */
-	private String m_text;
+	private String text;
 	
 	/**
 	 * The comment raw text.
 	 */
-	private String m_rawText;
+	private String rawText;
 	
 	/**
 	 * Constructor.
 	 * 
-	 * @param	doxyfile	The doxyfile the comment belongs to.
 	 * @param	rawText		The comment raw text.
 	 */
-	public Comment(Doxyfile doxyfile, String rawText) {
-		super(doxyfile);
-		
-		m_rawText = new String( rawText );		
-		m_text = new String( rawText );
-		m_text = m_text.replaceAll( "# ", "" );
-		m_text = m_text.replaceAll( "#\r\n", "" );
-		m_text = m_text.replaceAll( "\r\n", " " );
-	}
-	
-	/**
-	 * Make the specified visitor process the comment.
-	 * 
-	 * @param	visitor	The visitor to feed.
-	 */
-	public void accept( Visitor visitor ) throws VisitorException {
-		visitor.process( this );
+	public Description(String rawText) {
+		this.rawText = new String( rawText );		
+		this.text = new String( rawText );
+		this.text = this.text.replaceAll( "# ", "" );
+		this.text = this.text.replaceAll( "#\r\n", "" );
+		this.text = this.text.replaceAll( "\r\n", " " );
 	}
 	
 	/**
@@ -75,7 +62,7 @@ public class Comment extends Leaf {
 	 * @return	A string containing the comment text.
 	 */
 	public final String getText() {
-		return m_text;
+		return this.text;
 	}
 	
 	/**
@@ -84,6 +71,6 @@ public class Comment extends Leaf {
 	 * @return A string containing the text representation of the node.
 	 */
 	public String toString() {
-		return m_rawText;
+		return this.rawText;
 	}
 }

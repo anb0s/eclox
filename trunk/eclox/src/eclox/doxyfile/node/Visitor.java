@@ -30,13 +30,6 @@ import eclox.doxyfile.*;
  */
 public interface Visitor {
 	/**
-	 * Process a comment item.
-	 * 
-	 * @param comment	The comment to process.
-	 */
-	public void process( Comment comment ) throws VisitorException;
-	
-	/**
 	 * Process a group item.
 	 * 
 	 * @param group	The group to process.

@@ -25,7 +25,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 
 import eclox.doxyfile.Doxyfile;
 import eclox.doxyfile.adapter.SectionPropertySource;
-import eclox.doxyfile.node.util.*;
 
 /**
  * Implements a doxygen tag section.
@@ -36,37 +35,26 @@ public class Section extends Group {
 	/**
 	 * The name provider for all section instances.
 	 */
-	private static final SectionNameProvider m_nameProvider = new SectionNameProvider();
+//	private static final SectionNameProvider m_nameProvider = new SectionNameProvider();
 	
 	/**
-	 * The section header.
+	 * The section name.
 	 */
-	private String m_header;
-	
-	/**
-	 * The section raw header.
-	 */
-	private String m_rawHeader;
-	
-	/**
-	 * The section name (deducted from the header)
-	 */
-	private String m_name;
+	private String name = "";
 	
 	/**
 	 * Constructor.
 	 * 
 	 * @param	doxyfile	The doxyfile the section belongs to.
-	 * @param	header		A string containing the group header.
 	 */
-	public Section(Doxyfile doxyfile, String header) {
+	public Section(Doxyfile doxyfile) {
 		super(doxyfile);
 		
-		m_rawHeader = new String( header );
-		m_header = new String( header );
-		m_header = m_header.replaceAll( "#-+[\r\n]+", "" );
-		m_header = m_header.replaceAll( "# |[\r\n]+", "" );
-		m_name = m_nameProvider.getName( m_header );	
+//		m_rawHeader = new String( header );
+//		m_header = new String( header );
+//		m_header = m_header.replaceAll( "#-+[\r\n]+", "" );
+//		m_header = m_header.replaceAll( "# |[\r\n]+", "" );
+//		m_name = m_nameProvider.getName( m_header );	
 	}
 
 	/**
@@ -91,29 +79,21 @@ public class Section extends Group {
 	}
 	
 	/**
-	 * Retrieve the section header.
-	 * 
-	 * @return	A string containing the section header.
-	 */
-	public final String getHeader() {
-		return m_header;
-	}
-	
-	/**
 	 * Retrieve the section name.
 	 * 
 	 * @return	A string containing the section name.
 	 */
-	public final String getName() {
-		return m_name;
+	public String getName() {
+		return this.name;
 	}
 	
 	/**
-	 * Convert the node to its string representation.
-	 * 
-	 * @return	A string containing the node text representation.
+	 * Set the name of the section.
+	 *
+	 * @param name	a new name for the section
 	 */
-	public String toString() {
-		return m_rawHeader;
+	public void setName(String name) {
+		this.name = name;
+		this.setDirtyInternal();
 	}
 }

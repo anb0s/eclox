@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 
+import eclox.doxyfile.node.Description;
 import eclox.doxyfile.node.Group;
 import eclox.doxyfile.node.Visitor;
 import eclox.doxyfile.node.VisitorException;
@@ -37,6 +38,11 @@ import eclox.doxyfile.node.VisitorException;
  * @author gbrocker
  */
 public class Doxyfile extends Group {
+	/**
+	 * The doxyfile version.
+	 */
+	private Description version;
+	
 	/**
 	 * The resource file corresponding to the doxyfile.
 	 */
@@ -90,11 +96,21 @@ public class Doxyfile extends Group {
 	}
 	
 	/**
-	 * Retrieve the node text representation.
+	 * Retrieve the doxyfile version.
 	 * 
-	 * @return	A string containing the node text representation.
+	 * @return	the doxyfile version.
 	 */
-	public String toString() {
-		return new String();
+	public Description getVersion() {
+		return this.version;
+	}
+	
+	/**
+	 * Set the doxyfile version.
+	 * 
+	 * @param	version	a doxyfile version.
+	 */
+	public void setVersion(Description version) {
+		this.version = version;
+		this.setDirtyInternal();
 	}
 }

@@ -19,15 +19,13 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.doxyfile;
+package eclox.doxyfile.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Iterator;
-import java.util.LinkedList;
 
-import eclox.doxyfile.node.Comment;
+import eclox.doxyfile.Doxyfile;
 import eclox.doxyfile.node.Group;
 import eclox.doxyfile.node.Node;
 import eclox.doxyfile.node.Section;
@@ -41,33 +39,23 @@ import eclox.doxyfile.node.VisitorException;
  * 
  * @author gbrocker
  */
-public class Saver extends InputStream implements Visitor {
-	/**
-	 * The list of all nodes to process.
-	 */
-	List m_nodes = new LinkedList();
-	
+public class Serializer extends InputStream implements Visitor {
 	/**
 	 * The current stream buffer.
 	 */
-	String m_buffer = new String();
-	
-	/**
-	 * Make the visitor process the specified commment.
-	 * 
-	 * @param	comment	The comment to process.
-	 */
-	public void process( Comment comment ) throws VisitorException {
-		m_nodes.add( comment );		
-	}
+	private String buffer = new String();
 	
 	/**
 	 * Make the visitor process the specified root.
 	 * 
 	 * @param	root	The root node to process.
 	 */
-	public void process( Doxyfile root ) throws VisitorException {
-		processChildren( root );
+	public void process(Doxyfile root) throws VisitorException {
+		this.buffer += root.getVersion();
+		this.buffer += "\r\n";
+		this.buffer += root.getDescription().toString();
+		this.buffer += "\r\n";
+		processChildren(root);
 	}
 	
 	/**
@@ -75,9 +63,9 @@ public class Saver extends InputStream implements Visitor {
 	 * 
 	 * @param	section	The section to process.
 	 */
-	public void process( Section section ) throws VisitorException {
-		m_nodes.add( section );
-		processChildren( section );
+	public void process(Section section) throws VisitorException {
+		this.buffer += section.getDescription().toString();
+		processChildren(section);
 	}
 	
 	/**
@@ -86,7 +74,10 @@ public class Saver extends InputStream implements Visitor {
 	 * @param	tag	The tag to process.
 	 */
 	public void process( Tag tag ) throws VisitorException {
-		m_nodes.add( tag );
+		this.buffer += tag.getDescription().toString();
+		this.buffer += tag.getName();
+		this.buffer += " = ";
+		this.buffer += tag.getValue().toString();
 	}
 	
 	/**
@@ -96,23 +87,15 @@ public class Saver extends InputStream implements Visitor {
 	 */
 	public int read() throws IOException {
 		int	result;
-		
-		// Check the stream buffer state.
-		if( m_buffer.length() == 0 && m_nodes.isEmpty() == false ){
-			Node	node = (Node) m_nodes.remove( 0 );
-	
-			m_buffer = node.toString() + "\r\n";
-		}
-		
+			
 		// Get the next stream char.
-		if( m_buffer.length() != 0 ) {
-			result = m_buffer.charAt( 0 );
-			m_buffer = m_buffer.substring( 1 );
+		if( this.buffer.length() != 0 ) {
+			result = this.buffer.charAt( 0 );
+			this.buffer = this.buffer.substring( 1 );
 		}
 		else {
 			result = -1;
-		}
-		
+		}		
 		return result;
 	}
 	
@@ -123,10 +106,10 @@ public class Saver extends InputStream implements Visitor {
 	 * 
 	 * @throws VisitorException
 	 */
-	private void processChildren( Group group ) throws VisitorException {
+	private void processChildren(Group group) throws VisitorException {
 		Iterator	childPointer = group.getChildren().iterator();
 		
-		while( childPointer.hasNext() ) {
+		while(childPointer.hasNext() == true) {
 			Node	child = (Node)childPointer.next();
 			
 			child.accept( this );

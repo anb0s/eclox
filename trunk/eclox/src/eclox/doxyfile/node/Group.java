@@ -45,8 +45,8 @@ public abstract class Group extends Node {
 		 * @param	event	The event to process. 
 		 */
 		public void nodeClean( NodeEvent event ) {
-			m_dirtyChildren.remove( event.node );
-			if( m_dirtyChildren.isEmpty() ) {
+			dirtyChildren.remove( event.node );
+			if( dirtyChildren.isEmpty() ) {
 				setCleanInternal();
 			}
 		}
@@ -57,7 +57,7 @@ public abstract class Group extends Node {
 		 * @param	event	The event to process.
 		 */
 		public void nodeDirty( NodeEvent event ) {
-			m_dirtyChildren.add( event.node );
+			dirtyChildren.add( event.node );
 			setDirtyInternal();
 		}	
 	}
@@ -65,12 +65,12 @@ public abstract class Group extends Node {
 	/**
 	 * The dirty child node count.
 	 */
-	private Set m_dirtyChildren = new HashSet();
+	private Set dirtyChildren = new HashSet();
 	
 	/**
 	 * The child node collection.
 	 */
-	private java.util.Collection m_children = new ArrayList();
+	private java.util.Collection children = new ArrayList();
 	
 	/**
 	 * Constructor
@@ -87,7 +87,7 @@ public abstract class Group extends Node {
 	 * @param child	The child node to add.
 	 */
 	public void addChild( Node child ) {
-		m_children.add( child );
+		this.children.add( child );
 		child.addNodeListener( new ChildNodeListener() );
 	}
 	
@@ -99,7 +99,7 @@ public abstract class Group extends Node {
 	 * @author gbrocker
 	 */
 	public java.util.Collection getChildren() {
-		return new ArrayList( m_children );
+		return new ArrayList( children );
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public abstract class Group extends Node {
 		if( isDirty() ) {
 			Iterator	childPointer;
 			
-			childPointer = m_children.iterator();
+			childPointer = this.children.iterator();
 			while( childPointer.hasNext() ) {
 				Node	child;
 				

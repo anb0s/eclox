@@ -23,8 +23,7 @@
 package eclox.ui.outline;
 
 
-import java.util.*;
-import eclox.doxyfile.node.*;
+import eclox.doxyfile.node.Node;
 
 /**
  * Implements the content provider for the outline tree view.
@@ -40,11 +39,11 @@ public class ContentProvider implements org.eclipse.jface.viewers.ITreeContentPr
 	}
 	
 	public Object[] getElements( Object inputElement ) {
-		return getGroupChildren( inputElement );
+		return getNodeChildren( inputElement );
 	}
 	
 	public Object[] getChildren( Object object ) {
-		return getGroupChildren( object );
+		return getNodeChildren( object );
 	}
 	
 	public Object getParent( Object object ) {
@@ -67,30 +66,21 @@ public class ContentProvider implements org.eclipse.jface.viewers.ITreeContentPr
 	}
 	
 	/**
-	 * Retrieves the relevent childrens of the specified object if it is an instance of the data.Group
-	 * interface.
+	 * Retrieves the relevent childrens of the specified object if it is an instance 
+	 * of a doxyfile node.
 	 * 
 	 * @param object	The object from which children must get retrieved.
 	 * 
 	 * @return	An array of the found children.
 	 */
-	private Object[] getGroupChildren( Object object ) {
-		ArrayList	result = new ArrayList();
+	private Object[] getNodeChildren( Object object ) {
+		Object[]	result = new Object[0];
 		
 		if( object instanceof Node ) {
-			Node		group = (Node) object;
-			Collection	children = group.getChildren();
-			Iterator	curChild = children.iterator();
+			Node	node = (Node) object;
 			
-			while( curChild.hasNext() ) {
-				Object	child = curChild.next();
-				
-				if( (child instanceof Comment) == false ) {
-					 result.add( child );
-				}
-			}
-		}
-		
-		return result.toArray();
+			result = node.getChildren().toArray();
+		}		
+		return result;
 	}
 }
