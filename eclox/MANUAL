@@ -38,7 +38,8 @@
 
   When the documentation build starts, a new view showing the build log opens.
  In its toolbar, a button named "Stop" allows you to halt the current build
- process.
+ process. The current build also appears in the Eclipse job progress view and
+ you can control the job from there.
  
   The build toolbar action determine the next doxyfile to build depending on
  the current active workbench part (editor or view) and the current selection

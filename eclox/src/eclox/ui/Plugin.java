@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-import eclox.build.Builder;
+import eclox.build.BuildJob;
 import eclox.ui.plugin.Icons;
 import eclox.ui.plugin.Preferences;
 
@@ -90,8 +90,7 @@ public class Plugin extends AbstractUIPlugin {
 	 * Overrides the default shutdown to stop any buld in progress.
 	 */
 	public void shutdown() throws CoreException {
-		// Ensure that the builder stops.
-		Builder.getDefault().stop();
+		BuildJob.getDefault().cancel();
 		super.shutdown();
 	}
 	

@@ -23,25 +23,27 @@
 package eclox.ui.view;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
-import eclox.build.BuildEvent;
-import eclox.build.BuildListener;
-import eclox.build.Builder;
+import eclox.build.BuildJob;
+import eclox.build.BuildOutputEvent;
+import eclox.build.BuildOutputListener;
 import eclox.doxyfile.DoxyfileSelectionProvider;
 import eclox.ui.Plugin;
 import eclox.ui.action.StopAction;
-
-import org.eclipse.ui.IActionBars;
 
 /**
  * Implements a view displaying the doxygen build log.
@@ -50,45 +52,177 @@ import org.eclipse.ui.IActionBars;
  */
 public class BuildLogView extends ViewPart {
 	/**
-	 * Implement a builder listener class.
+	 * Implement an UI task that appends text to the log.
 	 */
-	private class BuilderListener  implements BuildListener {
+	private class AppendLogTextTask implements Runnable {
 		/**
-		 * Process the specified build event.
-		 * 
-		 * @param	event	The build event to process.
+		 * The text to append.
 		 */
-		public void buildStarted( BuildEvent event ) {
-			m_text.setText( "" );
-			stopAction.setEnabled(true);
-			appendText( "Running doxygen...\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
-			setDoxyfile(event.doxyfile);
+		private String logText;
+		
+		/**
+		 * Tell if the text is special
+		 */
+		boolean special;
+		
+		/**
+		 * Constructor.
+		 * 
+		 * 
+		 * @param	text	The text to append
+		 * @param	special	true if the text is special.
+		 */
+		public AppendLogTextTask(String text, boolean special) {
+			this.logText = text;
+			this.special = special;
 		}
 		
-		public void buildOutputChanged( BuildEvent event ) {
-			appendText( (String) event.value, null );
+		public void run() {
+			int	previousEndOffset = text.getCharCount();
+
+			text.append(this.logText);
+			if(this.special == true) {
+				text.setStyleRange(
+					new StyleRange(
+						previousEndOffset,
+						this.logText.length(),
+						new Color(text.getDisplay(), 0, 0, 255),
+						null
+					)
+				);
+			}
+			text.setSelection(text.getCharCount());
+			text.showSelection();
 		}
+	}
+	
+	/**
+	 * Implement an UI task that change the enable state of the stop action.
+	 */
+	private class EnableStopActionTask implements Runnable {
+		/**
+		 * The enable state to set.
+		 */
+		private boolean enable;
+		
+		/**
+		 * Constructor.
+		 * 
+		 * @param enable	The new enable state for the stop action.
+		 */
+		public EnableStopActionTask(boolean enable) {
+			this.enable = enable;
+		}
+		
+		public void run() {
+			stopAction.setEnabled(this.enable);
+		}
+	}
+	
+	/**
+	 * Implement an UI task that resets the log text.
+	 */
+	private class LogResetTask implements Runnable {
+		public void run() {
+			text.setText("");
+		}
+	}
+	
+	/**
+	 * Implement an UI task that set the doxyfile to the view.
+	 */
+	private class DoxyfileUpdateTask implements Runnable {
+		/**
+		 * The doxyfile to set.
+		 */
+		private IFile doxyfile;
+		
+		/**
+		 * Constructor.
+		 * 
+		 * @param	doxyfile	The doxyfile to set.
+		 */
+		public DoxyfileUpdateTask(IFile doxyfile) {
+			this.doxyfile = doxyfile;
+		}
+		
+		public void run() {
+			DoxyfileSelectionProvider selectionProvider = ((DoxyfileSelectionProvider)getViewSite().getSelectionProvider());
 			
-		public void buildEnded( BuildEvent event ) {
-			stopAction.setEnabled(false);
-			appendText( "Doxygen work done !\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
+			selectionProvider.setDoxyfile(doxyfile);
+			setTitle("Doxygen Build Log - " + doxyfile.getFullPath().toString());
+		}
+	}
+	
+	private class OutputListener implements BuildOutputListener {
+		/**
+		 * Notify that a build job output has changed.
+		 * 
+		 * @param	event	The build output event to process.
+		 */
+		public void buildOutputChanged(BuildOutputEvent event) {
+			runUITask(new AppendLogTextTask(event.text, false));
+		}
+	}
+	
+	private class JobListener extends JobChangeAdapter {
+		/**
+		 * Notification that a job has completed execution, either due to cancelation, successful completion, or failure.
+		 * The event status object indicates how the job finished, and the reason for failure, if applicable.
+		 * 
+		 * @param	event	the event details
+		 */
+		public void done(IJobChangeEvent event) {
+			String message = null;
+			
+			switch(event.getResult().getSeverity()) {
+				case Status.CANCEL:
+					message = "Build canceled!";
+					break;
+					
+				case Status.ERROR:
+					message = "Error while building!";
+					break;
+					
+				case Status.OK:
+					message = "Build done.";
+					break;
+			}
+			runUITask(new AppendLogTextTask(message + "\r\n", true));
+			runUITask(new EnableStopActionTask(false));
 		}
 
-		public void buildStopped( BuildEvent event ) {			
-			stopAction.setEnabled(false);
-			appendText( "Doxygen work stopped by user !\r\n", new Color( m_text.getDisplay(), 0, 0, 255 ) );
+		/**
+		 * Notification that a job has started running.
+		 * 
+		 * @param	event	the event details
+		 */
+		public void running(IJobChangeEvent event) {	
+			runUITask(new LogResetTask());
+			runUITask(new AppendLogTextTask("Running doxygen...\r\n", true));
+			runUITask(new EnableStopActionTask(true));
+			runUITask(
+				new DoxyfileUpdateTask(
+					((BuildJob)event.getJob()).getDoxyfile()
+				)
+			);
 		}
 	}
 		
 	/**
 	 * The text control that will receive the log text.
 	 */
-	private StyledText m_text = null;
+	private StyledText text = null;
 	
 	/**
-	 * The builder listener.
+	 * The build output listener.
 	 */
-	private BuilderListener builderListener = new BuilderListener();
+	private OutputListener outputListener = new OutputListener();
+	
+	/**
+	 * The build job listener.
+	 */
+	private JobListener jobListener = new JobListener();
 	
 	/**
 	 * The stop action.
@@ -127,6 +261,8 @@ public class BuildLogView extends ViewPart {
 	public void init(IViewSite site) throws PartInitException {
 		super.init(site);
 		site.setSelectionProvider(new DoxyfileSelectionProvider());
+		BuildJob.getDefault().addJobChangeListener(this.jobListener);
+		BuildJob.getDefault().addBuildOutputListener(this.outputListener);
 	}
 
 	/**
@@ -135,7 +271,7 @@ public class BuildLogView extends ViewPart {
 	 * @param	parent	The parent widget.
 	 */
 	public void createPartControl( Composite parent ) {
-		m_text = new StyledText( parent, SWT.READ_ONLY | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL  );
+		this.text = new StyledText( parent, SWT.READ_ONLY | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL  );
 		createActions();
 	}
 	
@@ -143,7 +279,8 @@ public class BuildLogView extends ViewPart {
 	 * The part is being destroyed.
 	 */
 	public void dispose() {
-		Builder.getDefault().removeListener( this.builderListener );
+		BuildJob.getDefault().removeJobChangeListener(this.jobListener);
+		BuildJob.getDefault().removeBuildOutputListener(this.outputListener);
 		super.dispose();
 	}
 	
@@ -151,25 +288,15 @@ public class BuildLogView extends ViewPart {
 	 * The part will take the focus within the part.
 	 */
 	public void setFocus() {
-		Builder.getDefault().addListener( this.builderListener );
 	}
 	
 	/**
-	 * Appends some text to log view.
+	 * Run the specified UI task.
 	 * 
-	 * @param text	The text to append.
-	 * @param color	The color to set for the text, or null if none.
+	 * @param	task	The UI task to run.
 	 */
-	private void appendText( String text, Color color ) {
-		int	previousEndOffset = m_text.getCharCount();
-
-		m_text.append( text );
-		if( color != null ) {
-			m_text.setStyleRange(
-				new StyleRange( previousEndOffset, text.length(), color, null ) );
-		}
-		m_text.setSelection( m_text.getCharCount() );
-		m_text.showSelection();
+	private void runUITask(Runnable task) {
+		text.getDisplay().syncExec(task);
 	}
 	
 	/**
@@ -185,17 +312,5 @@ public class BuildLogView extends ViewPart {
 		catch( Throwable throwable ) {
 			Plugin.getDefault().showError(throwable);
 		}
-	}
-	
-	/**
-	 * Set the current doxyfile
-	 * 
-	 * @param	doxyfile	The new current doxyfile.
-	 */
-	private void setDoxyfile(IFile doxyfile) {
-		DoxyfileSelectionProvider selectionProvider = ((DoxyfileSelectionProvider)getViewSite().getSelectionProvider());
-		
-		selectionProvider.setDoxyfile(doxyfile);
-		this.setTitle("Doxygen Build Log - " + doxyfile.getFullPath().toString());
 	}
 }
