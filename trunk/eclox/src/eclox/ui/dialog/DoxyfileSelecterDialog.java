@@ -21,9 +21,6 @@
 
 package eclox.ui.dialog;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,6 +34,8 @@ import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -50,7 +49,6 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.ide.IDE;
 
-import eclox.doxyfile.Doxyfile;
 import eclox.ui.Plugin;
 
 
@@ -103,8 +101,9 @@ public class DoxyfileSelecterDialog {
 					break;
 					
 				case IResource.FILE:
-					if(Doxyfile.isFileNameValid(proxy.getName()) == true) {
-						m_doxyfiles.add(proxy.requestResource());
+					IFile	file =(IFile) proxy.requestResource();
+					if(file.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
+						m_doxyfiles.add(file);
 					}
 					result = false;
 					break;

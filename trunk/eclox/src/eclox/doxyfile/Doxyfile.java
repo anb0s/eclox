@@ -21,9 +21,6 @@
 
 package eclox.doxyfile;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.eclipse.core.resources.IFile;
 
 import eclox.doxyfile.node.Description;
@@ -47,20 +44,6 @@ public class Doxyfile extends Group {
 	 * The resource file corresponding to the doxyfile.
 	 */
 	private IFile file;
-	
-	/**
-	 * Tell if the specified file name is a valid doxyfile name.
-	 * 
-	 * @param	name	The doxyfile name to test.
-	 * 
-	 * @return	true or alse.
-	 */
-	public static boolean isFileNameValid(String name) {
-		Pattern pattern = Pattern.compile(".*doxyfile.*", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(name);
-					
-		return matcher.matches();
-	}
 	
 	/**
 	 * Constructor.
