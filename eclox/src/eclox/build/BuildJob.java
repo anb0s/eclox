@@ -169,6 +169,7 @@ public class BuildJob extends Job {
 		IStatus	result = null;
 		
 		monitor.beginTask(this.doxyfile.getFullPath().toString(), 100);
+		BuildHistory.getDefault().log(this.doxyfile);
 		try {
 			Process buildProcess = Doxygen.build(this.doxyfile);
 			
