@@ -1,4 +1,4 @@
-/*
+/**
 	eclox : Doxygen plugin for Eclipse.
 	Copyright (C) 2003-2004 Guillaume Brocker
 
@@ -19,31 +19,21 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-
 package eclox.build;
 
+import java.util.EventListener;
+
 /**
- * Implements a exception thrown when the build could not be completed.
+ * Define the build job output listener, receiving notification about
+ * build job output updates.
  * 
  * @author gbrocker
  */
-public class BuildFailedException extends Exception {
+public interface BuildOutputListener extends EventListener {
 	/**
-	 * Constrcutor.
+	 * Notify that a build job output has changed.
 	 * 
-	 * @param	message	A string containing the explanation.
-	 * @param	reason	A throwable object that is the reason of the exception.
+	 * @param	event	The build output event to process.
 	 */
-	public BuildFailedException(String message, Throwable throwable) {
-		super(message, throwable);			
-	}
-	
-	/**
-	 * Constrcutor.
-	 * 
-	 * @param	message	A string containing the explanation.
-	 */
-	public BuildFailedException(String message) {
-		super(message);			
-	}
+	public void buildOutputChanged(BuildOutputEvent event);
 }

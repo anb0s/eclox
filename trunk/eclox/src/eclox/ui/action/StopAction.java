@@ -23,7 +23,7 @@ package eclox.ui.action;
 
 import org.eclipse.jface.action.Action;
 
-import eclox.build.Builder;
+import eclox.build.BuildJob;
 import eclox.ui.Plugin;
 import eclox.ui.plugin.Icons;
 
@@ -41,13 +41,13 @@ public class StopAction extends Action {
 			"Stop",
 			Plugin.getDefault().getImageRegistry().getDescriptor(Icons.STOP)
 		);
-		setEnabled(Builder.getDefault().isRunning());
+		setEnabled(BuildJob.getDefault().getState()==BuildJob.RUNNING);
 	}
 	
 	/**
 	 * Run the action.
 	 */
 	public void run() {
-		Builder.getDefault().stop();
+		BuildJob.getDefault().cancel();
 	}
 }

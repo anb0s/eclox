@@ -38,7 +38,7 @@ import org.eclipse.ui.PlatformUI;
 import eclox.build.BuildHistory;
 import eclox.build.BuildHistoryEvent;
 import eclox.build.BuildHistoryListener;
-import eclox.build.Builder;
+import eclox.build.BuildJob;
 import eclox.doxyfile.Doxyfile;
 import eclox.doxyfile.DoxyfileSelection;
 import eclox.ui.Plugin;
@@ -213,7 +213,8 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 			// If there is a doxyfile, build it.
 			if(doxyfile != null) {
 				BuildLogView.show();
-				Builder.getDefault().start(doxyfile);
+				BuildJob.getDefault().setDoxyfile(doxyfile);
+				BuildJob.getDefault().schedule();
 			}
 		}
 		catch(Throwable throwable) {

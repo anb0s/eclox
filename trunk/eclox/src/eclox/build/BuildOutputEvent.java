@@ -1,4 +1,4 @@
-/*
+/**
 	eclox : Doxygen plugin for Eclipse.
 	Copyright (C) 2003-2004 Guillaume Brocker
 
@@ -19,43 +19,36 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-
 package eclox.build;
 
-import java.util.EventListener;
+import java.util.EventObject;
 
 /**
- * Defines the interface for the builder.
+ * Implement the build job output event, reporting that the build job output
+ * has been updated.
  * 
  * @author gbrocker
  */
-public interface BuildListener extends EventListener {
+public class BuildOutputEvent extends EventObject {
 	/**
-	 * Notify the listener that a build has started
-	 * 
-	 * @param event	The build event to process.
+	 * The job that raised the event.
 	 */
-	public void buildStarted( BuildEvent event );
+	public BuildJob job;
 	
 	/**
-	 * Notify the listener that a build has been stopped. The build may not be complet.
-	 * 
-	 * @param	event	The build event to process.
+	 * The text that the job has outputed.
 	 */
-	public void buildStopped( BuildEvent event );
+	public String text;
 	
 	/**
-	 * Notify the listener the build has ended. This is the normal ending, the build is also complet.
+	 * Constructor
 	 * 
-	 * @param	event	The event to process.
+	 * @param	job		The build job that raised the event.
+	 * @param	text	The text that has been outputed by the build job.
 	 */
-	public void buildEnded( BuildEvent event );
-			
-	/**
-	 * Notify the listener that the build process output has changed. A string containing the
-	 * new output text is set as the event value.
-	 * 
-	 * @param	event	The event to process. 
-	 */
-	public void buildOutputChanged( BuildEvent event );
+	public BuildOutputEvent(BuildJob job, String text) {
+		super(job);
+		this.job = job;
+		this.text = text;
+	}
 }
