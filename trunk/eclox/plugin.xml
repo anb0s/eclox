@@ -2,7 +2,7 @@
 <plugin
    id="eclox"
    name="Doxygen in eclipse"
-   version="0.2.0"
+   version="0.2.1"
    provider-name=""
    class="eclox.ui.Plugin">
 
