@@ -30,7 +30,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
-import eclox.Doxygen;
+import eclox.doxygen.Doxygen;
+import eclox.doxygen.DoxygenException;
 import eclox.util.ListenerManager;
 
 /**
@@ -163,8 +164,6 @@ public class BuildJob extends Job {
 	 * 					and handle cancelation requests.
 	 * 
 	 * @return	The job status.
-	 * 
-	 * TODO Improve the returned status.
 	 */
 	protected IStatus run(IProgressMonitor monitor) {
 		IStatus	result = null;
@@ -184,8 +183,11 @@ public class BuildJob extends Job {
 		catch(WatchException watchException) {
 			result = watchException.status;
 		}
+		catch(DoxygenException doxygenException) {
+			result = new Status(Status.ERROR, eclox.ui.Plugin.getDefault().toString(), 0, doxygenException.getMessage(), null);
+		}
 		catch(Throwable throwable) {
-			result = Status.CANCEL_STATUS;
+			result = new Status(Status.ERROR, eclox.ui.Plugin.getDefault().toString(), 0, "Unexpected error while building.", throwable);
 		}
 		monitor.done();
 		return result;

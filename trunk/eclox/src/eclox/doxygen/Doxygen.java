@@ -19,7 +19,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox;
+package eclox.doxygen;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -45,13 +45,18 @@ public final class Doxygen {
 	 * 
 	 * @return	The process that run the build.
 	 */
-	public static Process build( IFile file ) throws IOException {
-		IPath		workDir = getDir( file ); 
-		String[]	command = new String[2];
+	public static Process build( IFile file ) throws DoxygenException {
+		try {
+			IPath		workDir = getDir( file ); 
+			String[]	command = new String[2];
 
-		command[0] = getBuilderCommand();
-		command[1] = file.getLocation().makeAbsolute().toOSString();
-		return Runtime.getRuntime().exec( command, null, workDir.toFile() );
+			command[0] = getBuilderCommand();
+			command[1] = file.getLocation().makeAbsolute().toOSString();
+			return Runtime.getRuntime().exec( command, null, workDir.toFile() );
+		}
+		catch(Throwable throwable) {
+			throw new DoxygenException("Unable to launch Doxygen. Please check your path environment variable or edit the preferences.", throwable);
+		}
 	}
 	
 	/**
