@@ -97,7 +97,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 		
 	}
 	
-	/** (non-Javadoc)
+	/**
 	 * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
 	 */
 	public Menu getMenu(Control parent) {
