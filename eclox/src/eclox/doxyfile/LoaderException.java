@@ -28,14 +28,15 @@ package eclox.doxyfile;
  * 
  * @author gbrocker
  */
-public class SettingsCreationError extends Exception {
+public class LoaderException extends Exception {
 
 	/**
 	 * Constructor.
 	 * 
-	 * @param	cause.
+	 * @param	text	A string containing the message.
+	 * @param	cause	The object that is the cause of the exception.
 	 */
-	public SettingsCreationError( java.lang.Throwable cause ) {
-		super( "Unable to retrieve doxygen configuration settings.", cause );
+	public LoaderException( String text, java.lang.Throwable cause ) {
+		super( text, cause );
 	}
 }
