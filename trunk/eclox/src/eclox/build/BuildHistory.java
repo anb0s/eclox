@@ -22,6 +22,7 @@
 package eclox.build;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -75,7 +76,16 @@ public class BuildHistory extends ListenerManager {
 		 * @see eclox.resource.DoxyfileListener#doxyfileRemoved(eclox.resource.DoxyfileEvent)
 		 */
 		public void doxyfileRemoved(DoxyfileEvent event) {
-			files.remove(event.doxyfile);
+			Iterator it = files.iterator();
+			
+			while(it.hasNext()) {
+				IFile curFile = (IFile)it.next();
+				
+				if(curFile.getFullPath().equals(event.doxyfile.getFullPath()) == true) {
+					files.remove(curFile);
+					break;
+				}
+			}
 		}
 	}
 	
@@ -104,7 +114,7 @@ public class BuildHistory extends ListenerManager {
 	/**
 	 * Constructor.
 	 */
-	public BuildHistory() {
+	private BuildHistory() {
 		super(BuildHistoryListener.class);
 		Plugin.getDefault().getPreferenceStore().addPropertyChangeListener(new PreferenceChangedListener());
 		DoxyfileListenerManager.getDefault().addDoxyfileListener(new DoxyfileRemovedListener());
@@ -166,15 +176,6 @@ public class BuildHistory extends ListenerManager {
 	 */
 	public IFile[] toArray() {
 		return (IFile[]) this.files.toArray(new IFile[0]);
-	}
-	
-	/**
-	 * Remove the specified doxyfile from the history.
-	 *
-	 * @parapm	doxyfile	the doyfile to remove
-	 */
-	public void unlog(IFile doxyfile) {
-		this.files.remove(doxyfile);
 	}
 	
 	/**

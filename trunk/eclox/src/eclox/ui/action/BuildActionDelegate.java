@@ -54,9 +54,9 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	/**
 	 * Listens for the popup menu items pointing to doxyfiles to build.
 	 * 
-	 * @author gbrocker
+	 * @author Guillaume Brocker
 	 */
-	public class MenuSelectionListener implements SelectionListener {
+	private class MenuSelectionListener implements SelectionListener {
 		public void widgetSelected(SelectionEvent e) {
 			processData(e.widget.getData());
 		}
@@ -159,14 +159,17 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 				this.nextDoxyfile = historyFiles[0];
 			}
 			
-			// Update the action tooltip.
+			// Check the existance of the doxyfile.
+			if(this.nextDoxyfile != null && this.nextDoxyfile.exists() == false) {
+				this.nextDoxyfile = null;
+			}
+			
+			// Update the tooltip.
 			String	tooltipText = this.nextDoxyfile != null ?
 				"Build " + this.nextDoxyfile.getFullPath().toString() :
 				"Choose Next Doxyfile";
 				
 			action.setToolTipText(tooltipText);
-			
-			// Store the 
 		}
 		catch(Throwable throwable) {
 			Plugin.getDefault().showError(throwable);
@@ -271,5 +274,12 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			Plugin.getDefault().showError(throwable);
 		}
 		return doxyfile;
+	}
+	
+	/**
+	 * Updates the action tootip with the next doxyfile to build.
+	 */
+	private void updateTooltip() {
+		
 	}
 }
