@@ -208,8 +208,11 @@ public class Builder extends ListenerManager {
 				
 				BuildHistory.getDefault().log(file);
 			}
-			catch( IOException ioException ) {
-				throw new BuildFailedException( "Unable to launch the documentation compilation. Ensure that doxygen is available in the system path or check the compiler path in the preferences.", ioException );
+			catch(Throwable throwable) {
+				throw new BuildFailedException(
+					"Unable to launch the documentation compilation. Ensure that doxygen is available in the system path or check the compiler path in the preferences.",
+					throwable
+				);
 			}
 		}
 		else {
