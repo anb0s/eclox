@@ -16,6 +16,7 @@
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.views"/>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui.forms"/>
    </requires>
 
 
@@ -43,8 +44,8 @@
             class="eclox.ui.editor.Editor"
             icon="icons/file.gif"
             default="false"
-            name="Doxygen Configuration Editor"
-            id="eclox.ui.editor.Editor"
+            name="Doxyfile Editor"
+            id="eclox.ui.editor"
             extensions="doxyfile">
       </editor>
    </extension>

@@ -30,9 +30,9 @@ public interface Visitor {
 	/**
 	 * Process a group item.
 	 * 
-	 * @param group	The group to process.
+	 * @param section	The section to process.
 	 */
-	public void process( Section group ) throws VisitorException;
+	public void process(Section section) throws VisitorException;
 	
 	/**
 	 * Process a tag item.
