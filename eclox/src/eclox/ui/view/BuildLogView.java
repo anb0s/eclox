@@ -43,6 +43,9 @@ import eclox.build.BuildJob;
 import eclox.build.BuildOutputEvent;
 import eclox.build.BuildOutputListener;
 import eclox.doxyfile.DoxyfileSelectionProvider;
+import eclox.resource.DoxyfileEvent;
+import eclox.resource.DoxyfileListener;
+import eclox.resource.DoxyfileListenerManager;
 import eclox.ui.Plugin;
 import eclox.ui.action.StopAction;
 
@@ -133,25 +136,17 @@ public class BuildLogView extends ViewPart {
 	 * Implement an UI task that set the doxyfile to the view.
 	 */
 	private class DoxyfileUpdateTask implements Runnable {
-		/**
-		 * The doxyfile to set.
-		 */
-		private IFile doxyfile;
-		
-		/**
-		 * Constructor.
-		 * 
-		 * @param	doxyfile	The doxyfile to set.
-		 */
-		public DoxyfileUpdateTask(IFile doxyfile) {
-			this.doxyfile = doxyfile;
-		}
-		
 		public void run() {
 			DoxyfileSelectionProvider selectionProvider = ((DoxyfileSelectionProvider)getViewSite().getSelectionProvider());
 			
-			selectionProvider.setSelection(new StructuredSelection(doxyfile));
-			setContentDescription(doxyfile.getFullPath().toString());
+			if(doxyfile != null) {
+				selectionProvider.setSelection(new StructuredSelection(doxyfile));
+				setContentDescription(doxyfile.getFullPath().toString());
+			}
+			else {
+				selectionProvider.setSelection(new StructuredSelection());
+				setContentDescription(new String());
+			}
 		}
 	}
 	
@@ -198,22 +193,38 @@ public class BuildLogView extends ViewPart {
 		 * 
 		 * @param	event	the event details
 		 */
-		public void running(IJobChangeEvent event) {	
+		public void running(IJobChangeEvent event) {
+			doxyfile = ((BuildJob)event.getJob()).getDoxyfile();
+			
 			runUITask(new LogResetTask());
 			runUITask(new AppendLogTextTask("Running doxygen...\r\n", true));
 			runUITask(new EnableStopActionTask(true));
-			runUITask(
-				new DoxyfileUpdateTask(
-					((BuildJob)event.getJob()).getDoxyfile()
-				)
-			);
+			runUITask(new DoxyfileUpdateTask());
 		}
 	}
 		
+	private class DoxyfileRemovedListener implements DoxyfileListener {
+		/**
+		 * @see eclox.resource.DoxyfileListener#doxyfileRemoved(eclox.resource.DoxyfileEvent)
+		 */
+		public void doxyfileRemoved(DoxyfileEvent event) {
+			if(event.doxyfile.getFullPath().equals(doxyfile.getFullPath()) == true) {
+				doxyfile = null;
+				runUITask(new DoxyfileUpdateTask());
+				runUITask(new LogResetTask());
+			}
+		}
+	}
+	
 	/**
 	 * The text control that will receive the log text.
 	 */
-	private StyledText text = null;
+	private StyledText text;
+	
+	/**
+	 * The current doxyfile.
+	 */
+	private IFile doxyfile;
 	
 	/**
 	 * The build output listener.
@@ -224,6 +235,11 @@ public class BuildLogView extends ViewPart {
 	 * The build job listener.
 	 */
 	private JobListener jobListener = new JobListener();
+	
+	/**
+	 * The doxyfile removed listener.
+	 */
+	private DoxyfileRemovedListener doxyfileRemovedListener = new DoxyfileRemovedListener();
 	
 	/**
 	 * The stop action.
@@ -264,6 +280,7 @@ public class BuildLogView extends ViewPart {
 		site.setSelectionProvider(new DoxyfileSelectionProvider());
 		BuildJob.getDefault().addJobChangeListener(this.jobListener);
 		BuildJob.getDefault().addBuildOutputListener(this.outputListener);
+		DoxyfileListenerManager.getDefault().addDoxyfileListener(this.doxyfileRemovedListener);
 	}
 
 	/**
@@ -282,6 +299,7 @@ public class BuildLogView extends ViewPart {
 	public void dispose() {
 		BuildJob.getDefault().removeJobChangeListener(this.jobListener);
 		BuildJob.getDefault().removeBuildOutputListener(this.outputListener);
+		DoxyfileListenerManager.getDefault().removeDoxyfileListener(this.doxyfileRemovedListener);
 		super.dispose();
 	}
 	

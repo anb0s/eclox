@@ -39,8 +39,6 @@ import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.PlatformUI;
 
 import eclox.build.BuildHistory;
-import eclox.build.BuildHistoryEvent;
-import eclox.build.BuildHistoryListener;
 import eclox.build.BuildJob;
 import eclox.ui.Plugin;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
@@ -51,7 +49,7 @@ import eclox.ui.view.BuildLogView;
  * 
  * @author gbrocker
  */
-public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, BuildHistoryListener {
+public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	/**
 	 * Listens for the popup menu items pointing to doxyfiles to build.
 	 * 
@@ -89,16 +87,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 	 * The next doxyfile to build.
 	 */
 	private IFile nextDoxyfile;
-	
-	/**
-	 * Notify that a build history has changed.
-	 * 
-	 * @param	event	The buld event object.
-	 */
-	public void buildHistoryChanged(BuildHistoryEvent event) {
 		
-	}
-	
 	/**
 	 * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
 	 */
@@ -271,7 +260,10 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate, Bu
 				if(element != null && element instanceof IFile) {
 					IFile	fileElement = (IFile) element;
 
-					if(fileElement.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true) {
+					if(
+						fileElement.exists() == true &&
+						fileElement.getContentDescription().getContentType().getId().equals("eclox.doxyfile") == true
+					) {
 						doxyfile = fileElement;
 					}
 				}
