@@ -1,4 +1,7 @@
-echo-0.3.3 (6-oct-2004):
+eclox-0.3.4 (8-oct-2004):
+    o Bug fixed, the plugin crashed at startup.
+    
+eclox-0.3.3 (6-oct-2004):
     o Automatic saving of all editors before buiding is now implemented and
       can be configured in the preferences.
     o The build history state is now persistent.
