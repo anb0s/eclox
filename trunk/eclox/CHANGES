@@ -1,4 +1,6 @@
 eclox-0.3.1 (in progress):
+    o Fixed build history wich was always empty since the use of workbanch
+      jobs for build processes.
     o Added properties for doxyfile elements in the default workbench
       property view.
     o Improved build error reporting tanks to the new jobs return status.
