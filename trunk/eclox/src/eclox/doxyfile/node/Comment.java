@@ -21,6 +21,8 @@
 
 package eclox.doxyfile.node;
 
+import eclox.doxyfile.Doxyfile;
+
 /**
  * @author gbrocker
  */
@@ -38,9 +40,12 @@ public class Comment extends Leaf {
 	/**
 	 * Constructor.
 	 * 
-	 * @param	rawText	The comment raw text.
+	 * @param	doxyfile	The doxyfile the comment belongs to.
+	 * @param	rawText		The comment raw text.
 	 */
-	public Comment( String rawText ) {
+	public Comment(Doxyfile doxyfile, String rawText) {
+		super(doxyfile);
+		
 		m_rawText = new String( rawText );		
 		m_text = new String( rawText );
 		m_text = m_text.replaceAll( "# ", "" );

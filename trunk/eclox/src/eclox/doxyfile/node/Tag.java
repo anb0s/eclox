@@ -21,6 +21,8 @@
 
 package eclox.doxyfile.node;
 
+import eclox.doxyfile.Doxyfile;
+
 /**
  * Implements a doxygen setting tag.
  * A tag is of the form NAME = VALUE.
@@ -72,9 +74,12 @@ public class Tag extends Leaf {
 	/**
 	 * Constructor.
 	 * 
-	 * @param	text	The text of the tag.
+	 * @param	doxyfile	The doxyfile the tag belongs to.
+	 * @param	text		The text of the tag.
 	 */
-	public Tag( final String text ){
+	public Tag(Doxyfile doxyfile, String text) {
+		super(doxyfile);
+		
 		String	tokens[] = text.split( "[\t =]+", 2 );
 		
 		m_name = tokens[0];

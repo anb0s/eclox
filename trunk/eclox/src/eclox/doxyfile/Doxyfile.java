@@ -24,6 +24,8 @@ package eclox.doxyfile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IFile;
+
 import eclox.doxyfile.node.Group;
 import eclox.doxyfile.node.Visitor;
 import eclox.doxyfile.node.VisitorException;
@@ -35,6 +37,11 @@ import eclox.doxyfile.node.VisitorException;
  * @author gbrocker
  */
 public class Doxyfile extends Group {
+	/**
+	 * The resource file corresponding to the doxyfile.
+	 */
+	private IFile file;
+	
 	/**
 	 * Tell if the specified file name is a valid doxyfile name.
 	 * 
@@ -50,12 +57,29 @@ public class Doxyfile extends Group {
 	}
 	
 	/**
+	 * Constructor.
+	 */
+	public Doxyfile(IFile file) {
+		super(null);
+		this.file = file;
+	}
+	
+	/**
 	 * Implement the visitor acceptence.
 	 * 
 	 * @param	visitor	The visitor to accept.
 	 */
 	public void accept(Visitor visitor) throws VisitorException {
 		visitor.process( this );
+	}
+	
+	/**
+	 * Retrieve the resource file corresponding to the doxyfile.
+	 * 
+	 * @return	The resource file.
+	 */
+	public IFile getFile() {
+		return this.file;
 	}
 	
 	/**

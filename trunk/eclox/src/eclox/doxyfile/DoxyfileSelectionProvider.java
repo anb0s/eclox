@@ -21,7 +21,6 @@
 
 package eclox.doxyfile;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -73,25 +72,16 @@ public class DoxyfileSelectionProvider extends ListenerManager implements ISelec
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		super.removeListener(listener);
 	}
-	
-	/**
-	 * Set the new doxyfile in the selection.
-	 * 
-	 * @param	doxyfile	The new doxyfile of the selection.
-	 */
-	public void setDoxyfile(IFile doxyfile) {
-		this.selection = new DoxyfileSelection(doxyfile);
-		this.fireSelectionChangedEvent();
-	}
 
 	/**
 	 * Set the new selection.
 	 * 
 	 * @param	selection	The new selection.
-	 * 
-	 * Do nothing.
 	 */
-	public void setSelection(ISelection selection) {}
+	public void setSelection(ISelection selection) {
+		this.selection = selection;
+		this.fireSelectionChangedEvent();
+	}
 	
 	/**
 	 * Fire the selection change event to the listeners.

@@ -26,6 +26,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -149,7 +150,7 @@ public class BuildLogView extends ViewPart {
 		public void run() {
 			DoxyfileSelectionProvider selectionProvider = ((DoxyfileSelectionProvider)getViewSite().getSelectionProvider());
 			
-			selectionProvider.setDoxyfile(doxyfile);
+			selectionProvider.setSelection(new StructuredSelection(doxyfile));
 			setContentDescription(doxyfile.getFullPath().toString());
 		}
 	}
