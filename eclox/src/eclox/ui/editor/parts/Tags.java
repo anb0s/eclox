@@ -74,6 +74,7 @@ public final class Tags extends Part {
 					}
 				}			
 			}
+			//packColumns();
 			// Notify all listeners that the selection changed.
 			selection.notifySelectionChanged();  
 		}
@@ -394,6 +395,17 @@ public final class Tags extends Part {
 		m_table.removeAll();
 		m_fieldManager.removeCurrentField();
 		m_valueListener.removeAllValues();
+	}
+	
+	/**
+	 * Pack all columns of the table.
+	 */
+	private void packColumns() {
+		int	count = m_table.getColumnCount();
+		
+		for( int index = 0; index < count; index++ ) {
+			m_table.getColumn( index ).pack();
+		}
 	}
 	
 	/**
