@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.util.IPropertyChangeListener;
@@ -143,9 +144,9 @@ public class BuildHistory extends ListenerManager {
 		// Recreates and reinserts the files in the history.
 		IWorkspaceRoot	workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
 		for( int i = rawPaths.length - 1; i >= 0 ; i-- ) {
-			IFile currentFile = (IFile) workspaceRoot.findMember( rawPaths[i] );
-			if( currentFile != null ) {
-				this.log( currentFile );
+			IResource	currentResource = workspaceRoot.findMember( rawPaths[i] );
+			if( currentResource != null && currentResource instanceof IFile ) {
+				this.log( (IFile) currentResource );
 			}
 		}
 	}
