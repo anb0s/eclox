@@ -26,11 +26,23 @@ package eclox.doxyfile.node.value;
  * 
  * @author gbrocker
  */
-public class String extends Abstract {
+public class String extends Value {
 	/**
 	 * The string value.
 	 */
 	private java.lang.String m_value = new java.lang.String();
+	
+	/**
+	 * Clone the value instance, but not the listeners.
+	 * 
+	 * @return	A cloned instance of the value.
+	 */
+	public Object clone() {
+		String s = new String();
+		
+		s.m_value = new java.lang.String(this.m_value);
+		return s;
+	}
 	
 	/**
 	 * Retrieve the value represented in the specified string.

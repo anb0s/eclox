@@ -28,11 +28,11 @@ import eclox.util.ListenerManager;
  * 
  * @author gbrocker
  */
-public abstract class Abstract extends ListenerManager {
+public abstract class Value extends ListenerManager {
 	/**
 	 * Constructor.
 	 */
-	public Abstract() {
+	public Value() {
 		super( Listener.class );
 	}
 	
@@ -53,6 +53,13 @@ public abstract class Abstract extends ListenerManager {
 	public void removeListener( Listener listener ) {
 		super.removeListener( listener );
 	}
+	
+	/**
+	 * Clone the value instance, but not the listeners.
+	 * 
+	 * @return	A cloned instance of the value.
+	 */
+	public abstract Object clone();
 
 	/**
 	 * Retieve the value as a string.

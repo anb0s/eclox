@@ -15,14 +15,14 @@ public class Event extends java.util.EventObject {
 	/**
 	 * The value that is concerned by the event.
 	 */
-	public Abstract m_value;
+	public Value m_value;
 	
 	/**
 	 * Constructor.
 	 * 
 	 * @param value	The value that is concerned by the event.
 	 */
-	public Event( Abstract value ) {
+	public Event( Value value ) {
 		super( value );
 		m_value = value;
 	}
