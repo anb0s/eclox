@@ -1,4 +1,4 @@
-eclox-0.2.1 (03-jun-2004):
+eclox-0.2.1 (04-jun-2004):
     o Manual updated.
     o The build toolbar action use the current selection to determine the
       doxyfile to build (current doxyfile editor, last built doxyfile, doxyfile
