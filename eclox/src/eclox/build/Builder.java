@@ -24,11 +24,10 @@ package eclox.build;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Display;
+
 
 import eclox.Doxygen;
 import eclox.util.ListenerManager;
@@ -36,133 +35,117 @@ import eclox.util.ListenerManager;
 /**
  * Implements the build wrapper class.
  * 
- * TODO cleanup member variables.
- * 
  * @author gbrocker
  */
 public class Builder extends ListenerManager {
 	/**
-	 * Implements a build monitor that wtahc for the build process lifetime.
+	 * Implements the build monitor.
 	 * 
-	 * @author gbrocker
+	 * It is reponsible to watch and notify output and build process changes. 
 	 */
-	private class LifeMonitor implements Runnable {
+	private class BuildProcessMonitor implements Runnable {
+		/**
+		 * The build process.
+		 */
+		private Process buildProcess;
+		
 		/**
 		 * Constructor.
+		 * 
+		 * @param	process	The build process to watch. 
 		 */
-		public LifeMonitor() {
+		public BuildProcessMonitor(Process buildProcess) {
+			setState(Build.STATE_RUNNING);
+			this.buildProcess = buildProcess;
 			fireBuildStarted();
-			launch( this );
-		}
-	
-		/**
-		 */
-		public void run() {
-			try {
-				int		exitValue = m_buildProcess.exitValue();
 			
-				if( m_state == Build.STATE_STOPPED ) {
-					fireBuilStopped();
-				}
-				else {
-					setState( Build.STATE_ENDED );
-					fireBuildEnded();
-				}
-			}
-			catch( IllegalThreadStateException illegalThreadException ) {
-				// Relaunch this runnable
-				launch( this );
-			}
-			catch( Throwable throwable ) {
-			}
+			this.launch();
 		}
-	}
-	
-	/**
-	 * Implements build monitor responsible to monitor build process output text.
-	 *
-	 * @author gbrocker
-	 */
-	private class OutputMonitor implements Runnable {
-		/**
-		 * The input stream to monitor.
-		 */
-		private InputStream		m_in = null;
-	
-		/**
-		 * The input stream reader.
-		 */
-		private	BufferedReader	m_reader = null;
-	
-		/**
-		 * The monitored output type.
-		 */
-		private int m_outputType;
-	 
-		/**
-		 * Constructor.
-		 *  
-		 * @param outputType	The output to monitor.
-		 */
-		public OutputMonitor( int outputType ) {
 		
-			// Get the relevant input stream to monitor.
-			switch( outputType ){
-			case Build.ERROR_OUTPUT:
-				m_in = m_buildProcess.getInputStream();
-				break;
-			case Build.STANDARD_OUTPUT:
-				m_in = m_buildProcess.getErrorStream();
-				break;
-			}
-			m_reader = new BufferedReader( new InputStreamReader( m_in ) );
-			m_outputType = outputType;
-			launch( this );
-		}
-	
 		/**
-		 * Perform the runtime treatement.
+		 * Run the build process monitor routine.
 		 */
 		public void run() {
 			try {
-				if( m_in.available() != 0 && m_reader.ready() ) {
-					String	line = m_reader.readLine();
+				this.watchBuildProcessOutput(this.buildProcess.getInputStream());
+				this.watchBuildProcessOutput(this.buildProcess.getErrorStream());
+				this.watchBuildProcessLife();
+			}
+			catch(IllegalThreadStateException exp) {
+				this.launch();
+			}
+			catch(Throwable throwable) {
+				eclox.ui.Plugin.getDefault().showError(throwable);
+				this.stop();
+			}
+		}
+		
+		/**
+		 * Stop the current build.
+		 */
+		public void stop() {
+			setState(Build.STATE_STOPPED);
+			this.buildProcess.destroy();
+			fireBuilStopped();
+		}
+		
+		/**
+		 * Launch a runnable object into the workbensh.
+		 * 
+		 * @param	runnable	The runnable object to run.
+		 */
+		private void launch() {
+			Display.getDefault().asyncExec(this);
+		}
+		
+		/**
+		 * Watch the specified build process output.
+		 * 
+		 * @param	input	The input stream containing the build process
+		 * 					output to watch.
+		 */
+		private void watchBuildProcessOutput(InputStream input) throws IOException {
+			int	available = input.available();
+			
+			if(available != 0) {
+				byte buffer[] = new byte[available];
 				
-					fireBuildOutputChanged( new String( line + "\r\n" ) );
-				}
-			
-				// Check if the monitor should relaunch itself.
-				int	builderState = m_state;
+				input.read(buffer);
+				fireBuildOutputChanged(new String(buffer));
+			}				
+		}
 		
-				if( builderState == Build.STATE_READY || builderState == Build.STATE_RUNNING ) {
-					launch( this );
-				}
-			}
-			catch( Throwable throwable ) {
-				eclox.ui.Plugin.getDefault().showError( throwable );
+		/**
+		 * Watch the build process life status.
+		 */
+		private void watchBuildProcessLife() throws IllegalThreadStateException {
+			if(isRunning() == true) {
+				this.buildProcess.exitValue();
+				setState(Build.STATE_ENDED);
+				fireBuildEnded();					
 			}
 		}
 	}
-
+	
 	/**
 	 * The current instance of the builder.
 	 */
-	static private Builder m_currentBuilder = null;
-	
-	/**
-	 * The build process. Set to null if none is running. 
-	 */
-	private Process	m_buildProcess = null;
+	static private Builder currentBuilder = null;
 	
 	/**
 	 * The current builder state.
 	 */
-	private int m_state = Build.STATE_READY;
+	private int state = Build.STATE_READY;
 	
 	/**
 	 * The current doxyfile being built.
 	 */
 	private IFile doxyfile;
+	
+	/**
+	 * The current build monitor.
+	 */
+	private BuildProcessMonitor buildProcessMonitor;
 	
 	/**
 	 * Constructor.
@@ -195,10 +178,10 @@ public class Builder extends ListenerManager {
 	 * @return	The current builder instance.
 	 */
 	public static Builder getDefault() {
-		if( m_currentBuilder == null ) {
-			m_currentBuilder = new Builder();
+		if( Builder.currentBuilder == null ) {
+			Builder.currentBuilder = new Builder();
 		}
-		return m_currentBuilder;
+		return Builder.currentBuilder;
 	}
 	
 	/**
@@ -207,7 +190,7 @@ public class Builder extends ListenerManager {
 	 * @return	true if the builder is running, false otherwise.
 	 */
 	public boolean isRunning() {
-		return this.m_state == Build.STATE_RUNNING;
+		return this.state == Build.STATE_RUNNING;
 	}
 	
 	/**
@@ -218,15 +201,10 @@ public class Builder extends ListenerManager {
 	 * @exception	BuildFaildException	The build could not be started.
 	 */
 	public void start( IFile file ) throws BuildFailedException {
-		if(m_state != Build.STATE_RUNNING) {
+		if(isRunning() == false) {
 			try {
-				m_buildProcess = Doxygen.build( file );
-				m_state = Build.STATE_RUNNING;
 				this.doxyfile = file;
-				
-				new OutputMonitor( Build.ERROR_OUTPUT );
-				new OutputMonitor( Build.STANDARD_OUTPUT );
-				new LifeMonitor();
+				this.buildProcessMonitor = new BuildProcessMonitor(Doxygen.build( file ));
 				
 				BuildHistory.getDefault().log(file);
 			}
@@ -243,9 +221,8 @@ public class Builder extends ListenerManager {
 	 * Stop the build process, even if it is under progress.
 	 */
 	public void stop() {
-		if( m_state == Build.STATE_RUNNING ) {
-			m_state = Build.STATE_STOPPED;
-			m_buildProcess.destroy();
+		if(this.isRunning()) {
+			this.buildProcessMonitor.stop();
 		}
 	}
 	
@@ -280,15 +257,6 @@ public class Builder extends ListenerManager {
 	 * @param state	The new bulder state.
 	 */
 	private void setState( int state ) {
-		m_state = state;
-	}
-	
-	/**
-	 * Launch a runnable object into the workbensh.
-	 * 
-	 * @param	runnable	The runnable object to run.
-	 */
-	private static void launch( Runnable runnable ) {
-		Display.getDefault().asyncExec( runnable );
+		this.state = state;
 	}
 }
