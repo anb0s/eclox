@@ -58,8 +58,8 @@ public class Section extends Group {
 		
 		m_rawHeader = new String( header );
 		m_header = new String( header );
-		m_header = m_header.replaceAll( "#\\p{Punct}+", "" );
-		m_header = m_header.replaceAll( "# |\r\n", "" );
+		m_header = m_header.replaceAll( "#-+[\r\n]+", "" );
+		m_header = m_header.replaceAll( "# |[\r\n]+", "" );
 		m_name = m_nameProvider.getName( m_header );	
 	}
 

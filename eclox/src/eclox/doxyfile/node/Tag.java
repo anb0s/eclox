@@ -70,7 +70,7 @@ public class Tag extends Leaf {
 	 * @param	text	The text of the tag.
 	 */
 	public Tag( final String text ){
-		String	tokens[] = text.split( "[\t =]+" );
+		String	tokens[] = text.split( "[\t =]+", 2 );
 		
 		m_name = tokens[0];
 		m_value = createValueInstance( m_name, tokens.length == 2 ? tokens[1] : "" );

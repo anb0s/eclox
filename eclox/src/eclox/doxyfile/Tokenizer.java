@@ -1,7 +1,9 @@
 package eclox.doxyfile;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * @brief	Implement the doxyfile tokenizer.
@@ -25,24 +27,39 @@ class Tokenizer {
 	public static final int TAG_INCREMENT = 2;
 	
 	/**
+	 * Define the tag list start token constant.
+	 */
+	public static final int TAG_LIST_START = 3; 
+	
+	/**
+	 * Define the tag list item token constant.
+	 */
+	public static final int TAG_LIST_ITEM = 4;
+	
+	/**
+	 * Define the tag list start token constant.
+	 */
+	public static final int TAG_LIST_END = 5;
+	
+	/**
 	 * Define the comment token constant.
 	 */
-	public static final int COMMENT = 3;
+	public static final int COMMENT = 6;
 	 
 	/**
 	 * Define the section border constant.
 	 */
-	public static final int SECTION_BORDER = 4;
+	public static final int SECTION_BORDER = 7;
 	
 	/**
 	 * Define the empty line token.
 	 */
-	public static final int EMPTY_LINE = 5;
+	public static final int EMPTY_LINE = 8;
 	
 	/**
-	 * The input stream to split into tokens.
+	 * The buffered reader from which text will be retrieved and parsed.
 	 */
-	private InputStream m_input;
+	private BufferedReader m_reader;
 	
 	/**
 	 * The next token text.
@@ -65,7 +82,7 @@ class Tokenizer {
 	 * @param	input	The input stream to split into token.	
 	 */
 	public Tokenizer( InputStream input ) {
-		m_input = input;
+		m_reader = new BufferedReader( new InputStreamReader( input ) );
 	}
 	
 	/**
@@ -105,19 +122,28 @@ class Tokenizer {
 			
 			if( text != null ) {
 				m_tokenText = text;
-				if( text.matches("\\w+\\s+=.*\r\n") ) {
+				if( text.matches("\\w+\\s+=.+\\\\\r?\n") ) {
+					m_tokenType = TAG_LIST_START;
+				}
+				else if( text.matches("\\s+.+\\\\\r?\n") ) {
+					m_tokenType = TAG_LIST_ITEM;
+				}
+				else if( text.matches("\\s+.+\r?\n")) {
+					m_tokenType = TAG_LIST_END;
+				}
+				else if( text.matches("\\w+\\s+=.+\r?\n") ) {
 					m_tokenType = TAG;
 				}
-				else if( text.matches("\\w+\\s+\\+=.*\r\n")) {
+				else if( text.matches("\\w+\\s+\\+=.+\r?\n")) {
 					m_tokenType = TAG_INCREMENT;
 				}
-				else if( text.matches("#-+\r\n") ) {
+				else if( text.matches("#-+\r?\n") ) {
 					m_tokenType = SECTION_BORDER;
 				}
-				else if( text.matches("#.*\r\n") ) {
+				else if( text.matches("#.*\r?\n") ) {
 					m_tokenType = COMMENT;
 				}
-				else if( text.matches("\r\n") ) {
+				else if( text.matches("\r?\n") ) {
 					m_tokenType = EMPTY_LINE;
 				}
 				m_lineNumber++;
@@ -142,14 +168,14 @@ class Tokenizer {
 		
 		for(;;)
 		{
-			int	nextChar = m_input.read();
+			int	nextChar = m_reader.read();
 			
 			if( nextChar == -1 ) {
 				break;
 			}
 			else {
 				line = line.concat( String.valueOf( (char) nextChar ) );
-				if( line.endsWith("\r\n") ) {
+				if( line.matches(".*\r?\n") ) {
 					break;
 				}
 			}
