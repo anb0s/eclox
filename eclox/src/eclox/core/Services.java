@@ -22,6 +22,7 @@
 package eclox.core;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -30,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 
 import eclox.build.BuildInProgressError;
 import eclox.build.BuildJob;
+import eclox.ui.Plugin;
 import eclox.ui.view.BuildLogView;
 
 /**
@@ -50,9 +52,28 @@ public final class Services {
 	 * @author gbrocker
 	 */
 	public static void buildDoxyfile( IFile doxyfile ) throws PartInitException, BuildInProgressError {
+		Preferences preferences = Services.getPreferences();
+		String		autoSaveValue = preferences.getString( eclox.preferences.Names.AUTO_SAVE );
+		
+		if( autoSaveValue == eclox.preferences.Values.AUTO_SAVE_ASK ) {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( true );
+		}
+		else if( autoSaveValue == eclox.preferences.Values.AUTO_SAVE_ALWAYS ) {
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( false );
+		}
+		
 		BuildLogView.show();
 		BuildJob.getDefault().setDoxyfile(doxyfile);
 		BuildJob.getDefault().schedule();
+	}
+	
+	/**
+	 * Retrieves the preferences for th plugin.
+	 * 
+	 * @return	the plugin preferences
+	 */
+	public static Preferences getPreferences() {
+		return Plugin.getDefault().getPluginPreferences();
 	}
 	
 	/**

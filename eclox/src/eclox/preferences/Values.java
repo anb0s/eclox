@@ -21,28 +21,25 @@
 
 package eclox.preferences;
 
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-
-import eclox.ui.Plugin;
-
 /**
- * Implements the prefenrence initializer for the plugin.
+ * Provides contants values for some preferences of the plugin.
  * 
  * @author gbrocker
  */
-public class Initializer extends AbstractPreferenceInitializer {
+public final class Values {
 
 	/**
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+	 * Constant for AUTO_SAVE never state.
 	 */
-	public void initializeDefaultPreferences() {
-		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
-		
-		preferences.setDefault( Names.COMPILER_PATH, "" );
-		preferences.setDefault( Names.BUILD_HISTORY_CONTENT, "" );
-		preferences.setDefault( Names.BUILD_HISTORY_SIZE, 4 );
-		preferences.setDefault( Names.AUTO_SAVE, Values.AUTO_SAVE_ASK );
-	}
-
+	public static final String AUTO_SAVE_NEVER = "never";
+	
+	/**
+	 * Constant for AUTO_SAVE none always.
+	 */
+	public static final String AUTO_SAVE_ALWAYS = "always";
+	
+	/**
+	 * Constant for AUTO_SAVE none ask.
+	 */
+	public static final String AUTO_SAVE_ASK = "ask";
 }

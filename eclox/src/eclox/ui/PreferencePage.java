@@ -22,13 +22,15 @@
 
 package eclox.ui;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import eclox.preferences.Values;
 
 /**
  * Implements the plugin preference page.
@@ -65,9 +67,19 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
 		buildHistorySize.setErrorMessage("Value must be an integer between 1 and 15.");
 		addField(buildHistorySize);
 		
-		BooleanFieldEditor saveAll = new BooleanFieldEditor( eclox.preferences.Names.AUTO_SAVE, "Save changes before launching compilation.", BooleanFieldEditor.DEFAULT, rootControl );
-		saveAll.setPreferenceStore( preferenceStore );
-		addField( saveAll );
+		RadioGroupFieldEditor autoSave = new RadioGroupFieldEditor(
+			eclox.preferences.Names.AUTO_SAVE,
+			"Save all editors before building",
+			1,
+			new String[][] {
+				{Values.AUTO_SAVE_NEVER, Values.AUTO_SAVE_NEVER},
+				{Values.AUTO_SAVE_ALWAYS, Values.AUTO_SAVE_ALWAYS},
+				{Values.AUTO_SAVE_ASK, Values.AUTO_SAVE_ASK},
+			},
+			rootControl,
+			true );
+		autoSave.setPreferenceStore( preferenceStore );
+		addField( autoSave );
 	}
 
 	/**
