@@ -27,7 +27,7 @@ package eclox.doxyfile.node;
  * 
  * @author gbrocker
  */
-public class Root extends Group {
+public class Doxyfile extends Group {
 	/**
 	 * Implement the visitor acceptence.
 	 * 

@@ -26,7 +26,7 @@ package eclox.doxyfile;
  * 
  * @author gbrocker
  */
-public class Factory {
+public class Loader {
 
 	/**
 	 * The input stream used for the settings construction.
@@ -40,25 +40,25 @@ public class Factory {
 	 *  
 	 * @author gbrocker
 	 */
-	public Factory( java.io.InputStream input ) {
+	public Loader( java.io.InputStream input ) {
 		m_in = new java.io.BufferedReader( new java.io.InputStreamReader( input ) );
 	}
 	
 	/**
-	 * Creates the doxygen settings.
+	 * Load a doxygen file.
 	 * 
 	 * @return	The doxygen settings.
 	 * 
 	 * @author gbrocker
 	 */
-	public eclox.doxyfile.node.Root createSettings() throws SettingsCreationError {
-		eclox.doxyfile.node.Root		settings;
-		String				nextItemText;
-		eclox.doxyfile.node.Group	curParent;
-		eclox.doxyfile.node.Comment	curComment;
+	public eclox.doxyfile.node.Doxyfile load() throws SettingsCreationError {
+		eclox.doxyfile.node.Doxyfile	doxyfile;
+		String							nextItemText;
+		eclox.doxyfile.node.Group		curParent;
+		eclox.doxyfile.node.Comment		curComment;
 		
-		settings = new eclox.doxyfile.node.Root(); 
-		curParent = settings;
+		doxyfile = new eclox.doxyfile.node.Doxyfile(); 
+		curParent = doxyfile;
 		curComment = null;
 		
 		for( nextItemText = getNextItemText(); nextItemText != null; nextItemText = getNextItemText() ) {
@@ -73,7 +73,7 @@ public class Factory {
 			else if( head.equals( "#-" ) ) {
 				eclox.doxyfile.node.Section	section = new eclox.doxyfile.node.Section( nextItemText );
 				 
-				settings.addChild( section );
+				doxyfile.addChild( section );
 				curParent = section;
 				curComment = null;
 			}
@@ -83,7 +83,7 @@ public class Factory {
 			}
 		}
 		
-		return settings;
+		return doxyfile;
 	}
 	
 	/**

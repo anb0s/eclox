@@ -26,7 +26,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import eclox.doxyfile.Factory;
+import eclox.doxyfile.Loader;
 import eclox.doxyfile.Saver;
 import eclox.doxyfile.node.NodeEvent;
 import eclox.doxyfile.node.NodeListener;
@@ -66,7 +66,7 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 	/**
 	 * The Doxygen settings to edit.
 	 */
-	private eclox.doxyfile.node.Root m_settings;
+	private eclox.doxyfile.node.Doxyfile m_settings;
 	
 	/*
 	 * IAdapter interface implementation.
@@ -100,12 +100,12 @@ public class Editor extends org.eclipse.ui.part.EditorPart {
 		
 		if( input instanceof org.eclipse.ui.IFileEditorInput ) {			
 			try{
-				eclox.doxyfile.Factory	factory;
-				org.eclipse.ui.IFileEditorInput			fileInput;
+				eclox.doxyfile.Loader			loader;
+				org.eclipse.ui.IFileEditorInput	fileInput;
 				
 				fileInput = (org.eclipse.ui.IFileEditorInput) input; 
-				factory = new Factory( fileInput.getFile().getContents() );
-				m_settings = factory.createSettings();
+				loader = new Loader( fileInput.getFile().getContents() );
+				m_settings = loader.load();
 				m_settings.addNodeListener( new SettingsListener() );
 			}
 			catch( Throwable throwable ) {
