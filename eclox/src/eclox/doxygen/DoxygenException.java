@@ -19,7 +19,7 @@
 	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox;
+package eclox.doxygen;
 
 /**
  * Implement a doxygen runtime exception class.
@@ -27,7 +27,6 @@ package eclox;
  * @author gbrocker
  */
 public class DoxygenException extends Exception {
-
 	/**
 	 * Constructor.
 	 * 
@@ -35,5 +34,15 @@ public class DoxygenException extends Exception {
 	 */
 	public DoxygenException(String message) {
 		super(message);
+	}
+	
+	/**
+	 * Constructor.
+	 *
+	 * @param	message		a string containing the exception detail
+	 * @param	cause		the cause of the exception  
+	 */
+	public DoxygenException(String message, Throwable cause) {
+		super(message, cause);
 	}
 }

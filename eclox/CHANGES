@@ -1,4 +1,5 @@
 eclox-0.3.1 (in progress):
+    o Improved build error reporting tanks to the new jobs return status.
     o bug fixed: the doxyfile editor has been restored.
     o Integration to Eclipse M9 api and removed the compatibility mode.
     o Support of the new eclipse Job API added.
