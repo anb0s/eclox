@@ -21,11 +21,8 @@
 
 package eclox.ui.wizard;
 
-import java.io.IOException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -82,16 +79,8 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 				result = true;
 			}	
 		}
-		catch( IOException ioException ) {
-			Plugin.getDefault().showError( ioException );
-			result = false;
-		}
-		catch( InterruptedException interruptedException ) {
-			Plugin.getDefault().showError( interruptedException );
-			result = false;
-		}
-		catch( CoreException coreException ) {
-			Plugin.getDefault().showError( coreException );
+		catch( Throwable throwable ) {
+			Plugin.getDefault().showError( throwable );
 			result = false;
 		}
 		
