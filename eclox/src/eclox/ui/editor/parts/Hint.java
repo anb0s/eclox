@@ -50,7 +50,8 @@ public class Hint extends Part {
 	
 			tag = (Tag) event.selection.getSelected();
 			if( tag != null ) {			
-				m_hintCtrl.setText( tag.getComment().getText() );
+				//m_hintCtrl.setText( tag.getComment().getText() );
+				m_hintCtrl.setText( "n/a" );
 			}
 			else {
 				m_hintCtrl.setText( "No tag selected!" );
