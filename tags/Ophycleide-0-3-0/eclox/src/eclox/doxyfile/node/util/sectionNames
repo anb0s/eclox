@@ -1,0 +1,48 @@
+# eclox
+# Copyright (C) 2003 Guillaume Brocker
+#
+# This file is part of eclox.
+#
+# eclox is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# any later version.
+#
+# eclox is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with eclox; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+# Eclox section name definition file.
+#
+# This file defines the short section names. These names are displayed
+# in the editor view and outline view.
+# 
+# Each line defines a section nameand is of the form <key><separator><name>.
+# <key> is a single word defining the key to search (case insensitive) in the long section name
+# to find a matching short section name. <separator> can be any combinaison of
+# white spaces and tabulations. <name> can be a single word or a phrase enclosed
+# by " characters.
+
+general			"General"
+project			"Project"
+build			"Build"
+messages		"Warning and Output Messages"
+input			"Input Files"
+index			"Alphabetical Index"
+html			"Html Output"
+latex			"LaTex Output"
+rtf				"Rtf Output"
+man				"Man Output"
+preprocessor	"Preprocessor"
+references		"External References"
+dot				"Dot Tool"
+search			"Search Engine"
+source			"Source Browsing"
+xml				"XML Output"
+autogen			"AutoGen Definitions Output"
+perl			"Perl Module Output"
