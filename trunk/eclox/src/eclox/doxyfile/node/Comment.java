@@ -28,12 +28,12 @@ public class Comment extends Leaf {
 	/**
 	 * The comment text.
 	 */
-	private String m_text = new String();
+	private String m_text;
 	
 	/**
 	 * The comment raw text.
 	 */
-	private String m_rawText = new String();
+	private String m_rawText;
 	
 	/**
 	 * Constructor.
