@@ -28,7 +28,10 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.DetailsPart;
@@ -174,9 +177,10 @@ public class Block extends MasterDetailsBlock {
         ScrolledForm	form = managedForm.getForm();
         FormToolkit		toolkit = managedForm.getToolkit();
         
-        // TODO find the relevant layout configuration here.
+        // TODO !!! find the relevant layout configuration here !!!
         // Initalizes the parent control layout
-        parent.setLayout(new FillLayout());
+        //parent.setLayout(new FillLayout());
+        //parent.setLayoutData(null);
         
         // Creates the section containing the tree view
         Section	section = toolkit.createSection(parent, Section.TITLE_BAR|Section.COMPACT);
@@ -188,6 +192,10 @@ public class Block extends MasterDetailsBlock {
         Tree tree = toolkit.createTree(section, SWT.V_SCROLL);
         section.setClient(tree);
         toolkit.paintBordersFor(section);
+        
+        // TODO remove this layout test code
+        //section.setLayoutData(new FormData(50,50));
+        //((SashForm)parent).setMaximizedControl(section);
         
         // Creates the tree viewer.
         this.treeViewer = new TreeViewer(tree);
