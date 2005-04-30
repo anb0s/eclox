@@ -208,8 +208,7 @@ public class Block extends MasterDetailsBlock {
      * @see org.eclipse.ui.forms.MasterDetailsBlock#registerPages(org.eclipse.ui.forms.DetailsPart)
      */
     protected void registerPages(DetailsPart detailsPart) {
-        detailsPart.registerPage(Group.class, new GroupDetailsPage());
-        detailsPart.registerPage(Setting.class, new SettingDetailsPage());
+        detailsPart.registerPage(Setting.class, new DetailsPage());
     }
 
     /**

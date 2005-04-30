@@ -20,7 +20,8 @@
 package eclox.ui.editor.form.pages.settings.editors;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -43,8 +44,9 @@ public class TextEditor implements IEditor {
      * @see eclox.ui.editor.form.pages.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite)
      */
     public void createContent(Composite parent, FormToolkit formToolkit) {
-        parent.setLayout(new FillLayout());
+        parent.setLayout(new GridLayout());
         text = formToolkit.createText(parent, new String(), SWT.BORDER);
+        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
     
     /**

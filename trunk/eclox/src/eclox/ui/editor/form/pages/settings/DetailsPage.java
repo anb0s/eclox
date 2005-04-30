@@ -24,6 +24,10 @@ package eclox.ui.editor.form.pages.settings;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -33,8 +37,12 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import eclox.core.Services;
 import eclox.doxyfiles.nodes.Node;
 import eclox.doxyfiles.nodes.PropertyProvider;
+import eclox.doxyfiles.nodes.Setting;
+import eclox.ui.editor.form.pages.settings.editors.EditorClassRegister;
+import eclox.ui.editor.form.pages.settings.editors.IEditor;
 
 
 /**
@@ -42,31 +50,32 @@ import eclox.doxyfiles.nodes.PropertyProvider;
  * 
  * @author gbrocker
  */
-public class NodeDetailsPage implements IDetailsPage {
+public class DetailsPage implements IDetailsPage {
     
     /**
-     * Retrieves the node instance that is in the specified selection
-     * 
-     * @param	selection	a selection from which a node instance must be retrieved
-     * 
-     * @return	the found node instance or null if none
+     * The static setting editor class register.
      */
-    protected static Node getNodeFromSelection(ISelection selection) {
-        Node result = null;
-        if(selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-            Object object = structuredSelection.getFirstElement();
-            if(object instanceof Node) {
-                result = (Node) object;
-            } 
-        }
-        return result;
-    }
+    private static EditorClassRegister editorClassRegister = new EditorClassRegister();
     
+    /**
+     * The setting editor instance.
+     */
+    private IEditor editor;
+
     /**
      * The section that contains all our controls.
      */
     private Section section;
+    
+    /**
+     * The editor content container widget
+     */
+    private Composite editorContent;
+    
+    /**
+     * The control containing all controls of the section.
+     */
+    private Composite sectionContent;
     
     /**
      * The managed form the page is attached to.
@@ -85,18 +94,24 @@ public class NodeDetailsPage implements IDetailsPage {
         FormToolkit toolkit = this.managedForm.getToolkit();
         
         // Initializes the parent control.
-        RowLayout layout = new RowLayout(SWT.VERTICAL);
-        parent.setLayout(layout);
+        parent.setLayout(new FillLayout());
         
         // Creates the section
         this.section = toolkit.createSection(parent, Section.TITLE_BAR);
         this.section.marginHeight = 5;
         this.section.marginWidth = 10;
-        this.section.setText("Annotation");
+        this.section.setText("Setting Details");
+        
+        // Createst the section content and its layout
+        this.sectionContent = toolkit.createComposite(section);
+        this.sectionContent.setBackground(new Color(parent.getDisplay(), 255, 0, 0));
+        this.section.setClient(this.sectionContent);
+        GridLayout layout = new GridLayout(1, true);
+        this.sectionContent.setLayout(layout);        
         
         // Creates the label display the note content.
-        this.noteLabel = this.managedForm.getToolkit().createLabel(section, "", org.eclipse.swt.SWT.WRAP);
-        section.setClient(this.noteLabel);        
+        this.noteLabel = this.managedForm.getToolkit().createLabel(sectionContent, "", org.eclipse.swt.SWT.WRAP);
+        this.noteLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     }
     
     /**
@@ -146,8 +161,10 @@ public class NodeDetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
      */
     public boolean setFormInput(Object input) {
-        Node node = (Node) input;
-        this.updateUIControls(node);
+        Setting setting = (Setting) input;
+        this.selectNote(setting);
+        this.selectEditor(setting);
+        this.sectionContent.layout(true);
         return false;
     }
     
@@ -155,16 +172,71 @@ public class NodeDetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IFormPart part, ISelection selection) {
-        Node node = getNodeFromSelection(selection);
-        this.updateUIControls(node);
+    	// Retreieves the node that is provided by the selection.
+    	Setting setting = null;
+        if(selection instanceof IStructuredSelection) {
+            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+            Object object = structuredSelection.getFirstElement();
+            if(object instanceof Setting) {
+                setting = (Setting) object;
+            } 
+        }
+        
+        // Updates the form controls.
+        this.selectNote(setting);
+        this.selectEditor(setting);
+        this.sectionContent.layout(true);
     }
     
+    /**
+     * Disposes the current editor.
+     */
+    private void disposeEditor() {
+        if(editor != null) {
+            editorContent.dispose();
+            editor = null;
+            editorContent = null;
+        }
+    }
+        
+    /**
+     * Selects the editor for the specified setting.
+     * 
+     * @param	input	the setting that is the new input
+     */
+    private void selectEditor(Setting input) {
+        try
+        {
+	        // Retrieves the editor class for the input.
+	        Class editorClass = editorClassRegister.find(input);
+	        
+	        // Perhaps should we remove the current editor.
+	        if(editor != null && editor.getClass() != editorClass) {
+	            disposeEditor();
+	        }
+	        
+	        // Perhaps, we should create a new editor instance.
+	        if(editor == null) {
+		        editor = (IEditor) editorClass.newInstance();
+		        editorContent = managedForm.getToolkit().createComposite(sectionContent);
+		        editorContent.setLayoutData(new GridData(GridData.FILL_BOTH));
+		        editor.createContent(editorContent, managedForm.getToolkit());
+	        }
+	        
+	        // Assigns the input to the editor.
+	        editor.setInput(input);
+        }
+        catch(Throwable throwable) {
+            Services.logWarning(throwable.getMessage());
+        }
+    }    
+
     /**
      * Updates the UI controls for the specified node.
      * 
      * @param	node	a node instance to use to refresh the UI controls.
      */
-    private void updateUIControls(Node node) {
+    private void selectNote(Node node) {
         String text = PropertyProvider.getDefault().getAnnotation(node);
         this.noteLabel.setText(text);
     }
