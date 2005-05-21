@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.ui.editor.form.pages.settings;
+package eclox.ui.editor.form.settings;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -38,11 +38,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.core.Services;
-import eclox.doxyfiles.nodes.Node;
-import eclox.doxyfiles.nodes.PropertyProvider;
-import eclox.doxyfiles.nodes.Setting;
-import eclox.ui.editor.form.pages.settings.editors.EditorClassRegister;
-import eclox.ui.editor.form.pages.settings.editors.IEditor;
+import eclox.doxyfiles.PropertyProvider;
+import eclox.doxyfiles.Setting;
+import eclox.ui.editor.form.settings.editors.EditorClassRegister;
+import eclox.ui.editor.form.settings.editors.IEditor;
 
 
 /**
@@ -234,10 +233,10 @@ public class DetailsPage implements IDetailsPage {
     /**
      * Updates the UI controls for the specified node.
      * 
-     * @param	node	a node instance to use to refresh the UI controls.
+     * @param	setting	a setting instance to use to refresh the UI controls.
      */
-    private void selectNote(Node node) {
-        String text = PropertyProvider.getDefault().getAnnotation(node);
+    private void selectNote(Setting setting) {
+        String text = PropertyProvider.getDefault().getAnnotation(setting);
         this.noteLabel.setText(text);
     }
 }

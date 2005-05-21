@@ -21,15 +21,19 @@
 
 package eclox.doxyfiles.io;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import eclox.doxyfiles.nodes.Group;
-import eclox.doxyfiles.nodes.Setting;
+import eclox.doxyfiles.Setting;
+
+
 
 /**
  * Implements a	doxyfile reader.
@@ -44,9 +48,9 @@ public class DoxyfileReader {
     private BufferedReader reader;
     
     /**
-     * The root node instance.
+     * The collection of setting instances.
      */
-    private Group root;
+    private Collection settings;
     
     /**
      * The comment line pattern.
@@ -71,12 +75,12 @@ public class DoxyfileReader {
     /**
      * Reads the input stream and returns the doxyfile.
      * 
-     * @return	a composed node that is the root of the doxyfile
+     * @return	a collection of the setting read from the input stream
      */
-    public Group read() throws IOException {
+    public Collection read() throws IOException {
         // Initialization of the system.
         this.reader.reset();
-        this.root = this.root = new Group(Group.ROOT);
+        this.settings = new Vector();
         
         // Reads and parses all lines.
         int lineNumber = 0;
@@ -92,7 +96,7 @@ public class DoxyfileReader {
         }
         
         // The job is done.
-        return this.root;
+        return this.settings;
     }
     
     /**
@@ -139,6 +143,6 @@ public class DoxyfileReader {
     private void processSettingAssignment(String identifier, String value) throws IOException {
         // Creates the setting.
         Setting setting = new Setting(identifier, value);
-        this.root.addChild(setting);
+        this.settings.add(setting);
   	}
 }

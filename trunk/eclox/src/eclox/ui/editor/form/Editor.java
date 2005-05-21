@@ -29,9 +29,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 import eclox.doxyfiles.Doxyfile;
-import eclox.ui.editor.form.pages.OverviewPage;
-import eclox.ui.editor.form.pages.SettingsPage;
-import eclox.ui.editor.form.pages.SourcePage;
 
 
 

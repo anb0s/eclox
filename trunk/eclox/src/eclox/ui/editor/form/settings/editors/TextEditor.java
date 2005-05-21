@@ -17,44 +17,42 @@
 // along with eclox; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.form.pages.settings.editors;
+package eclox.ui.editor.form.settings.editors;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import eclox.doxyfiles.nodes.Setting;
+import eclox.doxyfiles.Setting;
 
 /**
- * Defines the interface for settings editors.
+ * Implements a simple setting editor
  * 
  * @author gbrocker
  */
-public interface IEditor {
+public class TextEditor implements IEditor {
     
     /**
-     * Commits any changes made in the editor.
+     * The text widget.
      */
-    //public void commit();
+    private Text text;
     
     /**
-     * Creates the editor contents.
-     * 
-     * @param	parent		the composite control that will contain the editor controls
-     * @param	formToolkit	the form toolkit to use for the control creation
+     * @see eclox.ui.editor.form.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite)
      */
-    void createContent(Composite parent, FormToolkit formToolkit);
+    public void createContent(Composite parent, FormToolkit formToolkit) {
+        parent.setLayout(new GridLayout());
+        text = formToolkit.createText(parent, new String(), SWT.BORDER);
+        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    }
     
     /**
-     * Sets the editor input
-     * 
-     * @param	input	a setting that is the new editor input
+     * @see eclox.ui.editor.form.settings.editors.IEditor#setInput(eclox.doxyfiles.nodes.Setting)
      */
-    void setInput(Setting input);
-    
-    /**
-     * Tells if the editor is dirty.
-     * 
-     * @return	true or false
-     */
-    //public boolean isDirty();
+    public void setInput(Setting input) {
+        text.setText(input.getValue());
+    }
 }

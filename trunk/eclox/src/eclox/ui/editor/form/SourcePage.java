@@ -19,11 +19,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.ui.editor.form.pages;
+package eclox.ui.editor.form;
 
 import org.eclipse.ui.forms.editor.FormPage;
 
-import eclox.ui.editor.form.Editor;
 
 /**
  * @author gbrocker

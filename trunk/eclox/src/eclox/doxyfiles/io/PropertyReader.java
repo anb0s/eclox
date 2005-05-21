@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import eclox.doxyfiles.nodes.PropertyProvider;
+import eclox.doxyfiles.PropertyProvider;
 
 /**
  * Implements a node property file reader class.

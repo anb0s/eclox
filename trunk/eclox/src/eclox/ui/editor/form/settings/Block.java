@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.ui.editor.form.pages.settings;
+package eclox.ui.editor.form.settings;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -43,10 +43,9 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
-import eclox.doxyfiles.nodes.PropertyProvider;
-import eclox.doxyfiles.nodes.Group;
-import eclox.doxyfiles.nodes.Node;
-import eclox.doxyfiles.nodes.Setting;
+import eclox.doxyfiles.Doxyfile;
+import eclox.doxyfiles.PropertyProvider;
+import eclox.doxyfiles.Setting;
 
 /**
  * @author gbrocker
@@ -69,10 +68,10 @@ public class Block extends MasterDetailsBlock {
          * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
          */
         public String getText(Object element) {
-            if(element instanceof Node) {
-                Node node = (Node) element;
-                String text = PropertyProvider.getDefault().getText(node);
-                return text != null ? text : node.getIdentifier();
+            if(element instanceof Setting) {
+                Setting setting = (Setting) element;
+                String text = PropertyProvider.getDefault().getText(setting);
+                return text != null ? text : setting.getIdentifier();
             }
             else {
                 return super.getText(element);
@@ -91,9 +90,9 @@ public class Block extends MasterDetailsBlock {
          * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
          */
         public Object[] getChildren(Object parentElement) {
-            if(parentElement instanceof Group) {
-                Group group = (Group) parentElement;
-                return group.toArray();
+            if(parentElement instanceof Doxyfile) {
+                Doxyfile doxyfile = (Doxyfile) parentElement;
+                return doxyfile.getSettings();
             }
             else {
                 return null;
@@ -111,7 +110,7 @@ public class Block extends MasterDetailsBlock {
          * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
          */
         public boolean hasChildren(Object element) {
-            return element instanceof Group ? ((Group) element).size() != 0 : false;
+            return element instanceof Doxyfile ? true : false;
         }
 
         /**

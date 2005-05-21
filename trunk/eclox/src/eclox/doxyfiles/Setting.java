@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.doxyfiles.nodes;
+package eclox.doxyfiles;
 
 import java.util.Collection;
 import java.util.regex.Matcher;
@@ -30,12 +30,17 @@ import java.util.regex.Pattern;
  * 
  * @author gbrocker
  */
-public class Setting extends Node {
+public class Setting {
     
-    /**
+	/**
      * The value pattern.
      */
     private static Pattern valuePattern = Pattern.compile("(?:(\"[^\"]*\"|[^\\s]+)\\s*)+");
+    
+    /**
+     * A string containing the node identifier.
+     */
+    private final String identifier;
     
     /**
      * The string containing the setting value.
@@ -49,15 +54,17 @@ public class Setting extends Node {
      * @param	value		a string containing the setting value
      */
     public Setting(String identifier, String value) {
-        super(identifier);
+        this.identifier = new String(identifier);
         this.value = new String(value);
     }
     
     /**
-     * @see eclox.doxyfiles.nodes.Node#accept(eclox.doxyfiles.nodes.IVisitor)
+     * Retrieves the node identifier.
+     * 
+     * @return	a string containing the node identifier
      */
-    public void accept(IVisitor visitor) {
-        visitor.process(this);
+    public final String getIdentifier() {
+        return this.identifier;
     }
     
     /**
