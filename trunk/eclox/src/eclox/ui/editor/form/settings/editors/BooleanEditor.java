@@ -20,6 +20,7 @@
 package eclox.ui.editor.form.settings.editors;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -36,9 +37,14 @@ public class BooleanEditor implements IEditor {
      * @see eclox.ui.editor.form.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
      */
     public void createContent(Composite parent, FormToolkit formToolkit) {
-        formToolkit.createButton(parent, "Yes", SWT.PUSH);
-        formToolkit.createButton(parent, "No", SWT.PUSH);
-        formToolkit.createButton(parent, "Not Specified", SWT.PUSH);
+    	
+    	// Initialize the parent control.
+    	parent.setLayout(new RowLayout(SWT.VERTICAL));
+    	
+    	// Creates the buttons.
+    	formToolkit.createButton(parent, "Yes", SWT.RADIO);
+    	formToolkit.createButton(parent, "No", SWT.RADIO);
+        formToolkit.createButton(parent, "Default", SWT.RADIO);
     }
     
     /**
