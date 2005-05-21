@@ -22,6 +22,8 @@
 package eclox.doxyfiles;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -30,7 +32,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
 import eclox.doxyfiles.io.DoxyfileReader;
-import eclox.doxyfiles.nodes.Group;
+
 
 /**
  * Implements the Doxyfile wrapper.
@@ -40,9 +42,9 @@ import eclox.doxyfiles.nodes.Group;
 public class Doxyfile {
     
     /**
-     * The doxyfile root node.
+     * The collection of all settings
      */
-    private Group root = null;
+    private Collection settings;
     
     /**
 	 * Tells if the specified resource is a doxyfile.
@@ -78,17 +80,24 @@ public class Doxyfile {
 	 */
 	public Doxyfile(IFile file) throws IOException, CoreException {
 	    DoxyfileReader reader = new DoxyfileReader(file.getContents());
-	    this.root = reader.read();
+	    this.settings = reader.read();
 	}
-	
 	
 	/**
-	 * Retrieves the doxyfile root node.
+	 * Retrieves all settings as an array
 	 * 
-	 * @return	the root node instance can be null if none
+	 * @return	an array of settings
 	 */
-	public Group getRoot() {
-	    return this.root;
+	public Object[] getSettings() {
+		return settings.toArray();
 	}
 	
+	/**
+	 * Retrieves the iterator on the doxyfile's settings
+	 * 
+	 * @return	an iterator on Setting instances
+	 */
+	public Iterator iterator() {
+		return settings.iterator();
+	}
 }

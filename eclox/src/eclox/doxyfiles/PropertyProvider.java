@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.doxyfiles.nodes;
+package eclox.doxyfiles;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -103,7 +103,7 @@ public class PropertyProvider {
      * 
      * @return	a string containing the node's annotation or null if none
      */
-    public String getAnnotation(Node node) {
+    public String getAnnotation(Setting node) {
         return getProperty(node, ANNOTATION);
     }
     
@@ -116,7 +116,7 @@ public class PropertyProvider {
      * @return	a string containing the property value or null when such
      * 			node property exists
      */
-    public String getProperty(Node node, String property) {
+    public String getProperty(Setting node, String property) {
         String result;
         Properties properties = (Properties) propertyContainer.get(node.getIdentifier());
         if(properties == null) {
@@ -138,7 +138,7 @@ public class PropertyProvider {
      * 
      * @return	a string containing the node's text or null if none
      */
-    public String getText(Node node) {
+    public String getText(Setting node) {
         return getProperty(node, TEXT);
     }
     
@@ -149,23 +149,23 @@ public class PropertyProvider {
      * 
      * @return	a string containing the node's type or null when none
      */
-    public String getType(Node node) {
-        return getProperty(node, TYPE);
+    public String getType(Setting setting) {
+        return getProperty(setting, TYPE);
     }
     
     /**
-     * Adds the specified property for the specified node.
+     * Adds the specified property for the specified setting.
      * 
-     * @param	node		a string containing a node identifier
-     * @param	property	a string containing a node property name
-     * @param	value		a string containing a node property value
+     * @param	setting		a string containing a setting identifier
+     * @param	property	a string containing a setting property name
+     * @param	value		a string containing a setting property value
      */
-    public void setProperty(String node, String property, String value) {
-        // Retrives the properties of the specified node.
-        Properties properties = (Properties) propertyContainer.get(node);
+    public void setProperty(String setting, String property, String value) {
+        // Retrives the properties of the specified setting.
+        Properties properties = (Properties) propertyContainer.get(setting);
         if(properties == null) {
             properties = new Properties();
-            propertyContainer.put(node, properties);
+            propertyContainer.put(setting, properties);
         }
         
         // Update the value of the specified property.

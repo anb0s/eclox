@@ -17,14 +17,14 @@
 //along with eclox; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.form.pages.settings.editors;
+package eclox.ui.editor.form.settings.editors;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import eclox.core.Services;
-import eclox.doxyfiles.nodes.PropertyProvider;
-import eclox.doxyfiles.nodes.Setting;
+import eclox.doxyfiles.PropertyProvider;
+import eclox.doxyfiles.Setting;
 
 /**
  * An instance of this class registers all setting editor classes by setting type. 

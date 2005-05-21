@@ -17,13 +17,13 @@
 //along with eclox; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.form.pages.settings.editors;
+package eclox.ui.editor.form.settings.editors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import eclox.doxyfiles.nodes.Setting;
+import eclox.doxyfiles.Setting;
 
 /**
  * Implements an setting editor for boolean values
@@ -33,7 +33,7 @@ import eclox.doxyfiles.nodes.Setting;
 public class BooleanEditor implements IEditor {
 
     /**
-     * @see eclox.ui.editor.form.pages.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     * @see eclox.ui.editor.form.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
      */
     public void createContent(Composite parent, FormToolkit formToolkit) {
         formToolkit.createButton(parent, "Yes", SWT.PUSH);
@@ -42,7 +42,7 @@ public class BooleanEditor implements IEditor {
     }
     
     /**
-     * @see eclox.ui.editor.form.pages.settings.editors.IEditor#setInput(eclox.doxyfiles.nodes.Setting)
+     * @see eclox.ui.editor.form.settings.editors.IEditor#setInput(eclox.doxyfiles.nodes.Setting)
      */
     public void setInput(Setting input) {
         // TODO implementation required !
