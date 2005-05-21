@@ -62,7 +62,7 @@ public class EditorClassRegister {
         if(result == null) {
             result = TextEditor.class;
             // TODO improve message output.
-            Services.logWarning("Setting '"+setting.toString()+"' has no editor.");
+            Services.logWarning("Setting '"+setting.getIdentifier()+"' has no editor.");
         }
         
         return result;
