@@ -19,7 +19,6 @@
 
 package eclox.ui.editor.form.settings.editors;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -29,7 +28,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import eclox.doxyfiles.Setting;
 
 /**
- * Implements a simple setting editor
+ * Implements a simple setting editor.
  * 
  * @author gbrocker
  */
@@ -45,8 +44,9 @@ public class TextEditor implements IEditor {
      */
     public void createContent(Composite parent, FormToolkit formToolkit) {
         parent.setLayout(new GridLayout());
-        text = formToolkit.createText(parent, new String(), SWT.BORDER);
+        text = formToolkit.createText(parent, new String());
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        formToolkit.paintBordersFor(parent);
     }
     
     /**
