@@ -23,12 +23,10 @@ package eclox.ui.editor.form.settings;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IDetailsPage;
@@ -106,8 +104,12 @@ public class DetailsPage implements IDetailsPage {
         this.sectionContent.setBackground(new Color(parent.getDisplay(), 255, 0, 0));
         this.section.setClient(this.sectionContent);
         GridLayout layout = new GridLayout(1, true);
-        this.sectionContent.setLayout(layout);        
+        this.sectionContent.setLayout(layout);
         
+        // Creates the editor content.
+        this.editorContent = managedForm.getToolkit().createComposite(sectionContent);
+        this.editorContent.setLayoutData(new GridData(GridData.FILL_BOTH));
+                
         // Creates the label display the note content.
         this.noteLabel = this.managedForm.getToolkit().createLabel(sectionContent, "", org.eclipse.swt.SWT.WRAP);
         this.noteLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -116,7 +118,11 @@ public class DetailsPage implements IDetailsPage {
     /**
      * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
      */
-    public void commit(boolean onSave) {}
+    public void commit(boolean onSave) {
+    	if( editor != null ) {
+    		editor.commit();
+    	}
+    }
     
     /**
      * @see org.eclipse.ui.forms.IFormPart#dispose()
@@ -134,7 +140,7 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#isDirty()
      */
     public boolean isDirty() {
-        return false;
+    	return editor != null ? editor.isDirty() : false;
     }
     
     /**
@@ -192,9 +198,8 @@ public class DetailsPage implements IDetailsPage {
      */
     private void disposeEditor() {
         if(editor != null) {
-            editorContent.dispose();
+        	editor.dispose();
             editor = null;
-            editorContent = null;
         }
     }
         
@@ -217,8 +222,6 @@ public class DetailsPage implements IDetailsPage {
 	        // Perhaps, we should create a new editor instance.
 	        if(editor == null) {
 		        editor = (IEditor) editorClass.newInstance();
-		        editorContent = managedForm.getToolkit().createComposite(sectionContent);
-		        editorContent.setLayoutData(new GridData(GridData.FILL_BOTH));
 		        editor.createContent(editorContent, managedForm.getToolkit());
 	        }
 	        

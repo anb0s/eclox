@@ -32,25 +32,39 @@ import eclox.doxyfiles.Setting;
  * @author gbrocker
  */
 public class BooleanEditor implements IEditor {
+	
+	/**
+	 * @brief	the container for all widgets 
+	 */
+	Composite container;
 
-    /**
-     * @see eclox.ui.editor.form.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
-     */
-    public void createContent(Composite parent, FormToolkit formToolkit) {
+	
+    public void commit() {
+		// TODO Auto-generated method stub	
+	}
+
+	public void createContent(Composite parent, FormToolkit formToolkit) {
     	
     	// Initialize the parent control.
-    	parent.setLayout(new RowLayout(SWT.VERTICAL));
+    	container = formToolkit.createComposite(parent);
+    	container.setLayout(new RowLayout(SWT.VERTICAL));
     	
     	// Creates the buttons.
-    	formToolkit.createButton(parent, "Yes", SWT.RADIO);
-    	formToolkit.createButton(parent, "No", SWT.RADIO);
-        formToolkit.createButton(parent, "Default", SWT.RADIO);
+    	formToolkit.createButton(container, "Yes", SWT.RADIO);
+    	formToolkit.createButton(container, "No", SWT.RADIO);
+        formToolkit.createButton(container, "Default", SWT.RADIO);
     }
     
-    /**
-     * @see eclox.ui.editor.form.settings.editors.IEditor#setInput(eclox.doxyfiles.nodes.Setting)
-     */
-    public void setInput(Setting input) {
+    public void dispose() {
+		container.dispose();
+	}
+
+	public boolean isDirty() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void setInput(Setting input) {
         // TODO implementation required !
     }
 }

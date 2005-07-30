@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin
-   id="eclox"
-   name="Eclox Documentation System"
-   version="0.3.4"
+   id="org.gna.eclox"
+   name="Doxygen Documentation System"
+   version="0.3.5"
    provider-name="Guillaume Brocker"
    class="eclox.core.Plugin">
 

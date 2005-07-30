@@ -19,6 +19,8 @@
 
 package eclox.ui.editor.form.settings.editors;
 
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -34,25 +36,59 @@ import eclox.doxyfiles.Setting;
  */
 public class TextEditor implements IEditor {
     
+	/**
+	 * Defines a modify listener class.
+	 */
+	private class Listener implements ModifyListener {
+
+		public void modifyText(ModifyEvent e) {
+			hasChanged = true;		
+		}
+		
+	};
+	
     /**
+     * The current editor input
+     */
+	private Setting input;
+	
+	/**
      * The text widget.
      */
     private Text text;
     
     /**
-     * @see eclox.ui.editor.form.settings.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite)
+     * Remerbers if the text has changed.
      */
+    private boolean hasChanged = false;
+    
+    
+    public void commit() {
+		input.setValue(text.getText());
+	}
+    
     public void createContent(Composite parent, FormToolkit formToolkit) {
         parent.setLayout(new GridLayout());
+        formToolkit.paintBordersFor(parent);
+        
+        // Creates the text widget.
         text = formToolkit.createText(parent, new String());
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        formToolkit.paintBordersFor(parent);
+        text.addModifyListener(new Listener());
     }
     
-    /**
-     * @see eclox.ui.editor.form.settings.editors.IEditor#setInput(eclox.doxyfiles.nodes.Setting)
-     */
-    public void setInput(Setting input) {
+    public void dispose() {
+		text.dispose();		
+	}
+
+	public boolean isDirty() {
+		return hasChanged;
+	}
+
+	public void setInput(Setting input) {
+		this.input = input;
         text.setText(input.getValue());
+        hasChanged = false;
     }
+    
 }
