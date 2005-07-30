@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <plugin
    id="eclox"
-   name="Doxygen in eclipse"
+   name="Eclox Documentation System"
    version="0.3.4"
-
+   provider-name="Guillaume Brocker"
    class="eclox.core.Plugin">
 
    <runtime>
@@ -86,7 +86,6 @@
          </action>
          <action
                label="Build"
-               pulldown="true"
                style="pulldown"
                icon="icons/build.gif"
                class="eclox.ui.action.BuildActionDelegate"
