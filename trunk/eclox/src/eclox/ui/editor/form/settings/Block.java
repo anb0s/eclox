@@ -28,10 +28,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.DetailsPart;
@@ -40,7 +36,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.doxyfiles.Doxyfile;
@@ -173,7 +168,6 @@ public class Block extends MasterDetailsBlock {
      * @see org.eclipse.ui.forms.MasterDetailsBlock#createMasterPart(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
      */
     protected void createMasterPart(IManagedForm managedForm, Composite parent) {
-        ScrolledForm	form = managedForm.getForm();
         FormToolkit		toolkit = managedForm.getToolkit();
         
         // TODO !!! find the relevant layout configuration here !!!
@@ -183,7 +177,7 @@ public class Block extends MasterDetailsBlock {
         
         // Creates the section containing the tree view
         Section	section = toolkit.createSection(parent, Section.TITLE_BAR|Section.COMPACT);
-        section.setText("Items");
+        section.setText("Settings");
         section.marginHeight = 5;
         section.marginWidth = 10;
                 

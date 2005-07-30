@@ -34,7 +34,7 @@ public interface IEditor {
     /**
      * Commits any changes made in the editor.
      */
-    //public void commit();
+    public void commit();
     
     /**
      * Creates the editor contents.
@@ -43,6 +43,11 @@ public interface IEditor {
      * @param	formToolkit	the form toolkit to use for the control creation
      */
     void createContent(Composite parent, FormToolkit formToolkit);
+    
+    /**
+     * Asks the editor to dispose its controls.
+     */
+   void dispose();
     
     /**
      * Sets the editor input
@@ -56,5 +61,6 @@ public interface IEditor {
      * 
      * @return	true or false
      */
-    //public boolean isDirty();
+    public boolean isDirty();
+    
 }
