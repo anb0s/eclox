@@ -100,7 +100,7 @@ public class Setting {
      * @param	value	an object representing a value to add
      */
     public void setValue(String value) {
-        value = new String(value);
+        this.value = new String(value);
     }
     
 }
