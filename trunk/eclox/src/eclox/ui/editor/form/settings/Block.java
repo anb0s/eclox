@@ -22,14 +22,14 @@
 package eclox.ui.editor.form.settings;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ITreeContentProvider;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -48,9 +48,9 @@ import eclox.doxyfiles.Setting;
 public class Block extends MasterDetailsBlock {
     
     /**
-     * The tree viewer.
+     * the list viewer
      */
-    private TreeViewer treeViewer;
+    private ListViewer listViewer;
         
     /**
      * Implements the master label provider.
@@ -79,41 +79,7 @@ public class Block extends MasterDetailsBlock {
      * 
      * @author gbrocker
      */
-    protected class MasterContentProvider implements ITreeContentProvider {
-
-        /**
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
-         */
-        public Object[] getChildren(Object parentElement) {
-            if(parentElement instanceof Doxyfile) {
-                Doxyfile doxyfile = (Doxyfile) parentElement;
-                return doxyfile.getSettings();
-            }
-            else {
-                return null;
-            }
-        }
-
-        /**
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
-         */
-        public Object getParent(Object element) {
-            return null;
-        }
-
-        /**
-         * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
-         */
-        public boolean hasChildren(Object element) {
-            return element instanceof Doxyfile ? true : false;
-        }
-
-        /**
-         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
-         */
-        public Object[] getElements(Object inputElement) {
-            return this.getChildren(inputElement);
-        }
+    protected class MasterContentProvider implements IStructuredContentProvider {
 
         /**
          * @see org.eclipse.jface.viewers.IContentProvider#dispose()
@@ -125,6 +91,13 @@ public class Block extends MasterDetailsBlock {
          */
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
 
+        /**
+         * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
+         */
+        public Object[] getElements(Object inputElement) {
+            Doxyfile	doxyfile = (Doxyfile) inputElement;
+            return doxyfile.getSettings();
+        }
     }
     
     /**
@@ -170,32 +143,23 @@ public class Block extends MasterDetailsBlock {
     protected void createMasterPart(IManagedForm managedForm, Composite parent) {
         FormToolkit		toolkit = managedForm.getToolkit();
         
-        // TODO !!! find the relevant layout configuration here !!!
-        // Initalizes the parent control layout
-        //parent.setLayout(new FillLayout());
-        //parent.setLayoutData(null);
-        
         // Creates the section containing the tree view
         Section	section = toolkit.createSection(parent, Section.TITLE_BAR|Section.COMPACT);
         section.setText("Settings");
         section.marginHeight = 5;
         section.marginWidth = 10;
                 
-        // Creates the tree.
-        Tree tree = toolkit.createTree(section, SWT.V_SCROLL);
-        section.setClient(tree);
+        // Creates the list widget that will display all settings.
+        List list = new List(section, SWT.V_SCROLL|SWT.BORDER);
+        section.setClient(list);
         toolkit.paintBordersFor(section);
         
-        // TODO remove this layout test code
-        //section.setLayoutData(new FormData(50,50));
-        //((SashForm)parent).setMaximizedControl(section);
-        
-        // Creates the tree viewer.
-        this.treeViewer = new TreeViewer(tree);
-        this.treeViewer.setContentProvider(new MasterContentProvider());
-        this.treeViewer.setLabelProvider(new MasterLabelProvider());
-        this.treeViewer.addSelectionChangedListener(new SelectionForwarder(new SectionPart(section), managedForm));
-     }
+        // Creates the list viewer.
+        this.listViewer = new ListViewer( list );
+        this.listViewer.setContentProvider( new MasterContentProvider() );
+        this.listViewer.setLabelProvider( new MasterLabelProvider() );
+        this.listViewer.addSelectionChangedListener(new SelectionForwarder(new SectionPart(section), managedForm));
+    }
 
     /**
      * @see org.eclipse.ui.forms.MasterDetailsBlock#registerPages(org.eclipse.ui.forms.DetailsPart)
@@ -215,7 +179,7 @@ public class Block extends MasterDetailsBlock {
      * @param	input	the new input
      */
     public void setInput(Object input) {
-        this.treeViewer.setInput(input);
+        this.listViewer.setInput(input);
     }
 
 }
