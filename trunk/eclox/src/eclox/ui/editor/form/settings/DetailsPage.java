@@ -104,6 +104,8 @@ public class DetailsPage implements IDetailsPage {
         this.sectionContent.setBackground(new Color(parent.getDisplay(), 255, 0, 0));
         this.section.setClient(this.sectionContent);
         GridLayout layout = new GridLayout(1, true);
+        layout.marginWidth = 0;
+        layout.marginHeight = 0;
         this.sectionContent.setLayout(layout);
         
         // Creates the editor content.
