@@ -21,7 +21,11 @@
 
 package eclox.doxyfiles;
 
+import java.awt.image.VolatileImage;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +47,11 @@ public class Setting {
     private final String identifier;
     
     /**
+     * A collection with all attached listeners
+     */
+    private Set listeners = new HashSet();
+    
+    /**
      * The string containing the setting value.
      */
     private String value;
@@ -56,6 +65,15 @@ public class Setting {
     public Setting(String identifier, String value) {
         this.identifier = new String(identifier);
         this.value = new String(value);
+    }
+    
+    /**
+     * Attaches a new setting listener instance.
+     * 
+     * @param	listener	a new setting listener instance
+     */
+    public void addSettingListener(ISettingListener listener) {
+        this.listeners.add( listener );
     }
     
     /**
@@ -95,12 +113,29 @@ public class Setting {
     }
     
     /**
+     * Detaches a new setting listener instance.
+     * 
+     * @param	listener	a attached setting listener instance
+     */
+    public void removeSettingListener(ISettingListener listener) {
+        this.listeners.remove( listener );
+    }
+    
+    /**
      * Adds a new value to the setting
      *
      * @param	value	an object representing a value to add
      */
     public void setValue(String value) {
+        // Assigns the new value. 
         this.value = new String(value);
+        
+        // Walks through the attached listeners and notify them.
+        Iterator i = this.listeners.iterator();
+        while( i.hasNext() == true ) {
+            ISettingListener listener = (ISettingListener) i.next();
+            listener.settingValueChanged( this );
+        }            
     }
     
 }

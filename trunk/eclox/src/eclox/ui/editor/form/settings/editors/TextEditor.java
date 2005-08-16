@@ -42,7 +42,8 @@ public class TextEditor implements IEditor {
 	private class Listener implements ModifyListener {
 
 		public void modifyText(ModifyEvent e) {
-			hasChanged = true;		
+			hasChanged = true;
+			input.setValue( text.getText() );
 		}
 		
 	};
@@ -74,7 +75,6 @@ public class TextEditor implements IEditor {
         // Creates the text widget.
         text = formToolkit.createText(parent, new String());
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        text.addModifyListener(new Listener());
     }
     
     public void dispose() {
@@ -88,6 +88,7 @@ public class TextEditor implements IEditor {
 	public void setInput(Setting input) {
 		this.input = input;
         text.setText(input.getValue());
+        text.addModifyListener(new Listener());
         hasChanged = false;
     }
     
