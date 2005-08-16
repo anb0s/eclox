@@ -21,26 +21,36 @@
 
 package eclox.ui.editor.form;
 
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 import eclox.doxyfiles.Doxyfile;
+import eclox.doxyfiles.ISettingListener;
+import eclox.doxyfiles.Setting;
 
 
 
 /**
  * @author gbrocker
  */
-public class Editor extends FormEditor {
+public class Editor extends FormEditor implements ISettingListener {
     
     /**
      * The doxyfile content.
      */
     private Doxyfile doxyfile;
+    
+    /**
+     * The dirty state of the editor
+     */
+    private boolean dirty = false;
 
     /**
      * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
@@ -88,7 +98,15 @@ public class Editor extends FormEditor {
         try {
             IFileEditorInput	fileInput = (IFileEditorInput) input;
             
+            // Parses the doxyfile and attaches to all settings.
             this.doxyfile = new Doxyfile(fileInput.getFile());
+            Iterator	i = this.doxyfile.iterator();
+            while( i.hasNext() == true ) {
+                Setting	setting = (Setting) i.next();
+                setting.addSettingListener( this );
+            }
+            
+            // Continue initialization.
 	        this.setPartName(input.getName());
 	        super.init(site, input);
         }
@@ -106,5 +124,35 @@ public class Editor extends FormEditor {
     public boolean isSaveAsAllowed() {
         // TODO Auto-generated method stub
         return false;
+    }
+    
+    /**
+     * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
+     */
+    public void settingValueChanged(Setting setting) {
+        this.dirty = true;
+        this.firePropertyChange( IEditorPart.PROP_DIRTY );
+    }
+    
+    /**
+     * @see org.eclipse.ui.IWorkbenchPart#dispose()
+     */
+    public void dispose() {
+        // Unregisters the editor from the settings
+        Iterator	i = this.doxyfile.iterator();
+        while( i.hasNext() == true ) {
+            Setting	setting = (Setting) i.next();
+            setting.removeSettingListener( this );
+        }
+
+        // Continue...
+        super.dispose();
+    }
+    
+    /**
+     * @see org.eclipse.ui.ISaveablePart#isDirty()
+     */
+    public boolean isDirty() {
+        return super.isDirty() || this.dirty;
     }
 }
