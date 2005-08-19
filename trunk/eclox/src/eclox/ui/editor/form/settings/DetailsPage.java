@@ -242,6 +242,9 @@ public class DetailsPage implements IDetailsPage {
      */
     private void selectNote(Setting setting) {
         String text = PropertyProvider.getDefault().getAnnotation(setting);
+        if(text == null) {
+        	text = new String("Not available.");
+        }
         this.noteLabel.setText(text);
     }
 }
