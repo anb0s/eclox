@@ -21,7 +21,6 @@
 
 package eclox.doxyfiles;
 
-import java.awt.image.VolatileImage;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;

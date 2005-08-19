@@ -22,8 +22,8 @@
 package eclox.doxyfiles;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -31,7 +31,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
-import eclox.doxyfiles.io.DoxyfileReader;
+import eclox.doxyfiles.io.DoxyfileParser;
 
 
 /**
@@ -44,7 +44,7 @@ public class Doxyfile {
     /**
      * The collection of all settings
      */
-    private Collection settings;
+    private Map settings;
     
     /**
 	 * Tells if the specified resource is a doxyfile.
@@ -79,8 +79,19 @@ public class Doxyfile {
 	 * @param	file	a file resource instance that is assumed to be a doxyfile
 	 */
 	public Doxyfile(IFile file) throws IOException, CoreException {
-	    DoxyfileReader reader = new DoxyfileReader(file.getContents());
+	    DoxyfileParser reader = new DoxyfileParser(file.getContents());
 	    this.settings = reader.read();
+	}
+	
+	/**
+	 * Retrieves a single setting for the specified identifier.
+	 * 
+	 * @param	identifier	a string containing a setting identifier
+	 * 
+	 * @return	the found setting or null if none
+	 */
+	public Setting getSetting(String identifier) {
+		return (Setting) settings.get(identifier);
 	}
 	
 	/**
@@ -89,7 +100,7 @@ public class Doxyfile {
 	 * @return	an array of settings
 	 */
 	public Object[] getSettings() {
-		return settings.toArray();
+		return settings.values().toArray();
 	}
 	
 	/**
@@ -98,6 +109,6 @@ public class Doxyfile {
 	 * @return	an iterator on Setting instances
 	 */
 	public Iterator iterator() {
-		return settings.iterator();
+		return settings.values().iterator();
 	}
 }
