@@ -86,7 +86,7 @@ public class PropertyProvider {
      */
     public PropertyProvider() {
         try {
-            InputStream input = Plugin.getDefault().openStream(new Path("misc/node-properties.txt"));
+            InputStream input = Plugin.getDefault().openStream(new Path("misc/setting-properties.txt"));
             PropertyReader reader = new PropertyReader(input);
             
             reader.read(this);
