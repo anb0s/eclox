@@ -26,8 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Vector;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +39,7 @@ import eclox.doxyfiles.Setting;
  * 
  * @author gbrocker
  */
-public class DoxyfileReader {
+public class DoxyfileParser {
 
     /**
      * The line reader used to parse the input stream.
@@ -50,7 +49,7 @@ public class DoxyfileReader {
     /**
      * The collection of setting instances.
      */
-    private Collection settings;
+    private Map settings;
     
     /**
      * The comment line pattern.
@@ -67,7 +66,7 @@ public class DoxyfileReader {
      * 
      * @param	input	an input stram instance to parse as a doxyfile
      */
-    public DoxyfileReader(InputStream input) throws IOException {
+    public DoxyfileParser(InputStream input) throws IOException {
         this.reader = new BufferedReader(new InputStreamReader(input));
         this.reader.mark(0);
     }
@@ -77,10 +76,10 @@ public class DoxyfileReader {
      * 
      * @return	a collection of the setting read from the input stream
      */
-    public Collection read() throws IOException {
+    public Map read() throws IOException {
         // Initialization of the system.
         this.reader.reset();
-        this.settings = new Vector();
+        this.settings = new java.util.HashMap();
         
         // Reads and parses all lines.
         int lineNumber = 0;
@@ -143,6 +142,6 @@ public class DoxyfileReader {
     private void processSettingAssignment(String identifier, String value) throws IOException {
         // Creates the setting.
         Setting setting = new Setting(identifier, value);
-        this.settings.add(setting);
+        this.settings.put(identifier, setting);
   	}
 }

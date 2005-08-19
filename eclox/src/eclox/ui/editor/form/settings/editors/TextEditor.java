@@ -39,11 +39,18 @@ public class TextEditor implements IEditor {
 	/**
 	 * Defines a modify listener class.
 	 */
-	private class Listener implements ModifyListener {
+	private class TextModifyListener implements ModifyListener {
 
+		/**
+		 * Tells if the listener should sleep (ignore notifications).
+		 */
+		public boolean sleeping = true;
+		
 		public void modifyText(ModifyEvent e) {
-			hasChanged = true;
-			input.setValue( text.getText() );
+			if(sleeping == false) {
+				hasChanged = true;
+				input.setValue( text.getText() );
+			}
 		}
 		
 	};
@@ -57,6 +64,11 @@ public class TextEditor implements IEditor {
      * The text widget.
      */
     private Text text;
+    
+    /**
+     * The current modification listener of the text control
+     */
+    private TextModifyListener textModifyListener = new TextModifyListener();
     
     /**
      * Remerbers if the text has changed.
@@ -75,6 +87,7 @@ public class TextEditor implements IEditor {
         // Creates the text widget.
         text = formToolkit.createText(parent, new String());
         text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        text.addModifyListener(textModifyListener);
     }
     
     public void dispose() {
@@ -87,8 +100,9 @@ public class TextEditor implements IEditor {
 
 	public void setInput(Setting input) {
 		this.input = input;
-        text.setText(input.getValue());
-        text.addModifyListener(new Listener());
+		textModifyListener.sleeping = true;
+		text.setText(input.getValue());
+		textModifyListener.sleeping = false;
         hasChanged = false;
     }
     
