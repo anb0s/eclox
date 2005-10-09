@@ -22,8 +22,11 @@
 package eclox.doxyfiles;
 
 import java.io.IOException;
+import java.util.AbstractList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -31,7 +34,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
-import eclox.doxyfiles.io.DoxyfileParser;
+import eclox.doxyfiles.io.Parser;
 
 
 /**
@@ -40,11 +43,16 @@ import eclox.doxyfiles.io.DoxyfileParser;
  * @author gbrocker
  */
 public class Doxyfile {
+	
+	/**
+	 * a collection containing all doxyfile's chunks
+	 */
+	private AbstractList chunks = new Vector();
     
     /**
-     * The collection of all settings
+     * a map pointing on all managed settings
      */
-    private Map settings;
+    private Map settings = new HashMap();
     
     /**
 	 * Tells if the specified resource is a doxyfile.
@@ -74,13 +82,40 @@ public class Doxyfile {
 	
 	
 	/**
-	 * Constructor.
+	 * Constructor
 	 * 
 	 * @param	file	a file resource instance that is assumed to be a doxyfile
 	 */
-	public Doxyfile(IFile file) throws IOException, CoreException {
-	    DoxyfileParser reader = new DoxyfileParser(file.getContents());
-	    this.settings = reader.read();
+	public Doxyfile( IFile file ) throws IOException, CoreException {
+	    Parser parser = new Parser(file.getContents());
+	    parser.read( this );
+	}
+	
+	/**
+	 * Appends a new chunk to the doxyfile
+	 * 
+	 * @param	chunk	a chunk to append to the doxyfile
+	 */
+	public void append( Chunk chunk ) {
+		this.chunks.add( chunk );
+		if( chunk instanceof Setting ) {
+			Setting	setting = (Setting) chunk;
+			this.settings.put( setting.getIdentifier(), setting );
+		}
+	}
+	
+	/**
+	 * Retrieves the last appended chunk
+	 * 
+	 * @return	the last added chunk or null if none
+	 */
+	public Chunk getLastChunk() {
+		if( this.chunks.isEmpty() == false ) {
+			return (Chunk) this.chunks.get( this.chunks.size() - 1 );
+		}
+		else {
+			return null;
+		}
 	}
 	
 	/**
@@ -90,7 +125,7 @@ public class Doxyfile {
 	 * 
 	 * @return	the found setting or null if none
 	 */
-	public Setting getSetting(String identifier) {
+	public Setting getSetting( String identifier ) {
 		return (Setting) settings.get(identifier);
 	}
 	
@@ -104,11 +139,21 @@ public class Doxyfile {
 	}
 	
 	/**
-	 * Retrieves the iterator on the doxyfile's settings
+	 * Retrieves the iterator the whole chunk collection.
+	 * 
+	 * @return	an iterator on chunks
+	 */
+	public Iterator iterator() {
+		return this.chunks.iterator();
+	}
+	
+	/**
+	 * Retrieves the iterator on the setting collection.
 	 * 
 	 * @return	an iterator on Setting instances
 	 */
-	public Iterator iterator() {
+	public Iterator settingIterator() {
 		return settings.values().iterator();
 	}
+	
 }

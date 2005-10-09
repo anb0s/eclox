@@ -41,6 +41,7 @@ public class BooleanEditor implements IEditor {
 	
     public void commit() {
 		// TODO Auto-generated method stub	
+    	// TODO Implement!
 	}
 
 	public void createContent(Composite parent, FormToolkit formToolkit) {

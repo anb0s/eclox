@@ -1,3 +1,8 @@
+current:
+	o Deep refactoring of the doxyfile content representation
+	o Recreation of the doxyfile editor using new ui APIs provided since eclipse 3.0
+	
+
 eclox-0.3.4 (8-oct-2004):
     o Bug fixed, the plugin crashed at startup.
     

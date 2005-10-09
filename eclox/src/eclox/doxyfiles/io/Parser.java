@@ -26,30 +26,27 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import eclox.doxyfiles.Chunk;
+import eclox.doxyfiles.Doxyfile;
+import eclox.doxyfiles.RawText;
 import eclox.doxyfiles.Setting;
 
 
 
 /**
- * Implements a	doxyfile reader.
+ * Implements a	doxyfile parser.
  * 
  * @author gbrocker
  */
-public class DoxyfileParser {
+public class Parser {
 
     /**
      * The line reader used to parse the input stream.
      */
     private BufferedReader reader;
-    
-    /**
-     * The collection of setting instances.
-     */
-    private Map settings;
     
     /**
      * The comment line pattern.
@@ -66,54 +63,55 @@ public class DoxyfileParser {
      * 
      * @param	input	an input stram instance to parse as a doxyfile
      */
-    public DoxyfileParser(InputStream input) throws IOException {
-        this.reader = new BufferedReader(new InputStreamReader(input));
+    public Parser( InputStream input ) throws IOException {
+        this.reader = new BufferedReader( new InputStreamReader(input) );
         this.reader.mark(0);
     }
     
     /**
      * Reads the input stream and returns the doxyfile.
      * 
+     * @param	doxyfile	a doxyfile where the parser results will be stored
+     * 
      * @return	a collection of the setting read from the input stream
      */
-    public Map read() throws IOException {
+    public void read( Doxyfile doxyfile ) throws IOException {
         // Initialization of the system.
         this.reader.reset();
-        this.settings = new java.util.HashMap();
         
         // Reads and parses all lines.
         int lineNumber = 0;
         try {
-	        String line;
-	        for(line = this.reader.readLine(); line != null; line = this.reader.readLine()) {
-	            lineNumber++;
-	            this.matchLine(line);    
+	        String	line;
+	        for( line = reader.readLine(); line != null; line = reader.readLine() ) {
+	        	lineNumber++;
+	        	this.matchLine( doxyfile, line );	        	
 	        }
         }
         catch(Throwable throwable) {
-            throw new IOException("Syntax error at line " + lineNumber + ". " + throwable.getMessage());
+            throw new IOException( "Syntax error at line " + lineNumber + ". " + throwable.getMessage() );
         }
-        
-        // The job is done.
-        return this.settings;
     }
     
     /**
      * Matches the specified line.
      * 
-     * @param	line	a string containing the current line text
+     * @param	doxyfile	a doxyfile where the result will be stored
+     * @param	line		a string containing the current line text
      */
-    private void matchLine(String line) throws IOException {
+    private void matchLine( Doxyfile doxyfile, String line ) throws IOException {
         Matcher matcher;
         
         // Matches the current line against an empty line pattern
         if(line.length() == 0) {
+        	this.processAnyLine( doxyfile, line );
             return;
         }
         
         // Matches the current line against the note border pattern.
         matcher = commentPattern.matcher(line);
         if(matcher.matches() == true) {
+        	this.processAnyLine( doxyfile, line );
             return;
         }
         
@@ -125,7 +123,7 @@ public class DoxyfileParser {
             String values = matcher.group(2);
 
             // Call the traitement for the setting assignment and pull-out.
-            this.processSettingAssignment(identifier, values);
+            this.processSettingAssignment( doxyfile, identifier, values);
             return;
         }
                             
@@ -134,14 +132,37 @@ public class DoxyfileParser {
     }
     
     /**
+     * Processes any line of a doxyfile that is not interesting and should only be stored
+     * for later use (saving for example).
+     * 
+     * @param	doxyfile	a doxyfile where the line will be stored
+     * @param	text		a string containing the line text
+     */
+    private void processAnyLine( Doxyfile doxyfile, String text ) {
+    	// Retrieves the last raw text chunk.
+    	Chunk	lastChunk = doxyfile.getLastChunk();
+    	RawText	rawText;
+    	if( lastChunk instanceof RawText ) {
+    		rawText = (RawText) lastChunk;
+    	}
+    	else {
+    		rawText = new RawText();
+    		doxyfile.append( rawText );
+    	}
+    	
+    	// Stores the line's text in the raw text chunk.
+    	rawText.append( text );
+    	rawText.append( "\n" );
+    }
+    
+    /**
      * Processes a setting assignment line.
      * 
+     * @param	doxyfile	a doxyfile where the setting assignment will be stored
      * @param	identifier	a string containing the setting identifier
      * @param	value		a string containing the assigned value
      */
-    private void processSettingAssignment(String identifier, String value) throws IOException {
-        // Creates the setting.
-        Setting setting = new Setting(identifier, value);
-        this.settings.put(identifier, setting);
+    private void processSettingAssignment( Doxyfile doxyfile, String identifier, String value ) throws IOException {
+        doxyfile.append( new Setting( identifier, value ) );
   	}
 }
