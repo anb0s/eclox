@@ -77,7 +77,8 @@ public class TextEditor implements IEditor {
     
     
     public void commit() {
-		input.setValue(text.getText());
+		input.setValue( text.getText() );
+		hasChanged = false;
 	}
     
     public void createContent(Composite parent, FormToolkit formToolkit) {

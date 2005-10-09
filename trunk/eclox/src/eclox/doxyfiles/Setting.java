@@ -29,11 +29,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Implements the setting node class.
+ * Implements the setting chunk.
  * 
  * @author gbrocker
  */
-public class Setting {
+public class Setting extends Chunk {
     
 	/**
      * The value pattern.
@@ -135,6 +135,10 @@ public class Setting {
             ISettingListener listener = (ISettingListener) i.next();
             listener.settingValueChanged( this );
         }            
+    }
+    
+    public String toString() {
+    	return this.identifier + " = " + this.value + "\n";
     }
     
 }

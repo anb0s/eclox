@@ -23,6 +23,7 @@ package eclox.ui.editor.form;
 
 import java.util.Iterator;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -31,9 +32,11 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 
+import eclox.core.Services;
 import eclox.doxyfiles.Doxyfile;
 import eclox.doxyfiles.ISettingListener;
 import eclox.doxyfiles.Setting;
+import eclox.doxyfiles.io.Serializer;
 
 
 
@@ -59,19 +62,37 @@ public class Editor extends FormEditor implements ISettingListener {
         try {
             // TODO reactivate
             //this.addPage(new OverviewPage(this));
-            this.addPage(new SettingsPage(this));
+            this.addPage( new SettingsPage(this) );
             // TODO reactivate
             //this.addPage(new SourcePage(this));
         }
         catch( Throwable throwable ) {}
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void doSave(IProgressMonitor monitor) {
-        // TODO Auto-generated method stub
-
+    public void doSave( IProgressMonitor monitor ) {
+        // Retrieves the file input.
+    	IEditorInput		editorInput = this.getEditorInput();
+    	IFileEditorInput	fileEditorInput = (IFileEditorInput) editorInput;
+    	IFile				file = fileEditorInput.getFile();
+    	
+    	try {
+    		// Comits all pending changes.
+    		getActivePageInstance().getManagedForm().commit( true );
+    		
+        	// Stores the doxyfile content.
+	    	Serializer	serializer = new Serializer( doxyfile );
+	    	file.setContents( serializer, false, true, monitor );
+	    	
+	    	// Resets the dirty flag.
+	    	this.dirty = false;
+	        this.firePropertyChange( IEditorPart.PROP_DIRTY );
+    	}
+    	catch( Throwable throwable ) {
+    		Services.showError( throwable );
+    	}
     }
 
     /* (non-Javadoc)
@@ -94,13 +115,13 @@ public class Editor extends FormEditor implements ISettingListener {
     /**
      * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
      */
-    public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+    public void init( IEditorSite site, IEditorInput input ) throws PartInitException {
         try {
             IFileEditorInput	fileInput = (IFileEditorInput) input;
             
             // Parses the doxyfile and attaches to all settings.
             this.doxyfile = new Doxyfile(fileInput.getFile());
-            Iterator	i = this.doxyfile.iterator();
+            Iterator	i = this.doxyfile.settingIterator();
             while( i.hasNext() == true ) {
                 Setting	setting = (Setting) i.next();
                 setting.addSettingListener( this );
@@ -129,7 +150,7 @@ public class Editor extends FormEditor implements ISettingListener {
     /**
      * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
      */
-    public void settingValueChanged(Setting setting) {
+    public void settingValueChanged( Setting setting ) {
         this.dirty = true;
         this.firePropertyChange( IEditorPart.PROP_DIRTY );
     }
@@ -139,7 +160,7 @@ public class Editor extends FormEditor implements ISettingListener {
      */
     public void dispose() {
         // Unregisters the editor from the settings
-        Iterator	i = this.doxyfile.iterator();
+        Iterator	i = this.doxyfile.settingIterator();
         while( i.hasNext() == true ) {
             Setting	setting = (Setting) i.next();
             setting.removeSettingListener( this );
