@@ -162,6 +162,12 @@ tag is set to YES, then doxygen will reuse the documentation of the first
 member in the group (if any) for the other members of the group. By default 
 all members of a group must be documented explicitly.
 
+[SEPARATE_MEMBER_PAGES]
+text       = Separate Member Pages
+annotation = If the SEPARATE_MEMBER_PAGES tag is set to YES, then doxygen will produce 
+a new page for each member. If set to NO, the documentation of a member will 
+be part of the file/class/namespace that contains it.
+
 [TAB_SIZE]
 text       = Tabulation Size
 annotation = The TAB_SIZE tag can be used to set the number of spaces in a tab. 
@@ -395,6 +401,14 @@ annotation = If WARN_IF_DOC_ERROR is set to YES, doxygen will generate warnings 
 potential errors in the documentation, such as not documenting some 
 parameters in a documented function, or documenting parameters that 
 don't exist or using markup commands wrongly.
+
+[WARN_NO_PARAMDOC]
+text       = Warn for undocumented function parameters
+annotation = This WARN_NO_PARAMDOC option can be abled to get warnings for 
+functions that are documented, but have no documentation for their parameters 
+or return value. If set to NO (the default) doxygen will only warn about 
+wrong or incomplete parameter documentation, but not about the absence of 
+documentation.
 
 [WARN_FORMAT]
 text       = Warn Format
