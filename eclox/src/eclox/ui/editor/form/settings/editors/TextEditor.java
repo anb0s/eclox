@@ -104,6 +104,10 @@ public class TextEditor implements IEditor {
 	public boolean isDirty() {
 		return hasChanged;
 	}
+    
+    public void setFocus() {
+        text.setFocus();
+    }
 
 	public void setInput(Setting input) {
 		this.input = input;

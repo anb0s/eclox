@@ -159,17 +159,14 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#setFocus()
      */
     public void setFocus() {
-        this.noteLabel.setFocus();
+        this.editor.setFocus();
+        //this.noteLabel.setFocus();
 	}
     
     /**
      * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
      */
     public boolean setFormInput(Object input) {
-        Setting setting = (Setting) input;
-        this.selectNote(setting);
-        this.selectEditor(setting);
-        this.sectionContent.layout(true);
         return false;
     }
     
