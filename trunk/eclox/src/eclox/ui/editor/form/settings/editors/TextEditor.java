@@ -81,14 +81,20 @@ public class TextEditor implements IEditor {
 		hasChanged = false;
 	}
     
-    public void createContent(Composite parent, FormToolkit formToolkit) {
-        parent.setLayout(new GridLayout());
-        formToolkit.paintBordersFor(parent);
+    public void createContent( Composite parent, FormToolkit formToolkit ) {
+    	// Prepere the parent's layout.
+    	GridLayout	layout = new GridLayout();
+    	/*layout.marginLeft = 0;
+    	layout.marginRight = 0;*/
+    	layout.marginWidth = 1;
+    	layout.marginHeight = 3;
+        parent.setLayout( layout );
+        formToolkit.paintBordersFor( parent );
         
         // Creates the text widget.
         text = formToolkit.createText(parent, new String());
-        text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        text.addModifyListener(textModifyListener);
+        text.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
+        text.addModifyListener( textModifyListener );
     }
     
     public void dispose() {

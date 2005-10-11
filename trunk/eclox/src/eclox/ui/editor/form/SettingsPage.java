@@ -58,7 +58,7 @@ public class SettingsPage extends FormPage {
      * @author gbrocker
      */
     public SettingsPage(Editor editor) {
-        super(editor, SettingsPage.ID, "All Settings");
+        super(editor, SettingsPage.ID, "Settings");
         this.editor = editor;
     }
     
