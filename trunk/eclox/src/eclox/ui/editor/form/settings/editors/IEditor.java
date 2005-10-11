@@ -49,18 +49,23 @@ public interface IEditor {
      */
    void dispose();
     
-    /**
-     * Sets the editor input
-     * 
-     * @param	input	a setting that is the new editor input
-     */
-    void setInput(Setting input);
+   /**
+    * Makes the editor installs the focus on the right widget.
+    */
+   void setFocus();
+   
+   /**
+    * Sets the editor input
+    * 
+    * @param	input	a setting that is the new editor input
+    */
+   void setInput(Setting input);
     
-    /**
-     * Tells if the editor is dirty.
-     * 
-     * @return	true or false
-     */
-    public boolean isDirty();
+   /**
+    * Tells if the editor is dirty.
+    * 
+    * @return	true or false
+    */
+   public boolean isDirty();
     
 }

@@ -68,6 +68,6 @@ public class SettingsPage extends FormPage {
     protected void createFormContent(IManagedForm managedForm) {
         managedForm.getForm().setText(this.getTitle());
         this.block.createContent(managedForm);
-        this.block.setInput(this.editor.getDoxyfile());
+        managedForm.setInput(this.editor.getDoxyfile());
     }
 }

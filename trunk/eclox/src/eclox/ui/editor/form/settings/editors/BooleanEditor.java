@@ -66,6 +66,10 @@ public class BooleanEditor implements IEditor {
 		// TODO Auto-generated method stub
 		return false;
 	}
+    
+    public void setFocus() {
+        // TODO Implement!
+    }
 
 	public void setInput(Setting input) {
         // TODO implementation required !
