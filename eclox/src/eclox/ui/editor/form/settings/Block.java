@@ -145,7 +145,7 @@ public class Block extends MasterDetailsBlock {
         
         // Creates the section containing the tree view
         Section	section = toolkit.createSection(parent, Section.TITLE_BAR|Section.COMPACT);
-        section.setText("Settings");
+        section.setText("All Settings");
         section.marginHeight = 5;
         section.marginWidth = 10;
                 

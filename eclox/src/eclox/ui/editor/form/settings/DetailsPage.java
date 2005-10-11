@@ -23,7 +23,6 @@ package eclox.ui.editor.form.settings;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -101,7 +100,6 @@ public class DetailsPage implements IDetailsPage {
         
         // Createst the section content and its layout
         this.sectionContent = toolkit.createComposite(section);
-        this.sectionContent.setBackground(new Color(parent.getDisplay(), 255, 0, 0));
         this.section.setClient(this.sectionContent);
         GridLayout layout = new GridLayout(1, true);
         layout.marginWidth = 0;
@@ -110,11 +108,11 @@ public class DetailsPage implements IDetailsPage {
         
         // Creates the editor content.
         this.editorContent = managedForm.getToolkit().createComposite(sectionContent);
-        this.editorContent.setLayoutData(new GridData(GridData.FILL_BOTH));
+        this.editorContent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
                 
-        // Creates the label display the note content.
-        this.noteLabel = this.managedForm.getToolkit().createLabel(sectionContent, "", org.eclipse.swt.SWT.WRAP);
-        this.noteLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        // Creates controls displaying the setting note.
+        this.noteLabel = this.managedForm.getToolkit().createLabel( sectionContent, "", org.eclipse.swt.SWT.WRAP);
+        this.noteLabel.setLayoutData( new GridData(GridData.FILL_BOTH) );
     }
     
     /**

@@ -47,13 +47,15 @@ public class BooleanEditor implements IEditor {
 	public void createContent(Composite parent, FormToolkit formToolkit) {
     	
     	// Initialize the parent control.
-    	container = formToolkit.createComposite(parent);
-    	container.setLayout(new RowLayout(SWT.VERTICAL));
+		RowLayout	layout = new RowLayout(SWT.VERTICAL);
+		container = formToolkit.createComposite( parent );
+    	layout.marginWidth = 0;		
+    	container.setLayout( layout );
     	
     	// Creates the buttons.
-    	formToolkit.createButton(container, "Yes", SWT.RADIO);
-    	formToolkit.createButton(container, "No", SWT.RADIO);
-        formToolkit.createButton(container, "Default", SWT.RADIO);
+    	formToolkit.createButton( container, "Yes", SWT.RADIO );
+    	formToolkit.createButton( container, "No", SWT.RADIO );
+        formToolkit.createButton( container, "Default", SWT.RADIO );
     }
     
     public void dispose() {
