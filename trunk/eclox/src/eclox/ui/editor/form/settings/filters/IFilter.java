@@ -21,6 +21,7 @@
 
 package eclox.ui.editor.form.settings.filters;
 
+import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -32,12 +33,31 @@ import org.eclipse.ui.forms.IManagedForm;
 public interface IFilter {
 
     /**
-     * Askes the filter to create its user interface controls.
+     * Asks the filter to create its user interface controls.
      * 
      * @param   managedForm a managed form to use for the widget creation
      * @param   parent      a composite being the parent of all widgets
      */
     void createControls( IManagedForm managedForm, Composite parent );
+    
+    /**
+     * Asks the filter to create viewer filter and add them in a given viewer
+     * 
+     * @param   viewer  a viewer where filter must be added
+     */
+    void createViewerFilters( StructuredViewer viewer );
+    
+    /**
+     * Asks the filter to dispose its controls.
+     */
+    void disposeControls();
+    
+    /**
+     * Asks the filter to dispose created viewer filter given a viewer
+     * 
+     * @param   viewer  a structured view from which created viewer filter must be removed
+     */
+    void disposeViewerFilers( StructuredViewer viewer );
     
     /**
      * Retrieves the filter name.
