@@ -28,11 +28,17 @@ import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -43,6 +49,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import eclox.doxyfiles.Doxyfile;
 import eclox.doxyfiles.PropertyProvider;
 import eclox.doxyfiles.Setting;
+import eclox.ui.editor.form.settings.filters.All;
 import eclox.ui.editor.form.settings.filters.ByGroup;
 import eclox.ui.editor.form.settings.filters.IFilter;
 
@@ -54,6 +61,11 @@ import eclox.ui.editor.form.settings.filters.IFilter;
 public class MasterPart extends SectionPart {
 
     /**
+     * the active filter
+     */
+    private IFilter activeFilter;
+    
+    /**
      * the list viewer
      */
     private ListViewer listViewer;
@@ -62,13 +74,16 @@ public class MasterPart extends SectionPart {
      * the parent composite for filter buttons
      */
     private Composite filterButtonContainer;
+    
+    /**
+     * the parent composite for filter controls
+     */
+    private Composite filterControlContainer;
         
     /**
      * Implements the master content provider.
-     * 
-     * @author gbrocker
      */
-    protected class MyContentProvider implements IStructuredContentProvider {
+    private class MyContentProvider implements IStructuredContentProvider {
 
         /**
          * @see org.eclipse.jface.viewers.IContentProvider#dispose()
@@ -91,10 +106,8 @@ public class MasterPart extends SectionPart {
 
     /**
      * Implements the label provider.
-     * 
-     * @author gbrocker
      */
-    protected class MyLabelProvider extends LabelProvider {
+    private class MyLabelProvider extends LabelProvider {
 
         /**
          * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
@@ -114,10 +127,8 @@ public class MasterPart extends SectionPart {
     /**
      * Implements a tree viewer selection listener that forwards selection changes to 
      * a managed form.
-     * 
-     * @author gbrocker
      */
-    protected class MySelectionForwarder implements ISelectionChangedListener {
+    private class MySelectionForwarder implements ISelectionChangedListener {
 
         /**
          * The form part that is the source of the selection change notifications.
@@ -148,7 +159,32 @@ public class MasterPart extends SectionPart {
 
     }
 
+    /**
+     * Implements a filter button listener
+     */
+    private class MyFilterButtonListener implements SelectionListener {
+
         /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            Object  data    = e.widget.getData(); 
+            IFilter  filter = (IFilter) data;
+            activateFilter( filter );
+        }
+
+        /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetSelected(SelectionEvent e) {
+            Object  data    = e.widget.getData(); 
+            IFilter  filter = (IFilter) data;
+            activateFilter( filter );
+        }
+        
+    }
+    
+    /**
      * Constructor
      * 
      * @param   parent  a composite that is the parent of all part controls
@@ -162,38 +198,37 @@ public class MasterPart extends SectionPart {
         section.setText("All Settings");
         section.marginHeight = 5;
         section.marginWidth = 10;
+        toolkit.paintBordersFor( section );
         
         // Creates the main section container.
         Composite   rootContainer = toolkit.createComposite( section );
-        GridLayout  layout = new GridLayout();
+        FormLayout  layout = new FormLayout();
         section.setClient( rootContainer );
         rootContainer.setBackground( new Color(section.getDisplay(), 255, 0, 0));
         rootContainer.setLayout( layout );
-        layout.marginWidth = 0;
-        layout.marginBottom = 0;
-
-        // Creates the filter buttons.
-        filterButtonContainer = toolkit.createComposite( rootContainer );
-        filterButtonContainer.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
+        
+        // Continues with other initializations.
+        createFilterControls( toolkit, rootContainer );
+        createListViewer( rootContainer );
+        
+        // Adds some filters.
+        IFilter defaultFilter = new All();  
+        addFilter( toolkit, defaultFilter );
         addFilter( toolkit, new ByGroup() );
-        
-        // Creates the list widget that will display all settings.
-        List list = new List( rootContainer, SWT.V_SCROLL|SWT.BORDER);
-        list.setLayoutData( new GridData(GridData.FILL_BOTH) );
-        toolkit.paintBordersFor( section );
-        
-        // Creates the list viewer.
-        listViewer = new ListViewer( list );
-        listViewer.setContentProvider( new MyContentProvider() );
-        listViewer.setLabelProvider( new MyLabelProvider() );
+        activateFilter( defaultFilter );
     }
     
     /**
      * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
      */
     public void initialize(IManagedForm form) {
+        // Pre-condition
+        assert listViewer != null;
+        
         // Installs a listener that will forward the selection changes.
         listViewer.addSelectionChangedListener( new MySelectionForwarder(this, form) );
+        
+        // Default job done by super class.
         super.initialize(form);
     }
 
@@ -201,10 +236,82 @@ public class MasterPart extends SectionPart {
      * @see org.eclipse.ui.forms.AbstractFormPart#setFormInput(java.lang.Object)
      */
     public boolean setFormInput( Object input ) {
+        // Pre-condition
+        assert listViewer != null;
+        
+        // Assignes the form input to the manager list viewer.
         listViewer.setInput( input );
         return super.setFormInput( input );
     }
 
+    /**
+     * Creates all controls for the filters
+     * 
+     * @param   toolkit the form tool to use for the control creation
+     * @param   parent  a composite that will be the parent of all controls
+     */
+    private void createFilterControls( FormToolkit toolkit, Composite parent ) {
+        // Pre-condition
+        assert filterButtonContainer == null;
+        assert filterControlContainer == null;
+        
+        // Creates the filter button container.
+        RowLayout   buttonContainerLayout   = new RowLayout();
+        filterButtonContainer = toolkit.createComposite( parent );
+        buttonContainerLayout.marginHeight = 0;
+        buttonContainerLayout.marginWidth  = 0;
+        buttonContainerLayout.spacing      = 0;
+        filterButtonContainer.setLayout( buttonContainerLayout );
+        
+        // Assignes layout data fo the filter button container.
+        FormData    buttonFormData = new FormData();
+        buttonFormData.top   = new FormAttachment( 0, 0 );
+        buttonFormData.right = new FormAttachment( 100, 0 );
+        buttonFormData.left  = new FormAttachment( 0, 0 );
+        filterButtonContainer.setLayoutData( buttonFormData );
+        
+        // Creates the filter control container.
+        FormData    controlFormData = new FormData();
+        controlFormData.top   = new FormAttachment( filterButtonContainer, 5, SWT.BOTTOM );
+        controlFormData.right = new FormAttachment( 100, 0);
+        controlFormData.left  = new FormAttachment( 0, 0 );
+        filterControlContainer = toolkit.createComposite( parent );
+        filterControlContainer.setLayoutData( controlFormData );
+
+        // Post-condition
+        assert filterButtonContainer != null;
+        assert filterControlContainer != null;        
+    }
+    
+    /**
+     * Creates the list viewer
+     * 
+     * @param   parent  a composite being the parent of the list viewer
+     */
+    private void createListViewer( Composite parent ) {
+        // Pre-condition
+        assert listViewer == null;
+        assert filterControlContainer != null;
+        
+       // Creates the list widget that will display all settings.
+       List     list = new List( parent, SWT.V_SCROLL|SWT.BORDER);
+       FormData formData = new FormData();
+       formData.top    = new FormAttachment( filterControlContainer, 5, SWT.BOTTOM );
+       formData.right  = new FormAttachment( 100, 0 );
+       formData.bottom = new FormAttachment( 100, 0 );
+       formData.left   = new FormAttachment( 0, 0 );
+       formData.height = 10;
+       list.setLayoutData( formData );
+       
+       // Creates the list viewer.
+       listViewer = new ListViewer( list );
+       listViewer.setContentProvider( new MyContentProvider() );
+       listViewer.setLabelProvider( new MyLabelProvider() );
+       
+       // Post-condition
+       assert listViewer != null;
+    }
+    
     /**
      * Adds a new filter to the master part.
      * 
@@ -213,5 +320,43 @@ public class MasterPart extends SectionPart {
      */
     private void addFilter( FormToolkit toolkit, IFilter filter ) {
         Button button = toolkit.createButton( filterButtonContainer, filter.getName(), SWT.FLAT|SWT.TOGGLE);
+        button.setData( filter );
+        button.addSelectionListener( new MyFilterButtonListener() );
+    }
+    
+    /**
+     * Activates the specified filter.
+     * 
+     * @param   filter  a filter that must be activated
+     */
+    private void activateFilter( IFilter filter ) {
+        // Deactivates the previous filter.
+        if( activeFilter != null ) {
+            activeFilter.disposeViewerFilers( listViewer );
+            activeFilter.disposeControls();
+            activeFilter = null;
+        }
+        
+        // Updates the filter button's state.
+        Control[]   controls = filterButtonContainer.getChildren();
+        int         i;
+        for( i = 0; i < controls.length; ++i ) {
+            Control control = controls[i];
+            Button  button = (Button) control;
+            
+            button.setSelection( control.getData() == filter );
+        }
+        
+        // Activates the new filter.
+        activeFilter = filter;
+        activeFilter.createControls( getManagedForm(), filterControlContainer );
+        activeFilter.createViewerFilters( listViewer );
+        
+        // Adapts the size of the filter control container & relayout the section content.
+        Object      layoutData = filterControlContainer.getLayoutData();
+        FormData    formData = (FormData) layoutData;
+        //formData.height = ( filterControlContainer.getChildren().length == 0 ) ? -5 : SWT.DEFAULT;
+        filterControlContainer.setVisible( filterControlContainer.getChildren().length != 0 );
+        getSection().layout( true );
     }
 }
