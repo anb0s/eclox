@@ -30,12 +30,10 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -66,20 +64,20 @@ public class MasterPart extends SectionPart {
     private IFilter activeFilter;
     
     /**
-     * the list viewer
-     */
-    private ListViewer listViewer;
-    
-    /**
      * the parent composite for filter buttons
      */
-    private Composite filterButtonContainer;
+    private Composite filterButtons;
     
     /**
      * the parent composite for filter controls
      */
-    private Composite filterControlContainer;
+    private Composite filterControls;
         
+    /**
+     * the list viewer
+     */
+    private ListViewer listViewer;
+    
     /**
      * Implements the master content provider.
      */
@@ -204,7 +202,6 @@ public class MasterPart extends SectionPart {
         Composite   rootContainer = toolkit.createComposite( section );
         FormLayout  layout = new FormLayout();
         section.setClient( rootContainer );
-        rootContainer.setBackground( new Color(section.getDisplay(), 255, 0, 0));
         rootContainer.setLayout( layout );
         
         // Continues with other initializations.
@@ -245,42 +242,41 @@ public class MasterPart extends SectionPart {
     }
 
     /**
-     * Creates all controls for the filters
+     * Creates all buttons for setting filters.
      * 
      * @param   toolkit the form tool to use for the control creation
      * @param   parent  a composite that will be the parent of all controls
      */
     private void createFilterControls( FormToolkit toolkit, Composite parent ) {
         // Pre-condition
-        assert filterButtonContainer == null;
-        assert filterControlContainer == null;
+        assert filterButtons == null;
+        assert filterControls == null;
         
         // Creates the filter button container.
-        RowLayout   buttonContainerLayout   = new RowLayout();
-        filterButtonContainer = toolkit.createComposite( parent );
-        buttonContainerLayout.marginHeight = 0;
-        buttonContainerLayout.marginWidth  = 0;
-        buttonContainerLayout.spacing      = 0;
-        filterButtonContainer.setLayout( buttonContainerLayout );
+        FillLayout   buttonContainerLayout   = new FillLayout( SWT.HORIZONTAL );
+        filterButtons = toolkit.createComposite( parent );
+        buttonContainerLayout.marginWidth    = 0;
+        buttonContainerLayout.marginHeight  = 0;
+        filterButtons.setLayout( buttonContainerLayout );
         
         // Assignes layout data fo the filter button container.
         FormData    buttonFormData = new FormData();
-        buttonFormData.top   = new FormAttachment( 0, 0 );
+        buttonFormData.top   = new FormAttachment(   0, 0 );
         buttonFormData.right = new FormAttachment( 100, 0 );
-        buttonFormData.left  = new FormAttachment( 0, 0 );
-        filterButtonContainer.setLayoutData( buttonFormData );
+        buttonFormData.left  = new FormAttachment(   0, 0 );
+        filterButtons.setLayoutData( buttonFormData );
         
         // Creates the filter control container.
         FormData    controlFormData = new FormData();
-        controlFormData.top   = new FormAttachment( filterButtonContainer, 5, SWT.BOTTOM );
+        controlFormData.top   = new FormAttachment( filterButtons, 5, SWT.BOTTOM );
         controlFormData.right = new FormAttachment( 100, 0);
-        controlFormData.left  = new FormAttachment( 0, 0 );
-        filterControlContainer = toolkit.createComposite( parent );
-        filterControlContainer.setLayoutData( controlFormData );
+        controlFormData.left  = new FormAttachment(   0, 0 );
+        filterControls = toolkit.createComposite( parent );
+        filterControls.setLayoutData( controlFormData );
 
         // Post-condition
-        assert filterButtonContainer != null;
-        assert filterControlContainer != null;        
+        assert filterButtons != null;
+        assert filterControls != null;
     }
     
     /**
@@ -291,15 +287,15 @@ public class MasterPart extends SectionPart {
     private void createListViewer( Composite parent ) {
         // Pre-condition
         assert listViewer == null;
-        assert filterControlContainer != null;
+        assert filterControls != null;
         
        // Creates the list widget that will display all settings.
        List     list = new List( parent, SWT.V_SCROLL|SWT.BORDER);
        FormData formData = new FormData();
-       formData.top    = new FormAttachment( filterControlContainer, 5, SWT.BOTTOM );
+       formData.top    = new FormAttachment( filterButtons, 5, SWT.BOTTOM );
        formData.right  = new FormAttachment( 100, 0 );
        formData.bottom = new FormAttachment( 100, 0 );
-       formData.left   = new FormAttachment( 0, 0 );
+       formData.left   = new FormAttachment(   0, 0 );
        formData.height = 10;
        list.setLayoutData( formData );
        
@@ -319,7 +315,7 @@ public class MasterPart extends SectionPart {
      * @param   filter  a new filter to add
      */
     private void addFilter( FormToolkit toolkit, IFilter filter ) {
-        Button button = toolkit.createButton( filterButtonContainer, filter.getName(), SWT.FLAT|SWT.TOGGLE);
+        Button 	button = toolkit.createButton( filterButtons, filter.getName(), SWT.FLAT|SWT.TOGGLE);
         button.setData( filter );
         button.addSelectionListener( new MyFilterButtonListener() );
     }
@@ -338,7 +334,7 @@ public class MasterPart extends SectionPart {
         }
         
         // Updates the filter button's state.
-        Control[]   controls = filterButtonContainer.getChildren();
+        Control[]   controls = filterButtons.getChildren();
         int         i;
         for( i = 0; i < controls.length; ++i ) {
             Control control = controls[i];
@@ -349,14 +345,20 @@ public class MasterPart extends SectionPart {
         
         // Activates the new filter.
         activeFilter = filter;
-        activeFilter.createControls( getManagedForm(), filterControlContainer );
+        activeFilter.createControls( getManagedForm(), filterControls );
         activeFilter.createViewerFilters( listViewer );
         
         // Adapts the size of the filter control container & relayout the section content.
-        Object      layoutData = filterControlContainer.getLayoutData();
+        Object      layoutData = listViewer.getList().getLayoutData();
         FormData    formData = (FormData) layoutData;
-        //formData.height = ( filterControlContainer.getChildren().length == 0 ) ? -5 : SWT.DEFAULT;
-        filterControlContainer.setVisible( filterControlContainer.getChildren().length != 0 );
+        if( filterControls.getChildren().length == 0 ) {
+        	filterControls.setVisible( false );
+        	formData.top.control = filterButtons;
+        }
+        else {
+        	filterControls.setVisible( true );
+        	formData.top.control = filterControls;
+        }
         getSection().layout( true );
     }
 }
