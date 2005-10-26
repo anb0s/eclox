@@ -45,7 +45,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.doxyfiles.Doxyfile;
-import eclox.doxyfiles.PropertyProvider;
 import eclox.doxyfiles.Setting;
 import eclox.ui.editor.form.settings.filters.All;
 import eclox.ui.editor.form.settings.filters.ByGroup;
@@ -113,7 +112,7 @@ public class MasterPart extends SectionPart {
         public String getText(Object element) {
             if(element instanceof Setting) {
                 Setting setting = (Setting) element;
-                String text = PropertyProvider.getDefault().getText(setting);
+                String text = setting.getProperty( Setting.TEXT );
                 return text != null ? text : setting.getIdentifier();
             }
             else {

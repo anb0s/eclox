@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eclox.core.Services;
-import eclox.doxyfiles.PropertyProvider;
 import eclox.doxyfiles.Setting;
 
 /**
@@ -55,7 +54,7 @@ public class EditorClassRegister {
      */
     public Class find(Setting setting) {
         // Retrieves the editor class for that type
-        String type = PropertyProvider.getDefault().getType(setting);
+        String type = setting.getProperty( Setting.TYPE );
         Class result = (Class) register.get(type);
         
         // Little fallback if no matching editor class was found.

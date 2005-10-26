@@ -35,7 +35,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.core.Services;
-import eclox.doxyfiles.PropertyProvider;
 import eclox.doxyfiles.Setting;
 import eclox.ui.editor.form.settings.editors.EditorClassRegister;
 import eclox.ui.editor.form.settings.editors.IEditor;
@@ -236,7 +235,7 @@ public class DetailsPage implements IDetailsPage {
      * @param	setting	a setting instance to use to refresh the UI controls.
      */
     private void selectNote(Setting setting) {
-        String text = PropertyProvider.getDefault().getAnnotation(setting);
+        String text = setting.getProperty( Setting.NOTE );
         if(text == null) {
         	text = new String("Not available.");
         }
