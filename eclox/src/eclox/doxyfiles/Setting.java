@@ -21,12 +21,19 @@
 
 package eclox.doxyfiles;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.eclipse.core.runtime.Path;
+
+import eclox.core.Plugin;
+import eclox.core.Services;
 
 /**
  * Implements the setting chunk.
@@ -39,6 +46,11 @@ public class Setting extends Chunk {
      * The value pattern.
      */
     private static Pattern valuePattern = Pattern.compile("(?:(\"[^\"]*\"|[^\\s]+)\\s*)+");
+    
+    /**
+     * The setting properties.
+     */
+    private static Properties properties;
     
     /**
      * A string containing the node identifier.
@@ -54,6 +66,51 @@ public class Setting extends Chunk {
      * The string containing the setting value.
      */
     private String value;
+    
+    
+    /**
+     * Defines the annotation node property.
+     */
+    public static final String NOTE = "note";
+    
+    /**
+     * Defines the text node property name.
+     */
+    public static final String TEXT = "text";
+    
+    /**
+     * Defines the type property name. 
+     */
+    public static final String TYPE = "type";
+    
+    
+    /**
+     * Retrieves the specified property given a setting.
+     * 
+     * @param   setting     a setting instance
+     * @param   property    a string containing the name of the property to retrieve.
+     * 
+     * @return  a string containing the desired property value or null when
+     *          no such property exists
+     */
+    private static String getPropertyValue( Setting setting, String property ) {
+        // Ensures that properties have been loaded.
+        if( properties == null ) {
+            try {
+                InputStream propertiesInput = Plugin.getDefault().openStream( new Path("misc/setting-properties.txt") );
+             
+                properties = new Properties();
+                properties.load( propertiesInput );
+            }
+            catch( Throwable throwable ) {
+                Services.showError( throwable );
+            }            
+        }
+        
+        // Searches for the desired property.
+        String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
+        return properties.getProperty( propertyIdentifier );
+    }
     
     /**
      * Constructor.
@@ -82,6 +139,17 @@ public class Setting extends Chunk {
      */
     public final String getIdentifier() {
         return this.identifier;
+    }
+    
+    /**
+     * Retrieves the value of the specified property.
+     * 
+     * @param   property    a string containing a property name
+     * 
+     * @return  a string containing the property value or null when the property was not found
+     */
+    public String getProperty( String property ) {
+        return getPropertyValue( this, property );
     }
     
     /**
