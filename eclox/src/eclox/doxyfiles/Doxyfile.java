@@ -50,9 +50,14 @@ public class Doxyfile {
 	private AbstractList chunks = new Vector();
     
     /**
-     * a map pointing on all managed settings
+     * a map containing all managed settings
      */
     private Map settings = new LinkedHashMap();
+    
+    /**
+     * a map containing all managed groups
+     */
+    private Map groups = new LinkedHashMap();
     
     /**
 	 * Tells if the specified resource is a doxyfile.
@@ -101,8 +106,31 @@ public class Doxyfile {
 		if( chunk instanceof Setting ) {
 			Setting	setting = (Setting) chunk;
 			this.settings.put( setting.getIdentifier(), setting );
+            
+            // Retrieves the setting group name.
+            String groupName = setting.getProperty( Setting.GROUP );
+            if( groupName == null ) {
+                groupName = new String( "Others" );
+            }
+            
+            // Retrieves the setting group and stores the setting in it.
+            Group group = (Group) this.groups.get( groupName );
+            if( group == null ) {
+                group = new Group( groupName );
+                this.groups.put( groupName, group );
+            }
+            group.add( setting );
 		}
 	}
+    
+    /**
+     * Retrieves all groups present in the doxyfile.
+     * 
+     * @return  an array containing all groups
+     */
+    public Object[] getGroup() {
+        return this.groups.values().toArray();
+    }
 	
 	/**
 	 * Retrieves the last appended chunk

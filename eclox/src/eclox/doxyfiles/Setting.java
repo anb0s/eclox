@@ -69,12 +69,17 @@ public class Setting extends Chunk {
     
     
     /**
-     * Defines the annotation node property.
+     * Defines the group property name.
+     */
+    public static final String GROUP = "group";
+    
+    /**
+     * Defines the note property name.
      */
     public static final String NOTE = "note";
     
     /**
-     * Defines the text node property name.
+     * Defines the text property name.
      */
     public static final String TEXT = "text";
     
