@@ -23,8 +23,8 @@ package eclox.doxyfiles;
 
 import java.io.IOException;
 import java.util.AbstractList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
@@ -52,7 +52,7 @@ public class Doxyfile {
     /**
      * a map pointing on all managed settings
      */
-    private Map settings = new HashMap();
+    private Map settings = new LinkedHashMap();
     
     /**
 	 * Tells if the specified resource is a doxyfile.
