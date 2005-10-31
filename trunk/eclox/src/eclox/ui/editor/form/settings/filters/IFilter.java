@@ -25,12 +25,21 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
+import eclox.doxyfiles.Doxyfile;
+
 /**
  * Defines the interface for setting filters.
  * 
  * @author gbrocker
  */
 public interface IFilter {
+	
+	/**
+	 * Tells the filter which doxyfile is to filter.
+	 * 
+	 * @param	doxyfile	a doxyfile instance
+	 */
+	void setDoxyfile( Doxyfile doxyfile );
 
     /**
      * Asks the filter to create its user interface controls.
