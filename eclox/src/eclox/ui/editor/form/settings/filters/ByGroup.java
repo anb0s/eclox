@@ -30,6 +30,9 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
+import eclox.doxyfiles.Doxyfile;
+import eclox.doxyfiles.Group;
+
 /**
  * Implements a filter that shows settings by groups.
  * 
@@ -37,6 +40,11 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class ByGroup implements IFilter {
     
+	/**
+	 * the doxyfile being filtered
+	 */
+	private Doxyfile doxyfile;
+	
     /**
      * the combo control displaying all group that are selectable by the user
      */
@@ -64,15 +72,31 @@ public class ByGroup implements IFilter {
     }
 
     /**
+	 * @see eclox.ui.editor.form.settings.filters.IFilter#setDoxyfile(eclox.doxyfiles.Doxyfile)
+	 */
+	public void setDoxyfile(Doxyfile doxyfile) {
+		this.doxyfile = doxyfile; 
+	}
+
+	/**
      * @see eclox.ui.editor.form.settings.filters.IFilter#createControls(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
      */
     public void createControls( IManagedForm managedForm, Composite parent ) {
         // Pre-condition
         assert combo == null;
+        assert doxyfile != null;
         
         // Creates the managed combo control.
         combo = new CCombo( parent, SWT.FLAT|SWT.BORDER );
         parent.setLayout( new FillLayout() );
+        
+        // Fills the combo with group names.
+        Object[]	objects = doxyfile.getGroups();
+        int			i;
+        for( i = 0; i < objects.length; ++i ) {
+        	Group	group = (Group) objects[i];
+        	combo.add( group.getName() );
+        }
         
         // Post-condition
         assert combo != null;

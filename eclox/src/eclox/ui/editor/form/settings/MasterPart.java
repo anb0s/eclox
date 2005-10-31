@@ -63,6 +63,11 @@ public class MasterPart extends SectionPart {
     private IFilter activeFilter;
     
     /**
+     * the default filter
+     */
+    private IFilter defaultFilter = new All();
+    
+    /**
      * the parent composite for filter buttons
      */
     private Composite filterButtons;
@@ -208,10 +213,8 @@ public class MasterPart extends SectionPart {
         createListViewer( rootContainer );
         
         // Adds some filters.
-        IFilter defaultFilter = new All();  
         addFilter( toolkit, defaultFilter );
         addFilter( toolkit, new ByGroup() );
-        activateFilter( defaultFilter );
     }
     
     /**
@@ -237,7 +240,10 @@ public class MasterPart extends SectionPart {
         
         // Assignes the form input to the manager list viewer.
         listViewer.setInput( input );
-        return super.setFormInput( input );
+        // Activates the default filter.
+        activateFilter( defaultFilter );
+        
+        return super.setFormInput( input );        
     }
 
     /**
@@ -329,6 +335,7 @@ public class MasterPart extends SectionPart {
         if( activeFilter != null ) {
             activeFilter.disposeViewerFilers( listViewer );
             activeFilter.disposeControls();
+            activeFilter.setDoxyfile( null );
             activeFilter = null;
         }
         
@@ -344,6 +351,7 @@ public class MasterPart extends SectionPart {
         
         // Activates the new filter.
         activeFilter = filter;
+        activeFilter.setDoxyfile( (Doxyfile) getManagedForm().getInput() );
         activeFilter.createControls( getManagedForm(), filterControls );
         activeFilter.createViewerFilters( listViewer );
         

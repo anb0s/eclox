@@ -25,6 +25,8 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
+import eclox.doxyfiles.Doxyfile;
+
 /**
  * Implements a setting filter that shows all settings.
  * 
@@ -32,7 +34,12 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class All implements IFilter {
 
-    /**
+	/**
+	 * @see eclox.ui.editor.form.settings.filters.IFilter#setDoxyfile(eclox.doxyfiles.Doxyfile)
+	 */
+	public void setDoxyfile(Doxyfile doxyfile) {}
+
+	/**
      * @see eclox.ui.editor.form.settings.filters.IFilter#createControls(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
      */
     public void createControls(IManagedForm managedForm, Composite parent) {}

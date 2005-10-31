@@ -128,7 +128,7 @@ public class Doxyfile {
      * 
      * @return  an array containing all groups
      */
-    public Object[] getGroup() {
+    public Object[] getGroups() {
         return this.groups.values().toArray();
     }
 	
