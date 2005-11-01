@@ -111,6 +111,7 @@ public class Doxyfile {
             String groupName = setting.getProperty( Setting.GROUP );
             if( groupName == null ) {
                 groupName = new String( "Others" );
+                setting.setProperty( Setting.GROUP, groupName );
             }
             
             // Retrieves the setting group and stores the setting in it.
