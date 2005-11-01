@@ -172,7 +172,7 @@ public class MasterPart extends SectionPart {
         public void widgetDefaultSelected(SelectionEvent e) {
             Object  data    = e.widget.getData(); 
             IFilter  filter = (IFilter) data;
-            activateFilter( filter );
+           	activateFilter( filter );
         }
 
         /**
@@ -331,14 +331,6 @@ public class MasterPart extends SectionPart {
      * @param   filter  a filter that must be activated
      */
     private void activateFilter( IFilter filter ) {
-        // Deactivates the previous filter.
-        if( activeFilter != null ) {
-            activeFilter.disposeViewerFilers( listViewer );
-            activeFilter.disposeControls();
-            activeFilter.setDoxyfile( null );
-            activeFilter = null;
-        }
-        
         // Updates the filter button's state.
         Control[]   controls = filterButtons.getChildren();
         int         i;
@@ -348,24 +340,37 @@ public class MasterPart extends SectionPart {
             
             button.setSelection( control.getData() == filter );
         }
-        
-        // Activates the new filter.
-        activeFilter = filter;
-        activeFilter.setDoxyfile( (Doxyfile) getManagedForm().getInput() );
-        activeFilter.createControls( getManagedForm(), filterControls );
-        activeFilter.createViewerFilters( listViewer );
-        
-        // Adapts the size of the filter control container & relayout the section content.
-        Object      layoutData = listViewer.getList().getLayoutData();
-        FormData    formData = (FormData) layoutData;
-        if( filterControls.getChildren().length == 0 ) {
-        	filterControls.setVisible( false );
-        	formData.top.control = filterButtons;
-        }
-        else {
-        	filterControls.setVisible( true );
-        	formData.top.control = filterControls;
-        }
-        getSection().layout( true );
+
+        // If there is a new filter to activate, do the activation job.
+    	if( filter != activeFilter ) {
+    	
+	        // Deactivates the previous filter.
+	        if( activeFilter != null ) {
+	            activeFilter.disposeViewerFilers( listViewer );
+	            activeFilter.disposeControls();
+	            activeFilter.setDoxyfile( null );
+	            activeFilter = null;
+	        }
+	        
+	        // Activates the new filter.
+	        activeFilter = filter;
+	        activeFilter.setDoxyfile( (Doxyfile) getManagedForm().getInput() );
+	        activeFilter.createControls( getManagedForm(), filterControls );
+	        activeFilter.createViewerFilters( listViewer );
+	        
+	        // Adapts the size of the filter control container & relayout the section content.
+	        Object      layoutData = listViewer.getList().getLayoutData();
+	        FormData    formData = (FormData) layoutData;
+	        if( filterControls.getChildren().length == 0 ) {
+	        	filterControls.setVisible( false );
+	        	formData.top.control = filterButtons;
+	        }
+	        else {
+	        	filterControls.setVisible( true );
+	        	formData.top.control = filterControls;
+	        }
+	        getSection().layout( true );
+	        
+    	}
     }
 }

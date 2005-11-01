@@ -26,12 +26,15 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
 import eclox.doxyfiles.Doxyfile;
 import eclox.doxyfiles.Group;
+import eclox.doxyfiles.Setting;
 
 /**
  * Implements a filter that shows settings by groups.
@@ -51,9 +54,41 @@ public class ByGroup implements IFilter {
     private CCombo combo;
     
     /**
+     * the current viewer beging filtered.
+     */
+    private StructuredViewer viewer;
+    
+    /**
      * the current viewer filter that filters objects displayed in the setting viewer
      */
     private MyViewerFilter viewerFilter;
+    
+    /**
+     * Implements a selection listener for the managed combo control.
+     */
+    private class MySelectionListener implements SelectionListener {
+
+		/**
+		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
+		public void widgetDefaultSelected(SelectionEvent e) {
+			// Pre-condition
+			assert viewer != null;
+			
+			viewer.refresh();
+		}
+
+		/**
+		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
+		public void widgetSelected(SelectionEvent e) {
+			// Pre-condition
+			assert viewer != null;
+			
+			viewer.refresh();
+		}
+    	
+    }
     
     /**
      * Implements a structure viewer filter that will filter setting according to the
@@ -65,8 +100,23 @@ public class ByGroup implements IFilter {
          * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
          */
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-            // TODO Auto-generated method stub to implement.
-            return false;
+        	// Pre-condition
+        	assert combo != null;
+        	assert element instanceof Setting; 
+        	
+        	// Retrieves the selected group name. 
+        	int		groupIndex = combo.getSelectionIndex();
+        	String	groupName = groupIndex >= 0 ? combo.getItem( groupIndex ) : null;
+        	
+        	// Tests if the given element is in the right group.
+        	if( groupName != null ) {
+	        	Setting	setting = (Setting) element;
+	        	String	settingGroup = setting.getProperty( Setting.GROUP );
+	        	return (settingGroup != null) ? settingGroup.contentEquals( groupName ) : false;
+        	}
+        	else {
+        		return false;
+        	}
         }
         
     }
@@ -87,7 +137,8 @@ public class ByGroup implements IFilter {
         assert doxyfile != null;
         
         // Creates the managed combo control.
-        combo = new CCombo( parent, SWT.FLAT|SWT.BORDER );
+        combo = new CCombo( parent, SWT.FLAT|SWT.BORDER|SWT.READ_ONLY );
+        combo.addSelectionListener( new MySelectionListener() );
         parent.setLayout( new FillLayout() );
         
         // Fills the combo with group names.
@@ -107,14 +158,17 @@ public class ByGroup implements IFilter {
      */
     public void createViewerFilters(StructuredViewer viewer) {
         // Pre-condition
-        assert viewerFilter == null;
+        assert this.viewerFilter == null;
+        assert this.viewer == null;
         
         // Creates the viewer filter.
-        viewerFilter = new MyViewerFilter();
-        viewer.addFilter( viewerFilter );
+        this.viewerFilter = new MyViewerFilter();
+        this.viewer = viewer;
+        this.viewer.addFilter( viewerFilter );
         
         // Post-condition
-        assert viewerFilter != null;
+        assert this.viewerFilter != null;
+        assert this.viewer == viewer;
     }
 
     /**
@@ -138,14 +192,17 @@ public class ByGroup implements IFilter {
      */
     public void disposeViewerFilers(StructuredViewer viewer) {
         // Pre-condition
-        assert viewerFilter != null;
+        assert this.viewerFilter != null;
+        assert this.viewer == viewer;
         
         // Disposes the viewer filter.
-        viewer.removeFilter( viewerFilter );
-        viewerFilter = null;
+        this.viewer.removeFilter( viewerFilter );
+        this.viewer = null;
+        this.viewerFilter = null;
         
         // Post-condition
-        assert viewerFilter == null;
+        assert this.viewerFilter == null;
+        assert this.viewer == null;
     }
 
     /**

@@ -118,78 +118,103 @@ SUBGROUPING.note = Set the SUBGROUPING tag to YES (the default) to allow class m
 #---------------------------------------------------------------------------
 
 EXTRACT_ALL.text = Extract All
+EXTRACT_ALL.group = Build
 EXTRACT_ALL.note = If the EXTRACT_ALL tag is set to YES doxygen will assume all entities in documentation are documented, even if no documentation was available. Private class members and static file members will be hidden unless the EXTRACT_PRIVATE and EXTRACT_STATIC tags are set to YES
 
 EXTRACT_PRIVATE.text = Extract Private
+EXTRACT_PRIVATE.group = Build
 EXTRACT_PRIVATE.note = If the EXTRACT_PRIVATE tag is set to YES all private members of a class will be included in the documentation.
 
 EXTRACT_STATIC.text = Extract Static
+EXTRACT_STATIC.group = Build
 EXTRACT_STATIC.note = If the EXTRACT_STATIC tag is set to YES all static members of a file will be included in the documentation.
 
 EXTRACT_LOCAL_CLASSES.text = Extract Local Classes
+EXTRACT_LOCAL_CLASSES.group = Build
 EXTRACT_LOCAL_CLASSES.note = If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs) defined locally in source files will be included in the documentation. If set to NO only classes defined in header files are included.
 
 EXTRACT_LOCAL_METHODS.text = Extract Local Methods
+EXTRACT_LOCAL_METHODS.group = Build
 EXTRACT_LOCAL_METHODS.note = This flag is only useful for Objective-C code. When set to YES local methods, which are defined in the implementation section but not in the interface are included in the documentation. If set to NO (the default) only methods in the interface are included.
 
 HIDE_UNDOC_MEMBERS.text = Hide Undocumented Members
+HIDE_UNDOC_MEMBERS.group = Build
 HIDE_UNDOC_MEMBERS.note = If the HIDE_UNDOC_MEMBERS tag is set to YES, Doxygen will hide all undocumented members of documented classes, files or namespaces. If set to NO (the default) these members will be included in the various overviews, but no documentation section is generated. This option has no effect if EXTRACT_ALL is enabled.
 
 HIDE_UNDOC_CLASSES.text = Hide Undocumented Classes
+HIDE_UNDOC_CLASSES.group = Build
 HIDE_UNDOC_CLASSES.note = If the HIDE_UNDOC_CLASSES tag is set to YES, Doxygen will hide all undocumented classes that are normally visible in the class hierarchy. If set to NO (the default) these classes will be included in the various overviews. This option has no effect if EXTRACT_ALL is enabled.
 
 HIDE_FRIEND_COMPOUNDS.text = Hide Friend Compounds
+HIDE_FRIEND_COMPOUNDS.group = Build
 HIDE_FRIEND_COMPOUNDS.note = If the HIDE_FRIEND_COMPOUNDS tag is set to YES, Doxygen will hide all friend (class|struct|union) declarations. If set to NO (the default) these declarations will be included in the documentation.
 
 HIDE_IN_BODY_DOCS.text = Hide in Body Documentations
+HIDE_IN_BODY_DOCS.group = Build
 HIDE_IN_BODY_DOCS.note = If the HIDE_IN_BODY_DOCS tag is set to YES, Doxygen will hide any documentation blocks found inside the body of a function. If set to NO (the default) these blocks will be appended to the function's detailed documentation block.
 
 INTERNAL_DOCS.text = Internal Documentations
+INTERNAL_DOCS.group = Build
 INTERNAL_DOCS.note = The INTERNAL_DOCS tag determines if documentation that is typed after a \internal command is included. If the tag is set to NO (the default) then the documentation will be excluded. Set it to YES to include the internal documentation.
 
 CASE_SENSE_NAMES.text = Case Sense Names
+CASE_SENSE_NAMES.group = Build
 CASE_SENSE_NAMES.note = If the CASE_SENSE_NAMES tag is set to NO then Doxygen will only generate file names in lower-case letters. If set to YES upper-case letters are also allowed. This is useful if you have classes or files whose names only differ in case and if your file system supports case sensitive file names. Windows and Mac users are advised to set this option to NO.
 
 HIDE_SCOPE_NAMES.text = Hide Scope Names
+HIDE_SCOPE_NAMES.group = Build
 HIDE_SCOPE_NAMES.note = If the HIDE_SCOPE_NAMES tag is set to NO (the default) then Doxygen will show members with their full class and namespace scopes in the documentation. If set to YES the scope will be hidden.
 
 SHOW_INCLUDE_FILES.text = Show Include Files
+SHOW_INCLUDE_FILES.group = Build
 SHOW_INCLUDE_FILES.note = If the SHOW_INCLUDE_FILES tag is set to YES (the default) then Doxygen will put a list of the files that are included by a file in the documentation of that file.
 
 INLINE_INFO.text = Inline Info
+INLINE_INFO.group = Build
 INLINE_INFO.note = If the INLINE_INFO tag is set to YES (the default) then a tag [inline] is inserted in the documentation for inline members.
 
 SORT_MEMBER_DOCS.text = Sort Member Documentations
+SORT_MEMBER_DOCS.group = Build
 SORT_MEMBER_DOCS.note = If the SORT_MEMBER_DOCS tag is set to YES (the default) then doxygen will sort the (detailed) documentation of file and class members alphabetically by member name. If set to NO the members will appear in declaration order.
 
 SORT_BRIEF_DOCS.text = Sort Brief Documentations
+SORT_BRIEF_DOCS.group = Build
 SORT_BRIEF_DOCS.note = If the SORT_BRIEF_DOCS tag is set to YES then doxygen will sort the brief documentation of file, namespace and class members alphabetically by member name. If set to NO (the default) the members will appear in declaration order.
 
 SORT_BY_SCOPE_NAME.text = Sort by Scope Name
+SORT_BY_SCOPE_NAME.group = Build
 SORT_BY_SCOPE_NAME.note = If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by fully-qualified names, including namespaces. If set to NO (the default), the class list will be sorted only by class name, not including the namespace part. Note: This option is not very useful if HIDE_SCOPE_NAMES is set to YES. Note: This option applies only to the class list, not to the alphabetical list.
 
 GENERATE_TODOLIST.text = Generate Todo List
+GENERATE_TODOLIST.group = Build
 GENERATE_TODOLIST.note = The GENERATE_TODOLIST tag can be used to enable (YES) or disable (NO) the todo list. This list is created by putting \todo commands in the documentation.
 
 GENERATE_TESTLIST.text = Generate Test List
+GENERATE_TESTLIST.group = Build
 GENERATE_TESTLIST.note = The GENERATE_TESTLIST tag can be used to enable (YES) or disable (NO) the test list. This list is created by putting \test commands in the documentation.
 
 GENERATE_BUGLIST.text = Generate Bug List
+GENERATE_BUGLIST.group = Build
 GENERATE_BUGLIST.note = The GENERATE_BUGLIST tag can be used to enable (YES) or disable (NO) the bug list. This list is created by putting \bug commands in the documentation.
 
 GENERATE_DEPRECATEDLIST.text = Generate Deprecated List
+GENERATE_DEPRECATEDLIST.group = Build
 GENERATE_DEPRECATEDLIST.note = The GENERATE_DEPRECATEDLIST tag can be used to enable (YES) or disable (NO) the deprecated list. This list is created by putting \deprecated commands in the documentation.
 
 ENABLED_SECTIONS.text = Enabled Sections
+ENABLED_SECTIONS.group = Build
 ENABLED_SECTIONS.note = The ENABLED_SECTIONS tag can be used to enable conditional documentation sections, marked by \if sectionname ... \endif.
 
 MAX_INITIALIZER_LINES.text = Maximum Initializer Lines
+MAX_INITIALIZER_LINES.group = Build
 MAX_INITIALIZER_LINES.note = The MAX_INITIALIZER_LINES tag determines the maximum number of lines the initial value of a variable or define consists of for it to appear in the documentation. If the initializer consists of more lines than specified here it will be hidden. Use a value of 0 to hide initializers completely. The appearance of the initializer of individual variables and defines in the documentation can be controlled using \showinitializer or \hideinitializer command in the documentation regardless of this setting.
 
 SHOW_USED_FILES.text = Show Used Files
+SHOW_USED_FILES.group = Build
 SHOW_USED_FILES.note = Set the SHOW_USED_FILES tag to NO to disable the list of files generated at the bottom of the documentation of classes and structs. If set to YES the list will mention the files that were used to generate the documentation.
 
 SHOW_DIRECTORIES.text = Show Directories
+SHOW_DIRECTORIES.group = Build
 SHOW_DIRECTORIES.note = If the sources in your project are distributed over multiple directories then setting the SHOW_DIRECTORIES tag to YES will show the directory hierarchy in the documentation.
 
 #---------------------------------------------------------------------------

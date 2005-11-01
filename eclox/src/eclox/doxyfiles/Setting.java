@@ -90,15 +90,9 @@ public class Setting extends Chunk {
     
     
     /**
-     * Retrieves the specified property given a setting.
-     * 
-     * @param   setting     a setting instance
-     * @param   property    a string containing the name of the property to retrieve.
-     * 
-     * @return  a string containing the desired property value or null when
-     *          no such property exists
+     * Initializes all setting properties.
      */
-    private static String getPropertyValue( Setting setting, String property ) {
+    private static void initProperties() {
         // Ensures that properties have been loaded.
         if( properties == null ) {
             try {
@@ -111,10 +105,37 @@ public class Setting extends Chunk {
                 Services.showError( throwable );
             }            
         }
-        
+    }
+    
+    /**
+     * Retrieves the specified property given a setting.
+     * 
+     * @param   setting     a setting instance
+     * @param   property    a string containing the name of the property to retrieve.
+     * 
+     * @return  a string containing the desired property value or null when
+     *          no such property exists
+     */
+    private static String getPropertyValue( Setting setting, String property ) {
+    	initProperties();
+    	
         // Searches for the desired property.
         String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
         return properties.getProperty( propertyIdentifier );
+    }
+    
+    /**
+     * Updates the value of a property of a given setting.
+     * 
+     * @param	setting		a setting instance
+     * @param	property	a string containing the name of a setting property
+     * @param	value		a string containing a property value
+     */
+    private static void setPropertyValue( Setting setting, String property, String value ) {
+    	initProperties();
+    	
+    	String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
+    	properties.setProperty( propertyIdentifier, value );
     }
     
     /**
@@ -191,6 +212,16 @@ public class Setting extends Chunk {
      */
     public void removeSettingListener(ISettingListener listener) {
         this.listeners.remove( listener );
+    }
+    
+    /**
+     * Updates the value of a given property.
+     * 
+     * @param	property	a string containing the name of property
+     * @param	value		a string containing the property value
+     */
+    public void setProperty( String property, String value ) {
+    	setPropertyValue( this, property, value );
     }
     
     /**
