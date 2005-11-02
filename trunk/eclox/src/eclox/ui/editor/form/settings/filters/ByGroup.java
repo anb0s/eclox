@@ -112,7 +112,7 @@ public class ByGroup implements IFilter {
         	if( groupName != null ) {
 	        	Setting	setting = (Setting) element;
 	        	String	settingGroup = setting.getProperty( Setting.GROUP );
-	        	return (settingGroup != null) ? settingGroup.contentEquals( groupName ) : false;
+	        	return (settingGroup != null) ? settingGroup.equals( groupName ) : false;
         	}
         	else {
         		return false;
