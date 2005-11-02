@@ -48,6 +48,7 @@ import eclox.doxyfiles.Doxyfile;
 import eclox.doxyfiles.Setting;
 import eclox.ui.editor.form.settings.filters.All;
 import eclox.ui.editor.form.settings.filters.ByGroup;
+import eclox.ui.editor.form.settings.filters.Custom;
 import eclox.ui.editor.form.settings.filters.IFilter;
 
 /**
@@ -215,6 +216,7 @@ public class MasterPart extends SectionPart {
         // Adds some filters.
         addFilter( toolkit, defaultFilter );
         addFilter( toolkit, new ByGroup() );
+        addFilter( toolkit, new Custom() );
     }
     
     /**
