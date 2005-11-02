@@ -25,10 +25,10 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -51,7 +51,7 @@ public class ByGroup implements IFilter {
     /**
      * the combo control displaying all group that are selectable by the user
      */
-    private CCombo combo;
+    private Combo combo;
     
     /**
      * the current viewer beging filtered.
@@ -137,7 +137,7 @@ public class ByGroup implements IFilter {
         assert doxyfile != null;
         
         // Creates the managed combo control.
-        combo = new CCombo( parent, SWT.FLAT|SWT.BORDER|SWT.READ_ONLY );
+        combo = new Combo( parent, SWT.FLAT|SWT.BORDER|SWT.READ_ONLY );
         combo.addSelectionListener( new MySelectionListener() );
         parent.setLayout( new FillLayout() );
         
