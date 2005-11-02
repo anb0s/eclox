@@ -54,9 +54,19 @@ public class Parser {
     private Pattern commentPattern = Pattern.compile("#.*");
     
     /**
-     * The setting assignement pattern.
+     * the setting assignement pattern
      */
-    private Pattern settingAssignment = Pattern.compile("(\\w+)\\s*=\\s*(.*)\\s*");
+    private Pattern settingAssignment = Pattern.compile("(\\w+)\\s*=\\s*(.*?)\\s*(\\\\)?");
+    
+    /**
+     * the continued setting assignement pattern
+     */
+    private Pattern continuedSettingAssignment = Pattern.compile("\\s*(.*?)\\s*(\\\\)?");
+    
+    /**
+     * the setting being continued on multiple lines.
+     */
+    private Setting continuedSetting;
     
     /**
      * Constructor.
@@ -115,18 +125,37 @@ public class Parser {
             return;
         }
         
-        // Matches the current line against the setting assignement pattern.
+        // Matches the current line against the setting assignment pattern.
         matcher = settingAssignment.matcher(line);
         if(matcher.matches() == true) {
             // Retrieves the setting identifier and its values.
-            String identifier = matcher.group(1);
-            String values = matcher.group(2);
-
+            String  identifier = matcher.group(1);
+            String  values = matcher.group(2);
+            String  continued = matcher.group(3);
+            
             // Call the traitement for the setting assignment and pull-out.
-            this.processSettingAssignment( doxyfile, identifier, values);
+            this.processSettingAssignment( doxyfile, identifier, values, continued != null );
             return;
         }
-                            
+        
+        // Matches the current line against the contibued setting assignment pattern.
+        matcher = continuedSettingAssignment.matcher(line);
+        if( matcher.matches() == true ) {
+            // Retrieves the setting identifier and its values.
+            String  values = matcher.group(1);
+            String  continued = matcher.group(2);
+            
+            // Call the traitement for the setting assignment and pull-out.
+            //Setting setting;
+            //setting = this.processSettingAssignment( doxyfile, identifier, values);
+            
+            // Remembers the continued setting.
+            //continuedSetting = ( continued != null ) ? setting : null; 
+            
+            return;
+            
+        }
+        
         // The line has not been recognized.
         throw new IOException("Unable to match line.");
     }
@@ -153,6 +182,9 @@ public class Parser {
     	// Stores the line's text in the raw text chunk.
     	rawText.append( text );
     	rawText.append( "\n" );
+        
+        // Resets the continued setting.
+        continuedSetting = null;
     }
     
     /**
@@ -161,8 +193,11 @@ public class Parser {
      * @param	doxyfile	a doxyfile where the setting assignment will be stored
      * @param	identifier	a string containing the setting identifier
      * @param	value		a string containing the assigned value
+     * @param   continued   a boolean telling if the setting assignement is continued on multiple line
      */
-    private void processSettingAssignment( Doxyfile doxyfile, String identifier, String value ) throws IOException {
-        doxyfile.append( new Setting( identifier, value ) );
+    private void processSettingAssignment( Doxyfile doxyfile, String identifier, String value, boolean continued ) throws IOException {
+        Setting setting = new Setting( identifier, value ); 
+        doxyfile.append( setting );
+        continuedSetting = ( continued == true ) ? setting : null;
   	}
 }
