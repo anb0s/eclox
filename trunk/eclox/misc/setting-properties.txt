@@ -310,21 +310,27 @@ FILTER_SOURCE_FILES.note = If the FILTER_SOURCE_FILES tag is set to YES, the inp
 #---------------------------------------------------------------------------
 
 SOURCE_BROWSER.text = Source Browser
+SOURCE_BROWSER.group = Source Browsing
 SOURCE_BROWSER.note = If the SOURCE_BROWSER tag is set to YES then a list of source files will be generated. Documented entities will be cross-referenced with these sources. Note: To get rid of all source code in the generated output, make sure also VERBATIM_HEADERS is set to NO.
 
 INLINE_SOURCES.text = Inline Sources
+INLINE_SOURCES.group = Source Browsing
 INLINE_SOURCES.note = Setting the INLINE_SOURCES tag to YES will include the body of functions and classes directly in the documentation.
 
 STRIP_CODE_COMMENTS.text = Strip Code Comments
+STRIP_CODE_COMMENTS.group = Source Browsing
 STRIP_CODE_COMMENTS.note = Setting the STRIP_CODE_COMMENTS tag to YES (the default) will instruct doxygen to hide any special comment blocks from generated source code fragments. Normal C and C++ comments will always remain visible.
 
 REFERENCED_BY_RELATION.text = Referenced by Relation
+REFERENCED_BY_RELATION.group = Source Browsing
 REFERENCED_BY_RELATION.note = If the REFERENCED_BY_RELATION tag is set to YES (the default) then for each documented function all documented functions referencing it will be listed.
 
 REFERENCES_RELATION.text = References Relation
+REFERENCES_RELATION.group = Source Browsing
 REFERENCES_RELATION.note = If the REFERENCES_RELATION tag is set to YES (the default) then for each documented function all documented entities called/used by that function will be listed.
 
 VERBATIM_HEADERS.text = Verbatim Headers
+VERBATIM_HEADERS.group = Source Browsing
 VERBATIM_HEADERS.note = If the VERBATIM_HEADERS tag is set to YES (the default) then Doxygen will generate a verbatim copy of the header file for each class for which an include is specified. Set to NO to disable this.
 
 #---------------------------------------------------------------------------
@@ -332,12 +338,15 @@ VERBATIM_HEADERS.note = If the VERBATIM_HEADERS tag is set to YES (the default) 
 #---------------------------------------------------------------------------
 
 ALPHABETICAL_INDEX.text = Alphabetical Index
+ALPHABETICAL_INDEX.group = Alphabetical Class Index
 ALPHABETICAL_INDEX.note = If the ALPHABETICAL_INDEX tag is set to YES, an alphabetical index of all compounds will be generated. Enable this if the project contains a lot of classes, structs, unions or interfaces.
 
 COLS_IN_ALPHA_INDEX.text = Columns in Alphabetical Index
+COLS_IN_ALPHA_INDEX.group = Alphabetical Class Index
 COLS_IN_ALPHA_INDEX.note = If the alphabetical index is enabled (see ALPHABETICAL_INDEX) then the COLS_IN_ALPHA_INDEX tag can be used to specify the number of columns in which this list will be split (can be a number in the range [1..20])
 
 IGNORE_PREFIX.text = Ignore Prefix
+IGNORE_PREFIX.group = Alphabetical Class Index
 IGNORE_PREFIX.note = In case all classes in a project start with a common prefix, all classes will be put under the same header in the alphabetical index. The IGNORE_PREFIX tag can be used to specify one or more prefixes that should be ignored while generating the index headers.
 
 #---------------------------------------------------------------------------
@@ -345,54 +354,71 @@ IGNORE_PREFIX.note = In case all classes in a project start with a common prefix
 #---------------------------------------------------------------------------
 
 GENERATE_HTML.text = Generate HTML
+GENERATE_HTML.group = HTML Output
 GENERATE_HTML.note = If the GENERATE_HTML tag is set to YES (the default) Doxygen will generate HTML output.
 
 HTML_OUTPUT.text = HTML Output
+HTML_OUTPUT.group = HTML Output
 HTML_OUTPUT.note = The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `html' will be used as the default path.
 
 HTML_FILE_EXTENSION.text = HTML File Extension
+HTML_FILE_EXTENSION.group = HTML Output
 HTML_FILE_EXTENSION.note = The HTML_FILE_EXTENSION tag can be used to specify the file extension for each generated HTML page (for example: .htm,.php,.asp). If it is left blank doxygen will generate files with .html extension.
 
 HTML_HEADER.text = HTML Header
+HTML_HEADER.group = HTML Output
 HTML_HEADER.note = The HTML_HEADER tag can be used to specify a personal HTML header for each generated HTML page. If it is left blank doxygen will generate a standard header.
 
 HTML_FOOTER.text = HTML Footer
+HTML_FOOTER.group = HTML Output
 HTML_FOOTER.note = The HTML_FOOTER tag can be used to specify a personal HTML footer for each generated HTML page. If it is left blank doxygen will generate a standard footer.
 
 HTML_STYLESHEET.text = HTML Stylesheet
+HTML_STYLESHEET.group = HTML Output
 HTML_STYLESHEET.note = The HTML_STYLESHEET tag can be used to specify a user-defined cascading style sheet that is used by each HTML page. It can be used to fine-tune the look of the HTML output. If the tag is left blank doxygen will generate a default style sheet. Note that doxygen will try to copy the style sheet file to the HTML output directory, so don't put your own stylesheet in the HTML output directory as well, or it will be erased!
 
 HTML_ALIGN_MEMBERS.text = HTML Align Members
+HTML_ALIGN_MEMBERS.group = HTML Output
 HTML_ALIGN_MEMBERS.note = If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, files or namespaces will be aligned in HTML using tables. If set to NO a bullet list will be used.
 
 GENERATE_HTMLHELP.text = Generate HTMLhelp
+GENERATE_HTMLHELP.group = HTML Output
 GENERATE_HTMLHELP.note = If the GENERATE_HTMLHELP tag is set to YES, additional index files will be generated that can be used as input for tools like the Microsoft HTML help workshop to generate a compressed HTML help file (.chm) of the generated HTML documentation.
 
 CHM_FILE.text = CHM File
+CHM_FILE.group = HTML Output
 CHM_FILE.note = If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can be used to specify the file name of the resulting .chm file. You can add a path in front of the file if the result should not be written to the html output directory.
 
 HHC_LOCATION.text = HCC Location
+HHC_LOCATION.group = HTML Output
 HHC_LOCATION.note = If the GENERATE_HTMLHELP tag is set to YES, the HHC_LOCATION tag can be used to specify the location (absolute path including file name) of the HTML help compiler (hhc.exe). If non-empty doxygen will try to run the HTML help compiler on the generated index.hhp.
 
 GENERATE_CHI.text = Generate CHI
+GENERATE_CHI.group = HTML Output
 GENERATE_CHI.note = If the GENERATE_HTMLHELP tag is set to YES, the GENERATE_CHI flag controls if a separate .chi index file is generated (YES) or that it should be included in the master .chm file (NO).
 
 BINARY_TOC.text = Binary TOC
+BINARY_TOC.group = HTML Output
 BINARY_TOC.note = If the GENERATE_HTMLHELP tag is set to YES, the BINARY_TOC flag controls whether a binary table of contents is generated (YES) or a normal table of contents (NO) in the .chm file.
 
 TOC_EXPAND.text = TOC Expand
+TOC_EXPAND.group = HTML Output
 TOC_EXPAND.note = The TOC_EXPAND flag can be set to YES to add extra items for group members to the contents of the HTML help documentation and to the tree view.
 
 DISABLE_INDEX.text = Disable Index
+DISABLE_INDEX.group = HTML Output
 DISABLE_INDEX.note = The DISABLE_INDEX tag can be used to turn on/off the condensed index at top of each HTML page. The value NO (the default) enables the index and the value YES disables it.
 
 ENUM_VALUES_PER_LINE.text = Enum Values per Line
+ENUM_VALUES_PER_LINE.group = HTML Output
 ENUM_VALUES_PER_LINE.note = This tag can be used to set the number of enum values (range [1..20]) that doxygen will group on one line in the generated HTML documentation.
 
 GENERATE_TREEVIEW.text = Generate Tree View
+GENERATE_TREEVIEW.group = HTML Output
 GENERATE_TREEVIEW.note = If the GENERATE_TREEVIEW tag is set to YES, a side panel will begenerated containing a tree-like index structure (just like the one that is generated for HTML Help). For this to work a browser that supports JavaScript, DHTML, CSS and frames is required (for instance Mozilla 1.0+, Netscape 6.0+, Internet explorer 5.0+, or Konqueror). Windows users are probably better off using the HTML help feature.
 
 TREEVIEW_WIDTH.text = Tree View Width
+TREEVIEW_WIDTH.group = HTML Output
 TREEVIEW_WIDTH.note = If the treeview is enabled (see GENERATE_TREEVIEW) then this tag can be used to set the initial width (in pixels) of the frame in which the tree is shown.
 
 #---------------------------------------------------------------------------
@@ -400,39 +426,51 @@ TREEVIEW_WIDTH.note = If the treeview is enabled (see GENERATE_TREEVIEW) then th
 #---------------------------------------------------------------------------
 
 GENERATE_LATEX.text = Generate LaTeX
+GENERATE_LATEX.group = LaTeX output
 GENERATE_LATEX.note = If the GENERATE_LATEX tag is set to YES (the default) Doxygen will generate Latex output.
 
 LATEX_OUTPUT.text = LaTeX Output
+LATEX_OUTPUT.group = LaTeX output
 LATEX_OUTPUT.note = The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `latex' will be used as the default path.
 
 LATEX_CMD_NAME.text = LaTeX Command Name
+LATEX_CMD_NAME.group = LaTeX output
 LATEX_CMD_NAME.note = The LATEX_CMD_NAME tag can be used to specify the LaTeX command name to be invoked. If left blank `latex' will be used as the default command name.
 
 MAKEINDEX_CMD_NAME.text = makeindex Command Name
+MAKEINDEX_CMD_NAME.group = LaTeX output
 MAKEINDEX_CMD_NAME.note = The MAKEINDEX_CMD_NAME tag can be used to specify the command name to generate index for LaTeX. If left blank `makeindex' will be used as the default command name.
 
 COMPACT_LATEX.text = Compact LaTeX
+COMPACT_LATEX.group = LaTeX output
 COMPACT_LATEX.note = If the COMPACT_LATEX tag is set to YES Doxygen generates more compact LaTeX documents. This may be useful for small projects and may help to save some trees in general.
 
 PAPER_TYPE.text = Paper Type
+PAPER_TYPE.group = LaTeX output
 PAPER_TYPE.note = The PAPER_TYPE tag can be used to set the paper type that is used by the printer. Possible values are: a4, a4wide, letter, legal and executive. If left blank a4wide will be used.
 
 EXTRA_PACKAGES.text = Extra Packages
+EXTRA_PACKAGES.group = LaTeX output
 EXTRA_PACKAGES.note = The EXTRA_PACKAGES tag can be to specify one or more names of LaTeX packages that should be included in the LaTeX output.
 
 LATEX_HEADER.text = LaTeX Header
+LATEX_HEADER.group = LaTeX output
 LATEX_HEADER.note = The LATEX_HEADER tag can be used to specify a personal LaTeX header for the generated latex document. The header should contain everything until the first chapter. If it is left blank doxygen will generate a standard header. Notice: only use this tag if you know what you are doing!
 
 PDF_HYPERLINKS.text = PDF Hyperlinks
+PDF_HYPERLINKS.group = LaTeX output
 PDF_HYPERLINKS.note = If the PDF_HYPERLINKS tag is set to YES, the LaTeX that is generated is prepared for conversion to pdf (using ps2pdf). The pdf file will contain links (just like the HTML output) instead of page references This makes the output suitable for online browsing using a pdf viewer.
 
 USE_PDFLATEX.text = Use pdflatex
+USE_PDFLATEX.group = LaTeX output
 USE_PDFLATEX.note = If the USE_PDFLATEX tag is set to YES, pdflatex will be used instead of plain latex in the generated Makefile. Set this option to YES to get a higher quality PDF documentation.
 
 LATEX_BATCHMODE.text = LaTeX Batch Mode
+LATEX_BATCHMODE.group = LaTeX output
 LATEX_BATCHMODE.note = If the LATEX_BATCHMODE tag is set to YES, doxygen will add the \\batchmode. command to the generated LaTeX files. This will instruct LaTeX to keep running if errors occur, instead of asking the user for help. This option is also used when generating formulas in HTML.
 
 LATEX_HIDE_INDICES.text = LaTeX Hide Indices
+LATEX_HIDE_INDICES.group = LaTeX output
 LATEX_HIDE_INDICES.note = If LATEX_HIDE_INDICES is set to YES then doxygen will not include the index chapters (such as File Index, Compound Index, etc.) in the output.
 
 #---------------------------------------------------------------------------
@@ -440,21 +478,27 @@ LATEX_HIDE_INDICES.note = If LATEX_HIDE_INDICES is set to YES then doxygen will 
 #---------------------------------------------------------------------------
 
 GENERATE_RTF.text = Generate RTF
+GENERATE_RTF.group = RTF Output
 GENERATE_RTF.note = If the GENERATE_RTF tag is set to YES Doxygen will generate RTF output The RTF output is optimized for Word 97 and may not look very pretty with other RTF readers or editors.
 
 RTF_OUTPUT.text = RTF Output
+RTF_OUTPUT.group = RTF Output
 RTF_OUTPUT.note = The RTF_OUTPUT tag is used to specify where the RTF docs will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `rtf' will be used as the default path.
 
 COMPACT_RTF.text = Compact RTF
+COMPACT_RTF.group = RTF Output
 COMPACT_RTF.note = If the COMPACT_RTF tag is set to YES Doxygen generates more compact RTF documents. This may be useful for small projects and may help to save some trees in general.
 
 RTF_HYPERLINKS.text = RTF Hyperlinks
+RTF_HYPERLINKS.group = RTF Output
 RTF_HYPERLINKS.note = If the RTF_HYPERLINKS tag is set to YES, the RTF that is generated will contain hyperlink fields. The RTF file will contain links (just like the HTML output) instead of page references. This makes the output suitable for online browsing using WORD or other programs which support those fields. Note: wordpad (write) and others do not support links.
 
 RTF_STYLESHEET_FILE.text = RTF Stylesheet File
+RTF_STYLESHEET_FILE.group = RTF Output
 RTF_STYLESHEET_FILE.note = Load stylesheet definitions from file. Syntax is similar to doxygen's config file, i.e. a series of assignments. You only have to provide replacements, missing definitions are set to their default value.
 
 RTF_EXTENSIONS_FILE.text = RTF Extensions File
+RTF_EXTENSIONS_FILE.group = RTF Output
 RTF_EXTENSIONS_FILE.note = Set optional variables used in the generation of an rtf document. Syntax is similar to doxygen's config file.
 
 #---------------------------------------------------------------------------
@@ -462,15 +506,19 @@ RTF_EXTENSIONS_FILE.note = Set optional variables used in the generation of an r
 #---------------------------------------------------------------------------
 
 GENERATE_MAN.text = Generate man
+GENERATE_MAN.group = man Output
 GENERATE_MAN.note = If the GENERATE_MAN tag is set to YES (the default) Doxygen will generate man pages.
 
 MAN_OUTPUT.text = man Output
+MAN_OUTPUT.group = man Output
 MAN_OUTPUT.note = The MAN_OUTPUT tag is used to specify where the man pages will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `man' will be used as the default path.
 
 MAN_EXTENSION.text = man Extension
+MAN_EXTENSION.group = man Output
 MAN_EXTENSION.note = The MAN_EXTENSION tag determines the extension that is added to the generated man pages (default is the subroutine's section .3)
 
 MAN_LINKS.text = man Links
+MAN_LINKS.group = man Output
 MAN_LINKS.note = If the MAN_LINKS tag is set to YES and Doxygen generates man output, then it will generate one additional man file for each entity documented in the real man page(s). These additional files only source the real man page, but without them the man command would be unable to find the correct page. The default is NO.
 
 #---------------------------------------------------------------------------
@@ -478,18 +526,23 @@ MAN_LINKS.note = If the MAN_LINKS tag is set to YES and Doxygen generates man ou
 #---------------------------------------------------------------------------
 
 GENERATE_XML.text = Generate XML
+GENERATE_XML.group = XML Output
 GENERATE_XML.note = If the GENERATE_XML tag is set to YES Doxygen will generate an XML file that captures the structure of the code including all documentation.
 
 XML_OUTPUT.text = XML Output
+XML_OUTPUT.group = XML Output
 XML_OUTPUT.note = The XML_OUTPUT tag is used to specify where the XML pages will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `xml' will be used as the default path.
 
 XML_SCHEMA.text = XML Schema
+XML_SCHEMA.group = XML Output
 XML_SCHEMA.note = The XML_SCHEMA tag can be used to specify an XML schema, which can be used by a validating XML parser to check the syntax of the XML files.
 
 XML_DTD.text = XML DTD
+XML_DTD.group = XML Output
 XML_DTD.note = The XML_DTD tag can be used to specify an XML DTD, which can be used by a validating XML parser to check the syntax of the XML files.
 
 XML_PROGRAMLISTING.text = XML Program Listing
+XML_PROGRAMLISTING.group = XML Output
 XML_PROGRAMLISTING.note = If the XML_PROGRAMLISTING tag is set to YES Doxygen will dump the program listings (including syntax highlighting and cross-referencing information) to the XML output. Note that enabling this will significantly increase the size of the XML output.
 
 #---------------------------------------------------------------------------
@@ -504,15 +557,19 @@ GENERATE_AUTOGEN_DEF.note = If the GENERATE_AUTOGEN_DEF tag is set to YES Doxyge
 #---------------------------------------------------------------------------
 
 GENERATE_PERLMOD.text = Generate Perl Module
+GENERATE_PERLMOD.group = Perl Module Output
 GENERATE_PERLMOD.note = If the GENERATE_PERLMOD tag is set to YES Doxygen will generate a Perl module file that captures the structure of the code including all documentation. Note that this feature is still experimental and incomplete at the moment.
 
 PERLMOD_LATEX.text = Perl Module LaTeX
+PERLMOD_LATEX.group = Perl Module Output
 PERLMOD_LATEX.note = If the PERLMOD_LATEX tag is set to YES Doxygen will generate the necessary Makefile rules, Perl scripts and LaTeX code to be able to generate PDF and DVI output from the Perl module output.
 
 PERLMOD_PRETTY.text = Perl Module Pretty
+PERLMOD_PRETTY.group = Perl Module Output
 PERLMOD_PRETTY.note = If the PERLMOD_PRETTY tag is set to YES the Perl module output will be nicely formatted so it can be parsed by a human reader.  This is useful if you want to understand what is going on.  On the other hand, if this tag is set to NO the size of the Perl module output will be much smaller and Perl will parse it just the same.
 
 PERLMOD_MAKEVAR_PREFIX.text = Perl Module MakeVar Prefix
+PERLMOD_MAKEVAR_PREFIX.group = Perl Module Output
 PERLMOD_MAKEVAR_PREFIX.note = The names of the make variables in the generated doxyrules.make file are prefixed with the string contained in PERLMOD_MAKEVAR_PREFIX. This is useful so different doxyrules.make files included by the same Makefile don't overwrite each other's variables.
 
 #---------------------------------------------------------------------------
@@ -520,30 +577,39 @@ PERLMOD_MAKEVAR_PREFIX.note = The names of the make variables in the generated d
 #---------------------------------------------------------------------------
 
 ENABLE_PREPROCESSING.text = Enable Preprocessing
+ENABLE_PREPROCESSING.group = Preprocessing
 ENABLE_PREPROCESSING.note = If the ENABLE_PREPROCESSING tag is set to YES (the default) Doxygen will evaluate all C-preprocessor directives found in the sources and include files.
 
 MACRO_EXPANSION.text = Macro Expansion
+MACRO_EXPANSION.group = Preprocessing
 MACRO_EXPANSION.note = If the MACRO_EXPANSION tag is set to YES Doxygen will expand all macro names in the source code. If set to NO (the default) only conditional compilation will be performed. Macro expansion can be done in a controlled way by setting EXPAND_ONLY_PREDEF to YES.
 
 EXPAND_ONLY_PREDEF.text = Expan Only Predefined
+EXPAND_ONLY_PREDEF.group = Preprocessing
 EXPAND_ONLY_PREDEF.note = If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES then the macro expansion is limited to the macros specified with the PREDEFINED and EXPAND_AS_PREDEFINED tags.
 
 SEARCH_INCLUDES.text = Search Includes
+SEARCH_INCLUDES.group = Preprocessing
 SEARCH_INCLUDES.note = If the SEARCH_INCLUDES tag is set to YES (the default) the includes files in the INCLUDE_PATH (see below) will be search if a #include is found.
 
 INCLUDE_PATH.text = Include Path
+INCLUDE_PATH.group = Preprocessing
 INCLUDE_PATH.note = The INCLUDE_PATH tag can be used to specify one or more directories that contain include files that are not input files but should be processed by the preprocessor.
 
 INCLUDE_FILE_PATTERNS.text = Include File Patterns
+INCLUDE_FILE_PATTERNS.group = Preprocessing
 INCLUDE_FILE_PATTERNS.note = You can use the INCLUDE_FILE_PATTERNS tag to specify one or more wildcard patterns (like *.h and *.hpp) to filter out the header-files in the directories. If left blank, the patterns specified with FILE_PATTERNS will be used.
 
 PREDEFINED.text = Predefined
+PREDEFINED.group = Preprocessing
 PREDEFINED.note = The PREDEFINED tag can be used to specify one or more macro names that are defined before the preprocessor is started (similar to the -D option of gcc). The argument of the tag is a list of macros of the form: name or name=definition (no spaces). If the definition and the = are omitted =1 is assumed. To prevent a macro definition from being undefined via #undef or recursively expanded use the := operator instead of the = operator.
 
 EXPAND_AS_DEFINED.text = Expan as Defined
+EXPAND_AS_DEFINED.group = Preprocessing
 EXPAND_AS_DEFINED.note = If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this tag can be used to specify a list of macro names that should be expanded. The macro definition that is found in the sources will be used. Use the PREDEFINED tag if you want to use a different macro definition.
 
 SKIP_FUNCTION_MACROS.text = Skip Function Macros
+SKIP_FUNCTION_MACROS.group = Preprocessing
 SKIP_FUNCTION_MACROS.note = If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then doxygen's preprocessor will remove all function-like macros that are alone on a line, have an all uppercase name, and do not end with a semicolon. Such function macros are typically used for boiler-plate code, and will confuse the parser if not removed.
 
 #---------------------------------------------------------------------------
@@ -551,6 +617,7 @@ SKIP_FUNCTION_MACROS.note = If the SKIP_FUNCTION_MACROS tag is set to YES (the d
 #---------------------------------------------------------------------------
 
 TAGFILES.text = Tag Files
+TAGFILES.group = External References
 TAGFILES.note = Note to be done!
 #note = The TAGFILES option can be used to specify one or more tagfiles. 
 #Optionally an initial location of the external documentation 
@@ -568,15 +635,19 @@ TAGFILES.note = Note to be done!
 #is run, you must also specify the path to the tagfile here.
 
 GENERATE_TAGFILE.text = Generate Tag Files
+GENERATE_TAGFILE.group = External References
 GENERATE_TAGFILE.note = When a file name is specified after GENERATE_TAGFILE, doxygen will create a tag file that is based on the input files it reads.
 
 ALLEXTERNALS.text = All Externals
+ALLEXTERNALS.group = External References
 ALLEXTERNALS.note = If the ALLEXTERNALS tag is set to YES all external classes will be listed in the class index. If set to NO only the inherited external classes will be listed.
 
 EXTERNAL_GROUPS.text = External Groups
+EXTERNAL_GROUPS.group = External References
 EXTERNAL_GROUPS.note = If the EXTERNAL_GROUPS tag is set to YES all external groups will be listed in the modules index. If set to NO, only the current project's groups will be listed.
 
 PERL_PATH.text = Perl Path
+PERL_PATH.group = External References
 PERL_PATH.note = The PERL_PATH should be the absolute path and name of the perl script interpreter (i.e. the result of `which perl').
 
 #---------------------------------------------------------------------------
@@ -584,60 +655,79 @@ PERL_PATH.note = The PERL_PATH should be the absolute path and name of the perl 
 #---------------------------------------------------------------------------
 
 CLASS_DIAGRAMS.text = Class Diagrams
+CLASS_DIAGRAMS.group = dot Tool
 CLASS_DIAGRAMS.note = If the CLASS_DIAGRAMS tag is set to YES (the default) Doxygen will generate a inheritance diagram (in HTML, RTF and LaTeX) for classes with base or super classes. Setting the tag to NO turns the diagrams off. Note that this option is superseded by the HAVE_DOT option below. This is only a fallback. It is recommended to install and use dot, since it yields more powerful graphs.
 
 HIDE_UNDOC_RELATIONS.text = Hide Undocumented Relations
+HIDE_UNDOC_RELATIONS.group = dot Tool
 HIDE_UNDOC_RELATIONS.note = If set to YES, the inheritance and collaboration graphs will hide inheritance and usage relations if the target is undocumented or is not a class.
 
 HAVE_DOT.text = Have DOT
+HAVE_DOT.group = dot Tool
 HAVE_DOT.note = If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is available from the path. This tool is part of Graphviz, a graph visualization toolkit from AT&T and Lucent Bell Labs. The other options in this section have no effect if this option is set to NO (the default)
 
 CLASS_GRAPH.text = Class Graph
+CLASS_GRAPH.group = dot Tool
 CLASS_GRAPH.note = If the CLASS_GRAPH and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented class showing the direct and indirect inheritance relations. Setting this tag to YES will force the the CLASS_DIAGRAMS tag to NO.
 
 COLLABORATION_GRAPH.text = Collaboration Graph
+COLLABORATION_GRAPH.group = dot Tool
 COLLABORATION_GRAPH.note = If the COLLABORATION_GRAPH and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented class showing the direct and indirect implementation dependencies (inheritance, containment, and class references variables) of the class with other documented classes.
 
 UML_LOOK.text = UML Look
+UML_LOOK.group = dot Tool
 UML_LOOK.note = If the UML_LOOK tag is set to YES doxygen will generate inheritance and collaboration diagrams in a style similar to the OMG's Unified Modeling Language.
 
 TEMPLATE_RELATIONS.text = Template Relations
+TEMPLATE_RELATIONS.group = dot Tool
 TEMPLATE_RELATIONS.note = If set to YES, the inheritance and collaboration graphs will show the relations between templates and their instances.
 
 INCLUDE_GRAPH.text = Include Graph
+INCLUDE_GRAPH.group = dot Tool
 INCLUDE_GRAPH.note = If the ENABLE_PREPROCESSING, SEARCH_INCLUDES, INCLUDE_GRAPH, and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented file showing the direct and indirect include dependencies of the file with other documented files.
 
 INCLUDED_BY_GRAPH.text = Included-by Graph
+INCLUDED_BY_GRAPH.group = dot Tool
 INCLUDED_BY_GRAPH.note = If the ENABLE_PREPROCESSING, SEARCH_INCLUDES, INCLUDED_BY_GRAPH, and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented header file showing the documented files that directly or indirectly include this file.
 
 CALL_GRAPH.text = Call Graph
+CALL_GRAPH.group = dot Tool
 CALL_GRAPH.note = If the CALL_GRAPH and HAVE_DOT tags are set to YES then doxygen will generate a call dependency graph for every global function or class method. Note that enabling this option will significantly increase the time of a run. So in most cases it will be better to enable call graphs for selected functions only using the \callgraph command.
 
 GRAPHICAL_HIERARCHY.text = Graphical Hierarchy
+GRAPHICAL_HIERARCHY.group = dot Tool
 GRAPHICAL_HIERARCHY.note = If the GRAPHICAL_HIERARCHY and HAVE_DOT tags are set to YES then doxygen will graphical hierarchy of all classes instead of a textual one.
 
 DOT_IMAGE_FORMAT.text = DOT Image Format
+DOT_IMAGE_FORMAT.group = dot Tool
 DOT_IMAGE_FORMAT.note = The DOT_IMAGE_FORMAT tag can be used to set the image format of the images generated by dot. Possible values are png, jpg, or gifIf left blank png will be used.
 
 DOT_PATH.text = DOT Path
+DOT_PATH.group = dot Tool
 DOT_PATH.note = The tag DOT_PATH can be used to specify the path where the dot tool can be found. If left blank, it is assumed the dot tool can be found on the path.
 
 DOTFILE_DIRS.text = DOT Files Directories
+DOTFILE_DIRS.group = dot Tool
 DOTFILE_DIRS.note = The DOTFILE_DIRS tag can be used to specify one or more directories that contain dot files that are included in the documentation (see the \dotfile command).
 
 MAX_DOT_GRAPH_WIDTH.text = Maximum DOT Graph Width
+MAX_DOT_GRAPH_WIDTH.group = dot Tool
 MAX_DOT_GRAPH_WIDTH.note = The MAX_DOT_GRAPH_WIDTH tag can be used to set the maximum allowed width (in pixels) of the graphs generated by dot. If a graph becomes larger than this value, doxygen will try to truncate the graph, so that it fits within the specified constraint. Beware that most browsers cannot cope with very large images.
 
 MAX_DOT_GRAPH_HEIGHT.text = Maximum DOT Graph Height
+MAX_DOT_GRAPH_HEIGHT.group = dot Tool
 MAX_DOT_GRAPH_HEIGHT.note = The MAX_DOT_GRAPH_HEIGHT tag can be used to set the maximum allows height (in pixels) of the graphs generated by dot. If a graph becomes larger than this value, doxygen will try to truncate the graph, so that it fits within the specified constraint. Beware that most browsers cannot cope with very large images.
 
 MAX_DOT_GRAPH_DEPTH.text = Maximum DOT Graph Depth
+MAX_DOT_GRAPH_DEPTH.group = dot Tool
 MAX_DOT_GRAPH_DEPTH.note = The MAX_DOT_GRAPH_DEPTH tag can be used to set the maximum depth of the graphs generated by dot. A depth value of 3 means that only nodes reachable from the root by following a path via at most 3 edges will be shown. Nodes that lay further from the root node will be omitted. Note that setting this option to 1 or 2 may greatly reduce the computation time needed for large code bases. Also note that a graph may be further truncated if the graph's image dimensions are not sufficient to fit the graph (see MAX_DOT_GRAPH_WIDTH and MAX_DOT_GRAPH_HEIGHT). If 0 is used for the depth value (the default), the graph is not depth-constrained.
 
 GENERATE_LEGEND.text = Generate Legend
+GENERATE_LEGEND.group = dot Tool
 GENERATE_LEGEND.note = If the GENERATE_LEGEND tag is set to YES (the default) Doxygen will generate a legend page explaining the meaning of the various boxes and arrows in the dot generated graphs.
 
 DOT_CLEANUP.text = DOT Clean-up
+DOT_CLEANUP.group = dot Tool
 DOT_CLEANUP.note = If the DOT_CLEANUP tag is set to YES (the default) Doxygen will remove the intermediate dot files that are used to generate the various graphs.
 
 #---------------------------------------------------------------------------
