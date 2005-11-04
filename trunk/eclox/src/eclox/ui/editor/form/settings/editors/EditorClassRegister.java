@@ -22,7 +22,6 @@ package eclox.ui.editor.form.settings.editors;
 import java.util.HashMap;
 import java.util.Map;
 
-import eclox.core.Services;
 import eclox.doxyfiles.Setting;
 
 /**
@@ -60,8 +59,6 @@ public class EditorClassRegister {
         // Little fallback if no matching editor class was found.
         if(result == null) {
             result = TextEditor.class;
-            // TODO improve message output.
-            Services.logWarning("Setting '"+setting.getIdentifier()+"' has no editor specified. Using default text editor.");
         }
         
         return result;
