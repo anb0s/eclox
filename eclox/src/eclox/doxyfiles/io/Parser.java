@@ -29,6 +29,7 @@ import java.io.InputStreamReader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import eclox.core.Services;
 import eclox.doxyfiles.Chunk;
 import eclox.doxyfiles.Doxyfile;
 import eclox.doxyfiles.RawText;
@@ -44,6 +45,11 @@ import eclox.doxyfiles.Setting;
 public class Parser {
 
     /**
+     * the current line number
+     */
+    private int lineNumber = 0;
+    
+    /**
      * The line reader used to parse the input stream.
      */
     private BufferedReader reader;
@@ -54,14 +60,25 @@ public class Parser {
     private Pattern commentPattern = Pattern.compile("#.*");
     
     /**
+     * the empty line pattern
+     */
+    private Pattern emptyPattern = Pattern.compile("\\s*");
+    
+    /**
      * the setting assignement pattern
      */
-    private Pattern settingAssignment = Pattern.compile("(\\w+)\\s*=\\s*(.*?)\\s*(\\\\)?");
+    private Pattern settingAssignmentPattern = Pattern.compile("(\\w+)\\s*=\\s*(.*?)\\s*(\\\\)?");
+    
+    /**
+     * the setting increment pattern
+     */
+    private Pattern settingIncrementPattern = Pattern.compile("(\\w+)\\s*\\+=\\s*(.*?)\\s*(\\\\)?");
+    
     
     /**
      * the continued setting assignement pattern
      */
-    private Pattern continuedSettingAssignment = Pattern.compile("\\s*(.*?)\\s*(\\\\)?");
+    private Pattern continuedSettingAssignmentPattern = Pattern.compile("\\s*(.+?)\\s*(\\\\)?");
     
     /**
      * the setting being continued on multiple lines.
@@ -88,9 +105,9 @@ public class Parser {
     public void read( Doxyfile doxyfile ) throws IOException {
         // Initialization of the system.
         this.reader.reset();
+        this.lineNumber = 0;
         
         // Reads and parses all lines.
-        int lineNumber = 0;
         try {
 	        String	line;
 	        for( line = reader.readLine(); line != null; line = reader.readLine() ) {
@@ -113,51 +130,59 @@ public class Parser {
         Matcher matcher;
         
         // Matches the current line against an empty line pattern
-        if(line.length() == 0) {
+        matcher = emptyPattern.matcher( line );
+        if( matcher.matches() == true ) {
         	this.processAnyLine( doxyfile, line );
             return;
         }
         
         // Matches the current line against the note border pattern.
-        matcher = commentPattern.matcher(line);
-        if(matcher.matches() == true) {
+        matcher = commentPattern.matcher( line );
+        if( matcher.matches() == true ) {
         	this.processAnyLine( doxyfile, line );
             return;
         }
         
         // Matches the current line against the setting assignment pattern.
-        matcher = settingAssignment.matcher(line);
-        if(matcher.matches() == true) {
+        matcher = settingAssignmentPattern.matcher( line );
+        if( matcher.matches() == true ) {
             // Retrieves the setting identifier and its values.
             String  identifier = matcher.group(1);
             String  values = matcher.group(2);
             String  continued = matcher.group(3);
             
-            // Call the traitement for the setting assignment and pull-out.
+            // Call the traitement for the setting assignment and pull out.
             this.processSettingAssignment( doxyfile, identifier, values, continued != null );
             return;
         }
         
+        // Matches the current line against the setting increment pattern.
+        matcher = settingIncrementPattern.matcher( line );
+        if( matcher.matches() == true ) {
+            // Retrieves the setting identifier and its values.
+            String  identifier = matcher.group(1);
+            String  values = matcher.group(2);
+            String  continued = matcher.group(3);
+            
+            // Call the traitement for the setting assignment and pull out.
+            this.processSettingIncrement( doxyfile, identifier, values, continued != null );
+            return;
+        }
+
         // Matches the current line against the contibued setting assignment pattern.
-        matcher = continuedSettingAssignment.matcher(line);
+        matcher = continuedSettingAssignmentPattern.matcher( line );
         if( matcher.matches() == true ) {
             // Retrieves the setting identifier and its values.
             String  values = matcher.group(1);
             String  continued = matcher.group(2);
             
-            // Call the traitement for the setting assignment and pull-out.
-            //Setting setting;
-            //setting = this.processSettingAssignment( doxyfile, identifier, values);
-            
-            // Remembers the continued setting.
-            //continuedSetting = ( continued != null ) ? setting : null; 
-            
-            return;
-            
+            // Call the traitement for the continued setting assignment and pull out.
+            this.processContinuedSettingAssignment( doxyfile, values, continued != null );
+            return;            
         }
         
         // The line has not been recognized.
-        throw new IOException("Unable to match line.");
+        throw new IOException( "Unable to match line." );
     }
     
     /**
@@ -182,9 +207,6 @@ public class Parser {
     	// Stores the line's text in the raw text chunk.
     	rawText.append( text );
     	rawText.append( "\n" );
-        
-        // Resets the continued setting.
-        continuedSetting = null;
     }
     
     /**
@@ -196,8 +218,60 @@ public class Parser {
      * @param   continued   a boolean telling if the setting assignement is continued on multiple line
      */
     private void processSettingAssignment( Doxyfile doxyfile, String identifier, String value, boolean continued ) throws IOException {
-        Setting setting = new Setting( identifier, value ); 
-        doxyfile.append( setting );
-        continuedSetting = ( continued == true ) ? setting : null;
+        // Ensures that the setting is not already existing in the doxyfile. 
+        if( doxyfile.getSetting( identifier ) != null ) {
+            Services.logWarning( "At line " + lineNumber + ": setting already delcared. Declaration ignored." );
+        }
+        else {
+            // Creates a new setting
+            Setting setting = new Setting( identifier, value ); 
+            doxyfile.append( setting );
+            
+            // Remembers if the setting assignment is continued or not.
+            continuedSetting = ( continued == true ) ? setting : null;
+        }
   	}
+    
+    /**
+     * Processes a setting increment line.
+     * 
+     * @param   doxyfile    a doxyfile where the setting assignment will be stored
+     * @param   identifier  a string containing the setting identifier
+     * @param   value       a string containing the assigned value
+     * @param   continued   a boolean telling if the setting assignement is continued on multiple line
+     */
+    private void processSettingIncrement( Doxyfile doxyfile, String identifier, String value, boolean continued ) throws IOException {
+        // Rertieves the setting from the doxyfile.
+        Setting setting = doxyfile.getSetting( identifier );
+        if( setting != null ) {
+            // Updates the continued setting's value.
+            setting.setValue( setting.getValue() + " " + value );
+            // Remembers if the setting assignment is continued or not.
+            continuedSetting = ( continued == true ) ? setting : null;
+        }
+        else {
+            Services.logWarning( "At line " + lineNumber + ": the setting was not declared before." );
+            processSettingAssignment( doxyfile, identifier, value, continued );
+        }
+    }
+    
+    /**
+     * Processes a setting assignment line.
+     * 
+     * @param   doxyfile    a doxyfile where the setting assignment will be stored
+     * @param   value       a string containing the assigned value
+     * @param   continued   a boolean telling if the setting assignement is continued on multiple line
+     */
+    private void processContinuedSettingAssignment( Doxyfile doxyfile, String value, boolean continued ) throws IOException {
+        // Ensures that a continued setting has been remembered.
+        if( continuedSetting == null ) {
+            Services.logWarning( "At line " + lineNumber + ": value delcared without a setting name." );
+        }
+        else {
+            // Updates the continued setting's value.
+            continuedSetting.setValue( continuedSetting.getValue() + " " + value );
+            // Remembers if the setting assignment is continued or not.
+            continuedSetting = ( continued == true ) ? continuedSetting : null;
+        }
+    }
 }

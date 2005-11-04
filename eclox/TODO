@@ -1,27 +1,25 @@
-Todos:
+TODOs:
 
-  o See what IEditorMatchingStratedgy can do for us.
-  o Creation of property page for doxyfiles.
-  o Creation of an incremental builder that checks for compatibility with the current
-    doxygen version.
-  o Creation of markers to notify problems in doxyfiles.
-  o Add a build launch action in the build log toolbar.
-  o Emettre une alerte quand un nom de section n'a pas été trouvé.
-  o Emettre une alerte quand the type d'un tag n'a pas été trouvé.
-  o Mettre un nom de fichier de configuration par défaut dans le wizard.
-  o Mieux gérer les exceptions plutôt que de laisser des "catch" vides.
-  o Mettre une décoration dans l'outline afin d'afficher les éléments qui ont été modifiés.
-  o Supporter l'undo  oredo.
-  o Améliorer l'aspect graphique (icones, images).
-  o Support du saveas
-  o Ecouter les modifications sur le fichier en cours d'édition pour détecter une modification externe (edition, suppression).
+- See what IEditorMatchingStratedgy can do for us.
+- Creation of property page for doxyfiles.
+- Creation of an incremental builder that checks for compatibility with the current doxygen version.
+- Creation of markers to notify problems in doxyfiles found during parsing.
+- Add a build launch action in the build log toolbar.
+- Mettre un nom de fichier de configuration par défaut dans le wizard.
+- Mieux gérer les exceptions plutôt que de laisser des "catch" vides.
+- Mettre une décoration dans l'outline afin d'afficher les éléments qui ont été modifiés.
+- Add undo & redo support
+- Améliorer l'aspect graphique (icones, images).
+- Add saveas feature
+- Ecouter les modifications sur le fichier en cours d'édition pour détecter une modification externe (edition, suppression).
 
-Les plus:
 
-  o Ajouter un type de field pour les tag étant ue liste d'éléments.
-  o Synchronisation des messages de sortie de la compilation.
-  o Copier le texte de la sortie de compilation.
-  o Bouttons dans la barre d'outils du l'éditeur pour compiler et browser directement la documentation générée.
-  o Dans le menu contextuel du fichier doxygen, ajouter des actions pour browser la documentation générée.
-  o Recherche d'un tag par mot clé se trouvant dans le nom du tag, soit dans son commentaire associé.
-  o Prévoir la localisation des textes.
+WISHS:
+
+- Ajouter un type de field pour les tag étant ue liste d'éléments.
+- Synchronisation des messages de sortie de la compilation.
+- Copier le texte de la sortie de compilation.
+- Bouttons dans la barre d'outils du l'éditeur pour compiler et browser directement la documentation générée.
+- Dans le menu contextuel du fichier doxygen, ajouter des actions pour browser la documentation générée.
+- Recherche d'un tag par mot clé se trouvant dans le nom du tag, soit dans son commentaire associé.
+- Prévoir la localisation des textes.
