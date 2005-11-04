@@ -8,12 +8,10 @@
 
 PROJECT_NAME.text = Project Name
 PROJECT_NAME.group = Project
-PROJECT_NAME.type = text
 PROJECT_NAME.note = The PROJECT_NAME tag is a single word (or a sequence of words surrounded by quotes) that should identify the project.
 
 PROJECT_NUMBER.text = Project Number
 PROJECT_NUMBER.group = Project
-PROJECT_NUMBER.type = text
 PROJECT_NUMBER.note = The PROJECT_NUMBER tag can be used to enter a project or revision number. This could be handy for archiving the generated documentation or if some version control system is used.
 
 OUTPUT_DIRECTORY.text = Output Directory
@@ -22,7 +20,6 @@ OUTPUT_DIRECTORY.note = The OUTPUT_DIRECTORY tag is used to specify the (relativ
 
 CREATE_SUBDIRS.text = Create Subdirectories
 CREATE_SUBDIRS.group = Project
-CREATE_SUBDIRS.type = boolean
 CREATE_SUBDIRS.note = If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 4096 sub-directories (in 2 levels) under the output directory of each output format and will distribute the generated files over these directories. Enabling this option can be useful when feeding doxygen a huge amount of source files, where putting all generated files in the same directory would otherwise cause performance problems for the file system.
 
 OUTPUT_LANGUAGE.text = Output Language

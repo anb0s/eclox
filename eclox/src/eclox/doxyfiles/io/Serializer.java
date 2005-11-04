@@ -36,11 +36,6 @@ import eclox.doxyfiles.Doxyfile;
 public class Serializer extends InputStream {
 	
 	/**
-	 * a doxyfile that being serialized
-	 */
-	private Doxyfile doxyfile;
-	
-	/**
 	 * an iterator on the doxyfile chunks
 	 */
 	private Iterator chunkIterator;
@@ -56,7 +51,6 @@ public class Serializer extends InputStream {
 	 * @param	doxyfile	a doxyfile to serialize
 	 */
 	public Serializer( Doxyfile doxyfile ) {
-		this.doxyfile = doxyfile;
 		this.chunkIterator = doxyfile.iterator();
 		this.stringBuffer = getNextStringBuffer();
 	}
@@ -86,6 +80,10 @@ public class Serializer extends InputStream {
 	 * @return	a string buffer or null of none
 	 */
 	private StringBuffer getNextStringBuffer() {
+        // Pre-condition
+        assert chunkIterator != null;
+        
+        // Retrieves the next string buffer.
 		StringBuffer result = null;
 		if( this.chunkIterator.hasNext() == true ) {
 			Chunk	chunk = (Chunk) this.chunkIterator.next();
