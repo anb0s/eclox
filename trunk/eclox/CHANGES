@@ -1,4 +1,4 @@
-* current
+* eclox-0.4 (5-nov-2005)
 	Deep refactoring of the doxyfile content representation.
 	
 	Recreation of the doxyfile editor using new ui APIs provided since
