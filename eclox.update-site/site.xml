@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.gna.eclox.feature_0.3.5.jar" id="org.gna.eclox.feature" version="0.3.5">
-      <category name="Doxygen Documentation System"/>
+   <feature url="features/org.gna.eclox.feature_0.4.0.jar" id="org.gna.eclox.feature" version="0.4.0">
+      <category name="Source Code Documentation System"/>
    </feature>
-   <category-def name="Doxygen Documentation System" label="Doxygen Documentation System"/>
+   <category-def name="Source Code Documentation System" label="Source Code Documentation System"/>
 </site>
