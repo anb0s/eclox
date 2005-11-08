@@ -263,6 +263,7 @@ public class MasterPart extends SectionPart {
         filterButtons = toolkit.createComposite( parent );
         buttonContainerLayout.marginWidth    = 0;
         buttonContainerLayout.marginHeight  = 0;
+        buttonContainerLayout.spacing = 3;
         filterButtons.setLayout( buttonContainerLayout );
         
         // Assignes layout data fo the filter button container.
