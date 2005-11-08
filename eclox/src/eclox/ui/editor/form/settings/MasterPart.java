@@ -288,16 +288,20 @@ public class MasterPart extends SectionPart {
         assert filterControls == null;
         assert listViewer == null;
         
+        toolkit.paintBordersFor( parent );
+                
         // Creates the sub parent control container.
-        Composite   subParent = toolkit.createComposite( parent, SWT.BORDER );
+        Composite   subParent = toolkit.createComposite( parent );
         FormData    subParentFormData = new FormData();
-        subParentFormData.top    = new FormAttachment( filterButtons, 5, SWT.BOTTOM );
-        subParentFormData.right  = new FormAttachment( 100, 0 );
-        subParentFormData.bottom = new FormAttachment( 100, 0 );
-        subParentFormData.left   = new FormAttachment(   0, 0 );
+        subParentFormData.top    = new FormAttachment( filterButtons, 6, SWT.BOTTOM );
+        subParentFormData.right  = new FormAttachment( 100, -2 );
+        subParentFormData.bottom = new FormAttachment( 100, -2 );
+        subParentFormData.left   = new FormAttachment(   0,  1 );
         subParentFormData.height = 50;
         subParent.setLayoutData( subParentFormData );
         subParent.setLayout( new FormLayout() );
+        subParent.setData( FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER );
+
         
         // Creates the filter control container.
         FormData    controlFormData = new FormData();
@@ -381,7 +385,7 @@ public class MasterPart extends SectionPart {
 	        }
 	        else {
 	        	filterControls.setVisible( true );
-	        	listFormData.top = new FormAttachment( filterControls, 5, SWT.BOTTOM );
+	        	listFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
 	        }
 	        getSection().layout( true, true );	        
     	}
