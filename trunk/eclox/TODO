@@ -1,5 +1,16 @@
-TODOs:
+TODO (next):
 
+- Add an entry in the eclipse help system with the MANUAL content.
+- Show setting values directly in the setting list.
+- Support @INCLUDE and @INCLUDE_PATH directives in doxyfiles (bug #2868).
+- Follow more accuratly doxygen's parsing method (assignments will override each other).
+- Show include dependencies of doxyfile in the editor.
+
+
+TODO (later):
+
+- Detect overriden assignments and display a warning.
+- Show when a setting value is inherited and when it is not
 - See what IEditorMatchingStratedgy can do for us.
 - Creation of property page for doxyfiles.
 - Creation of an incremental builder that checks for compatibility with the current doxygen version.
@@ -14,9 +25,8 @@ TODOs:
 - Ecouter les modifications sur le fichier en cours d'édition pour détecter une modification externe (edition, suppression).
 
 
-WISHS:
+WISHES:
 
-- Ajouter un type de field pour les tag étant ue liste d'éléments.
 - Synchronisation des messages de sortie de la compilation.
 - Copier le texte de la sortie de compilation.
 - Bouttons dans la barre d'outils du l'éditeur pour compiler et browser directement la documentation générée.
