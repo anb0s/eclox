@@ -74,11 +74,20 @@ public class Parser {
      */
     private Pattern settingIncrementPattern = Pattern.compile("(\\w+)\\s*\\+=\\s*(.*?)\\s*(\\\\)?");
     
-    
     /**
      * the continued setting assignement pattern
      */
     private Pattern continuedSettingAssignmentPattern = Pattern.compile("\\s*(.+?)\\s*(\\\\)?");
+    
+    /**
+     * the include directive pattern
+     */
+    private Pattern includePattern = Pattern.compile("@INCLUDE\\s*=\\s*(.*)");
+    
+    /**
+     * the include path pattern
+     */
+    private Pattern includePathPattern = Pattern.compile("@INCLUDE_PATH\\s*=\\s*(.*)");
     
     /**
      * the setting being continued on multiple lines.
@@ -136,7 +145,7 @@ public class Parser {
             return;
         }
         
-        // Matches the current line against the note border pattern.
+        // Matches the current line against the comment pattern.
         matcher = commentPattern.matcher( line );
         if( matcher.matches() == true ) {
         	this.processAnyLine( doxyfile, line );
@@ -169,7 +178,21 @@ public class Parser {
             return;
         }
 
-        // Matches the current line against the contibued setting assignment pattern.
+        // Matches the current line agains the include directive pattern.
+        matcher = includePattern.matcher( line );
+        if( matcher.matches() == true ) {
+        	this.processAnyLine( doxyfile, line );
+        	return;
+        }
+        
+        // Matches the current line agains the include path directive pattern.
+        matcher = includePathPattern.matcher( line );
+        if( matcher.matches() == true ) {
+        	this.processAnyLine( doxyfile, line );
+        	return;
+        }
+        
+        // Matches the current line against the continued setting assignment pattern.
         matcher = continuedSettingAssignmentPattern.matcher( line );
         if( matcher.matches() == true ) {
             // Retrieves the setting identifier and its values.
@@ -218,18 +241,18 @@ public class Parser {
      * @param   continued   a boolean telling if the setting assignement is continued on multiple line
      */
     private void processSettingAssignment( Doxyfile doxyfile, String identifier, String value, boolean continued ) throws IOException {
-        // Ensures that the setting is not already existing in the doxyfile. 
-        if( doxyfile.getSetting( identifier ) != null ) {
-            Services.logWarning( "At line " + lineNumber + ": setting already delcared. Declaration ignored." );
-        }
-        else {
-            // Creates a new setting
-            Setting setting = new Setting( identifier, value ); 
+    	// Retrieves the setting.
+    	Setting	setting = doxyfile.getSetting( identifier );
+    	if( setting == null ) {
+    		setting = new Setting( identifier, value ); 
             doxyfile.append( setting );
-            
-            // Remembers if the setting assignment is continued or not.
-            continuedSetting = ( continued == true ) ? setting : null;
         }
+    	
+    	// Updates the setting value.
+    	setting.setValue( value );
+    	
+        // Remembers if the setting assignment is continued or not.
+        continuedSetting = ( continued == true ) ? setting : null;
   	}
     
     /**
