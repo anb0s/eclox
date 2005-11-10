@@ -7,6 +7,7 @@ TODO (next):
 
 TODO (later):
 
+- For each plateform, setup default path for doxygen binary.
 - Detect overriden assignments and display a warning.
 - Show when a setting value is inherited and when it is not
 - See what IEditorMatchingStratedgy can do for us.

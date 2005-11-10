@@ -21,15 +21,17 @@
 
 package eclox.ui.editor.form.settings;
 
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -37,7 +39,8 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
@@ -58,6 +61,16 @@ import eclox.ui.editor.form.settings.filters.IFilter;
  */
 public class MasterPart extends SectionPart {
 
+	/**
+	 * the text column index
+	 */
+	private final static int TEXT_COLUMN = 0;
+	
+	/**
+	 * the value column index
+	 */
+	private final static int VALUE_COLUMN = 1;
+	
     /**
      * the active filter
      */
@@ -81,7 +94,7 @@ public class MasterPart extends SectionPart {
     /**
      * the list viewer
      */
-    private ListViewer listViewer;
+    private TableViewer tableViewer;
     
     /**
      * Implements the master content provider.
@@ -110,21 +123,72 @@ public class MasterPart extends SectionPart {
     /**
      * Implements the label provider.
      */
-    private class MyLabelProvider extends LabelProvider {
+    private class MyLabelProvider implements ITableLabelProvider {
 
         /**
-         * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
-         */
-        public String getText(Object element) {
-            if(element instanceof Setting) {
-                Setting setting = (Setting) element;
-                String text = setting.getProperty( Setting.TEXT );
-                return text != null ? text : setting.getIdentifier();
+		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
+		 */
+		public Image getColumnImage(Object element, int columnIndex) {
+			// We don't have any image to return.
+			return null;
+		}
+
+		/**
+		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnText(java.lang.Object, int)
+		 */
+		public String getColumnText(Object element, int columnIndex) {
+			// Pre-condition
+			assert element instanceof Setting;
+			
+			// Retrieves the setting's text.
+            Setting setting = (Setting) element;
+            
+            // Determine the text to return according to the given column index.
+            String	columnText;
+            if( columnIndex == TEXT_COLUMN ) {
+            	String text = setting.getProperty( Setting.TEXT );
+                columnText = (text != null) ? text : setting.getIdentifier();
+            }
+            else if (columnIndex == VALUE_COLUMN ){
+            	columnText = setting.getValue();
             }
             else {
-                return super.getText(element);
+            	columnText = null;
             }
-        }
+            return columnText;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
+		 */
+		public void addListener(ILabelProviderListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
+		 */
+		public void dispose() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
+		 */
+		public boolean isLabelProperty(Object element, String property) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
+		 */
+		public void removeListener(ILabelProviderListener listener) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 
     /**
@@ -223,10 +287,10 @@ public class MasterPart extends SectionPart {
      */
     public void initialize(IManagedForm form) {
         // Pre-condition
-        assert listViewer != null;
+        assert tableViewer != null;
         
         // Installs a listener that will forward the selection changes.
-        listViewer.addSelectionChangedListener( new MySelectionForwarder(this, form) );
+        tableViewer.addSelectionChangedListener( new MySelectionForwarder(this, form) );
         
         // Default job done by super class.
         super.initialize(form);
@@ -237,10 +301,10 @@ public class MasterPart extends SectionPart {
      */
     public boolean setFormInput( Object input ) {
         // Pre-condition
-        assert listViewer != null;
+        assert tableViewer != null;
         
         // Assignes the form input to the manager list viewer.
-        listViewer.setInput( input );
+        tableViewer.setInput( input );
         // Activates the default filter.
         activateFilter( defaultFilter );
         
@@ -287,7 +351,7 @@ public class MasterPart extends SectionPart {
         // Pre-condition
         assert filterButtons != null;
         assert filterControls == null;
-        assert listViewer == null;
+        assert tableViewer == null;
         
         toolkit.paintBordersFor( parent );
                 
@@ -312,24 +376,34 @@ public class MasterPart extends SectionPart {
         filterControls = toolkit.createComposite( subParent );
         filterControls.setLayoutData( controlFormData );
         
-        // Creates the list widget that will display all settings.
-        List     list = new List( subParent, SWT.V_SCROLL );
+        // Creates the table widget that will display all settings.
+        Table	table = new Table( subParent, SWT.V_SCROLL|SWT.FULL_SELECTION );
         FormData formData = new FormData();
         formData.top    = new FormAttachment( filterControls, 5, SWT.BOTTOM );
         formData.right  = new FormAttachment( 100, 0 );
         formData.bottom = new FormAttachment( 100, 0 );
         formData.left   = new FormAttachment(   0, 0 );
         formData.height = 10;
-        list.setLayoutData( formData );
+        table.setLayoutData( formData );
+        table.setHeaderVisible( true );
         
-        // Creates the list viewer.
-        listViewer = new ListViewer( list );
-        listViewer.setContentProvider( new MyContentProvider() );
-        listViewer.setLabelProvider( new MyLabelProvider() );
+        // Adds some columns to the table 
+        TableColumn	tableColumn;
+        tableColumn = new TableColumn( table, SWT.LEFT, TEXT_COLUMN );
+        tableColumn.setText( "Setting" );
+        tableColumn.setWidth( 100 );
+        tableColumn = new TableColumn( table, SWT.LEFT, VALUE_COLUMN );
+        tableColumn.setText( "Value" );
+        tableColumn.setWidth( 100 );
+        
+        // Creates the table viewer.
+        tableViewer = new TableViewer( table );
+        tableViewer.setContentProvider( new MyContentProvider() );
+        tableViewer.setLabelProvider( new MyLabelProvider() );
         
         // Post-condition
         assert filterControls != null;
-        assert listViewer != null;
+        assert tableViewer != null;
     }
     
     /**
@@ -365,7 +439,7 @@ public class MasterPart extends SectionPart {
     	
 	        // Deactivates the previous filter.
 	        if( activeFilter != null ) {
-	            activeFilter.disposeViewerFilers( listViewer );
+	            activeFilter.disposeViewerFilers( tableViewer );
 	            activeFilter.disposeControls();
 	            activeFilter.setDoxyfile( null );
 	            activeFilter = null;
@@ -375,18 +449,18 @@ public class MasterPart extends SectionPart {
 	        activeFilter = filter;
 	        activeFilter.setDoxyfile( (Doxyfile) getManagedForm().getInput() );
 	        activeFilter.createControls( getManagedForm(), filterControls );
-	        activeFilter.createViewerFilters( listViewer );
+	        activeFilter.createViewerFilters( tableViewer );
 	        
 	        // Adapts the size of the filter control container & relayout the section content.
-	        Object      listLayoutData = listViewer.getList().getLayoutData();
-	        FormData    listFormData = (FormData) listLayoutData;
+	        Object      tableLayoutData = tableViewer.getTable().getLayoutData();
+	        FormData    tableFormData = (FormData) tableLayoutData;
 	        if( filterControls.getChildren().length == 0 ) {
 	        	filterControls.setVisible( false );
-	        	listFormData.top = new FormAttachment( 0, 0 );
+	        	tableFormData.top = new FormAttachment( 0, 0 );
 	        }
 	        else {
 	        	filterControls.setVisible( true );
-	        	listFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
+	        	tableFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
 	        }
 	        getSection().layout( true, true );	        
     	}
