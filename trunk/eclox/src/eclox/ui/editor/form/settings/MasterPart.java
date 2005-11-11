@@ -21,10 +21,15 @@
 
 package eclox.ui.editor.form.settings;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -48,6 +53,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.doxyfiles.Doxyfile;
+import eclox.doxyfiles.ISettingListener;
 import eclox.doxyfiles.Setting;
 import eclox.ui.editor.form.settings.filters.All;
 import eclox.ui.editor.form.settings.filters.ByGroup;
@@ -123,9 +129,33 @@ public class MasterPart extends SectionPart {
     /**
      * Implements the label provider.
      */
-    private class MyLabelProvider implements ITableLabelProvider {
+    private class MyLabelProvider implements ITableLabelProvider, ISettingListener {
+    	
+    	/**
+    	 * the set of registered listeners 
+    	 */
+    	private Set listeners = new HashSet();
+    	
+    	/**
+    	 * the set of all settings the label provider has registered to
+    	 */
+    	private Set settings = new HashSet();
 
         /**
+		 * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
+		 */
+		public void settingValueChanged(Setting setting) {
+			// Walks through registered listeners and notify the label property change.
+			Iterator	i = listeners.iterator();
+			while( i.hasNext() == true ) {
+				Object					object = i.next();
+				ILabelProviderListener	listener = (ILabelProviderListener) object;
+				
+				listener.labelProviderChanged( new LabelProviderChangedEvent(this, setting));				
+			}
+		}
+
+		/**
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
 		 */
 		public Image getColumnImage(Object element, int columnIndex) {
@@ -143,6 +173,10 @@ public class MasterPart extends SectionPart {
 			// Retrieves the setting's text.
             Setting setting = (Setting) element;
             
+            // Registers as an observer of the setting
+            setting.addSettingListener( this );
+            settings.add( setting );
+            
             // Determine the text to return according to the given column index.
             String	columnText;
             if( columnIndex == TEXT_COLUMN ) {
@@ -158,20 +192,26 @@ public class MasterPart extends SectionPart {
             return columnText;
 		}
 
-		/* (non-Javadoc)
+		/**
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
 		 */
 		public void addListener(ILabelProviderListener listener) {
-			// TODO Auto-generated method stub
-			
+			listeners.add( listener );
 		}
 
-		/* (non-Javadoc)
+		/**
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 		 */
 		public void dispose() {
-			// TODO Auto-generated method stub
-			
+			// Walks through all settings and unregisters from the listeners
+			Iterator	i = settings.iterator();
+			while( i.hasNext() == true ) {
+				Object	object = i.next();
+				Setting	setting = (Setting) object;
+				
+				setting.removeSettingListener( this );
+			}
+			settings.clear();
 		}
 
 		/* (non-Javadoc)
@@ -182,12 +222,11 @@ public class MasterPart extends SectionPart {
 			return false;
 		}
 
-		/* (non-Javadoc)
+		/**
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
 		 */
 		public void removeListener(ILabelProviderListener listener) {
-			// TODO Auto-generated method stub
-			
+			listeners.remove( listener );
 		}
     }
 
@@ -305,6 +344,16 @@ public class MasterPart extends SectionPart {
         
         // Assignes the form input to the manager list viewer.
         tableViewer.setInput( input );
+        
+        // Updates the column widths.
+        Table		table = tableViewer.getTable();
+        TableColumn	columns[] = table.getColumns();
+        int			i;
+        for( i = 0; i < columns.length; ++i ) {
+        	TableColumn	column = columns[i];
+        	column.pack();
+        }
+        
         // Activates the default filter.
         activateFilter( defaultFilter );
         
@@ -391,10 +440,8 @@ public class MasterPart extends SectionPart {
         TableColumn	tableColumn;
         tableColumn = new TableColumn( table, SWT.LEFT, TEXT_COLUMN );
         tableColumn.setText( "Setting" );
-        tableColumn.setWidth( 100 );
         tableColumn = new TableColumn( table, SWT.LEFT, VALUE_COLUMN );
         tableColumn.setText( "Value" );
-        tableColumn.setWidth( 100 );
         
         // Creates the table viewer.
         tableViewer = new TableViewer( table );

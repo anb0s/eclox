@@ -1,4 +1,7 @@
 * eclox-0.4.1 (in progress) *
+	In the doxyfile editor, setting values are now shown directly in the setting
+	list.
+	
 	The parser now supports of @INCLUDE and @INCLUDE_PATH directives in
 	doxyfiles (bug #2868).
 	
