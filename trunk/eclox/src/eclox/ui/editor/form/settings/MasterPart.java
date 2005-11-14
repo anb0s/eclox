@@ -348,12 +348,9 @@ public class MasterPart extends SectionPart {
         // Updates the column widths.
         Table		table = tableViewer.getTable();
         TableColumn	columns[] = table.getColumns();
-        int			i;
-        for( i = 0; i < columns.length; ++i ) {
-        	TableColumn	column = columns[i];
-        	column.pack();
-        }
-        
+        columns[ TEXT_COLUMN ].pack();
+        columns[ VALUE_COLUMN ].pack();
+
         // Activates the default filter.
         activateFilter( defaultFilter );
         
@@ -433,13 +430,14 @@ public class MasterPart extends SectionPart {
         formData.bottom = new FormAttachment( 100, 0 );
         formData.left   = new FormAttachment(   0, 0 );
         formData.height = 10;
+        formData.width  = 10;
         table.setLayoutData( formData );
         table.setHeaderVisible( true );
         
         // Adds some columns to the table 
         TableColumn	tableColumn;
         tableColumn = new TableColumn( table, SWT.LEFT, TEXT_COLUMN );
-        tableColumn.setText( "Setting" );
+        tableColumn.setText( "Name" );
         tableColumn = new TableColumn( table, SWT.LEFT, VALUE_COLUMN );
         tableColumn.setText( "Value" );
         
