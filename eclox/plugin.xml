@@ -2,8 +2,8 @@
 <?eclipse version="3.0"?>
 <plugin
    id="org.gna.eclox"
-   name="Doxygen Documentation System"
-   version="0.4"
+   name="Eclox Source Documentation Plug-in"
+   version="0.4.1"
    provider-name="Guillaume Brocker"
    class="eclox.core.Plugin">
 
