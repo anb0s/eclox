@@ -1,4 +1,7 @@
-* eclox-0.4.1 (in progress) *
+* eclox-0.4.1 (14-nov-2005) *
+	This plugin has now a little brother contributing help to the eclipse's
+	help system.
+	
 	In the doxyfile editor, setting values are now shown directly in the setting
 	list.
 	
