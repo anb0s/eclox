@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclox Source Documentation Plug-in
+Bundle-SymbolicName: org.gna.eclox.core; singleton:=true
+Bundle-Version: 0.4.3
+Bundle-ClassPath: eclox.jar
+Bundle-Activator: eclox.core.Plugin
+Bundle-Vendor: Guillaume Brocker
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.views,
+ org.eclipse.core.runtime,
+ org.eclipse.ui.forms
+Eclipse-AutoStart: true

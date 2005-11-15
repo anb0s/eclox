@@ -1,26 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="org.gna.eclox"
-   name="Eclox Source Documentation Plug-in"
-   version="0.4.2"
-   provider-name="Guillaume Brocker"
-   class="eclox.core.Plugin">
+<plugin>
 
-   <runtime>
-      <library name="eclox.jar"/>
-   </runtime>
-   <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui.forms"/>
-   </requires>
-
-
-   <extension
+     <extension
          point="org.eclipse.ui.preferencePages">
       <page
             name="Doxygen"
