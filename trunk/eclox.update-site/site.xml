@@ -3,10 +3,7 @@
    <description url="http://download.gna.org/eclox/update">
       Eclox Source Code Documentation Update Site
    </description>
-   <feature url="features/org.gna.eclox.feature_0.4.0.jar" id="org.gna.eclox.feature" version="0.4.0">
-      <category name="Eclox Source Code Documentation"/>
-   </feature>
-   <feature url="features/org.gna.eclox.feature_0.4.1.jar" id="org.gna.eclox.feature" version="0.4.1">
+   <feature url="features/org.gna.eclox_0.4.2.jar" id="org.gna.eclox" version="0.4.2">
       <category name="Eclox Source Code Documentation"/>
    </feature>
    <category-def name="Eclox Source Code Documentation" label="Eclox Source Code Documentation"/>
