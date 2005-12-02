@@ -159,7 +159,6 @@ public class DetailsPage implements IDetailsPage {
      */
     public void setFocus() {
         this.editor.setFocus();
-        //this.noteLabel.setFocus();
 	}
     
     /**
