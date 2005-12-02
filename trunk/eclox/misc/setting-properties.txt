@@ -20,6 +20,7 @@ OUTPUT_DIRECTORY.note = The OUTPUT_DIRECTORY tag is used to specify the (relativ
 
 CREATE_SUBDIRS.text = Create Subdirectories
 CREATE_SUBDIRS.group = Project
+CREATE_SUBDIRS.type = boolean
 CREATE_SUBDIRS.note = If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 4096 sub-directories (in 2 levels) under the output directory of each output format and will distribute the generated files over these directories. Enabling this option can be useful when feeding doxygen a huge amount of source files, where putting all generated files in the same directory would otherwise cause performance problems for the file system.
 
 OUTPUT_LANGUAGE.text = Output Language
@@ -28,14 +29,17 @@ OUTPUT_LANGUAGE.note = The OUTPUT_LANGUAGE tag is used to specify the language i
 
 USE_WINDOWS_ENCODING.text = Use Windows Encoding
 USE_WINDOWS_ENCODING.group = Project
+USE_WINDOWS_ENCODING.type = boolean
 USE_WINDOWS_ENCODING.note = This tag can be used to specify the encoding used in the generated output. The encoding is not always determined by the language that is chosen, but also whether or not the output is meant for Windows or non-Windows users. In case there is a difference, setting the USE_WINDOWS_ENCODING tag to YES forces the Windows encoding (this is the default for the Windows binary), whereas setting the tag to NO uses a Unix-style encoding (the default for all platforms other than Windows).
 
 BRIEF_MEMBER_DESC.text = Brief Member Description
 BRIEF_MEMBER_DESC.group = Project
+BRIEF_MEMBER_DESC.type = boolean
 BRIEF_MEMBER_DESC.note = If the BRIEF_MEMBER_DESC tag is set to YES (the default) Doxygen will include brief member descriptions after the members that are listed in the file and class documentation (similar to JavaDoc). Set to NO to disable this.
 
 REPEAT_BRIEF.text = Repeat Brief Description
 REPEAT_BRIEF.group = Project
+REPEAT_BRIEF.type = boolean
 REPEAT_BRIEF.note = If the REPEAT_BRIEF tag is set to YES (the default) Doxygen will prepend the brief description of a member or function before the detailed description. Note: if both HIDE_UNDOC_MEMBERS and BRIEF_MEMBER_DESC are set to NO, the brief descriptions will be completely suppressed.
 
 ABBREVIATE_BRIEF.text = Abbreviate Brief Description
@@ -44,18 +48,22 @@ ABBREVIATE_BRIEF.note = This tag implements a quasi-intelligent brief descriptio
 
 ALWAYS_DETAILED_SEC.text = Always Detailed Section
 ALWAYS_DETAILED_SEC.group = Project
+ALWAYS_DETAILED_SEC.type = boolean
 ALWAYS_DETAILED_SEC.note = If the ALWAYS_DETAILED_SEC and REPEAT_BRIEF tags are both set to YES then Doxygen will generate a detailed section even if there is only a brief description.
 
 INLINE_INHERITED_MEMB.text = Inline Inherited Members
 INLINE_INHERITED_MEMB.group = Project
+INLINE_INHERITED_MEMB.type = boolean
 INLINE_INHERITED_MEMB.note = If the INLINE_INHERITED_MEMB tag is set to YES, doxygen will show all inherited members of a class in the documentation of that class as if those members were ordinary class members. Constructors, destructors and assignment operators of the base classes will not be shown.
 
 FULL_PATH_NAMES.text = Full Path Names
 FULL_PATH_NAMES.group = Project
+FULL_PATH_NAMES.type = boolean
 FULL_PATH_NAMES.note = If the FULL_PATH_NAMES tag is set to YES then Doxygen will prepend the full path before files name in the file list and in the header files. If set to NO the shortest path that makes the file name unique will be used.
 
 STRIP_FROM_PATH.text = Strip From Path
 STRIP_FROM_PATH.group = Project
+STRIP_FROM_PATH.type = boolean
 STRIP_FROM_PATH.note = If the FULL_PATH_NAMES tag is set to YES then the STRIP_FROM_PATH tag can be used to strip a user-defined part of the path. Stripping is only done if one of the specified strings matches the left-hand part of the path. The tag can be used to show relative paths in the file list. If left blank the directory from which doxygen is run is used as the path to strip.
 
 STRIP_FROM_INC_PATH.text = Strip From Include Path
@@ -64,30 +72,37 @@ STRIP_FROM_INC_PATH.note = The STRIP_FROM_INC_PATH tag can be used to strip a us
 
 SHORT_NAMES.text = Short Names
 SHORT_NAMES.group = Project
+SHORT_NAMES.type = boolean
 SHORT_NAMES.note = If the SHORT_NAMES tag is set to YES, doxygen will generate much shorter (but less readable) file names. This can be useful is your file systems doesn't support long names like on DOS, Mac, or CD-ROM.
 
 JAVADOC_AUTOBRIEF.text = JavaDoc Autobrief
 JAVADOC_AUTOBRIEF.group = Project
+JAVADOC_AUTOBRIEF.type = boolean
 JAVADOC_AUTOBRIEF.note = If the JAVADOC_AUTOBRIEF tag is set to YES then Doxygen will interpret the first line (until the first dot) of a JavaDoc-style comment as the brief description. If set to NO, the JavaDoc comments will behave just like the Qt-style comments (thus requiring an explicit @brief command for a brief description.
 
 MULTILINE_CPP_IS_BRIEF.text = Multiline C++ is Brief
 MULTILINE_CPP_IS_BRIEF.group = Project
+MULTILINE_CPP_IS_BRIEF.type = boolean
 MULTILINE_CPP_IS_BRIEF.note = The MULTILINE_CPP_IS_BRIEF tag can be set to YES to make Doxygen treat a multi-line C++ special comment block (i.e. a block of //! or /// comments) as a brief description. This used to be the default behaviour. The new default is to treat a multi-line C++ comment block as a detailed description. Set this tag to YES if you prefer the old behaviour instead.
 
 DETAILS_AT_TOP.text = Details at Top
 DETAILS_AT_TOP.group = Project
+DETAILS_AT_TOP.type = boolean
 DETAILS_AT_TOP.note = If the DETAILS_AT_TOP tag is set to YES then Doxygen will output the detailed description near the top, like JavaDoc.If set to NO, the detailed description appears after the member documentation.
 
 INHERIT_DOCS.text = Inherit Documentations
 INHERIT_DOCS.group = Project
+INHERIT_DOCS.type = boolean
 INHERIT_DOCS.note = If the INHERIT_DOCS tag is set to YES (the default) then an undocumented member inherits the documentation from any documented member that it re-implements.
 
 DISTRIBUTE_GROUP_DOC.text = Distribute Group Documentation
 DISTRIBUTE_GROUP_DOC.group = Project
+DISTRIBUTE_GROUP_DOC.type = boolean
 DISTRIBUTE_GROUP_DOC.note = If member grouping is used in the documentation and the DISTRIBUTE_GROUP_DOC tag is set to YES, then doxygen will reuse the documentation of the first member in the group (if any) for the other members of the group. By default all members of a group must be documented explicitly.
 
 SEPARATE_MEMBER_PAGES.text = Separate Member Pages
 SEPARATE_MEMBER_PAGES.group = Project
+SEPARATE_MEMBER_PAGES.type = boolean
 SEPARATE_MEMBER_PAGES.note = If the SEPARATE_MEMBER_PAGES tag is set to YES, then doxygen will produce a new page for each member. If set to NO, the documentation of a member will be part of the file/class/namespace that contains it.
 
 TAB_SIZE.text = Tabulation Size
@@ -100,22 +115,27 @@ ALIASES.note = This tag can be used to specify a number of aliases that acts as 
 
 OPTIMIZE_OUTPUT_FOR_C.text = Optimize Ouput for C
 OPTIMIZE_OUTPUT_FOR_C.group = Project
+OPTIMIZE_OUTPUT_FOR_C.type = boolean
 OPTIMIZE_OUTPUT_FOR_C.note = Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C sources only. Doxygen will then generate output that is more tailored for C. For instance, some of the names that are used will be different. The list of all members will be omitted, etc.
 
 OPTIMIZE_OUTPUT_JAVA.text = Optimize Output Java
 OPTIMIZE_OUTPUT_JAVA.group = Project
+OPTIMIZE_OUTPUT_JAVA.type = boolean
 OPTIMIZE_OUTPUT_JAVA.note = Set the OPTIMIZE_OUTPUT_JAVA tag to YES if your project consists of Java sources only. Doxygen will then generate output that is more tailored for Java. For instance, namespaces will be presented as packages, qualified scopes will look different, etc.
 
 BUILTIN_STL_SUPPORT.text = Built-in STL Support
 BUILTIN_STL_SUPPORT.group = Project
+BUILTIN_STL_SUPPORT.type = boolean
 BUILTIN_STL_SUPPORT.note = If you use STL classes (i.e. std::string, std::vector, etc.) but do not want to include (a tag file for) the STL sources as input, then you should set this tag to YES in order to let doxygen match functions declarations and definitions whose arguments contain STL classes (e.g. func(std::string); v.s. func(std::string) {}). This also make the inheritance and collaboration diagrams that involve STL classes more complete and accurate.
 
 DISTRIBUTE_GROUP_DOC.text = Distribute Group Documentation
 DISTRIBUTE_GROUP_DOC.group = Project
+DISTRIBUTE_GROUP_DOC.type = boolean
 DISTRIBUTE_GROUP_DOC.note = If member grouping is used in the documentation and the DISTRIBUTE_GROUP_DOC tag is set to YES, then doxygen will reuse the documentation of the first member in the group (if any) for the other members of the group. By default all members of a group must be documented explicitly.
 
 SUBGROUPING.text = Subgrouping
 SUBGROUPING.group = Project
+SUBGROUPING.type = boolean
 SUBGROUPING.note = Set the SUBGROUPING tag to YES (the default) to allow class member groups of the same type (for instance a group of public functions) to be put as a subgroup of that type (e.g. under the Public Functions section). Set it to NO to prevent subgrouping. Alternatively, this can be done per class using the \nosubgrouping command.
 
 #---------------------------------------------------------------------------
@@ -124,90 +144,112 @@ SUBGROUPING.note = Set the SUBGROUPING tag to YES (the default) to allow class m
 
 EXTRACT_ALL.text = Extract All
 EXTRACT_ALL.group = Build
+EXTRACT_ALL.type = boolean
 EXTRACT_ALL.note = If the EXTRACT_ALL tag is set to YES doxygen will assume all entities in documentation are documented, even if no documentation was available. Private class members and static file members will be hidden unless the EXTRACT_PRIVATE and EXTRACT_STATIC tags are set to YES
 
 EXTRACT_PRIVATE.text = Extract Private
 EXTRACT_PRIVATE.group = Build
+EXTRACT_PRIVATE.type = boolean
 EXTRACT_PRIVATE.note = If the EXTRACT_PRIVATE tag is set to YES all private members of a class will be included in the documentation.
 
 EXTRACT_STATIC.text = Extract Static
 EXTRACT_STATIC.group = Build
+EXTRACT_STATIC.type = boolean
 EXTRACT_STATIC.note = If the EXTRACT_STATIC tag is set to YES all static members of a file will be included in the documentation.
 
 EXTRACT_LOCAL_CLASSES.text = Extract Local Classes
 EXTRACT_LOCAL_CLASSES.group = Build
+EXTRACT_LOCAL_CLASSES.type = boolean
 EXTRACT_LOCAL_CLASSES.note = If the EXTRACT_LOCAL_CLASSES tag is set to YES classes (and structs) defined locally in source files will be included in the documentation. If set to NO only classes defined in header files are included.
 
 EXTRACT_LOCAL_METHODS.text = Extract Local Methods
 EXTRACT_LOCAL_METHODS.group = Build
+EXTRACT_LOCAL_METHODS.type = boolean
 EXTRACT_LOCAL_METHODS.note = This flag is only useful for Objective-C code. When set to YES local methods, which are defined in the implementation section but not in the interface are included in the documentation. If set to NO (the default) only methods in the interface are included.
 
 HIDE_UNDOC_MEMBERS.text = Hide Undocumented Members
 HIDE_UNDOC_MEMBERS.group = Build
+HIDE_UNDOC_MEMBERS.type = boolean
 HIDE_UNDOC_MEMBERS.note = If the HIDE_UNDOC_MEMBERS tag is set to YES, Doxygen will hide all undocumented members of documented classes, files or namespaces. If set to NO (the default) these members will be included in the various overviews, but no documentation section is generated. This option has no effect if EXTRACT_ALL is enabled.
 
 HIDE_UNDOC_CLASSES.text = Hide Undocumented Classes
 HIDE_UNDOC_CLASSES.group = Build
+HIDE_UNDOC_CLASSES.type = boolean
 HIDE_UNDOC_CLASSES.note = If the HIDE_UNDOC_CLASSES tag is set to YES, Doxygen will hide all undocumented classes that are normally visible in the class hierarchy. If set to NO (the default) these classes will be included in the various overviews. This option has no effect if EXTRACT_ALL is enabled.
 
 HIDE_FRIEND_COMPOUNDS.text = Hide Friend Compounds
 HIDE_FRIEND_COMPOUNDS.group = Build
+HIDE_FRIEND_COMPOUNDS.type = boolean
 HIDE_FRIEND_COMPOUNDS.note = If the HIDE_FRIEND_COMPOUNDS tag is set to YES, Doxygen will hide all friend (class|struct|union) declarations. If set to NO (the default) these declarations will be included in the documentation.
 
 HIDE_IN_BODY_DOCS.text = Hide in Body Documentations
 HIDE_IN_BODY_DOCS.group = Build
+HIDE_IN_BODY_DOCS.type = boolean
 HIDE_IN_BODY_DOCS.note = If the HIDE_IN_BODY_DOCS tag is set to YES, Doxygen will hide any documentation blocks found inside the body of a function. If set to NO (the default) these blocks will be appended to the function's detailed documentation block.
 
 INTERNAL_DOCS.text = Internal Documentations
 INTERNAL_DOCS.group = Build
+INTERNAL_DOCS.type = boolean
 INTERNAL_DOCS.note = The INTERNAL_DOCS tag determines if documentation that is typed after a \internal command is included. If the tag is set to NO (the default) then the documentation will be excluded. Set it to YES to include the internal documentation.
 
 CASE_SENSE_NAMES.text = Case Sense Names
 CASE_SENSE_NAMES.group = Build
+CASE_SENSE_NAMES.type = boolean
 CASE_SENSE_NAMES.note = If the CASE_SENSE_NAMES tag is set to NO then Doxygen will only generate file names in lower-case letters. If set to YES upper-case letters are also allowed. This is useful if you have classes or files whose names only differ in case and if your file system supports case sensitive file names. Windows and Mac users are advised to set this option to NO.
 
 HIDE_SCOPE_NAMES.text = Hide Scope Names
 HIDE_SCOPE_NAMES.group = Build
+HIDE_SCOPE_NAMES.type = boolean
 HIDE_SCOPE_NAMES.note = If the HIDE_SCOPE_NAMES tag is set to NO (the default) then Doxygen will show members with their full class and namespace scopes in the documentation. If set to YES the scope will be hidden.
 
 SHOW_INCLUDE_FILES.text = Show Include Files
 SHOW_INCLUDE_FILES.group = Build
+SHOW_INCLUDE_FILES.type = boolean
 SHOW_INCLUDE_FILES.note = If the SHOW_INCLUDE_FILES tag is set to YES (the default) then Doxygen will put a list of the files that are included by a file in the documentation of that file.
 
 INLINE_INFO.text = Inline Info
 INLINE_INFO.group = Build
+INLINE_INFO.type = boolean
 INLINE_INFO.note = If the INLINE_INFO tag is set to YES (the default) then a tag [inline] is inserted in the documentation for inline members.
 
 SORT_MEMBER_DOCS.text = Sort Member Documentations
 SORT_MEMBER_DOCS.group = Build
+SORT_MEMBER_DOCS.type = boolean
 SORT_MEMBER_DOCS.note = If the SORT_MEMBER_DOCS tag is set to YES (the default) then doxygen will sort the (detailed) documentation of file and class members alphabetically by member name. If set to NO the members will appear in declaration order.
 
 SORT_BRIEF_DOCS.text = Sort Brief Documentations
 SORT_BRIEF_DOCS.group = Build
+SORT_BRIEF_DOCS.type = boolean
 SORT_BRIEF_DOCS.note = If the SORT_BRIEF_DOCS tag is set to YES then doxygen will sort the brief documentation of file, namespace and class members alphabetically by member name. If set to NO (the default) the members will appear in declaration order.
 
 SORT_BY_SCOPE_NAME.text = Sort by Scope Name
 SORT_BY_SCOPE_NAME.group = Build
+SORT_BY_SCOPE_NAME.type = boolean
 SORT_BY_SCOPE_NAME.note = If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by fully-qualified names, including namespaces. If set to NO (the default), the class list will be sorted only by class name, not including the namespace part. Note: This option is not very useful if HIDE_SCOPE_NAMES is set to YES. Note: This option applies only to the class list, not to the alphabetical list.
 
 GENERATE_TODOLIST.text = Generate Todo List
 GENERATE_TODOLIST.group = Build
+GENERATE_TODOLIST.type = boolean
 GENERATE_TODOLIST.note = The GENERATE_TODOLIST tag can be used to enable (YES) or disable (NO) the todo list. This list is created by putting \todo commands in the documentation.
 
 GENERATE_TESTLIST.text = Generate Test List
 GENERATE_TESTLIST.group = Build
+GENERATE_TESTLIST.type = boolean
 GENERATE_TESTLIST.note = The GENERATE_TESTLIST tag can be used to enable (YES) or disable (NO) the test list. This list is created by putting \test commands in the documentation.
 
 GENERATE_BUGLIST.text = Generate Bug List
 GENERATE_BUGLIST.group = Build
+GENERATE_BUGLIST.type = boolean
 GENERATE_BUGLIST.note = The GENERATE_BUGLIST tag can be used to enable (YES) or disable (NO) the bug list. This list is created by putting \bug commands in the documentation.
 
 GENERATE_DEPRECATEDLIST.text = Generate Deprecated List
 GENERATE_DEPRECATEDLIST.group = Build
+GENERATE_DEPRECATEDLIST.type = boolean
 GENERATE_DEPRECATEDLIST.note = The GENERATE_DEPRECATEDLIST tag can be used to enable (YES) or disable (NO) the deprecated list. This list is created by putting \deprecated commands in the documentation.
 
 ENABLED_SECTIONS.text = Enabled Sections
 ENABLED_SECTIONS.group = Build
+ENABLED_SECTIONS.type = boolean
 ENABLED_SECTIONS.note = The ENABLED_SECTIONS tag can be used to enable conditional documentation sections, marked by \if sectionname ... \endif.
 
 MAX_INITIALIZER_LINES.text = Maximum Initializer Lines
@@ -216,10 +258,12 @@ MAX_INITIALIZER_LINES.note = The MAX_INITIALIZER_LINES tag determines the maximu
 
 SHOW_USED_FILES.text = Show Used Files
 SHOW_USED_FILES.group = Build
+SHOW_USED_FILES.type = boolean
 SHOW_USED_FILES.note = Set the SHOW_USED_FILES tag to NO to disable the list of files generated at the bottom of the documentation of classes and structs. If set to YES the list will mention the files that were used to generate the documentation.
 
 SHOW_DIRECTORIES.text = Show Directories
 SHOW_DIRECTORIES.group = Build
+SHOW_DIRECTORIES.type = boolean
 SHOW_DIRECTORIES.note = If the sources in your project are distributed over multiple directories then setting the SHOW_DIRECTORIES tag to YES will show the directory hierarchy in the documentation.
 
 FILE_VERSION_FILTER.text = File Version Filter
@@ -232,22 +276,27 @@ FILE_VERSION_FILTER.note = The FILE_VERSION_FILTER tag can be used to specify a 
 
 QUIET.text = Quiet
 QUIET.group = Messages
+QUIET.type = boolean
 QUIET.note = The QUIET tag can be used to turn on/off the messages that are generated by doxygen. Possible values are YES and NO. If left blank NO is used.
 
 WARNINGS.text = Warnings
 WARNINGS.group = Messages
+WARNINGS.type = boolean
 WARNINGS.note = The WARNINGS tag can be used to turn on/off the warning messages that are generated by doxygen. Possible values are YES and NO. If left blank NO is used.
 
 WARN_IF_UNDOCUMENTED.text = Warn if Undocumented
 WARN_IF_UNDOCUMENTED.group = Messages
+WARN_IF_UNDOCUMENTED.type = boolean
 WARN_IF_UNDOCUMENTED.note = If WARN_IF_UNDOCUMENTED is set to YES, then doxygen will generate warnings for undocumented members. If EXTRACT_ALL is set to YES then this flag will automatically be disabled.
 
 WARN_IF_DOC_ERROR.text = Warn if Documentation Error
 WARN_IF_DOC_ERROR.group = Messages
+WARN_IF_DOC_ERROR.type = boolean
 WARN_IF_DOC_ERROR.note = If WARN_IF_DOC_ERROR is set to YES, doxygen will generate warnings for potential errors in the documentation, such as not documenting some parameters in a documented function, or documenting parameters that don't exist or using markup commands wrongly.
 
 WARN_NO_PARAMDOC.text = Warn for undocumented function parameters
 WARN_NO_PARAMDOC.group = Messages
+WARN_NO_PARAMDOC.type = boolean
 WARN_NO_PARAMDOC.note = This WARN_NO_PARAMDOC option can be abled to get warnings for functions that are documented, but have no documentation for their parameters or return value. If set to NO (the default) doxygen will only warn about wrong or incomplete parameter documentation, but not about the absence of documentation.
 
 WARN_FORMAT.text = Warn Format
@@ -272,6 +321,7 @@ FILE_PATTERNS.note = If the value of the INPUT tag contains directories, you can
 
 RECURSIVE.text = Recursive
 RECURSIVE.group = Inputs
+RECURSIVE.type = boolean
 RECURSIVE.note = The RECURSIVE tag can be used to turn specify whether or not subdirectories should be searched for input files as well. Possible values are YES and NO. If left blank NO is used.
 
 EXCLUDE.text = Exclude
@@ -280,6 +330,7 @@ EXCLUDE.note = The EXCLUDE tag can be used to specify files and/or directories t
 
 EXCLUDE_SYMLINKS.text = Exclude Symlinks
 EXCLUDE_SYMLINKS.group = Inputs
+EXCLUDE_SYMLINKS.type = boolean
 EXCLUDE_SYMLINKS.note = The EXCLUDE_SYMLINKS tag can be used select whether or not files or directories that are symbolic links (a Unix filesystem feature) are excluded from the input.
 
 EXCLUDE_PATTERNS.text = Exclude Patterns
@@ -296,6 +347,7 @@ EXAMPLE_PATTERNS.note = If the value of the EXAMPLE_PATH tag contains directorie
 
 EXAMPLE_RECURSIVE.text = Example Recursive
 EXAMPLE_RECURSIVE.group = Inputs
+EXAMPLE_RECURSIVE.type = boolean
 EXAMPLE_RECURSIVE.note = If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be searched for input files to be used with the \include or \dontinclude commands irrespective of the value of the RECURSIVE tag. Possible values are YES and NO. If left blank NO is used.
 
 IMAGE_PATH.text = Image Path
@@ -312,6 +364,7 @@ FILTER_PATTERNS.note = The FILTER_PATTERNS tag can be used to specify filters on
 
 FILTER_SOURCE_FILES.text = Filter Source Files
 FILTER_SOURCE_FILES.group = Inputs
+FILTER_SOURCE_FILES.type = boolean
 FILTER_SOURCE_FILES.note = If the FILTER_SOURCE_FILES tag is set to YES, the input filter (if set using INPUT_FILTER) will be used to filter the input files when producing source files to browse (i.e. when SOURCE_BROWSER is set to YES).
 
 #---------------------------------------------------------------------------
@@ -320,30 +373,37 @@ FILTER_SOURCE_FILES.note = If the FILTER_SOURCE_FILES tag is set to YES, the inp
 
 SOURCE_BROWSER.text = Source Browser
 SOURCE_BROWSER.group = Source Browsing
+SOURCE_BROWSER.type = boolean
 SOURCE_BROWSER.note = If the SOURCE_BROWSER tag is set to YES then a list of source files will be generated. Documented entities will be cross-referenced with these sources. Note: To get rid of all source code in the generated output, make sure also VERBATIM_HEADERS is set to NO.
 
 INLINE_SOURCES.text = Inline Sources
 INLINE_SOURCES.group = Source Browsing
+INLINE_SOURCES.type = boolean
 INLINE_SOURCES.note = Setting the INLINE_SOURCES tag to YES will include the body of functions and classes directly in the documentation.
 
 STRIP_CODE_COMMENTS.text = Strip Code Comments
 STRIP_CODE_COMMENTS.group = Source Browsing
+STRIP_CODE_COMMENTS.type = boolean
 STRIP_CODE_COMMENTS.note = Setting the STRIP_CODE_COMMENTS tag to YES (the default) will instruct doxygen to hide any special comment blocks from generated source code fragments. Normal C and C++ comments will always remain visible.
 
 REFERENCED_BY_RELATION.text = Referenced by Relation
 REFERENCED_BY_RELATION.group = Source Browsing
+REFERENCED_BY_RELATION.type = boolean
 REFERENCED_BY_RELATION.note = If the REFERENCED_BY_RELATION tag is set to YES (the default) then for each documented function all documented functions referencing it will be listed.
 
 REFERENCES_RELATION.text = References Relation
 REFERENCES_RELATION.group = Source Browsing
+REFERENCES_RELATION.type = boolean
 REFERENCES_RELATION.note = If the REFERENCES_RELATION tag is set to YES (the default) then for each documented function all documented entities called/used by that function will be listed.
 
 USE_HTAGS.text = Use htags
 USE_HTAGS.group = Source Browsing
+USE_HTAGS.type = boolean
 USE_HTAGS.note = If the USE_HTAGS tag is set to YES then the references to source code will point to the HTML generated by the htags(1) tool instead of doxygen built-in source browser. The htags tool is part of GNU's global source tagging system (see http://www.gnu.org/software/global/global.html). You will need version 4.8.6 or higher.
 
 VERBATIM_HEADERS.text = Verbatim Headers
 VERBATIM_HEADERS.group = Source Browsing
+VERBATIM_HEADERS.type = boolean
 VERBATIM_HEADERS.note = If the VERBATIM_HEADERS tag is set to YES (the default) then Doxygen will generate a verbatim copy of the header file for each class for which an include is specified. Set to NO to disable this.
 
 #---------------------------------------------------------------------------
@@ -352,6 +412,7 @@ VERBATIM_HEADERS.note = If the VERBATIM_HEADERS tag is set to YES (the default) 
 
 ALPHABETICAL_INDEX.text = Alphabetical Index
 ALPHABETICAL_INDEX.group = Alphabetical Class Index
+ALPHABETICAL_INDEX.type = boolean
 ALPHABETICAL_INDEX.note = If the ALPHABETICAL_INDEX tag is set to YES, an alphabetical index of all compounds will be generated. Enable this if the project contains a lot of classes, structs, unions or interfaces.
 
 COLS_IN_ALPHA_INDEX.text = Columns in Alphabetical Index
@@ -360,6 +421,7 @@ COLS_IN_ALPHA_INDEX.note = If the alphabetical index is enabled (see ALPHABETICA
 
 IGNORE_PREFIX.text = Ignore Prefix
 IGNORE_PREFIX.group = Alphabetical Class Index
+IGNORE_PREFIX.type = boolean
 IGNORE_PREFIX.note = In case all classes in a project start with a common prefix, all classes will be put under the same header in the alphabetical index. The IGNORE_PREFIX tag can be used to specify one or more prefixes that should be ignored while generating the index headers.
 
 #---------------------------------------------------------------------------
@@ -368,6 +430,7 @@ IGNORE_PREFIX.note = In case all classes in a project start with a common prefix
 
 GENERATE_HTML.text = Generate HTML
 GENERATE_HTML.group = HTML Output
+GENERATE_HTML.type = boolean
 GENERATE_HTML.note = If the GENERATE_HTML tag is set to YES (the default) Doxygen will generate HTML output.
 
 HTML_OUTPUT.text = HTML Output
@@ -392,10 +455,12 @@ HTML_STYLESHEET.note = The HTML_STYLESHEET tag can be used to specify a user-def
 
 HTML_ALIGN_MEMBERS.text = HTML Align Members
 HTML_ALIGN_MEMBERS.group = HTML Output
+HTML_ALIGN_MEMBERS.type = boolean
 HTML_ALIGN_MEMBERS.note = If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, files or namespaces will be aligned in HTML using tables. If set to NO a bullet list will be used.
 
 GENERATE_HTMLHELP.text = Generate HTMLhelp
 GENERATE_HTMLHELP.group = HTML Output
+GENERATE_HTMLHELP.type = boolean
 GENERATE_HTMLHELP.note = If the GENERATE_HTMLHELP tag is set to YES, additional index files will be generated that can be used as input for tools like the Microsoft HTML help workshop to generate a compressed HTML help file (.chm) of the generated HTML documentation.
 
 CHM_FILE.text = CHM File
@@ -408,18 +473,22 @@ HHC_LOCATION.note = If the GENERATE_HTMLHELP tag is set to YES, the HHC_LOCATION
 
 GENERATE_CHI.text = Generate CHI
 GENERATE_CHI.group = HTML Output
+GENERATE_CHI.type = boolean
 GENERATE_CHI.note = If the GENERATE_HTMLHELP tag is set to YES, the GENERATE_CHI flag controls if a separate .chi index file is generated (YES) or that it should be included in the master .chm file (NO).
 
 BINARY_TOC.text = Binary TOC
 BINARY_TOC.group = HTML Output
+BINARY_TOC.type = boolean
 BINARY_TOC.note = If the GENERATE_HTMLHELP tag is set to YES, the BINARY_TOC flag controls whether a binary table of contents is generated (YES) or a normal table of contents (NO) in the .chm file.
 
 TOC_EXPAND.text = TOC Expand
 TOC_EXPAND.group = HTML Output
+TOC_EXPAND.type = boolean
 TOC_EXPAND.note = The TOC_EXPAND flag can be set to YES to add extra items for group members to the contents of the HTML help documentation and to the tree view.
 
 DISABLE_INDEX.text = Disable Index
 DISABLE_INDEX.group = HTML Output
+DISABLE_INDEX.type = boolean
 DISABLE_INDEX.note = The DISABLE_INDEX tag can be used to turn on/off the condensed index at top of each HTML page. The value NO (the default) enables the index and the value YES disables it.
 
 ENUM_VALUES_PER_LINE.text = Enum Values per Line
@@ -428,6 +497,7 @@ ENUM_VALUES_PER_LINE.note = This tag can be used to set the number of enum value
 
 GENERATE_TREEVIEW.text = Generate Tree View
 GENERATE_TREEVIEW.group = HTML Output
+GENERATE_TREEVIEW.type = boolean
 GENERATE_TREEVIEW.note = If the GENERATE_TREEVIEW tag is set to YES, a side panel will begenerated containing a tree-like index structure (just like the one that is generated for HTML Help). For this to work a browser that supports JavaScript, DHTML, CSS and frames is required (for instance Mozilla 1.0+, Netscape 6.0+, Internet explorer 5.0+, or Konqueror). Windows users are probably better off using the HTML help feature.
 
 TREEVIEW_WIDTH.text = Tree View Width
@@ -440,6 +510,7 @@ TREEVIEW_WIDTH.note = If the treeview is enabled (see GENERATE_TREEVIEW) then th
 
 GENERATE_LATEX.text = Generate LaTeX
 GENERATE_LATEX.group = LaTeX output
+GENERATE_LATEX.type = boolean
 GENERATE_LATEX.note = If the GENERATE_LATEX tag is set to YES (the default) Doxygen will generate Latex output.
 
 LATEX_OUTPUT.text = LaTeX Output
@@ -456,6 +527,7 @@ MAKEINDEX_CMD_NAME.note = The MAKEINDEX_CMD_NAME tag can be used to specify the 
 
 COMPACT_LATEX.text = Compact LaTeX
 COMPACT_LATEX.group = LaTeX output
+COMPACT_LATEX.type = boolean
 COMPACT_LATEX.note = If the COMPACT_LATEX tag is set to YES Doxygen generates more compact LaTeX documents. This may be useful for small projects and may help to save some trees in general.
 
 PAPER_TYPE.text = Paper Type
@@ -472,18 +544,22 @@ LATEX_HEADER.note = The LATEX_HEADER tag can be used to specify a personal LaTeX
 
 PDF_HYPERLINKS.text = PDF Hyperlinks
 PDF_HYPERLINKS.group = LaTeX output
+PDF_HYPERLINKS.type = boolean
 PDF_HYPERLINKS.note = If the PDF_HYPERLINKS tag is set to YES, the LaTeX that is generated is prepared for conversion to pdf (using ps2pdf). The pdf file will contain links (just like the HTML output) instead of page references This makes the output suitable for online browsing using a pdf viewer.
 
 USE_PDFLATEX.text = Use pdflatex
 USE_PDFLATEX.group = LaTeX output
+USE_PDFLATEX.type = boolean
 USE_PDFLATEX.note = If the USE_PDFLATEX tag is set to YES, pdflatex will be used instead of plain latex in the generated Makefile. Set this option to YES to get a higher quality PDF documentation.
 
 LATEX_BATCHMODE.text = LaTeX Batch Mode
 LATEX_BATCHMODE.group = LaTeX output
+LATEX_BATCHMODE.type = boolean
 LATEX_BATCHMODE.note = If the LATEX_BATCHMODE tag is set to YES, doxygen will add the \\batchmode. command to the generated LaTeX files. This will instruct LaTeX to keep running if errors occur, instead of asking the user for help. This option is also used when generating formulas in HTML.
 
 LATEX_HIDE_INDICES.text = LaTeX Hide Indices
 LATEX_HIDE_INDICES.group = LaTeX output
+LATEX_HIDE_INDICES.type = boolean
 LATEX_HIDE_INDICES.note = If LATEX_HIDE_INDICES is set to YES then doxygen will not include the index chapters (such as File Index, Compound Index, etc.) in the output.
 
 #---------------------------------------------------------------------------
@@ -492,6 +568,7 @@ LATEX_HIDE_INDICES.note = If LATEX_HIDE_INDICES is set to YES then doxygen will 
 
 GENERATE_RTF.text = Generate RTF
 GENERATE_RTF.group = RTF Output
+GENERATE_RTF.type = boolean
 GENERATE_RTF.note = If the GENERATE_RTF tag is set to YES Doxygen will generate RTF output The RTF output is optimized for Word 97 and may not look very pretty with other RTF readers or editors.
 
 RTF_OUTPUT.text = RTF Output
@@ -500,10 +577,12 @@ RTF_OUTPUT.note = The RTF_OUTPUT tag is used to specify where the RTF docs will 
 
 COMPACT_RTF.text = Compact RTF
 COMPACT_RTF.group = RTF Output
+COMPACT_RTF.type = boolean
 COMPACT_RTF.note = If the COMPACT_RTF tag is set to YES Doxygen generates more compact RTF documents. This may be useful for small projects and may help to save some trees in general.
 
 RTF_HYPERLINKS.text = RTF Hyperlinks
 RTF_HYPERLINKS.group = RTF Output
+TRF_HYPERLINKS.type = boolean
 RTF_HYPERLINKS.note = If the RTF_HYPERLINKS tag is set to YES, the RTF that is generated will contain hyperlink fields. The RTF file will contain links (just like the HTML output) instead of page references. This makes the output suitable for online browsing using WORD or other programs which support those fields. Note: wordpad (write) and others do not support links.
 
 RTF_STYLESHEET_FILE.text = RTF Stylesheet File
@@ -520,6 +599,7 @@ RTF_EXTENSIONS_FILE.note = Set optional variables used in the generation of an r
 
 GENERATE_MAN.text = Generate man
 GENERATE_MAN.group = man Output
+GENERATE_MAN.type = boolean
 GENERATE_MAN.note = If the GENERATE_MAN tag is set to YES (the default) Doxygen will generate man pages.
 
 MAN_OUTPUT.text = man Output
@@ -532,6 +612,7 @@ MAN_EXTENSION.note = The MAN_EXTENSION tag determines the extension that is adde
 
 MAN_LINKS.text = man Links
 MAN_LINKS.group = man Output
+MAN_LINKS.type = boolean
 MAN_LINKS.note = If the MAN_LINKS tag is set to YES and Doxygen generates man output, then it will generate one additional man file for each entity documented in the real man page(s). These additional files only source the real man page, but without them the man command would be unable to find the correct page. The default is NO.
 
 #---------------------------------------------------------------------------
@@ -540,6 +621,7 @@ MAN_LINKS.note = If the MAN_LINKS tag is set to YES and Doxygen generates man ou
 
 GENERATE_XML.text = Generate XML
 GENERATE_XML.group = XML Output
+GENERATE_XML.type = boolean
 GENERATE_XML.note = If the GENERATE_XML tag is set to YES Doxygen will generate an XML file that captures the structure of the code including all documentation.
 
 XML_OUTPUT.text = XML Output
@@ -563,6 +645,7 @@ XML_PROGRAMLISTING.note = If the XML_PROGRAMLISTING tag is set to YES Doxygen wi
 #---------------------------------------------------------------------------
 
 GENERATE_AUTOGEN_DEF.text = Generate Autogen Definition
+GENERATE_AUTOGEN_DEF.type = boolean
 GENERATE_AUTOGEN_DEF.note = If the GENERATE_AUTOGEN_DEF tag is set to YES Doxygen will generate an AutoGen Definitions (see autogen.sf.net) file that captures the structure of the code including all documentation. Note that this feature is still experimental and incomplete at the moment.
 
 #---------------------------------------------------------------------------
@@ -571,14 +654,17 @@ GENERATE_AUTOGEN_DEF.note = If the GENERATE_AUTOGEN_DEF tag is set to YES Doxyge
 
 GENERATE_PERLMOD.text = Generate Perl Module
 GENERATE_PERLMOD.group = Perl Module Output
+GENERATE_PERLMOD.type = boolean
 GENERATE_PERLMOD.note = If the GENERATE_PERLMOD tag is set to YES Doxygen will generate a Perl module file that captures the structure of the code including all documentation. Note that this feature is still experimental and incomplete at the moment.
 
 PERLMOD_LATEX.text = Perl Module LaTeX
 PERLMOD_LATEX.group = Perl Module Output
+PERLMOD_LATEXT.type = boolean
 PERLMOD_LATEX.note = If the PERLMOD_LATEX tag is set to YES Doxygen will generate the necessary Makefile rules, Perl scripts and LaTeX code to be able to generate PDF and DVI output from the Perl module output.
 
 PERLMOD_PRETTY.text = Perl Module Pretty
 PERLMOD_PRETTY.group = Perl Module Output
+PERLMOD_PRETTY.type = boolean
 PERLMOD_PRETTY.note = If the PERLMOD_PRETTY tag is set to YES the Perl module output will be nicely formatted so it can be parsed by a human reader.  This is useful if you want to understand what is going on.  On the other hand, if this tag is set to NO the size of the Perl module output will be much smaller and Perl will parse it just the same.
 
 PERLMOD_MAKEVAR_PREFIX.text = Perl Module MakeVar Prefix
@@ -591,18 +677,22 @@ PERLMOD_MAKEVAR_PREFIX.note = The names of the make variables in the generated d
 
 ENABLE_PREPROCESSING.text = Enable Preprocessing
 ENABLE_PREPROCESSING.group = Preprocessing
+ENABLE_PREPROCESSING.type = boolean
 ENABLE_PREPROCESSING.note = If the ENABLE_PREPROCESSING tag is set to YES (the default) Doxygen will evaluate all C-preprocessor directives found in the sources and include files.
 
 MACRO_EXPANSION.text = Macro Expansion
 MACRO_EXPANSION.group = Preprocessing
+MACRO_EXPANSION.type = boolean
 MACRO_EXPANSION.note = If the MACRO_EXPANSION tag is set to YES Doxygen will expand all macro names in the source code. If set to NO (the default) only conditional compilation will be performed. Macro expansion can be done in a controlled way by setting EXPAND_ONLY_PREDEF to YES.
 
 EXPAND_ONLY_PREDEF.text = Expan Only Predefined
 EXPAND_ONLY_PREDEF.group = Preprocessing
+EXPAND_ONLY_PREDEF.type = boolean
 EXPAND_ONLY_PREDEF.note = If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES then the macro expansion is limited to the macros specified with the PREDEFINED and EXPAND_AS_PREDEFINED tags.
 
 SEARCH_INCLUDES.text = Search Includes
 SEARCH_INCLUDES.group = Preprocessing
+SEARCH_INCLUDES.type = boolean
 SEARCH_INCLUDES.note = If the SEARCH_INCLUDES tag is set to YES (the default) the includes files in the INCLUDE_PATH (see below) will be search if a #include is found.
 
 INCLUDE_PATH.text = Include Path
@@ -619,10 +709,12 @@ PREDEFINED.note = The PREDEFINED tag can be used to specify one or more macro na
 
 EXPAND_AS_DEFINED.text = Expan as Defined
 EXPAND_AS_DEFINED.group = Preprocessing
+EXPAND_AS_DEFINED.type = boolean
 EXPAND_AS_DEFINED.note = If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this tag can be used to specify a list of macro names that should be expanded. The macro definition that is found in the sources will be used. Use the PREDEFINED tag if you want to use a different macro definition.
 
 SKIP_FUNCTION_MACROS.text = Skip Function Macros
 SKIP_FUNCTION_MACROS.group = Preprocessing
+SKIP_FUNCTION_MACROS.type = boolean
 SKIP_FUNCTION_MACROS.note = If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then doxygen's preprocessor will remove all function-like macros that are alone on a line, have an all uppercase name, and do not end with a semicolon. Such function macros are typically used for boiler-plate code, and will confuse the parser if not removed.
 
 #---------------------------------------------------------------------------
@@ -649,14 +741,17 @@ TAGFILES.note = Note to be done!
 
 GENERATE_TAGFILE.text = Generate Tag Files
 GENERATE_TAGFILE.group = External References
+GENERATE_TAGFILE.type = boolean
 GENERATE_TAGFILE.note = When a file name is specified after GENERATE_TAGFILE, doxygen will create a tag file that is based on the input files it reads.
 
 ALLEXTERNALS.text = All Externals
 ALLEXTERNALS.group = External References
+ALLEXTERNALS.type = boolean
 ALLEXTERNALS.note = If the ALLEXTERNALS tag is set to YES all external classes will be listed in the class index. If set to NO only the inherited external classes will be listed.
 
 EXTERNAL_GROUPS.text = External Groups
 EXTERNAL_GROUPS.group = External References
+EXTERNAL_GROUPS.type = boolean
 EXTERNAL_GROUPS.note = If the EXTERNAL_GROUPS tag is set to YES all external groups will be listed in the modules index. If set to NO, only the current project's groups will be listed.
 
 PERL_PATH.text = Perl Path
@@ -669,54 +764,67 @@ PERL_PATH.note = The PERL_PATH should be the absolute path and name of the perl 
 
 CLASS_DIAGRAMS.text = Class Diagrams
 CLASS_DIAGRAMS.group = dot Tool
+CLASS_DIAGRAMS.type = boolean
 CLASS_DIAGRAMS.note = If the CLASS_DIAGRAMS tag is set to YES (the default) Doxygen will generate a inheritance diagram (in HTML, RTF and LaTeX) for classes with base or super classes. Setting the tag to NO turns the diagrams off. Note that this option is superseded by the HAVE_DOT option below. This is only a fallback. It is recommended to install and use dot, since it yields more powerful graphs.
 
 HIDE_UNDOC_RELATIONS.text = Hide Undocumented Relations
 HIDE_UNDOC_RELATIONS.group = dot Tool
+HIDE_UNDOC_RELATIONS.type = boolean
 HIDE_UNDOC_RELATIONS.note = If set to YES, the inheritance and collaboration graphs will hide inheritance and usage relations if the target is undocumented or is not a class.
 
 HAVE_DOT.text = Have DOT
 HAVE_DOT.group = dot Tool
+HAVE_DOT.type = boolean
 HAVE_DOT.note = If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is available from the path. This tool is part of Graphviz, a graph visualization toolkit from AT&T and Lucent Bell Labs. The other options in this section have no effect if this option is set to NO (the default)
 
 CLASS_GRAPH.text = Class Graph
 CLASS_GRAPH.group = dot Tool
+CLASS_GRAPH.type = boolean
 CLASS_GRAPH.note = If the CLASS_GRAPH and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented class showing the direct and indirect inheritance relations. Setting this tag to YES will force the the CLASS_DIAGRAMS tag to NO.
 
 COLLABORATION_GRAPH.text = Collaboration Graph
 COLLABORATION_GRAPH.group = dot Tool
+COLLABORATION_GRAPH.type = boolean
 COLLABORATION_GRAPH.note = If the COLLABORATION_GRAPH and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented class showing the direct and indirect implementation dependencies (inheritance, containment, and class references variables) of the class with other documented classes.
 
 GROUP_GRAPHS.text = Groups Graphs
 GROUP_GRAPHS.group = dot Tool
+GROUP_GRAPHS.type = boolean
 GROUP_GRAPHS.note = If the GROUP_GRAPHS and HAVE_DOT tags are set to YES then doxygen will generate a graph for groups, showing the direct groups dependencies.
 
 UML_LOOK.text = UML Look
 UML_LOOK.group = dot Tool
+UML_LOOK.type = boolean
 UML_LOOK.note = If the UML_LOOK tag is set to YES doxygen will generate inheritance and collaboration diagrams in a style similar to the OMG's Unified Modeling Language.
 
 TEMPLATE_RELATIONS.text = Template Relations
 TEMPLATE_RELATIONS.group = dot Tool
+TEMPLATE_RELATIONS.type = boolean
 TEMPLATE_RELATIONS.note = If set to YES, the inheritance and collaboration graphs will show the relations between templates and their instances.
 
 INCLUDE_GRAPH.text = Include Graph
 INCLUDE_GRAPH.group = dot Tool
+INCLUDE_GRAPH.type = boolean
 INCLUDE_GRAPH.note = If the ENABLE_PREPROCESSING, SEARCH_INCLUDES, INCLUDE_GRAPH, and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented file showing the direct and indirect include dependencies of the file with other documented files.
 
 INCLUDED_BY_GRAPH.text = Included-by Graph
 INCLUDED_BY_GRAPH.group = dot Tool
+INCLUDED_BY_GRAPH.type = boolean
 INCLUDED_BY_GRAPH.note = If the ENABLE_PREPROCESSING, SEARCH_INCLUDES, INCLUDED_BY_GRAPH, and HAVE_DOT tags are set to YES then doxygen will generate a graph for each documented header file showing the documented files that directly or indirectly include this file.
 
 CALL_GRAPH.text = Call Graph
 CALL_GRAPH.group = dot Tool
+CALL_GRAPH.type = boolean
 CALL_GRAPH.note = If the CALL_GRAPH and HAVE_DOT tags are set to YES then doxygen will generate a call dependency graph for every global function or class method. Note that enabling this option will significantly increase the time of a run. So in most cases it will be better to enable call graphs for selected functions only using the \callgraph command.
 
 GRAPHICAL_HIERARCHY.text = Graphical Hierarchy
 GRAPHICAL_HIERARCHY.group = dot Tool
+GRAPHICAL_HIERARCHY.type = boolean
 GRAPHICAL_HIERARCHY.note = If the GRAPHICAL_HIERARCHY and HAVE_DOT tags are set to YES then doxygen will graphical hierarchy of all classes instead of a textual one.
 
 DIRECTORY_GRAPH.text = Directory Graph
 DIRECTORY_GRAPH.group = dot Tool
+DIRECTORY_GRAPH.type = boolean
 DIRECTORY_GRAPH.note = If the DIRECTORY_GRAPH, SHOW_DIRECTORIES and HAVE_DOT tags are set to YES then doxygen will show the dependencies a directory has on other directories in a graphical way. The dependency relations are determined by the #include relations between the files in the directories.
 
 DOT_IMAGE_FORMAT.text = DOT Image Format
@@ -745,18 +853,22 @@ MAX_DOT_GRAPH_DEPTH.note = The MAX_DOT_GRAPH_DEPTH tag can be used to set the ma
 
 DOT_TRANSPARENT.text = DOT Transparent
 DOT_TRANSPARENT.group = dot Tool
+DOT_TRANSPARENT.type = boolean
 DOT_TRANSPARENT.note = Set the DOT_TRANSPARENT tag to YES to generate images with a transparent background. This is disabled by default, which results in a white background. Warning: Depending on the platform used, enabling this option may lead to badly anti-aliased labels on the edges of a graph (i.e. they become hard to read).
 
 DOT_MULTI_TARGETS.text = DOT Multi Targets
 DOT_MULTI_TARGETS.group = dot Tool
+DOT_MULTI_TARGETS.type = boolean
 DOT_MULTI_TARGETS.note = Set the DOT_MULTI_TARGETS tag to YES allow dot to generate multiple output files in one run (i.e. multiple -o and -T options on the command line). This makes dot run faster, but since only newer versions of dot (>1.8.10) support this, this feature is disabled by default.
 
 GENERATE_LEGEND.text = Generate Legend
 GENERATE_LEGEND.group = dot Tool
+GENERATE_LEGEND.type = boolean
 GENERATE_LEGEND.note = If the GENERATE_LEGEND tag is set to YES (the default) Doxygen will generate a legend page explaining the meaning of the various boxes and arrows in the dot generated graphs.
 
 DOT_CLEANUP.text = DOT Clean-up
 DOT_CLEANUP.group = dot Tool
+DOT_CLEANUP.type = boolean
 DOT_CLEANUP.note = If the DOT_CLEANUP tag is set to YES (the default) Doxygen will remove the intermediate dot files that are used to generate the various graphs.
 
 #---------------------------------------------------------------------------
@@ -764,4 +876,5 @@ DOT_CLEANUP.note = If the DOT_CLEANUP tag is set to YES (the default) Doxygen wi
 #---------------------------------------------------------------------------
 
 SEARCHENGINE.text = Search Engine
+SEARCHENGINE.type = boolean
 SEARCHENGINE.note = The SEARCHENGINE tag specifies whether or not a search engine should be used. If set to NO the values of all tags below this one will be ignored.
