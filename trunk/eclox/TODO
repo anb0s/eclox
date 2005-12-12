@@ -1,7 +1,9 @@
 TODO (next):
 
+- Add saveas feature.
 - Show include dependencies of doxyfile in the editor.
-
+- Integrates the doxygen's manual to eclipse help system.
+- Integrates builded html documentations to eclipse help system.
 
 TODO (later):
 
@@ -18,7 +20,6 @@ TODO (later):
 - Mettre une décoration dans l'outline afin d'afficher les éléments qui ont été modifiés.
 - Add undo & redo support
 - Améliorer l'aspect graphique (icones, images).
-- Add saveas feature
 - Ecouter les modifications sur le fichier en cours d'édition pour détecter une modification externe (edition, suppression).
 
 
