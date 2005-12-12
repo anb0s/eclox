@@ -48,4 +48,34 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
          install-size="173"
          version="0.0.0"/>
 
+   <data
+         id="AUTHORS"
+         download-size="0"
+         install-size="0"/>
+
+   <data
+         id="CHANGES"
+         download-size="0"
+         install-size="0"/>
+
+   <data
+         id="COPYING"
+         download-size="0"
+         install-size="0"/>
+
+   <data
+         id="MANUAL"
+         download-size="0"
+         install-size="0"/>
+
+   <data
+         id="README"
+         download-size="0"
+         install-size="0"/>
+
+   <data
+         id="TODO"
+         download-size="0"
+         install-size="0"/>
+
 </feature>
