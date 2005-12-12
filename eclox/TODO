@@ -1,12 +1,17 @@
 TODO (next):
 
+- Implement the "custom" setting filter.
 - Add saveas feature.
 - Show include dependencies of doxyfile in the editor.
-- Integrates the doxygen's manual to eclipse help system.
-- Integrates builded html documentations to eclipse help system.
+- Integrate builded html documentations to eclipse help system.
+- Add multi-line editor for some settings.
+- In eclox.help, change "Eclox Manual" into "Eclox - Doxygen Eclipse Plugin" or "Eclox Guide".
+
 
 TODO (later):
 
+- Create a "doxygen" console to replace the current build log view.
+- Create a "doxyfiles" view, listing all avaliable doxyfiles in all opened projects.
 - For each plateform, setup default path for doxygen binary.
 - Detect overriden assignments and display a warning.
 - Show when a setting value is inherited and when it is not

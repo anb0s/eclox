@@ -3,6 +3,9 @@
 	
 	Added AUTHORS, CHANGES, COPYING, MANUAL, README and TODO files to all eclox
 	projects (features and plug-ins).
+	
+	Added a link to the doxygen's manual to eclipse help system.
+	
 
 * eclox-0.4.1 (14-nov-2005) *
 	This plugin has now a little brother contributing help to the eclipse's
