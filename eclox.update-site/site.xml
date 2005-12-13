@@ -4,7 +4,11 @@
       Eclox Source Code Documentation Update Site
    </description>
    <feature url="features/org.gna.eclox_0.4.3.jar" id="org.gna.eclox" version="0.4.3">
-      <category name="Eclox Source Code Documentation"/>
+      <category name="Eclox"/>
    </feature>
-   <category-def name="Eclox Source Code Documentation" label="Eclox Source Code Documentation"/>
+   <category-def name="Eclox" label="Eclox">
+      <description>
+         Eclox is frontend for doxygen.
+      </description>
+   </category-def>
 </site>
