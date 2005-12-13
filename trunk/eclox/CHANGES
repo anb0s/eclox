@@ -6,6 +6,8 @@
 	
 	Added a link to the doxygen's manual to eclipse help system.
 	
+	Fixed a bug in the doxyfile choose dialog.
+	
 
 * eclox-0.4.1 (14-nov-2005) *
 	This plugin has now a little brother contributing help to the eclipse's
