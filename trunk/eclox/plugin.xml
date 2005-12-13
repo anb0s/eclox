@@ -93,11 +93,11 @@
    <extension
          point="org.eclipse.core.runtime.contentTypes">
       <content-type
-            file-names="doxyfile"
-            file-extensions="doxyfile"
-            priority="normal"
+            file-extensions="Doxyfile, doxyfile"
+            file-names="Doxyfile, doxyfile, *"
+            id="doxyfile"
             name="Doxygen Configuration"
-            id="doxyfile"/>
+            priority="normal"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
