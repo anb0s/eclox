@@ -78,11 +78,10 @@ public class Doxyfile {
 	 * @return	<code>true</code> or <code>false</code>  
 	 */
 	public static boolean isDoxyfile(IFile file) {
-		IContentType	contentType;
+        String          name = file.getName();
+		IContentType	contentType = Platform.getContentTypeManager().findContentTypeFor( name );
 		
-		contentType = Platform.getContentTypeManager().findContentTypeFor(file.toString());
-		
-		return contentType != null ? contentType.getId().equals("eclox.doxyfile") : false;
+		return contentType != null ? contentType.getId().equals("org.gna.eclox.core.doxyfile") : false;
 	}
 	
 	

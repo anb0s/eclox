@@ -5,7 +5,6 @@ TODO (next):
 - Show include dependencies of doxyfile in the editor.
 - Integrate builded html documentations to eclipse help system.
 - Add multi-line editor for some settings.
-- In eclox.help, change "Eclox Manual" into "Eclox - Doxygen Eclipse Plugin" or "Eclox Guide".
 
 
 TODO (later):
