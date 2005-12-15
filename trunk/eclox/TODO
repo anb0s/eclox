@@ -2,7 +2,6 @@ TODO (next):
 
 - Integrate builded html documentations to eclipse help system.
 - Implement the "custom" setting filter.
-- Double-clicking a setting brings the user directly to the edition controls.
 - Add multi-line editor for some settings.
 - Add saveas feature.
 - Show include dependencies of doxyfile in the editor.

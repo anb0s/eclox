@@ -1,3 +1,8 @@
+* eclox-0.4.4 (in progress) *
+	In the editor, double-clicking a setting brings the user directly to the
+	edition controls.
+	
+
 * eclox-0.4.3 (13-dec-2005) *
 	Added a boolean setting editor.
 	

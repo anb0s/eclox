@@ -142,8 +142,23 @@ public class BooleanEditor implements IEditor {
     public void setFocus() {
         // Pre-condition
         assert yesButton != null;
+        assert noButton != null;
+        assert defaultButton != null;
         
-        yesButton.setFocus();
+        Button  selectedButton = null;
+        if( yesButton.getSelection() == true ) {
+            selectedButton = yesButton;
+        }
+        else if( noButton.getSelection() == true ) {
+            selectedButton = noButton;
+        }
+        else if( defaultButton.getSelection() == true ) {
+            selectedButton = defaultButton;
+        }
+        else {
+            assert false;   // What's wrong?
+        }
+        selectedButton.setFocus();
     }
 
 	public void setInput(Setting input) {
