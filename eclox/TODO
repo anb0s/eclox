@@ -1,13 +1,3 @@
-TODO (next):
-
-- Integrate builded html documentations to eclipse help system.
-- Implement the "custom" setting filter.
-- Add multi-line editor for some settings.
-- Add saveas feature.
-- Show include dependencies of doxyfile in the editor.
-- Show edited settings until the doxyfile has been saved.
-
-
 TODO (later):
 
 - Create a "doxygen" console to replace the current build log view.
