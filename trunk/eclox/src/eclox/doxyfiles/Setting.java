@@ -116,8 +116,8 @@ public class Setting extends Chunk {
      * @return  a string containing the desired property value or null when
      *          no such property exists
      */
-    private static String getPropertyValue( Setting setting, String property ) {
-    	initProperties();
+	private static String getPropertyValue( Setting setting, String property ) {
+		initProperties();
     	
         // Searches for the desired property.
         String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
@@ -131,11 +131,11 @@ public class Setting extends Chunk {
      * @param	property	a string containing the name of a setting property
      * @param	value		a string containing a property value
      */
-    private static void setPropertyValue( Setting setting, String property, String value ) {
-    	initProperties();
-    	
-    	String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
-    	properties.setProperty( propertyIdentifier, value );
+	private static void setPropertyValue( Setting setting, String property, String value ) {
+		initProperties();
+		
+		String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
+		properties.setProperty( propertyIdentifier, value );
     }
     
     /**
@@ -220,9 +220,16 @@ public class Setting extends Chunk {
      * @param	property	a string containing the name of property
      * @param	value		a string containing the property value
      */
-    public void setProperty( String property, String value ) {
-    	setPropertyValue( this, property, value );
-    }
+	public void setProperty( String property, String value ) {
+		setPropertyValue( this, property, value );
+		
+        // Walks through the attached listeners and notify them.
+        Iterator i = this.listeners.iterator();
+        while( i.hasNext() == true ) {
+            ISettingListener listener = (ISettingListener) i.next();
+            listener.settingPropertyChanged( this, property );
+        }
+	}
     
     /**
      * Adds a new value to the setting
@@ -238,11 +245,11 @@ public class Setting extends Chunk {
         while( i.hasNext() == true ) {
             ISettingListener listener = (ISettingListener) i.next();
             listener.settingValueChanged( this );
-        }            
+        }
     }
     
     public String toString() {
-    	return this.identifier + " = " + this.value + "\n";
+    		return this.identifier + " = " + this.value + "\n";
     }
     
 }

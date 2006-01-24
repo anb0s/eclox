@@ -45,6 +45,11 @@ import eclox.doxyfiles.io.Serializer;
  */
 public class Editor extends FormEditor implements ISettingListener {
     
+	/**
+	 * the name of the property attached to a dirty setting
+	 */
+	public final static String PROP_SETTING_DIRTY = "dirty";
+	
     /**
      * The doxyfile content.
      */
@@ -74,25 +79,32 @@ public class Editor extends FormEditor implements ISettingListener {
      */
     public void doSave( IProgressMonitor monitor ) {
         // Retrieves the file input.
-    	IEditorInput		editorInput = this.getEditorInput();
-    	IFileEditorInput	fileEditorInput = (IFileEditorInput) editorInput;
-    	IFile				file = fileEditorInput.getFile();
+    		IEditorInput			editorInput = this.getEditorInput();
+    		IFileEditorInput		fileEditorInput = (IFileEditorInput) editorInput;
+    		IFile				file = fileEditorInput.getFile();
     	
-    	try {
-    		// Comits all pending changes.
-    		getActivePageInstance().getManagedForm().commit( true );
-    		
-        	// Stores the doxyfile content.
-	    	Serializer	serializer = new Serializer( doxyfile );
-	    	file.setContents( serializer, false, true, monitor );
-	    	
-	    	// Resets the dirty flag.
-	    	this.dirty = false;
-	        this.firePropertyChange( IEditorPart.PROP_DIRTY );
-    	}
-    	catch( Throwable throwable ) {
-    		Services.showError( throwable );
-    	}
+    		try {
+    			// Comits all pending changes.
+	    		getActivePageInstance().getManagedForm().commit( true );
+	    		
+	        	// Stores the doxyfile content.
+		    	Serializer	serializer = new Serializer( doxyfile );
+		    	file.setContents( serializer, false, true, monitor );
+		    	
+		    	// Clears the dirty property set on some settings.
+		    	Iterator		i = doxyfile.settingIterator();
+		    	while( i.hasNext() ) {
+		    		Setting	setting = (Setting) i.next();
+		    		setting.setProperty( PROP_SETTING_DIRTY, new String() );
+		    	}
+		    	
+		    	// Resets the dirty flag.
+		    	this.dirty = false;
+		    	this.firePropertyChange( IEditorPart.PROP_DIRTY );
+	    	}
+	    	catch( Throwable throwable ) {
+	    		Services.showError( throwable );
+	    	}
     }
 
     /* (non-Javadoc)
@@ -151,16 +163,26 @@ public class Editor extends FormEditor implements ISettingListener {
      * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
      */
     public void settingValueChanged( Setting setting ) {
+    		// Updates the internal editor state.
         this.dirty = true;
         this.firePropertyChange( IEditorPart.PROP_DIRTY );
+        
+        // Assignes a dynamic property to the setting.
+        setting.setProperty( PROP_SETTING_DIRTY, "yes" );
     }
     
+    /**
+     * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
+     */
+    public void settingPropertyChanged( Setting setting, String property ) {
+    }
+
     /**
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
     public void dispose() {
         // Unregisters the editor from the settings
-        Iterator	i = this.doxyfile.settingIterator();
+        Iterator		i = this.doxyfile.settingIterator();
         while( i.hasNext() == true ) {
             Setting	setting = (Setting) i.next();
             setting.removeSettingListener( this );

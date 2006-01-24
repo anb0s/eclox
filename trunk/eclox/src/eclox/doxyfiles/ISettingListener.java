@@ -35,5 +35,13 @@ public interface ISettingListener {
      * @param	setting	the setting that raised the event 
      */
     void settingValueChanged( Setting setting );
+    
+    /**
+     * Notifies that a setting property has changed.
+     * 
+     * @param	setting		the setting that raised the event
+     * @param	property		a string containing the name of the property that changed	
+     */
+    void settingPropertyChanged( Setting setting, String property );
 
 }
