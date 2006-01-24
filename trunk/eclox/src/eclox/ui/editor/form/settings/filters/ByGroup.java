@@ -54,6 +54,11 @@ public class ByGroup implements IFilter {
     private Combo combo;
     
     /**
+     * the saved combo selection index
+     */
+    private int savedComboSelection = -1;
+    
+    /**
      * the current viewer beging filtered.
      */
     private StructuredViewer viewer;
@@ -100,23 +105,23 @@ public class ByGroup implements IFilter {
          * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
          */
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-        	// Pre-condition
-        	assert combo != null;
-        	assert element instanceof Setting; 
-        	
-        	// Retrieves the selected group name. 
-        	int		groupIndex = combo.getSelectionIndex();
-        	String	groupName = groupIndex >= 0 ? combo.getItem( groupIndex ) : null;
-        	
-        	// Tests if the given element is in the right group.
-        	if( groupName != null ) {
-	        	Setting	setting = (Setting) element;
-	        	String	settingGroup = setting.getProperty( Setting.GROUP );
-	        	return (settingGroup != null) ? settingGroup.equals( groupName ) : false;
-        	}
-        	else {
-        		return false;
-        	}
+	        	// Pre-condition
+	        	assert combo != null;
+	        	assert element instanceof Setting; 
+	        	
+	        	// Retrieves the selected group name. 
+	        	int		groupIndex = combo.getSelectionIndex();
+	        	String	groupName = groupIndex >= 0 ? combo.getItem( groupIndex ) : null;
+	        	
+	        	// Tests if the given element is in the right group.
+	        	if( groupName != null ) {
+		        	Setting	setting = (Setting) element;
+		        	String	settingGroup = setting.getProperty( Setting.GROUP );
+		        	return (settingGroup != null) ? settingGroup.equals( groupName ) : false;
+	        	}
+	        	else {
+	        		return false;
+	        	}
         }
         
     }
@@ -142,12 +147,15 @@ public class ByGroup implements IFilter {
         parent.setLayout( new FillLayout() );
         
         // Fills the combo with group names.
-        Object[]	objects = doxyfile.getGroups();
+        Object[]		objects = doxyfile.getGroups();
         int			i;
         for( i = 0; i < objects.length; ++i ) {
-        	Group	group = (Group) objects[i];
-        	combo.add( group.getName() );
+        		Group	group = (Group) objects[i];
+        		combo.add( group.getName() );
         }
+        
+        // Restores the combo selection.
+        combo.select( savedComboSelection );
         
         // Post-condition
         assert combo != null;
@@ -177,6 +185,9 @@ public class ByGroup implements IFilter {
     public void disposeControls() {
         // Pre-condition
         assert combo != null;
+        
+        // Saves the combo selection.
+        savedComboSelection = combo.getSelectionIndex();
         
         // Diposes the managed combo control.
         combo.getParent().setLayout( null );
