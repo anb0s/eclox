@@ -58,6 +58,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import eclox.doxyfiles.Doxyfile;
 import eclox.doxyfiles.ISettingListener;
 import eclox.doxyfiles.Setting;
+import eclox.ui.editor.form.Editor;
 import eclox.ui.editor.form.settings.filters.All;
 import eclox.ui.editor.form.settings.filters.ByGroup;
 import eclox.ui.editor.form.settings.filters.Custom;
@@ -174,29 +175,40 @@ public class MasterPart extends SectionPart {
     /**
      * Implements the label provider.
      */
-    private class MyLabelProvider implements ITableLabelProvider, ISettingListener {
+	private class MyLabelProvider implements ITableLabelProvider, ISettingListener {
+		
+		/**
+	 	 * the set of registered listeners 
+	 	 */
+		private Set listeners = new HashSet();
     	
-    	/**
-    	 * the set of registered listeners 
-    	 */
-    	private Set listeners = new HashSet();
-    	
-    	/**
-    	 * the set of all settings the label provider has registered to
-    	 */
-    	private Set settings = new HashSet();
+		/**
+		 * the set of all settings the label provider has registered to
+		 */
+		private Set settings = new HashSet();
 
         /**
 		 * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
 		 */
 		public void settingValueChanged(Setting setting) {
 			// Walks through registered listeners and notify the label property change.
-			Iterator	i = listeners.iterator();
+			Iterator		i = listeners.iterator();
 			while( i.hasNext() == true ) {
 				Object					object = i.next();
 				ILabelProviderListener	listener = (ILabelProviderListener) object;
-				
 				listener.labelProviderChanged( new LabelProviderChangedEvent(this, setting));				
+			}
+		}
+		
+		public void settingPropertyChanged(Setting setting, String property) {
+			if( property.equalsIgnoreCase(Editor.PROP_SETTING_DIRTY) ) {
+				// Walks through registered listeners and notify the label property change.
+				Iterator		i = listeners.iterator();
+				while( i.hasNext() == true ) {
+					Object					object = i.next();
+					ILabelProviderListener	listener = (ILabelProviderListener) object;
+					listener.labelProviderChanged( new LabelProviderChangedEvent(this, setting));				
+				}
 			}
 		}
 
@@ -225,14 +237,19 @@ public class MasterPart extends SectionPart {
             // Determine the text to return according to the given column index.
             String	columnText;
             if( columnIndex == TEXT_COLUMN ) {
-            	String text = setting.getProperty( Setting.TEXT );
+            		String text = setting.getProperty( Setting.TEXT );
+            		String dirty = setting.getProperty(Editor.PROP_SETTING_DIRTY); 
                 columnText = (text != null) ? text : setting.getIdentifier();
+                
+                if( dirty != null && dirty.equalsIgnoreCase("yes") ) {
+                		columnText = ("*").concat( columnText );
+                }
             }
             else if (columnIndex == VALUE_COLUMN ){
-            	columnText = setting.getValue();
+            		columnText = setting.getValue();
             }
             else {
-            	columnText = null;
+            		columnText = null;
             }
             return columnText;
 		}

@@ -5,6 +5,9 @@
 	In the editor, the custom filter has been implemented. Additionnaly,
 	filter settings are remebered when switching from one to another.
 	
+	In the editor, setting that have been edited are now marked until the
+	doxyfile is saved.
+	
 
 * eclox-0.4.3 (13-dec-2005) *
 	Added a boolean setting editor.
