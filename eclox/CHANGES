@@ -8,6 +8,11 @@
 	In the editor, setting that have been edited are now marked until the
 	doxyfile is saved.
 	
+	In the editor, a "modified" filter has been added allowing to see only
+	modified settings. Enhanced the setting property API to provide
+	better notifications. Also enhanced the editor page refresh when switching
+	from one filter to another.
+	
 
 * eclox-0.4.3 (13-dec-2005) *
 	Added a boolean setting editor.

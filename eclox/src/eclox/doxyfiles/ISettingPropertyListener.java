@@ -22,9 +22,26 @@
 package eclox.doxyfiles;
 
 /**
- * Defines the interface for objects that want to receive information about
- * setting changes.
+ * Derfines the interface for listeners receiving notifications about property changes.
  * 
  * @author gbrocker
  */
-public interface ISettingListener {}
+public interface ISettingPropertyListener extends ISettingListener {
+
+    /**
+     * Notifies that a setting property has been added or its has changed.
+     * 
+     * @param	setting		the setting that raised the event
+     * @param	property		a string containing a property name	
+     */
+    void settingPropertyChanged( Setting setting, String property );
+    
+    /**
+     * Notifies that a setting property has been removed.
+     * 
+     * @param	setting		the setting that raised the event
+     * @param	property		a string containing a property name
+     */
+    void settingPropertyRemoved( Setting setting, String property );
+
+}

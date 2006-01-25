@@ -56,13 +56,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.doxyfiles.Doxyfile;
-import eclox.doxyfiles.ISettingListener;
+import eclox.doxyfiles.ISettingPropertyListener;
 import eclox.doxyfiles.Setting;
 import eclox.ui.editor.form.Editor;
 import eclox.ui.editor.form.settings.filters.All;
 import eclox.ui.editor.form.settings.filters.ByGroup;
 import eclox.ui.editor.form.settings.filters.Custom;
 import eclox.ui.editor.form.settings.filters.IFilter;
+import eclox.ui.editor.form.settings.filters.Modified;
 
 /**
  * Implements the master part's user interface.
@@ -175,7 +176,7 @@ public class MasterPart extends SectionPart {
     /**
      * Implements the label provider.
      */
-	private class MyLabelProvider implements ITableLabelProvider, ISettingListener {
+	private class MyLabelProvider implements ITableLabelProvider, ISettingPropertyListener {
 		
 		/**
 	 	 * the set of registered listeners 
@@ -186,29 +187,30 @@ public class MasterPart extends SectionPart {
 		 * the set of all settings the label provider has registered to
 		 */
 		private Set settings = new HashSet();
-
-        /**
-		 * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
+		
+		/**
+		 * Notifies all observers that the label provider has changed.
+		 * 
+		 * @param	object	the object instance that caused the changes
 		 */
-		public void settingValueChanged(Setting setting) {
+		private void notifyObserver( Object object ) {
 			// Walks through registered listeners and notify the label property change.
 			Iterator		i = listeners.iterator();
-			while( i.hasNext() == true ) {
-				Object					object = i.next();
-				ILabelProviderListener	listener = (ILabelProviderListener) object;
-				listener.labelProviderChanged( new LabelProviderChangedEvent(this, setting));				
+			while( i.hasNext() ) {
+				ILabelProviderListener	listener = (ILabelProviderListener) i.next();
+				listener.labelProviderChanged( new LabelProviderChangedEvent(this, object) );				
+			}			
+		}		
+
+		public void settingPropertyChanged(Setting setting, String property) {
+			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
+				notifyObserver( setting );
 			}
 		}
 		
-		public void settingPropertyChanged(Setting setting, String property) {
-			if( property.equalsIgnoreCase(Editor.PROP_SETTING_DIRTY) ) {
-				// Walks through registered listeners and notify the label property change.
-				Iterator		i = listeners.iterator();
-				while( i.hasNext() == true ) {
-					Object					object = i.next();
-					ILabelProviderListener	listener = (ILabelProviderListener) object;
-					listener.labelProviderChanged( new LabelProviderChangedEvent(this, setting));				
-				}
+		public void settingPropertyRemoved(Setting setting, String property) {
+			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
+				notifyObserver( setting );
 			}
 		}
 
@@ -237,13 +239,8 @@ public class MasterPart extends SectionPart {
             // Determine the text to return according to the given column index.
             String	columnText;
             if( columnIndex == TEXT_COLUMN ) {
-            		String text = setting.getProperty( Setting.TEXT );
-            		String dirty = setting.getProperty(Editor.PROP_SETTING_DIRTY); 
-                columnText = (text != null) ? text : setting.getIdentifier();
-                
-                if( dirty != null && dirty.equalsIgnoreCase("yes") ) {
-                		columnText = ("*").concat( columnText );
-                }
+            		columnText = setting.hasProperty( Setting.TEXT )					? setting.getProperty( Setting.TEXT ) : setting.getIdentifier();
+                columnText = setting.hasProperty( Editor.PROP_SETTING_DIRTY )	? ("*").concat( columnText ) : columnText; 
             }
             else if (columnIndex == VALUE_COLUMN ){
             		columnText = setting.getValue();
@@ -381,6 +378,7 @@ public class MasterPart extends SectionPart {
         addFilter( toolkit, defaultFilter );
         addFilter( toolkit, new ByGroup() );
         addFilter( toolkit, new Custom() );
+        addFilter( toolkit, new Modified() );
     }
     
     /**
@@ -531,7 +529,12 @@ public class MasterPart extends SectionPart {
      * 
      * @param   filter  a filter that must be activated
      */
-    private void activateFilter( IFilter filter ) {
+	private void activateFilter( IFilter filter ) {
+		Section	section = getSection();
+		
+		// Freezes the section widget.
+		section.setRedraw( false );
+			
         // Updates the filter button's state.
         Control[]   controls = filterButtons.getChildren();
         int         i;
@@ -543,9 +546,8 @@ public class MasterPart extends SectionPart {
         }
 
         // If there is a new filter to activate, do the activation job.
-    	if( filter != activeFilter ) {
-    	
-	        // Deactivates the previous filter.
+        if( filter != activeFilter ) {
+    	        // Deactivates the previous filter.
 	        if( activeFilter != null ) {
 	            activeFilter.disposeViewerFilers( tableViewer );
 	            activeFilter.disposeControls();
@@ -563,14 +565,17 @@ public class MasterPart extends SectionPart {
 	        Object      tableLayoutData = tableViewer.getTable().getLayoutData();
 	        FormData    tableFormData = (FormData) tableLayoutData;
 	        if( filterControls.getChildren().length == 0 ) {
-	        	filterControls.setVisible( false );
-	        	tableFormData.top = new FormAttachment( 0, 0 );
+	        		filterControls.setVisible( false );
+	        		tableFormData.top = new FormAttachment( 0, 0 );
 	        }
 	        else {
-	        	filterControls.setVisible( true );
-	        	tableFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
+	        		filterControls.setVisible( true );
+	        		tableFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
 	        }
-	        getSection().layout( true, true );	        
-    	}
+	        
+	        // Reactivates section widget.
+	        section.layout( true, true );
+	        section.setRedraw( true );
+        }
     }
 }
