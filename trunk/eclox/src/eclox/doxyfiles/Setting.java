@@ -108,6 +108,18 @@ public class Setting extends Chunk {
     }
     
     /**
+     * Retrieves the identifier of the property for the given setting
+     * 
+     * @param	setting		a setting instance
+     * @param	property		a string containing a property name
+     * 
+     * @return	a string containing the property identifier
+     */
+    private static String getPropertyIdentifier( Setting setting, String property ) {
+    		return new String( setting.getIdentifier() + "." + property );
+    }
+    
+    /**
      * Retrieves the specified property given a setting.
      * 
      * @param   setting     a setting instance
@@ -118,25 +130,30 @@ public class Setting extends Chunk {
      */
 	private static String getPropertyValue( Setting setting, String property ) {
 		initProperties();
-    	
-        // Searches for the desired property.
-        String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
-        return properties.getProperty( propertyIdentifier );
+        return properties.getProperty( getPropertyIdentifier(setting, property) );
     }
     
     /**
      * Updates the value of a property of a given setting.
      * 
      * @param	setting		a setting instance
-     * @param	property	a string containing the name of a setting property
+     * @param	property		a string containing the name of a setting property
      * @param	value		a string containing a property value
      */
 	private static void setPropertyValue( Setting setting, String property, String value ) {
 		initProperties();
-		
-		String  propertyIdentifier = new String( setting.getIdentifier() + "." + property );
-		properties.setProperty( propertyIdentifier, value );
+		properties.setProperty( getPropertyIdentifier(setting, property), value );
     }
+	
+	/**
+	 * Removes the given property for the given setting.
+	 * 
+	 * @param	setting		a setting instance
+	 * @param	property		a string containing a property name
+	 */
+	private static void removeProperty( Setting setting, String property ) {
+		properties.remove( getPropertyIdentifier(setting, property) );
+	}
     
     /**
      * Constructor.
@@ -206,6 +223,17 @@ public class Setting extends Chunk {
     }
     
     /**
+     * Tells if the setting has the givgen property set.
+     * 
+     * @param	property		a string containing a property name
+     * 
+     * @return	a boolean
+     */
+    public boolean hasProperty( String property ) {
+    		return getPropertyValue( this, property ) != null;
+    }
+    
+    /**
      * Detaches a new setting listener instance.
      * 
      * @param	listener	a attached setting listener instance
@@ -226,9 +254,33 @@ public class Setting extends Chunk {
         // Walks through the attached listeners and notify them.
         Iterator i = this.listeners.iterator();
         while( i.hasNext() == true ) {
-            ISettingListener listener = (ISettingListener) i.next();
-            listener.settingPropertyChanged( this, property );
+        		ISettingListener		listener = (ISettingListener) i.next();
+        		if( listener instanceof ISettingPropertyListener ) {
+        			ISettingPropertyListener propertyListener = (ISettingPropertyListener) listener;
+        			propertyListener.settingPropertyChanged( this, property );
+        		}
         }
+	}
+	
+	/**
+	 * Removes the given property for the setting.
+	 * 
+	 * @param	property		a string containing a property name
+	 */
+	public void removeProperty( String property ) {
+		if( hasProperty( property ) ) {
+			removeProperty( this, property );
+			
+	        // Walks through the attached listeners and notify them.
+	        Iterator i = this.listeners.iterator();
+	        while( i.hasNext() == true ) {
+	        		ISettingListener		listener = (ISettingListener) i.next();
+	        		if( listener instanceof ISettingPropertyListener ) {
+	        			ISettingPropertyListener propertyListener = (ISettingPropertyListener) listener;
+	        			propertyListener.settingPropertyRemoved( this, property );
+	        		}
+	        }
+		}
 	}
     
     /**
@@ -243,8 +295,11 @@ public class Setting extends Chunk {
         // Walks through the attached listeners and notify them.
         Iterator i = this.listeners.iterator();
         while( i.hasNext() == true ) {
-            ISettingListener listener = (ISettingListener) i.next();
-            listener.settingValueChanged( this );
+        		ISettingListener		listener = (ISettingListener) i.next();
+        		if( listener instanceof ISettingValueListener ) {
+        			ISettingValueListener valueListener = (ISettingValueListener) listener;
+        			valueListener.settingValueChanged( this );
+        		}
         }
     }
     

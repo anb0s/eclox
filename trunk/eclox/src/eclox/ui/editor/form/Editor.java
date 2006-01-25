@@ -34,7 +34,7 @@ import org.eclipse.ui.forms.editor.FormEditor;
 
 import eclox.core.Services;
 import eclox.doxyfiles.Doxyfile;
-import eclox.doxyfiles.ISettingListener;
+import eclox.doxyfiles.ISettingValueListener;
 import eclox.doxyfiles.Setting;
 import eclox.doxyfiles.io.Serializer;
 
@@ -43,7 +43,7 @@ import eclox.doxyfiles.io.Serializer;
 /**
  * @author gbrocker
  */
-public class Editor extends FormEditor implements ISettingListener {
+public class Editor extends FormEditor implements ISettingValueListener {
     
 	/**
 	 * the name of the property attached to a dirty setting
@@ -95,7 +95,7 @@ public class Editor extends FormEditor implements ISettingListener {
 		    	Iterator		i = doxyfile.settingIterator();
 		    	while( i.hasNext() ) {
 		    		Setting	setting = (Setting) i.next();
-		    		setting.setProperty( PROP_SETTING_DIRTY, new String() );
+		    		setting.removeProperty( PROP_SETTING_DIRTY );
 		    	}
 		    	
 		    	// Resets the dirty flag.
@@ -171,12 +171,6 @@ public class Editor extends FormEditor implements ISettingListener {
         setting.setProperty( PROP_SETTING_DIRTY, "yes" );
     }
     
-    /**
-     * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
-     */
-    public void settingPropertyChanged( Setting setting, String property ) {
-    }
-
     /**
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
