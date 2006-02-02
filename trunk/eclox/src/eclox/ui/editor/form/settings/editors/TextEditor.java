@@ -1,5 +1,5 @@
 // eclox : Doxygen plugin for Eclipse.
-// Copyright (C) 2003-2005 Guillaume Brocker
+// Copyright (C) 2003-2006 Guillaume Brocker
 //
 // This file is part of eclox.
 //
@@ -63,7 +63,7 @@ public class TextEditor implements IEditor {
 	/**
      * The text widget.
      */
-    private Text text;
+    protected Text text;
     
     /**
      * The current modification listener of the text control
@@ -82,12 +82,10 @@ public class TextEditor implements IEditor {
 	}
     
     public void createContent( Composite parent, FormToolkit formToolkit ) {
-    	// Prepere the parent's layout.
-    	GridLayout	layout = new GridLayout();
-    	/*layout.marginLeft = 0;
-    	layout.marginRight = 0;*/
-    	layout.marginWidth = 1;
-    	layout.marginHeight = 3;
+		// Prepere the parent's layout.
+    		GridLayout	layout = new GridLayout();
+    		layout.marginWidth = 1;
+    		layout.marginHeight = 3;
         parent.setLayout( layout );
         formToolkit.paintBordersFor( parent );
         
