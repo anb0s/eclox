@@ -16,6 +16,7 @@ PROJECT_NUMBER.note = The PROJECT_NUMBER tag can be used to enter a project or r
 
 OUTPUT_DIRECTORY.text = Output Directory
 OUTPUT_DIRECTORY.group = Project
+OUTPUT_DIRECTORY.type = path
 OUTPUT_DIRECTORY.note = The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) base path where the generated documentation will be put. If a relative path is entered, it will be relative to the location where doxygen was started. If left blank the current directory will be used.
 
 CREATE_SUBDIRS.text = Create Subdirectories
