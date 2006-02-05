@@ -21,8 +21,9 @@ package eclox.ui.editor.form.settings.editors;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -82,16 +83,23 @@ public class TextEditor implements IEditor {
 	}
     
     public void createContent( Composite parent, FormToolkit formToolkit ) {
-		// Prepere the parent's layout.
-    		GridLayout	layout = new GridLayout();
+    		// Activates border painting.
+    		formToolkit.paintBordersFor( parent );
+
+    		// Prepere the parent's layout.
+    		FormLayout	layout = new FormLayout();
     		layout.marginWidth = 1;
     		layout.marginHeight = 3;
-        parent.setLayout( layout );
-        formToolkit.paintBordersFor( parent );
-        
+    		layout.spacing = 5;
+    		parent.setLayout( layout );
+    		
         // Creates the text widget.
+    		FormData		formData = new FormData();
         text = formToolkit.createText(parent, new String());
-        text.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
+        formData.top = new FormAttachment( 0, 0 );
+        formData.right = new FormAttachment( 100, 0 );
+        formData.left = new FormAttachment( 0, 0 );
+        text.setLayoutData( formData );
         text.addModifyListener( textModifyListener );
     }
     
