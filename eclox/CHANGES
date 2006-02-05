@@ -13,6 +13,10 @@
 	better notifications. Also enhanced the editor page refresh when switching
 	from one filter to another.
 	
+	In the editor, added support for directory path editor. Updated the editor
+	type for following settings: HTML_OUTPUT, LATEX_OUTPUT, RTF_OUTPUT,
+	MAN_OUTPUT, XML_OUTPUT and OUTPUT_DIRECTORY.
+	
 
 * eclox-0.4.3 (13-dec-2005) *
 	Added a boolean setting editor.
