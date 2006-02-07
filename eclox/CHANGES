@@ -17,6 +17,10 @@
 	type for following settings: HTML_OUTPUT, LATEX_OUTPUT, RTF_OUTPUT,
 	MAN_OUTPUT, XML_OUTPUT and OUTPUT_DIRECTORY.
 	
+	In the editor, added support for a list editor. Updated the setting
+	definitions of ALIASES, FILE_PATTERNS, EXCLUDE_PATTERNS, EXAMPLE_PATTERNS,
+	INCLUDE_FILE_PATTERNS and PREDEFINED to use this editor.
+	
 
 * eclox-0.4.3 (13-dec-2005) *
 	Added a boolean setting editor.

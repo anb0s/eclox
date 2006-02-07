@@ -103,7 +103,11 @@ public class TextEditor implements IEditor {
         text.addModifyListener( textModifyListener );
     }
     
-    public void dispose() {
+    public boolean fillVertically() {
+		return false;
+	}
+
+	public void dispose() {
 		text.dispose();		
 	}
 

@@ -28,6 +28,8 @@ import eclox.doxyfiles.Setting;
  * An instance of this class registers all setting editor classes by setting type. 
  * 
  * @author gbrocker
+ * 
+ * TODO	enhance layout so that the viewer will fill available space.
  */
 public class EditorClassRegister {
     
@@ -43,6 +45,7 @@ public class EditorClassRegister {
     		register.put("path", PathEditor.class);
         register.put("text", TextEditor.class);
         register.put("boolean", BooleanEditor.class);
+        register.put("list", ListEditor.class);
     }
     
     /**
