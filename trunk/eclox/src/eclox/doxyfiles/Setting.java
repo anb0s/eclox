@@ -45,7 +45,7 @@ public class Setting extends Chunk {
 	/**
      * The value pattern.
      */
-    private static Pattern valuePattern = Pattern.compile("(?:(\"[^\"]*\"|[^\\s]+)\\s*)+");
+    private static Pattern valuePattern = Pattern.compile("([^ \"]+)\\s*|\"(.*?)\"\\s*");
     
     /**
      * The setting properties.
@@ -213,11 +213,12 @@ public class Setting extends Chunk {
      */
     public Collection getSplittedValue(Collection collection) {
         Matcher valueMatcher = valuePattern.matcher(value);
-        if(valueMatcher.matches() == true) {
-            for(int groupIndex = 1; groupIndex <= valueMatcher.groupCount(); ++groupIndex) {
-                String value = valueMatcher.group(groupIndex);
-                collection.add(value);
-            }
+        while( valueMatcher.find() == true ) {
+        		String	value = valueMatcher.group( 1 );
+        		if( value == null ) {
+        			value = valueMatcher.group( 2 ).trim();
+        		}
+        		collection.add( value );
         }
         return collection;
     }
@@ -284,27 +285,64 @@ public class Setting extends Chunk {
 	}
     
     /**
-     * Adds a new value to the setting
+     * Updates the value of the setting.
      *
-     * @param	value	an object representing a value to add
+     * @param	value	a string representing a value to set
      */
     public void setValue(String value) {
-        // Assigns the new value. 
         this.value = new String(value);
-        
-        // Walks through the attached listeners and notify them.
-        Iterator i = this.listeners.iterator();
-        while( i.hasNext() == true ) {
-        		ISettingListener		listener = (ISettingListener) i.next();
-        		if( listener instanceof ISettingValueListener ) {
-        			ISettingValueListener valueListener = (ISettingValueListener) listener;
-        			valueListener.settingValueChanged( this );
-        		}
-        }
+        fireValueChangedEvent();
+    }
+    
+    /**
+     * Updates the value of the string with the given object collection. All objects
+     * of the given collection will be converted to strings.
+     * 
+     * @param compounds	a collection of objects representing compounds of the new value
+     */
+    public void setValue( Collection compounds ) {
+    		// Resets the managed value string.
+		value = new String();
+		
+		// Walks through the comounds to rebuild the value.
+		Iterator		i = compounds.iterator();
+		while( i.hasNext() ) {
+			// Retrieves the current compound.
+			String	compound = i.next().toString(); 
+			
+			// Removes any leading and tralling spaces and manage the insertion.
+			compound = compound.trim();
+			if( compound.length() == 0 ) {
+				continue;
+			}
+			else if( compound.contains(" ") ) {
+				value = value.concat( "\"" + compound + "\" " );
+			}
+			else {
+				value = value.concat( compound + " " );
+			}
+		}
+		
+		// Notifies all observers.
+		fireValueChangedEvent();
     }
     
     public String toString() {
     		return this.identifier + " = " + this.value + "\n";
-    }
+    }    
     
+    /**
+     * Notifies all observers that the setting value has changed.
+     */
+    private void fireValueChangedEvent() {
+		Iterator i = listeners.iterator();
+		while( i.hasNext() == true ) {
+			ISettingListener		listener = (ISettingListener) i.next();
+			if( listener instanceof ISettingValueListener ) {
+				ISettingValueListener valueListener = (ISettingValueListener) listener;
+				valueListener.settingValueChanged( this );
+			}
+		}	
+    }
+
 }

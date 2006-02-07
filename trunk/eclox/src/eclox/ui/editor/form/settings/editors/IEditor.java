@@ -31,41 +31,48 @@ import eclox.doxyfiles.Setting;
  */
 public interface IEditor {
     
-    /**
-     * Commits any changes made in the editor.
-     */
-    public void commit();
-    
-    /**
-     * Creates the editor contents.
-     * 
-     * @param	parent		the composite control that will contain the editor controls
-     * @param	formToolkit	the form toolkit to use for the control creation
-     */
-    void createContent(Composite parent, FormToolkit formToolkit);
-    
-    /**
-     * Asks the editor to dispose its controls.
-     */
-   void dispose();
-    
-   /**
-    * Makes the editor installs the focus on the right widget.
-    */
-   void setFocus();
-   
-   /**
-    * Sets the editor input
-    * 
-    * @param	input	a setting that is the new editor input
-    */
-   void setInput(Setting input);
-    
-   /**
-    * Tells if the editor is dirty.
-    * 
-    * @return	true or false
-    */
-   public boolean isDirty();
+	/**
+	 * Commits any changes made in the editor.
+	 */
+	public void commit();
+	
+	/**
+	 * Creates the editor contents.
+	 * 
+	 * @param	parent		the composite control that will contain the editor controls
+	 * @param	formToolkit	the form toolkit to use for the control creation
+	 */
+	void createContent(Composite parent, FormToolkit formToolkit);
+	
+	/**
+	 * Asks the editor if it wants to vertically fill the available space.
+	 * 
+	 * @return	a boolean telling if the editor wants to fill the available vertical space
+	 */
+	boolean fillVertically();
+	
+	/**
+	 * Asks the editor to dispose its controls.
+	 */
+	void dispose();
+	
+	/**
+	 * Makes the editor installs the focus on the right widget.
+	 */
+	void setFocus();
+	   
+		/**
+	 * Sets the editor input
+	 * 
+	 * @param	input	a setting that is the new editor input
+	 */
+	void setInput(Setting input);
+	    
+	/**
+	 * Tells if the editor is dirty.
+	 * 
+	 * @return	true or false
+	 */
+	public boolean isDirty();
     
 }

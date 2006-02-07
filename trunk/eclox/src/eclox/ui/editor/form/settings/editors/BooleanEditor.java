@@ -113,25 +113,28 @@ public class BooleanEditor implements IEditor {
 	}
 
 	public void createContent(Composite parent, FormToolkit formToolkit) {
-    	
-    	// Initialize the parent control.
+		// Initialize the parent control.
 		RowLayout	layout = new RowLayout(SWT.VERTICAL);
 		container = formToolkit.createComposite( parent );
-    	layout.marginWidth = 0;		
-    	container.setLayout( layout );
-    	
-    	// Creates the buttons.
-    	yesButton      = formToolkit.createButton( container, "Yes", SWT.RADIO );
-    	noButton       = formToolkit.createButton( container, "No", SWT.RADIO );
-        defaultButton  = formToolkit.createButton( container, "Default", SWT.RADIO );
-        
-        // Attaches a selection listener instance to each button.
-        yesButton.addSelectionListener( new MySelectionListener() );
-        noButton.addSelectionListener( new MySelectionListener() );
-        defaultButton.addSelectionListener( new MySelectionListener() );
+		layout.marginWidth = 0;		
+		container.setLayout( layout );
+		
+		// Creates the buttons.
+		yesButton      = formToolkit.createButton( container, "Yes", SWT.RADIO );
+		noButton       = formToolkit.createButton( container, "No", SWT.RADIO );
+		defaultButton  = formToolkit.createButton( container, "Default", SWT.RADIO );
+		
+		// Attaches a selection listener instance to each button.
+		yesButton.addSelectionListener( new MySelectionListener() );
+		noButton.addSelectionListener( new MySelectionListener() );
+		defaultButton.addSelectionListener( new MySelectionListener() );
     }
     
-    public void dispose() {
+    public boolean fillVertically() {
+		return false;
+	}
+
+	public void dispose() {
 		container.dispose();
 	}
 

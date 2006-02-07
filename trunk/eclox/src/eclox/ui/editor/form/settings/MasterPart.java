@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2005 Guillaume Brocker
+ * Copyright (C) 2003-2006 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -27,10 +27,10 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
@@ -176,41 +176,22 @@ public class MasterPart extends SectionPart {
     /**
      * Implements the label provider.
      */
-	private class MyLabelProvider implements ITableLabelProvider, ISettingPropertyListener {
+	private class MyLabelProvider extends LabelProvider implements ITableLabelProvider, ISettingPropertyListener {
 		
-		/**
-	 	 * the set of registered listeners 
-	 	 */
-		private Set listeners = new HashSet();
-    	
 		/**
 		 * the set of all settings the label provider has registered to
 		 */
 		private Set settings = new HashSet();
 		
-		/**
-		 * Notifies all observers that the label provider has changed.
-		 * 
-		 * @param	object	the object instance that caused the changes
-		 */
-		private void notifyObserver( Object object ) {
-			// Walks through registered listeners and notify the label property change.
-			Iterator		i = listeners.iterator();
-			while( i.hasNext() ) {
-				ILabelProviderListener	listener = (ILabelProviderListener) i.next();
-				listener.labelProviderChanged( new LabelProviderChangedEvent(this, object) );				
-			}			
-		}		
-
 		public void settingPropertyChanged(Setting setting, String property) {
 			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
-				notifyObserver( setting );
+				fireLabelProviderChanged( new LabelProviderChangedEvent(this, setting) );
 			}
 		}
 		
 		public void settingPropertyRemoved(Setting setting, String property) {
 			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
-				notifyObserver( setting );
+				fireLabelProviderChanged( new LabelProviderChangedEvent(this, setting) );
 			}
 		}
 
@@ -252,13 +233,6 @@ public class MasterPart extends SectionPart {
 		}
 
 		/**
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-		 */
-		public void addListener(ILabelProviderListener listener) {
-			listeners.add( listener );
-		}
-
-		/**
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 		 */
 		public void dispose() {
@@ -271,22 +245,10 @@ public class MasterPart extends SectionPart {
 				setting.removeSettingListener( this );
 			}
 			settings.clear();
+			
+			super.dispose();
 		}
 
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-		 */
-		public boolean isLabelProperty(Object element, String property) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		/**
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-		 */
-		public void removeListener(ILabelProviderListener listener) {
-			listeners.remove( listener );
-		}
     }
 
     /**

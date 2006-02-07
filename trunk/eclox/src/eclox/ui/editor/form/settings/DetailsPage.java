@@ -65,7 +65,7 @@ public class DetailsPage implements IDetailsPage {
     /**
      * The editor content container widget
      */
-    private Composite editorContent;
+    private Composite editorContainer;
     
     /**
      * The control containing all controls of the section.
@@ -106,12 +106,12 @@ public class DetailsPage implements IDetailsPage {
         this.sectionContent.setLayout(layout);
         
         // Creates the editor content.
-        this.editorContent = managedForm.getToolkit().createComposite(sectionContent);
-        this.editorContent.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+        this.editorContainer = managedForm.getToolkit().createComposite(sectionContent);
+        this.editorContainer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
                 
         // Creates controls displaying the setting note.
         this.noteLabel = this.managedForm.getToolkit().createLabel( sectionContent, "", org.eclipse.swt.SWT.WRAP);
-        this.noteLabel.setLayoutData( new GridData(GridData.FILL_BOTH) );
+        this.noteLabel.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
     }
     
     /**
@@ -139,7 +139,7 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#isDirty()
      */
     public boolean isDirty() {
-    	return editor != null ? editor.isDirty() : false;
+    		return editor != null ? editor.isDirty() : false;
     }
     
     /**
@@ -158,6 +158,9 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#setFocus()
      */
     public void setFocus() {
+    		// Pre-condition
+    		assert this.editor != null;
+    		
         this.editor.setFocus();
 	}
     
@@ -172,15 +175,15 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IFormPart part, ISelection selection) {
-    	// Retreieves the node that is provided by the selection.
-    	Setting setting = null;
-        if(selection instanceof IStructuredSelection) {
-            IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-            Object object = structuredSelection.getFirstElement();
-            if(object instanceof Setting) {
-                setting = (Setting) object;
-            } 
-        }
+		// Retreieves the node that is provided by the selection.
+		Setting setting = null;
+		if(selection instanceof IStructuredSelection) {
+		    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+		    Object object = structuredSelection.getFirstElement();
+		    if(object instanceof Setting) {
+		        setting = (Setting) object;
+		    } 
+		}
         
         // Updates the form controls.
         this.selectNote(setting);
@@ -193,7 +196,7 @@ public class DetailsPage implements IDetailsPage {
      */
     private void disposeEditor() {
         if(editor != null) {
-        	editor.dispose();
+        		editor.dispose();
             editor = null;
         }
     }
@@ -217,7 +220,8 @@ public class DetailsPage implements IDetailsPage {
 	        // Perhaps, we should create a new editor instance.
 	        if(editor == null) {
 		        editor = (IEditor) editorClass.newInstance();
-		        editor.createContent(editorContent, managedForm.getToolkit());
+		        editor.createContent(editorContainer, managedForm.getToolkit());
+		        editorContainer.setLayoutData( new GridData(editor.fillVertically() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL) );
 	        }
 	        
 	        // Assigns the input to the editor.
