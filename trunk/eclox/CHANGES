@@ -21,6 +21,8 @@
 	definitions of ALIASES, FILE_PATTERNS, EXCLUDE_PATTERNS, EXAMPLE_PATTERNS,
 	INCLUDE_FILE_PATTERNS and PREDEFINED to use this editor.
 	
+	Updated the default editor icon.
+	
 
 * eclox-0.4.3 (13-dec-2005) *
 	Added a boolean setting editor.

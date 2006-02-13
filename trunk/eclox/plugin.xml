@@ -24,7 +24,7 @@
       <editor
             filenames="doxyfile"
             class="eclox.ui.editor.form.Editor"
-            icon="icons/file.gif"
+            icon="icons/default.png"
             name="Form Doxyfile Editor"
             id="eclox.ui.editor.form.Editor"
             extensions="doxyfile"/>
