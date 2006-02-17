@@ -22,6 +22,7 @@ package eclox.ui.editor.form.settings.editors;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -124,7 +125,9 @@ public class PathEditor extends TextEditor {
 		if( result != null && result.length >= 1 ) {
 			Path	 		path = (Path) result[0];
 			IContainer	container = (IContainer) root.findMember( path );
-			super.text.setText( container.getLocation().toOSString() );
+			IPath		containerPath = container.getLocation();
+			
+			super.text.setText( makePathRelative(containerPath).toOSString() );
 		}
 	}
 
@@ -133,11 +136,22 @@ public class PathEditor extends TextEditor {
 	 */
 	private void browseFileSystem() {
 		DirectoryDialog	dialog = new DirectoryDialog( super.text.getShell() );
-		String			path;
+		String			pathString;
 		
-		path = dialog.open();
-		if( path != null ) {
-			super.text.setText( path );
+		pathString = dialog.open();
+		if( pathString != null ) {
+			IPath	path = Path.fromOSString( pathString );
+			super.text.setText( makePathRelative(path).toOSString() );
 		}
+	}
+	
+	/**
+	 * Makes the given path relative to the owner of the edited setting.
+	 */
+	private IPath makePathRelative( IPath path ) {
+		// Pre-condition
+		assert input != null;
+		
+		return input.getOwner().makePathRelative( path );
 	}
 }
