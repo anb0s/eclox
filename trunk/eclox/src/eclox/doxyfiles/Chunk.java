@@ -33,6 +33,29 @@ package eclox.doxyfiles;
 public abstract class Chunk {
 	
 	/**
+	 * the chunk owner (aka the doxyfile)
+	 */
+	private Doxyfile owner;
+	
+	/**
+	 * Retrieves the chunk owner.
+	 * 
+	 * @return	the chunk owner
+	 */
+	public Doxyfile getOwner() {
+		return owner;
+	}
+	
+	/**
+	 * Updates the chunck owner
+	 * 
+	 * @param	owner	the new owner
+	 */
+	public void setOwner( Doxyfile owner ) {
+		this.owner = owner; 
+	}
+	
+	/**
 	 * Converts the chunk into a string representing its content.
 	 * 
 	 * @return	a string containing the chunk content

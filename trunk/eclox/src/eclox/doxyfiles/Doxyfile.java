@@ -31,6 +31,7 @@ import java.util.Vector;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -43,6 +44,11 @@ import eclox.doxyfiles.io.Parser;
  * @author gbrocker
  */
 public class Doxyfile {
+	
+	/**
+	 * the file that holds the doxyfile content
+	 */
+	private IFile file;
 	
 	/**
 	 * a collection containing all doxyfile's chunks
@@ -91,6 +97,8 @@ public class Doxyfile {
 	 * @param	file	a file resource instance that is assumed to be a doxyfile
 	 */
 	public Doxyfile( IFile file ) throws IOException, CoreException {
+		this.file = file;
+		
 	    Parser parser = new Parser(file.getContents());
 	    parser.read( this );
 	}
@@ -101,7 +109,14 @@ public class Doxyfile {
 	 * @param	chunk	a chunk to append to the doxyfile
 	 */
 	public void append( Chunk chunk ) {
+		// Pre-condition
+		assert chunk.getOwner() == null;
+		
+		// References the chunck.
+		chunk.setOwner( this );
 		this.chunks.add( chunk );
+		
+		// Do special handling for settings. 
 		if( chunk instanceof Setting ) {
 			Setting	setting = (Setting) chunk;
 			this.settings.put( setting.getIdentifier(), setting );
@@ -164,6 +179,32 @@ public class Doxyfile {
 	 */
 	public Object[] getSettings() {
 		return settings.values().toArray();
+	}
+	
+	/**
+	 * Tells if the given path is relative to the doxyfile.
+	 * 
+	 * @return	true or false
+	 */
+	public boolean isPathRelative( IPath path ) {
+		return file.getLocation().removeLastSegments(1).isPrefixOf( path );
+	}
+	
+	/**
+	 * Makes the given path relative to the doxyfile path only of the given
+	 * path point to a location that is in the sub-directory containing the
+	 * doxyfile. 
+	 * 
+	 * @return	the argument path made relative to the doxyfile
+	 */
+	public IPath makePathRelative( IPath path ) {
+		if( isPathRelative(path) ) {
+			int matchingCount = file.getLocation().removeLastSegments(1).matchingFirstSegments( path );
+			return path.removeFirstSegments( matchingCount );
+		}
+		else {
+			return path;
+		}
 	}
 	
 	/**

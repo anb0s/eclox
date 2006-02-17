@@ -59,7 +59,7 @@ public class TextEditor implements IEditor {
     /**
      * The current editor input
      */
-	private Setting input;
+	protected Setting input;
 	
 	/**
      * The text widget.
