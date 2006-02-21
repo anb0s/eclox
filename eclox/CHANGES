@@ -23,6 +23,9 @@
 	
 	Updated the default editor icon.
 	
+	In the editor, fixed bogus setting dirty status that was not cleaned when
+	closing a non-saved editor and opening a new editor instance again.
+	
 
 * eclox-0.4.3 (13-dec-2005) *
 	Added a boolean setting editor.
