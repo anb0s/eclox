@@ -48,9 +48,9 @@ public class Setting extends Chunk {
     private static Pattern valuePattern = Pattern.compile("([^ \"]+)\\s*|\"(.*?)\"\\s*");
     
     /**
-     * The setting properties.
+     * The default setting properties.
      */
-    private static Properties properties;
+    private static Properties defaultProperties;
     
     /**
      * A string containing the node identifier.
@@ -66,6 +66,11 @@ public class Setting extends Chunk {
      * The string containing the setting value.
      */
     private String value;
+    
+    /**
+     * The setting local properties.
+     */
+    private Properties properties = new Properties();
     
     
     /**
@@ -90,16 +95,16 @@ public class Setting extends Chunk {
     
     
     /**
-     * Initializes all setting properties.
+     * Initializes all setting default properties.
      */
-    private static void initProperties() {
+    private static void initDefaultProperties() {
         // Ensures that properties have been loaded.
-        if( properties == null ) {
+        if( defaultProperties == null ) {
             try {
                 InputStream propertiesInput = Plugin.getDefault().openStream( new Path("misc/setting-properties.txt") );
              
-                properties = new Properties();
-                properties.load( propertiesInput );
+                defaultProperties = new Properties();
+                defaultProperties.load( propertiesInput );
             }
             catch( Throwable throwable ) {
                 Services.showError( throwable );
@@ -108,19 +113,7 @@ public class Setting extends Chunk {
     }
     
     /**
-     * Retrieves the identifier of the property for the given setting
-     * 
-     * @param	setting		a setting instance
-     * @param	property		a string containing a property name
-     * 
-     * @return	a string containing the property identifier
-     */
-    private static String getPropertyIdentifier( Setting setting, String property ) {
-    		return new String( setting.getIdentifier() + "." + property );
-    }
-    
-    /**
-     * Retrieves the specified property given a setting.
+     * Retrieves the specified default property given a setting.
      * 
      * @param   setting     a setting instance
      * @param   property    a string containing the name of the property to retrieve.
@@ -128,32 +121,11 @@ public class Setting extends Chunk {
      * @return  a string containing the desired property value or null when
      *          no such property exists
      */
-	private static String getPropertyValue( Setting setting, String property ) {
-		initProperties();
-        return properties.getProperty( getPropertyIdentifier(setting, property) );
+	private static String getDefaultPropertyValue( Setting setting, String property ) {
+		initDefaultProperties();
+		String	propertyIdentifier = setting.getIdentifier() + "." + property;
+        return defaultProperties.getProperty( propertyIdentifier );
     }
-    
-    /**
-     * Updates the value of a property of a given setting.
-     * 
-     * @param	setting		a setting instance
-     * @param	property		a string containing the name of a setting property
-     * @param	value		a string containing a property value
-     */
-	private static void setPropertyValue( Setting setting, String property, String value ) {
-		initProperties();
-		properties.setProperty( getPropertyIdentifier(setting, property), value );
-    }
-	
-	/**
-	 * Removes the given property for the given setting.
-	 * 
-	 * @param	setting		a setting instance
-	 * @param	property		a string containing a property name
-	 */
-	private static void removeProperty( Setting setting, String property ) {
-		properties.remove( getPropertyIdentifier(setting, property) );
-	}
     
     /**
      * Constructor.
@@ -192,7 +164,12 @@ public class Setting extends Chunk {
      * @return  a string containing the property value or null when the property was not found
      */
     public String getProperty( String property ) {
-        return getPropertyValue( this, property );
+    		if( properties.containsKey( property) ) {
+    			return properties.getProperty( property );
+    		}
+    		else {
+    			return getDefaultPropertyValue( this, property );
+    		}
     }
     
     /**
@@ -231,7 +208,12 @@ public class Setting extends Chunk {
      * @return	a boolean
      */
     public boolean hasProperty( String property ) {
-    		return getPropertyValue( this, property ) != null;
+    		if( properties.containsKey( property) ) {
+			return true;
+		}
+		else {
+			return getDefaultPropertyValue( this, property ) != null;
+		}
     }
     
     /**
@@ -250,7 +232,8 @@ public class Setting extends Chunk {
      * @param	value		a string containing the property value
      */
 	public void setProperty( String property, String value ) {
-		setPropertyValue( this, property, value );
+		// Updates the given property.
+		properties.setProperty( property, value );
 		
         // Walks through the attached listeners and notify them.
         Iterator i = this.listeners.iterator();
@@ -269,8 +252,8 @@ public class Setting extends Chunk {
 	 * @param	property		a string containing a property name
 	 */
 	public void removeProperty( String property ) {
-		if( hasProperty( property ) ) {
-			removeProperty( this, property );
+		if( properties.containsKey( property ) ) {
+			properties.remove( property );
 			
 	        // Walks through the attached listeners and notify them.
 	        Iterator i = this.listeners.iterator();
