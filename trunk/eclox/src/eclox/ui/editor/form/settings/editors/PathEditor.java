@@ -116,18 +116,41 @@ public class PathEditor extends TextEditor {
 	 * Browses the workspace for a path and updates the managed text field.
 	 */
 	private void browseWorkspace() {
-		IWorkspaceRoot				root = ResourcesPlugin.getWorkspace().getRoot();
-		ContainerSelectionDialog		dialog = new ContainerSelectionDialog( super.text.getShell(), root, false, "Please, select a folder." );
+		// Pre-condition
+		assert input != null;
 		
-		Object[]		result;
+		// Retrieves the workspace root container.
+		IWorkspaceRoot	root = ResourcesPlugin.getWorkspace().getRoot();
+		
+		// Prepares the initial root from the current setting value.
+		IContainer		initialRoot = null;
+		IPath			initialPath = new Path( input.getValue() );
+		if( initialPath.isAbsolute() == true ) {
+			initialRoot = root.getContainerForLocation( initialPath );
+		}
+		else {
+			initialRoot = root.getContainerForLocation( input.getOwner().getParentContainer().getLocation().append( initialPath ) );
+		}
+
+		// If the initial root has not bee retrieved, use the workspace root as default.
+		if( initialRoot == null ) {
+			initialRoot = root;
+		}
+		
+		// Displayes the selection dialog to the user.
+		Object[]					result;
+		ContainerSelectionDialog	dialog = new ContainerSelectionDialog( super.text.getShell(), initialRoot, false, "Please, select a folder." );
 		dialog.open();
 		result = dialog.getResult();
+		
+		// Parses the result.
 		if( result != null && result.length >= 1 ) {
-			Path	 		path = (Path) result[0];
+			Path	 	path = (Path) result[0];
 			IContainer	container = (IContainer) root.findMember( path );
 			IPath		containerPath = container.getLocation();
+			IPath		finalPath = input.getOwner().makePathRelative( containerPath );
 			
-			super.text.setText( makePathRelative(containerPath).toOSString() );
+			super.text.setText( finalPath.toOSString() );
 		}
 	}
 
@@ -135,23 +158,28 @@ public class PathEditor extends TextEditor {
 	 * Browses the file system for a path and updates the managed text field.
 	 */
 	private void browseFileSystem() {
-		DirectoryDialog	dialog = new DirectoryDialog( super.text.getShell() );
-		String			pathString;
-		
-		pathString = dialog.open();
-		if( pathString != null ) {
-			IPath	path = Path.fromOSString( pathString );
-			super.text.setText( makePathRelative(path).toOSString() );
-		}
-	}
-	
-	/**
-	 * Makes the given path relative to the owner of the edited setting.
-	 */
-	private IPath makePathRelative( IPath path ) {
 		// Pre-condition
 		assert input != null;
 		
-		return input.getOwner().makePathRelative( path );
+		// Retrieves the initial path.
+		IPath	initialPath = new Path( input.getValue() );
+		if( initialPath.isAbsolute() == false ) {
+			initialPath = input.getOwner().getParentContainer().getLocation().append( initialPath );
+		}
+		
+		// Displayes the directory dialog to the user
+		DirectoryDialog	dialog = new DirectoryDialog( super.text.getShell() );
+		String			pathString;
+		dialog.setFilterPath( initialPath.toOSString() );
+		pathString = dialog.open();
+		
+		// Parses the result.
+		if( pathString != null ) {
+			IPath	path = Path.fromOSString( pathString );
+			IPath	finalPath = input.getOwner().makePathRelative( path );
+			
+			super.text.setText( finalPath.toOSString() );
+		}
 	}
+	
 }

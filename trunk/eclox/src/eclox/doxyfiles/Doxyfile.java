@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -182,6 +183,24 @@ public class Doxyfile {
 	}
 	
 	/**
+	 * Retrieves the container resource of this doxyfile
+	 * 
+	 * @return	a container instance
+	 */
+	public IContainer getParentContainer() {
+		return file.getParent();
+	}
+	
+	/**
+	 * Retrieves the location of the doxyfile
+	 * 
+	 * @return	a path containing the doxyfile location
+	 */
+	public IPath getResourceLocation() {
+		return file.getLocation();
+	}
+	
+	/**
 	 * Tells if the given path is relative to the doxyfile.
 	 * 
 	 * @return	true or false
@@ -200,7 +219,7 @@ public class Doxyfile {
 	public IPath makePathRelative( IPath path ) {
 		if( isPathRelative(path) ) {
 			int matchingCount = file.getLocation().removeLastSegments(1).matchingFirstSegments( path );
-			return path.removeFirstSegments( matchingCount );
+			return path.removeFirstSegments( matchingCount ).setDevice( new String() );
 		}
 		else {
 			return path;

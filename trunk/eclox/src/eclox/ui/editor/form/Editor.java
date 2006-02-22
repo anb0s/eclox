@@ -181,6 +181,9 @@ public class Editor extends FormEditor implements ISettingValueListener {
             Setting	setting = (Setting) i.next();
             setting.removeSettingListener( this );
         }
+        
+        // Un-references the doxyfile.
+        this.doxyfile = null;
 
         // Continue...
         super.dispose();
