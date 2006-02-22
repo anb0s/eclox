@@ -116,6 +116,7 @@ public class TextEditor implements IEditor {
 	}
     
     public void setFocus() {
+    	text.selectAll();
         text.setFocus();
     }
 
