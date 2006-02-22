@@ -16,7 +16,7 @@ PROJECT_NUMBER.note = The PROJECT_NUMBER tag can be used to enter a project or r
 
 OUTPUT_DIRECTORY.text = Output Directory
 OUTPUT_DIRECTORY.group = Project
-OUTPUT_DIRECTORY.type = path
+OUTPUT_DIRECTORY.type = directory
 OUTPUT_DIRECTORY.note = The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) base path where the generated documentation will be put. If a relative path is entered, it will be relative to the location where doxygen was started. If left blank the current directory will be used.
 
 CREATE_SUBDIRS.text = Create Subdirectories
@@ -441,7 +441,7 @@ GENERATE_HTML.note = If the GENERATE_HTML tag is set to YES (the default) Doxyge
 
 HTML_OUTPUT.text = HTML Output
 HTML_OUTPUT.group = HTML Output
-HTML_OUTPUT.type = path
+HTML_OUTPUT.type = directory
 HTML_OUTPUT.note = The HTML_OUTPUT tag is used to specify where the HTML docs will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `html' will be used as the default path.
 
 HTML_FILE_EXTENSION.text = HTML File Extension
@@ -522,7 +522,7 @@ GENERATE_LATEX.note = If the GENERATE_LATEX tag is set to YES (the default) Doxy
 
 LATEX_OUTPUT.text = LaTeX Output
 LATEX_OUTPUT.group = LaTeX output
-LATEX_OUTPUT.type = path
+LATEX_OUTPUT.type = directory
 LATEX_OUTPUT.note = The LATEX_OUTPUT tag is used to specify where the LaTeX docs will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `latex' will be used as the default path.
 
 LATEX_CMD_NAME.text = LaTeX Command Name
@@ -581,7 +581,7 @@ GENERATE_RTF.note = If the GENERATE_RTF tag is set to YES Doxygen will generate 
 
 RTF_OUTPUT.text = RTF Output
 RTF_OUTPUT.group = RTF Output
-RTF_OUTPUT.type = path
+RTF_OUTPUT.type = directory
 RTF_OUTPUT.note = The RTF_OUTPUT tag is used to specify where the RTF docs will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `rtf' will be used as the default path.
 
 COMPACT_RTF.text = Compact RTF
@@ -613,7 +613,7 @@ GENERATE_MAN.note = If the GENERATE_MAN tag is set to YES (the default) Doxygen 
 
 MAN_OUTPUT.text = man Output
 MAN_OUTPUT.group = man Output
-MAN_OUTPUT.type = path
+MAN_OUTPUT.type = directory
 MAN_OUTPUT.note = The MAN_OUTPUT tag is used to specify where the man pages will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `man' will be used as the default path.
 
 MAN_EXTENSION.text = man Extension
@@ -636,7 +636,7 @@ GENERATE_XML.note = If the GENERATE_XML tag is set to YES Doxygen will generate 
 
 XML_OUTPUT.text = XML Output
 XML_OUTPUT.group = XML Output
-XML_OUTPUT.type = path
+XML_OUTPUT.type = directory
 XML_OUTPUT.note = The XML_OUTPUT tag is used to specify where the XML pages will be put. If a relative path is entered the value of OUTPUT_DIRECTORY will be put in front of it. If left blank `xml' will be used as the default path.
 
 XML_SCHEMA.text = XML Schema

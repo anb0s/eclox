@@ -60,9 +60,14 @@ public class Custom implements IFilter {
     private String[] savedComboItems = null;
     
     /**
-     * an integer representing the index of the saved selected item index
+     * a string containing the saved combo text
      */
-    private int savedComboSelection = -1;
+    private String savedComboText = new String();
+    
+    /**
+     * a string containing the text to use for filtering
+     */
+    private String filterText;
     
     /**
      * the viewer being filtered
@@ -133,16 +138,13 @@ public class Custom implements IFilter {
         public boolean select(Viewer viewer, Object parentElement, Object element) {
         		// Pre-condition
         		assert element instanceof Setting;
-        		assert combo != null;
         		
         		// Tests if the current setting matches the query string.
-        		int	comboSelectionIndex = combo.getSelectionIndex();
-        		if( comboSelectionIndex != -1 ) {
+        		if( filterText != null ) {
 	        		Setting	setting = (Setting) element;
 	        		String	settingText = setting.getProperty(Setting.TEXT);
-	        		String	queryText = combo.getItem( comboSelectionIndex );  
 	        		
-	        		return settingText.toLowerCase().contains( queryText.toLowerCase() );
+	        		return settingText.toLowerCase().contains( filterText.toLowerCase() );
         		}
         		else {
         			return true;
@@ -161,9 +163,8 @@ public class Custom implements IFilter {
 			// Pre-condition
 			assert combo != null;
 			
-			combo.getDisplay().timerExec(
-					450,
-					new MyRunnable(combo.getText()) );
+			filterText = combo.getText();
+			combo.getDisplay().timerExec( 450, new MyRunnable(filterText) );
 		}
     	
     };
@@ -211,7 +212,7 @@ public class Custom implements IFilter {
         		combo.setText("type filter text");
         }
         // Restores the saved combo selected item.
-        combo.select( this.savedComboSelection );
+        combo.setText( this.savedComboText );
         combo.setSelection( new Point(0,combo.getText().length()) );
         // Attaches a modify listener.
         combo.addModifyListener( new MyComboModifyListener() );
@@ -265,7 +266,7 @@ public class Custom implements IFilter {
         
         // Saves some state of the managed combo widget.
         this.savedComboItems = combo.getItems();
-        this.savedComboSelection = combo.getSelectionIndex();
+        this.savedComboText = combo.getText();
         
         // Disposes all managed widgets.
         combo.dispose();
