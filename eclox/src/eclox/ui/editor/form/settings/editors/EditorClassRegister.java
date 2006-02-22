@@ -42,10 +42,10 @@ public class EditorClassRegister {
      * Constructor.
      */
     public EditorClassRegister() {
-    		register.put("path", PathEditor.class);
-        register.put("text", TextEditor.class);
-        register.put("boolean", BooleanEditor.class);
-        register.put("list", ListEditor.class);
+    	register.put( "directory",	DirectoryEditor.class );
+        register.put( "text",		TextEditor.class );
+        register.put( "boolean",	BooleanEditor.class );
+        register.put( "list",		ListEditor.class );
     }
     
     /**

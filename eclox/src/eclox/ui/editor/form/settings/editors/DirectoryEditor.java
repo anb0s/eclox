@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-public class PathEditor extends TextEditor {
+public class DirectoryEditor extends TextEditor {
 	
 	/**
 	 * the push button for browsing the file system
