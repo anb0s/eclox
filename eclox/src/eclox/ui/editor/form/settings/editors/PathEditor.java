@@ -85,14 +85,14 @@ public class PathEditor extends TextEditor {
 		FormData				formData;
 		SelectionListener	selectionListener = new MySelectionListener();
 		
-		browseWorkspaceButton = formToolkit.createButton( parent, "Browse Workspace", 0 );
+		browseWorkspaceButton = formToolkit.createButton( parent, "Workspace...", 0 );
 		formData = new FormData();
 		formData.top = new FormAttachment( super.text, 0, SWT.BOTTOM );
 		formData.left = new FormAttachment( 0, 0 );
 		browseWorkspaceButton.setLayoutData( formData );
 		browseWorkspaceButton.addSelectionListener( selectionListener );
 		
-		browseFileSystemButton = formToolkit.createButton( parent, "Browse File System", 0 );
+		browseFileSystemButton = formToolkit.createButton( parent, "File System...", 0 );
 		formData = new FormData();
 		formData.top = new FormAttachment( super.text, 0, SWT.BOTTOM );
 		formData.left = new FormAttachment( browseWorkspaceButton, 0, SWT.RIGHT );
@@ -170,6 +170,8 @@ public class PathEditor extends TextEditor {
 		// Displayes the directory dialog to the user
 		DirectoryDialog	dialog = new DirectoryDialog( super.text.getShell() );
 		String			pathString;
+		dialog.setMessage( "Please, select a folder.");
+		dialog.setText( "Folder Selection" );
 		dialog.setFilterPath( initialPath.toOSString() );
 		pathString = dialog.open();
 		
