@@ -24,15 +24,14 @@ import org.eclipse.swt.widgets.Shell;
 import eclox.doxyfiles.Setting;
 
 /**
- * Implements a list editor that handle value compounds as direcoty paths.
+ * Implements a list editor that handle value compounds as directory path or file path.
  * 
  * @author gbrocker
  */
-public class DirectoryListEditor extends ListEditor {
+public class PathListEditor extends ListEditor {
 
-
-	protected String editValueCompound( Shell parent, Setting setting, String compound ) {
-		return Convenience.browserForPath( parent, setting.getOwner(), compound, Convenience.BROWSE_DIRECTORY );
+	protected String editValueCompound(Shell parent, Setting setting, String compound) {
+		return Convenience.browserForPath( parent, setting.getOwner(), compound, Convenience.BROWSE_ALL );
 	}
 
 }
