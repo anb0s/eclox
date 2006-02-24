@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IOpenListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -44,6 +42,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -51,30 +50,12 @@ import eclox.doxyfiles.ISettingValueListener;
 import eclox.doxyfiles.Setting;
 
 /**
- * Implements a list setting editor.
+ * Implements a list setting editor. This class is abstract since it provides no way to
+ * edit value compounds. See derived classes.
  * 
  * @author gbrocker
  */
-public class ListEditor implements IEditor, ISettingValueListener {
-	
-	/**
-	 * Implements an input validator for the input dialog used to edit value compunds.
-	 */
-	private class MyInputValidator implements IInputValidator {
-
-		public String isValid(String newText) {
-			if( newText.length() == 0 ) {
-				return "Empty value is not allowed.";
-			}
-			else if( newText.contains( "\"" ) ) {
-				return "\" is a forbidden character.";
-			}
-			else {
-				return null;
-			}
-		}
-		
-	}
+public abstract class ListEditor implements IEditor, ISettingValueListener {
 	
 	/**
 	 * Implements the table viewer content provider.
@@ -124,7 +105,7 @@ public class ListEditor implements IEditor, ISettingValueListener {
 	private class MyOpenListener implements IOpenListener {
 
 		public void open(OpenEvent event) {
-			editValueCompound();
+			editSelectedValueCompound();
 		}
 		
 	}
@@ -358,6 +339,21 @@ public class ListEditor implements IEditor, ISettingValueListener {
 	}
 	
 	/**
+	 * Edits the given value compound and returns the new comound value. 
+	 * Null is interpreted as a canceled edition.
+	 * 
+	 * Sub classes have to implement this method to provide a dialog to the user to do
+	 * the value compund edition.
+	 * 
+	 * @param parent		the parent shell that implementors may use as parent window for any dialog
+	 * @param setting	the setting begin edited (it is just given as information and should be edited directly)
+	 * @param compound	the value compund to edit
+	 * 
+	 * @return	a string containing the new compund value or null
+	 */
+	abstract protected String editValueCompound( Shell parent, Setting setting, String compound );
+	
+	/**
 	 * Refreshes the value compounds and the associated viewer.
 	 */
 	private void refreshValueCompounds() {
@@ -390,7 +386,7 @@ public class ListEditor implements IEditor, ISettingValueListener {
 		boolean modified;
 		
 		listViewer.setSelection( new StructuredSelection(new Integer(valueCompounds.size() -1)) );
-		modified = editValueCompound();
+		modified = editSelectedValueCompound();
 		
 		// If the new item has not been modified, cancel the addition.
 		if( modified == false ) {
@@ -404,7 +400,7 @@ public class ListEditor implements IEditor, ISettingValueListener {
 	 * 
 	 * @return	true when a compound has been modified, false otherwise
 	 */
-	private boolean editValueCompound() {
+	private boolean editSelectedValueCompound() {
 		// Pre-condition
 		assert listViewer != null;
 		assert valueCompounds != null; 
@@ -414,22 +410,15 @@ public class ListEditor implements IEditor, ISettingValueListener {
 		IStructuredSelection		selection = (IStructuredSelection) listViewer.getSelection();
 		Integer					index = (Integer) selection.getFirstElement();
 		
-		// Retrieves the value to edit.
-		String	value = valueCompounds.get( index.intValue() ).toString();
+		// Retrieves the value compound to edit and the edited value.
+		String	originalCompound = valueCompounds.get( index.intValue() ).toString();
+		String	editedCompound = editValueCompound( listViewer.getControl().getShell(), setting, originalCompound );
 		
-		// Creates the edition dialog.
-		InputDialog	dialog = new InputDialog(
-				listViewer.getControl().getShell(),
-				"Value Edition",
-				"Enter the new text for the value.",
-				value,
-				new MyInputValidator() );
-		
-		// Lauches the value edition
-		if( dialog.open() == InputDialog.OK ) {			
+		// Processes the edited compound.
+		if( editedCompound != null ) {			
 			// Updates the setting.
 			valueCompounds.remove( index.intValue() );
-			valueCompounds.add( index.intValue(), dialog.getValue() );
+			valueCompounds.add( index.intValue(), editedCompound );
 			
 			// Commit changes and erstores the selection.
 			listViewer.getControl().setRedraw( false );

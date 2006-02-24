@@ -19,11 +19,6 @@
 
 package eclox.ui.editor.form.settings.editors;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -31,10 +26,14 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+/**
+ * Implements a setting editor that allows to browse for directories 
+ * either in the workspace or in the file system.
+ * 
+ * @author gbrocker
+ */
 public class DirectoryEditor extends TextEditor {
 	
 	/**
@@ -118,39 +117,11 @@ public class DirectoryEditor extends TextEditor {
 	private void browseWorkspace() {
 		// Pre-condition
 		assert input != null;
-		
-		// Retrieves the workspace root container.
-		IWorkspaceRoot	root = ResourcesPlugin.getWorkspace().getRoot();
-		
-		// Prepares the initial root from the current setting value.
-		IContainer		initialRoot = null;
-		IPath			initialPath = new Path( input.getValue() );
-		if( initialPath.isAbsolute() == true ) {
-			initialRoot = root.getContainerForLocation( initialPath );
-		}
-		else {
-			initialRoot = root.getContainerForLocation( input.getOwner().getParentContainer().getLocation().append( initialPath ) );
-		}
 
-		// If the initial root has not bee retrieved, use the workspace root as default.
-		if( initialRoot == null ) {
-			initialRoot = root;
-		}
-		
-		// Displayes the selection dialog to the user.
-		Object[]					result;
-		ContainerSelectionDialog	dialog = new ContainerSelectionDialog( super.text.getShell(), initialRoot, false, "Please, select a folder." );
-		dialog.open();
-		result = dialog.getResult();
-		
-		// Parses the result.
-		if( result != null && result.length >= 1 ) {
-			Path	 	path = (Path) result[0];
-			IContainer	container = (IContainer) root.findMember( path );
-			IPath		containerPath = container.getLocation();
-			IPath		finalPath = input.getOwner().makePathRelative( containerPath );
-			
-			super.text.setText( finalPath.toOSString() );
+		String	result;
+		result = Convenience.browseWorkspaceForDirectory( text.getShell(), input.getOwner(), input.getValue() );
+		if( result!= null ) {
+			super.text.setText( result );
 		}
 	}
 
@@ -160,27 +131,11 @@ public class DirectoryEditor extends TextEditor {
 	private void browseFileSystem() {
 		// Pre-condition
 		assert input != null;
-		
-		// Retrieves the initial path.
-		IPath	initialPath = new Path( input.getValue() );
-		if( initialPath.isAbsolute() == false ) {
-			initialPath = input.getOwner().getParentContainer().getLocation().append( initialPath );
-		}
-		
-		// Displayes the directory dialog to the user
-		DirectoryDialog	dialog = new DirectoryDialog( super.text.getShell() );
-		String			pathString;
-		dialog.setMessage( "Please, select a folder.");
-		dialog.setText( "Folder Selection" );
-		dialog.setFilterPath( initialPath.toOSString() );
-		pathString = dialog.open();
-		
-		// Parses the result.
-		if( pathString != null ) {
-			IPath	path = Path.fromOSString( pathString );
-			IPath	finalPath = input.getOwner().makePathRelative( path );
-			
-			super.text.setText( finalPath.toOSString() );
+
+		String	result;
+		result = Convenience.browseFileSystemForDirectory( text.getShell(), input.getOwner(), input.getValue() );
+		if( result!= null ) {
+			super.text.setText( result );
 		}
 	}
 	
