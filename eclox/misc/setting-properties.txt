@@ -315,7 +315,7 @@ WARN_LOGFILE.note = The WARN_LOGFILE tag can be used to specify a file to which 
 
 INPUT.text = Input
 INPUT.group = Inputs
-INPUT.type = directory list
+INPUT.type = path list
 INPUT.note = The INPUT tag can be used to specify the files and/or directories that contain documented source files. You may enter file names like "myfile.cpp" or directories like "/usr/src/myproject". Separate the files or directories with spaces.
 
 FILE_PATTERNS.text = File Patterns
@@ -330,7 +330,7 @@ RECURSIVE.note = The RECURSIVE tag can be used to turn specify whether or not su
 
 EXCLUDE.text = Exclude
 EXCLUDE.group = Inputs
-EXCLUDE.type = directory list
+EXCLUDE.type = path list
 EXCLUDE.note = The EXCLUDE tag can be used to specify files and/or directories that should excluded from the INPUT source files. This way you can easily exclude a subdirectory from a directory tree whose root is specified with the INPUT tag.
 
 EXCLUDE_SYMLINKS.text = Exclude Symlinks
@@ -345,7 +345,7 @@ EXCLUDE_PATTERNS.note = If the value of the INPUT tag contains directories, you 
 
 EXAMPLE_PATH.text = Example Path
 EXAMPLE_PATH.group = Inputs
-EXAMPLE_PATH.type = directory list
+EXAMPLE_PATH.type = path list
 EXAMPLE_PATH.note = The EXAMPLE_PATH tag can be used to specify one or more files or directories that contain example code fragments that are included (see the \include command).
 
 EXAMPLE_PATTERNS.text = Example Patterns
@@ -360,7 +360,7 @@ EXAMPLE_RECURSIVE.note = If the EXAMPLE_RECURSIVE tag is set to YES then subdire
 
 IMAGE_PATH.text = Image Path
 IMAGE_PATH.group = Inputs
-IMAGE_PATH.type = directory list
+IMAGE_PATH.type = path list
 IMAGE_PATH.note = The IMAGE_PATH tag can be used to specify one or more files or directories that contain image that are included in the documentation (see the \image command).
 
 INPUT_FILTER.text = Input Filter
