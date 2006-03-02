@@ -26,9 +26,17 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import eclox.doxyfiles.Doxyfile;
@@ -214,6 +222,29 @@ public final class Convenience {
 		private int styles;
 		
 		/**
+		 * Implements the button selection handler.
+		 */
+		private class MySelectionListener implements SelectionListener {
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// Precondition
+				assert e.widget.getData() instanceof Integer;
+				
+				Integer	identifier = (Integer) e.widget.getData();
+				myButtonPressed( identifier.intValue() ); 
+			}
+
+			public void widgetSelected(SelectionEvent e) {
+				// Precondition
+				assert e.widget.getData() instanceof Integer;
+				
+				Integer	identifier = (Integer) e.widget.getData();
+				myButtonPressed( identifier.intValue() );
+			}
+			
+		}
+		
+		/**
 		 * Constructor
 		 * 
 		 * @param	shell		the parent shell
@@ -233,26 +264,57 @@ public final class Convenience {
 			this.styles = styles;
 		}
 		
-		protected void createButtonsForButtonBar(Composite parent) {
-			// Do default button creations
-			super.createButtonsForButtonBar(parent);
+		protected Control createDialogArea(Composite parent) {
+			// Make the parent class create the default content.
+			Composite composite = (Composite) super.createDialogArea(parent);
 			
-			// Creates additionnal buttons
-			if( (styles & BROWSE_WORSPACE_FILE) != 0 ) {
-				createButton( parent, BROWSE_WORKSPACE_FILE_ID, "Workspace File...", false );
+			// Creates the button container.
+			Composite	buttonComposite = new Composite( composite, 0 );
+			buttonComposite.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
+			buttonComposite.setBackground( new Color(parent.getDisplay(), 255,0,0) );
+			buttonComposite.setLayout( new FillLayout(SWT.HORIZONTAL) );
+			
+			// Creates all helper buttons.
+			Button				button;
+			MySelectionListener	selectionListener = new MySelectionListener();
+			
+			if( (styles & BROWSE_WORSPACE_FILE) != 0 )
+			{
+				button = new Button( buttonComposite, 0 );
+				button.setText( "Worksapce File..." );
+				button.setData( new Integer(BROWSE_WORKSPACE_FILE_ID) );
+				button.addSelectionListener( selectionListener );
 			}
-			if( (styles & BROWSE_WORSPACE_DIRECTORY) != 0 ) {
-				createButton( parent, BROWSE_WORKSPACE_DIRECTORY_ID, "Workspace Directory...", false );
+				
+			if( (styles & BROWSE_WORSPACE_DIRECTORY) != 0 )
+			{
+				button = new Button( buttonComposite, 0 );
+				button.setText( "Worksapce Directory..." );
+				button.setData( new Integer(BROWSE_WORKSPACE_DIRECTORY_ID) );
+				button.addSelectionListener( selectionListener );
 			}
-			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 ) {
-				createButton( parent, BROWSE_FILESYSTEM_FILE_ID, "File System File...", false );
+				
+			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 )
+			{
+				button = new Button( buttonComposite, 0 );
+				button.setText( "File System File..." );
+				button.setData( new Integer(BROWSE_FILESYSTEM_FILE_ID) );
+				button.addSelectionListener( selectionListener );
 			}
-			if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 ) {
-				createButton( parent, BROWSE_FILESYSTEM_DIRECTORY_ID, "File System Directory...", false );
+				
+			if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
+			{
+				button = new Button( buttonComposite, 0 );
+				button.setText( "File System Directory..." );
+				button.setData( new Integer(BROWSE_FILESYSTEM_DIRECTORY_ID) );
+				button.addSelectionListener( selectionListener );
 			}
+				
+			// Job's done!
+			return composite;
 		}
-
-		protected void buttonPressed(int buttonId) {
+		
+		private void myButtonPressed( int buttonId ) {
 			// Retrieves the path if one of the browse buttons is pressed.
 			String	path = null;
 			switch( buttonId ) {
@@ -274,7 +336,8 @@ public final class Convenience {
 			if( path != null ) {
 				getText().setText( path );
 			}
-		}		
+		}
+		
 	}
 
 }
