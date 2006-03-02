@@ -13,7 +13,6 @@ TODO (later):
 - Mettre un nom de fichier de configuration par défaut dans le wizard.
 - Mieux gérer les exceptions plutôt que de laisser des "catch" vides.
 - Mettre une décoration dans l'outline afin d'afficher les éléments qui ont été modifiés.
-- Add undo & redo support
 - Améliorer l'aspect graphique (icones, images).
 - Ecouter les modifications sur le fichier en cours d'édition pour détecter une modification externe (edition, suppression).
 
