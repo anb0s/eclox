@@ -118,9 +118,9 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
      */
     public void commit(boolean onSave) {
-    	if( editor != null ) {
-    		editor.commit();
-    	}
+	    	if( editor != null ) {
+	    		editor.commit();
+	    	}
     }
     
     /**
@@ -188,7 +188,7 @@ public class DetailsPage implements IDetailsPage {
         // Updates the form controls.
         this.selectNote(setting);
         this.selectEditor(setting);
-        this.sectionContent.layout(true);
+        this.sectionContent.layout( true, true );
     }
     
     /**
