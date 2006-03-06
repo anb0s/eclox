@@ -29,11 +29,15 @@ import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -51,12 +55,12 @@ public final class Convenience {
 	/**
 	 * flag that activates the facility to browse for a workspace file
 	 */
-	public static final int BROWSE_WORSPACE_FILE = 1;
+	public static final int BROWSE_WORKSPACE_FILE = 1;
 	
 	/**
 	 * flag that activates the facility to browse for a workspace directory
 	 */
-	public static final int BROWSE_WORSPACE_DIRECTORY = 2;
+	public static final int BROWSE_WORKSPACE_DIRECTORY = 2;
 	
 	/**
 	 * flag that activates the facility to browse for a file system file
@@ -71,17 +75,17 @@ public final class Convenience {
 	/**
 	 * flag that activates the facility to browse for a workspace or file system file
 	 */
-	public static final int BROWSE_FILE = BROWSE_WORSPACE_FILE|BROWSE_FILESYSTEM_FILE;
+	public static final int BROWSE_FILE = BROWSE_WORKSPACE_FILE|BROWSE_FILESYSTEM_FILE;
 	
 	/**
 	 * flag that activates the facility to browse for a workspace or file system directory
 	 */
-	public static final int BROWSE_DIRECTORY = BROWSE_WORSPACE_DIRECTORY|BROWSE_FILESYSTEM_DIRECTORY;
+	public static final int BROWSE_DIRECTORY = BROWSE_WORKSPACE_DIRECTORY|BROWSE_FILESYSTEM_DIRECTORY;
 	
 	/**
 	 * flag that activates the facility to browse for a workspace file or directory
 	 */
-	public static final int BROWSE_WORSPACE_PATH = BROWSE_WORSPACE_FILE|BROWSE_WORSPACE_DIRECTORY;
+	public static final int BROWSE_WORKSPACE_PATH = BROWSE_WORKSPACE_FILE|BROWSE_WORKSPACE_DIRECTORY;
 	
 	/**
 	 * flag that activates the facility to browse for a file system file or directory
@@ -91,7 +95,7 @@ public final class Convenience {
 	/**
 	 * flag that activates the facility to browse for a workspace or file system path
 	 */
-	public static final int BROWSE_ALL = BROWSE_WORSPACE_PATH|BROWSE_FILESYSTEM_PATH;
+	public static final int BROWSE_ALL = BROWSE_WORKSPACE_PATH|BROWSE_FILESYSTEM_PATH;
 	
 	
 	/**
@@ -268,46 +272,109 @@ public final class Convenience {
 			// Make the parent class create the default content.
 			Composite composite = (Composite) super.createDialogArea(parent);
 			
-			// Creates the button container.
-			Composite	buttonComposite = new Composite( composite, 0 );
-			buttonComposite.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
-			buttonComposite.setBackground( new Color(parent.getDisplay(), 255,0,0) );
-			buttonComposite.setLayout( new FillLayout(SWT.HORIZONTAL) );
+			// Creates the local composite that wil contain all addition controls.
+			Composite	myComposite = new Composite( composite, 0 );
+			myComposite.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
+			myComposite.setBackground( new Color(parent.getDisplay(), 255,0,0) );
+			myComposite.setLayout( new FillLayout(SWT.HORIZONTAL) );
 			
-			// Creates all helper buttons.
-			Button				button;
+			// Defines some local variables.
 			MySelectionListener	selectionListener = new MySelectionListener();
+			Label				label;
+			Button				fileButton;
+			Button				directoryButton;
+			FormLayout			formLayout;
+			FormData				formData;
+			Composite			subComposite;
 			
-			if( (styles & BROWSE_WORSPACE_FILE) != 0 )
+			// Creates the "workspace" composite and buttons
+			if( (styles & BROWSE_WORKSPACE_FILE) != 0 || (styles & BROWSE_WORKSPACE_DIRECTORY) != 0 )
 			{
-				button = new Button( buttonComposite, 0 );
-				button.setText( "Worksapce File..." );
-				button.setData( new Integer(BROWSE_WORKSPACE_FILE_ID) );
-				button.addSelectionListener( selectionListener );
-			}
+				fileButton = null;
+				directoryButton = null;
 				
-			if( (styles & BROWSE_WORSPACE_DIRECTORY) != 0 )
-			{
-				button = new Button( buttonComposite, 0 );
-				button.setText( "Worksapce Directory..." );
-				button.setData( new Integer(BROWSE_WORKSPACE_DIRECTORY_ID) );
-				button.addSelectionListener( selectionListener );
-			}
+				formLayout = new FormLayout();				
+				formLayout.spacing = 5; 
+				subComposite = new Composite( myComposite, 0 );
+				subComposite.setLayout( formLayout );
 				
-			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 )
-			{
-				button = new Button( buttonComposite, 0 );
-				button.setText( "File System File..." );
-				button.setData( new Integer(BROWSE_FILESYSTEM_FILE_ID) );
-				button.addSelectionListener( selectionListener );
-			}
+				label = new Label( subComposite, 0 );
+				formData = new FormData();
+				formData.top = new FormAttachment( 0, 0 );
+				formData.left = new FormAttachment( 0, 0 );;
+ 				label.setText( "Workspace:" );
+				label.setLayoutData( formData );
 				
-			if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
+				if( (styles & BROWSE_WORKSPACE_FILE) != 0 )
+				{
+					formData = new FormData();
+					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
+					formData.left = new FormAttachment( 0, 0 );
+	 					
+					fileButton = new Button( subComposite, 0 );
+					fileButton.setText( "File..." );
+					fileButton.setData( new Integer(BROWSE_WORKSPACE_FILE_ID) );
+					fileButton.setLayoutData( formData );
+					fileButton.addSelectionListener( selectionListener );
+				}
+					
+				if( (styles & BROWSE_WORKSPACE_DIRECTORY) != 0 )
+				{
+					formData = new FormData();
+					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
+					formData.left = fileButton != null ? new FormAttachment( fileButton, 0, SWT.RIGHT ) : new FormAttachment( 0, 0 );
+	 					
+					directoryButton = new Button( subComposite, 0 );
+					directoryButton.setText( "Directory..." );
+					directoryButton.setData( new Integer(BROWSE_WORKSPACE_DIRECTORY_ID) );
+					directoryButton.setLayoutData( formData );
+					directoryButton.addSelectionListener( selectionListener );
+				}
+			}
+			
+			// Creates the "file system" composite and buttons
+			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 || (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
 			{
-				button = new Button( buttonComposite, 0 );
-				button.setText( "File System Directory..." );
-				button.setData( new Integer(BROWSE_FILESYSTEM_DIRECTORY_ID) );
-				button.addSelectionListener( selectionListener );
+				fileButton = null;
+				directoryButton = null;
+				
+				formLayout = new FormLayout();
+				formLayout.spacing = 5; 
+				subComposite = new Composite( myComposite, 0 );
+				subComposite.setLayout( formLayout );
+				
+				label = new Label( subComposite, 0 );
+				formData = new FormData();
+				formData.top = new FormAttachment( 0, 0 );
+				formData.left = new FormAttachment( 0, 0 );;
+ 				label.setText( "File System:" );
+				label.setLayoutData( formData );
+				
+				if( (styles & BROWSE_FILESYSTEM_FILE) != 0 )
+				{
+					formData = new FormData();
+					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
+					formData.left = new FormAttachment( 0, 0 );
+	 					
+					fileButton = new Button( subComposite, 0 );
+					fileButton.setText( "File..." );
+					fileButton.setData( new Integer(BROWSE_FILESYSTEM_FILE_ID) );
+					fileButton.setLayoutData( formData );
+					fileButton.addSelectionListener( selectionListener );
+				}
+					
+				if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
+				{
+					formData = new FormData();
+					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
+					formData.left = fileButton != null ? new FormAttachment( fileButton, 0, SWT.RIGHT ) : new FormAttachment( 0, 0 );
+	 					
+					directoryButton = new Button( subComposite, 0 );
+					directoryButton.setText( "Directory..." );
+					directoryButton.setData( new Integer(BROWSE_FILESYSTEM_DIRECTORY_ID) );
+					directoryButton.setLayoutData( formData );
+					directoryButton.addSelectionListener( selectionListener );
+				}
 			}
 				
 			// Job's done!
