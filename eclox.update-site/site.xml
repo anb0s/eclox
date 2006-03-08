@@ -6,6 +6,9 @@
    <feature url="features/org.gna.eclox_0.4.3.jar" id="org.gna.eclox" version="0.4.3">
       <category name="Eclox"/>
    </feature>
+   <feature url="features/org.gna.eclox_0.4.4.jar" id="org.gna.eclox" version="0.4.4">
+      <category name="Eclox"/>
+   </feature>
    <category-def name="Eclox" label="Eclox">
       <description>
          Eclox is frontend for doxygen.
