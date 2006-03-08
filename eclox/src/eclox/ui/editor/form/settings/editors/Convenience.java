@@ -19,29 +19,14 @@
 
 package eclox.ui.editor.form.settings.editors;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 
 import eclox.doxyfiles.Doxyfile;
 
@@ -53,49 +38,19 @@ import eclox.doxyfiles.Doxyfile;
 public final class Convenience {
 	
 	/**
-	 * flag that activates the facility to browse for a workspace file
-	 */
-	public static final int BROWSE_WORKSPACE_FILE = 1;
-	
-	/**
-	 * flag that activates the facility to browse for a workspace directory
-	 */
-	public static final int BROWSE_WORKSPACE_DIRECTORY = 2;
-	
-	/**
 	 * flag that activates the facility to browse for a file system file
 	 */
-	public static final int BROWSE_FILESYSTEM_FILE = 4;
+	public static final int BROWSE_FILESYSTEM_FILE = 1;
 	
 	/**
 	 * flag that activates the facility to browse for a file system directory
 	 */
-	public static final int BROWSE_FILESYSTEM_DIRECTORY = 8;
-	
-	/**
-	 * flag that activates the facility to browse for a workspace or file system file
-	 */
-	public static final int BROWSE_FILE = BROWSE_WORKSPACE_FILE|BROWSE_FILESYSTEM_FILE;
-	
-	/**
-	 * flag that activates the facility to browse for a workspace or file system directory
-	 */
-	public static final int BROWSE_DIRECTORY = BROWSE_WORKSPACE_DIRECTORY|BROWSE_FILESYSTEM_DIRECTORY;
-	
-	/**
-	 * flag that activates the facility to browse for a workspace file or directory
-	 */
-	public static final int BROWSE_WORKSPACE_PATH = BROWSE_WORKSPACE_FILE|BROWSE_WORKSPACE_DIRECTORY;
-	
-	/**
-	 * flag that activates the facility to browse for a file system file or directory
-	 */
-	public static final int BROWSE_FILESYSTEM_PATH = BROWSE_FILESYSTEM_FILE|BROWSE_FILESYSTEM_DIRECTORY;
+	public static final int BROWSE_FILESYSTEM_DIRECTORY = 2;
 	
 	/**
 	 * flag that activates the facility to browse for a workspace or file system path
 	 */
-	public static final int BROWSE_ALL = BROWSE_WORKSPACE_PATH|BROWSE_FILESYSTEM_PATH;
+	public static final int BROWSE_ALL = BROWSE_FILESYSTEM_FILE|BROWSE_FILESYSTEM_DIRECTORY;
 	
 	
 	/**
@@ -113,6 +68,44 @@ public final class Convenience {
 		
 		if( dialog.open() == PathInputDialog.OK ) {
 			return dialog.getValue();
+		}
+		else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Browses the file system for a file and retrieves a path in the file system that
+	 * may be relative to the given doxyfile's path
+	 * 
+	 * @param	shell		a shell that will be the parent of dialogs
+	 * @param	doxyfile	a doxyfile that is the reference for relative paths
+	 * @param	path		a string containing an initial path
+	 * 
+	 * @return	a string containing the browsed path, or null if none
+	 */
+	public static String browseFileSystemForFile( Shell shell, Doxyfile doxyfile, String path )
+	{
+		// Retrieves the initial path.
+		IPath	initialPath = new Path( path );
+		if( initialPath.isAbsolute() == false ) {
+			initialPath = doxyfile.getParentContainer().getLocation().append( initialPath );
+		}
+		
+		// Displayes the directory dialog to the user
+		FileDialog		dialog = new FileDialog( shell );
+		String			choosenPathString;
+		
+		dialog.setText( "File System File Selection" );
+		dialog.setFilterPath( initialPath.toOSString() );
+		choosenPathString = dialog.open();
+		
+		// Parses the result.
+		if( choosenPathString != null ) {
+			IPath	choosenPath = Path.fromOSString( choosenPathString );
+			IPath	finalPath = doxyfile.makePathRelative( choosenPath );
+			
+			return finalPath.toOSString();
 		}
 		else {
 			return null;
@@ -139,8 +132,7 @@ public final class Convenience {
 		// Displayes the directory dialog to the user
 		DirectoryDialog	dialog = new DirectoryDialog( shell );
 		String			choosenPathString;
-		dialog.setMessage( "Please, select a folder.");
-		dialog.setText( "Folder Selection" );
+		dialog.setText( "File System Directory Selection" );
 		dialog.setFilterPath( initialPath.toOSString() );
 		choosenPathString = dialog.open();
 		
@@ -157,66 +149,11 @@ public final class Convenience {
 	}
 
 	/**
-	 * Browses the workspace for a directory and retrieves a path in the workspace that
-	 * may be relative to the given doxyfile's path.
-	 * 
-	 * @param	shell		a shell that will be the parent of dialogs
-	 * @param	doxyfile		a doxyfile that is the reference for relative paths
-	 * @param	path			a string containing an initial path
-	 * 
-	 * 
-	 * @return	a string containing the browsed path, or null if none
-	 */
-	public static String browseWorkspaceForDirectory( Shell shell, Doxyfile doxyfile, String path )	{
-		// Retrieves the workspace root container.
-		IWorkspaceRoot	root = ResourcesPlugin.getWorkspace().getRoot();
-		
-		// Prepares the initial root from the current setting value.
-		IContainer		initialRoot = null;
-		IPath			initialPath = new Path( path );
-		if( initialPath.isAbsolute() == true ) {
-			initialRoot = root.getContainerForLocation( initialPath );
-		}
-		else {
-			initialRoot = root.getContainerForLocation( doxyfile.getParentContainer().getLocation().append( initialPath ) );
-		}
-
-		// If the initial root has not bee retrieved, use the workspace root as default.
-		if( initialRoot == null ) {
-			initialRoot = root;
-		}
-		
-		// Displayes the selection dialog to the user.
-		Object[]					result;
-		ContainerSelectionDialog	dialog = new ContainerSelectionDialog( shell, initialRoot, false, "Please, select a folder." );
-		dialog.open();
-		result = dialog.getResult();
-		
-		// Parses the result.
-		if( result != null && result.length >= 1 ) {
-			Path	 		choosenPath = (Path) result[0];
-			IContainer	container = (IContainer) root.findMember( choosenPath );
-			IPath		containerPath = container.getLocation();
-			IPath		finalPath = doxyfile.makePathRelative( containerPath );
-			
-			return finalPath.toOSString();
-		}
-		else {
-			return null;
-		}
-	}
-	
-
-	/**
 	 * Implements a specialized input dialog that adds buttons for browsing
 	 * workspace or file system for paths. 
 	 */
 	private static class PathInputDialog extends InputDialog {
 
-		private final static int BROWSE_WORKSPACE_FILE_ID = IDialogConstants.CLIENT_ID + 1;
-		
-		private final static int BROWSE_WORKSPACE_DIRECTORY_ID = IDialogConstants.CLIENT_ID + 2;
-		
 		private final static int BROWSE_FILESYSTEM_FILE_ID = IDialogConstants.CLIENT_ID + 3;
 		
 		private final static int BROWSE_FILESYSTEM_DIRECTORY_ID = IDialogConstants.CLIENT_ID + 4;
@@ -224,29 +161,6 @@ public final class Convenience {
 		private Doxyfile doxyfile;
 		
 		private int styles;
-		
-		/**
-		 * Implements the button selection handler.
-		 */
-		private class MySelectionListener implements SelectionListener {
-
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// Precondition
-				assert e.widget.getData() instanceof Integer;
-				
-				Integer	identifier = (Integer) e.widget.getData();
-				myButtonPressed( identifier.intValue() ); 
-			}
-
-			public void widgetSelected(SelectionEvent e) {
-				// Precondition
-				assert e.widget.getData() instanceof Integer;
-				
-				Integer	identifier = (Integer) e.widget.getData();
-				myButtonPressed( identifier.intValue() );
-			}
-			
-		}
 		
 		/**
 		 * Constructor
@@ -268,120 +182,22 @@ public final class Convenience {
 			this.styles = styles;
 		}
 		
-		protected Control createDialogArea(Composite parent) {
-			// Make the parent class create the default content.
-			Composite composite = (Composite) super.createDialogArea(parent);
-			
-			// Creates the local composite that wil contain all addition controls.
-			Composite	myComposite = new Composite( composite, 0 );
-			myComposite.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
-			myComposite.setBackground( new Color(parent.getDisplay(), 255,0,0) );
-			myComposite.setLayout( new FillLayout(SWT.HORIZONTAL) );
-			
-			// Defines some local variables.
-			MySelectionListener	selectionListener = new MySelectionListener();
-			Label				label;
-			Button				fileButton;
-			Button				directoryButton;
-			FormLayout			formLayout;
-			FormData				formData;
-			Composite			subComposite;
-			
-			// Creates the "workspace" composite and buttons
-			if( (styles & BROWSE_WORKSPACE_FILE) != 0 || (styles & BROWSE_WORKSPACE_DIRECTORY) != 0 )
+		protected void createButtonsForButtonBar(Composite parent) {
+			// Create additionnal buttons.
+			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 )
 			{
-				fileButton = null;
-				directoryButton = null;
-				
-				formLayout = new FormLayout();				
-				formLayout.spacing = 5; 
-				subComposite = new Composite( myComposite, 0 );
-				subComposite.setLayout( formLayout );
-				
-				label = new Label( subComposite, 0 );
-				formData = new FormData();
-				formData.top = new FormAttachment( 0, 0 );
-				formData.left = new FormAttachment( 0, 0 );;
- 				label.setText( "Workspace:" );
-				label.setLayoutData( formData );
-				
-				if( (styles & BROWSE_WORKSPACE_FILE) != 0 )
-				{
-					formData = new FormData();
-					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
-					formData.left = new FormAttachment( 0, 0 );
-	 					
-					fileButton = new Button( subComposite, 0 );
-					fileButton.setText( "File..." );
-					fileButton.setData( new Integer(BROWSE_WORKSPACE_FILE_ID) );
-					fileButton.setLayoutData( formData );
-					fileButton.addSelectionListener( selectionListener );
-				}
-					
-				if( (styles & BROWSE_WORKSPACE_DIRECTORY) != 0 )
-				{
-					formData = new FormData();
-					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
-					formData.left = fileButton != null ? new FormAttachment( fileButton, 0, SWT.RIGHT ) : new FormAttachment( 0, 0 );
-	 					
-					directoryButton = new Button( subComposite, 0 );
-					directoryButton.setText( "Directory..." );
-					directoryButton.setData( new Integer(BROWSE_WORKSPACE_DIRECTORY_ID) );
-					directoryButton.setLayoutData( formData );
-					directoryButton.addSelectionListener( selectionListener );
-				}
+				createButton( parent, BROWSE_FILESYSTEM_FILE_ID, "Browse File...", false );
+			}
+			if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
+			{
+				createButton( parent, BROWSE_FILESYSTEM_DIRECTORY_ID, "Browse Directory...", false );
 			}
 			
-			// Creates the "file system" composite and buttons
-			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 || (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
-			{
-				fileButton = null;
-				directoryButton = null;
-				
-				formLayout = new FormLayout();
-				formLayout.spacing = 5; 
-				subComposite = new Composite( myComposite, 0 );
-				subComposite.setLayout( formLayout );
-				
-				label = new Label( subComposite, 0 );
-				formData = new FormData();
-				formData.top = new FormAttachment( 0, 0 );
-				formData.left = new FormAttachment( 0, 0 );;
- 				label.setText( "File System:" );
-				label.setLayoutData( formData );
-				
-				if( (styles & BROWSE_FILESYSTEM_FILE) != 0 )
-				{
-					formData = new FormData();
-					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
-					formData.left = new FormAttachment( 0, 0 );
-	 					
-					fileButton = new Button( subComposite, 0 );
-					fileButton.setText( "File..." );
-					fileButton.setData( new Integer(BROWSE_FILESYSTEM_FILE_ID) );
-					fileButton.setLayoutData( formData );
-					fileButton.addSelectionListener( selectionListener );
-				}
-					
-				if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
-				{
-					formData = new FormData();
-					formData.top = new FormAttachment( label, 0, SWT.BOTTOM );
-					formData.left = fileButton != null ? new FormAttachment( fileButton, 0, SWT.RIGHT ) : new FormAttachment( 0, 0 );
-	 					
-					directoryButton = new Button( subComposite, 0 );
-					directoryButton.setText( "Directory..." );
-					directoryButton.setData( new Integer(BROWSE_FILESYSTEM_DIRECTORY_ID) );
-					directoryButton.setLayoutData( formData );
-					directoryButton.addSelectionListener( selectionListener );
-				}
-			}
-				
-			// Job's done!
-			return composite;
+			// Create default buttons.
+			super.createButtonsForButtonBar(parent);
 		}
-		
-		private void myButtonPressed( int buttonId ) {
+
+		protected void buttonPressed(int buttonId) {
 			// Retrieves the path if one of the browse buttons is pressed.
 			String	path = null;
 			switch( buttonId ) {
@@ -389,16 +205,14 @@ public final class Convenience {
 					path = Convenience.browseFileSystemForDirectory( getShell(), doxyfile, getText().getText() );
 					break;
 				
-				case BROWSE_WORKSPACE_DIRECTORY_ID:
-					path = Convenience.browseWorkspaceForDirectory( getShell(), doxyfile, getText().getText() );
-					break;
-					
 				case BROWSE_FILESYSTEM_FILE_ID:
-				case BROWSE_WORKSPACE_FILE_ID:
+					path = Convenience.browseFileSystemForFile( getShell(), doxyfile, getText().getText() );
+					break;
+				
 				default:
 					super.buttonPressed(buttonId);
 			}
-			
+
 			// Updates the input text if a path has been retrieved.
 			if( path != null ) {
 				getText().setText( path );
