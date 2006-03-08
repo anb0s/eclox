@@ -270,6 +270,7 @@ SHOW_DIRECTORIES.note = If the sources in your project are distributed over mult
 
 FILE_VERSION_FILTER.text = File Version Filter
 FILE_VERSION_FILTER.group = Build
+FILE_VERSION_FILTER.type = file
 FILE_VERSION_FILTER.note = The FILE_VERSION_FILTER tag can be used to specify a program or script that doxygen should invoke to get the current version for each file (typically from the version control system). Doxygen will invoke the program by executing (via popen()) the command <command> <input-file>, where <command> is the value of the FILE_VERSION_FILTER tag, and <input-file> is the name of an input file provided by doxygen. Whatever the program writes to standard output is used as the file version. See the manual for examples.
 
 #---------------------------------------------------------------------------
@@ -307,6 +308,7 @@ WARN_FORMAT.note = The WARN_FORMAT tag determines the format of the warning mess
 
 WARN_LOGFILE.text = Warn Logfile
 WARN_LOGFILE.group = Messages
+WARN_LOGFILE.type = file
 WARN_LOGFILE.note = The WARN_LOGFILE tag can be used to specify a file to which warning and error messages should be written. If left blank the output is written to stderr.
 
 #---------------------------------------------------------------------------
@@ -365,6 +367,7 @@ IMAGE_PATH.note = The IMAGE_PATH tag can be used to specify one or more files or
 
 INPUT_FILTER.text = Input Filter
 INPUT_FILTER.group = Inputs
+INPUT_FILTER.type = file
 INPUT_FILTER.note = The INPUT_FILTER tag can be used to specify a program that doxygen should invoke to filter for each input file. Doxygen will invoke the filter program by executing (via popen()) the command <filter> <input-file>, where <filter> is the value of the INPUT_FILTER tag, and <input-file> is the name of an input file. Doxygen will then use the output that the filter program writes to standard output.  If FILTER_PATTERNS is specified, this tag will be ignored.
 
 FILTER_PATTERNS.text = Filter Patterns
@@ -454,14 +457,17 @@ HTML_FILE_EXTENSION.note = The HTML_FILE_EXTENSION tag can be used to specify th
 
 HTML_HEADER.text = HTML Header
 HTML_HEADER.group = HTML Output
+HTML_HEADER.type = file
 HTML_HEADER.note = The HTML_HEADER tag can be used to specify a personal HTML header for each generated HTML page. If it is left blank doxygen will generate a standard header.
 
 HTML_FOOTER.text = HTML Footer
 HTML_FOOTER.group = HTML Output
+HTML_FOOTER.type = file
 HTML_FOOTER.note = The HTML_FOOTER tag can be used to specify a personal HTML footer for each generated HTML page. If it is left blank doxygen will generate a standard footer.
 
 HTML_STYLESHEET.text = HTML Stylesheet
 HTML_STYLESHEET.group = HTML Output
+HTML_STYLESHEET.type = file
 HTML_STYLESHEET.note = The HTML_STYLESHEET tag can be used to specify a user-defined cascading style sheet that is used by each HTML page. It can be used to fine-tune the look of the HTML output. If the tag is left blank doxygen will generate a default style sheet. Note that doxygen will try to copy the style sheet file to the HTML output directory, so don't put your own stylesheet in the HTML output directory as well, or it will be erased!
 
 HTML_ALIGN_MEMBERS.text = HTML Align Members
@@ -476,10 +482,12 @@ GENERATE_HTMLHELP.note = If the GENERATE_HTMLHELP tag is set to YES, additional 
 
 CHM_FILE.text = CHM File
 CHM_FILE.group = HTML Output
+CHM_FILE.type = file
 CHM_FILE.note = If the GENERATE_HTMLHELP tag is set to YES, the CHM_FILE tag can be used to specify the file name of the resulting .chm file. You can add a path in front of the file if the result should not be written to the html output directory.
 
 HHC_LOCATION.text = HCC Location
 HHC_LOCATION.group = HTML Output
+HHC_LOCATION.type = file
 HHC_LOCATION.note = If the GENERATE_HTMLHELP tag is set to YES, the HHC_LOCATION tag can be used to specify the location (absolute path including file name) of the HTML help compiler (hhc.exe). If non-empty doxygen will try to run the HTML help compiler on the generated index.hhp.
 
 GENERATE_CHI.text = Generate CHI
@@ -552,6 +560,7 @@ EXTRA_PACKAGES.note = The EXTRA_PACKAGES tag can be to specify one or more names
 
 LATEX_HEADER.text = LaTeX Header
 LATEX_HEADER.group = LaTeX output
+LATEX_HEADER.type = file
 LATEX_HEADER.note = The LATEX_HEADER tag can be used to specify a personal LaTeX header for the generated latex document. The header should contain everything until the first chapter. If it is left blank doxygen will generate a standard header. Notice: only use this tag if you know what you are doing!
 
 PDF_HYPERLINKS.text = PDF Hyperlinks
@@ -645,10 +654,12 @@ XML_OUTPUT.note = The XML_OUTPUT tag is used to specify where the XML pages will
 
 XML_SCHEMA.text = XML Schema
 XML_SCHEMA.group = XML Output
+XML_SCHEMA.type = file
 XML_SCHEMA.note = The XML_SCHEMA tag can be used to specify an XML schema, which can be used by a validating XML parser to check the syntax of the XML files.
 
 XML_DTD.text = XML DTD
 XML_DTD.group = XML Output
+XML_DTD.type = file
 XML_DTD.note = The XML_DTD tag can be used to specify an XML DTD, which can be used by a validating XML parser to check the syntax of the XML files.
 
 XML_PROGRAMLISTING.text = XML Program Listing
@@ -774,6 +785,7 @@ EXTERNAL_GROUPS.note = If the EXTERNAL_GROUPS tag is set to YES all external gro
 
 PERL_PATH.text = Perl Path
 PERL_PATH.group = External References
+PERL_PATH.type = file
 PERL_PATH.note = The PERL_PATH should be the absolute path and name of the perl script interpreter (i.e. the result of `which perl').
 
 #---------------------------------------------------------------------------
@@ -851,6 +863,7 @@ DOT_IMAGE_FORMAT.note = The DOT_IMAGE_FORMAT tag can be used to set the image fo
 
 DOT_PATH.text = DOT Path
 DOT_PATH.group = dot Tool
+DOT_PATH.type = file
 DOT_PATH.note = The tag DOT_PATH can be used to specify the path where the dot tool can be found. If left blank, it is assumed the dot tool can be found on the path.
 
 DOTFILE_DIRS.text = DOT Files Directories

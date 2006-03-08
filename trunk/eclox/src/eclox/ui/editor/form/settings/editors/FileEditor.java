@@ -28,14 +28,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-/**
- * Implements a setting editor that allows to browse for directories 
- * either in the workspace or in the file system.
- * 
- * @author gbrocker
- */
-public class DirectoryEditor extends TextEditor {
-	
+public class FileEditor extends TextEditor {
 	/**
 	 * the push button for browsing the file system
 	 */
@@ -100,10 +93,10 @@ public class DirectoryEditor extends TextEditor {
 		assert input != null;
 
 		String	result;
-		result = Convenience.browseFileSystemForDirectory( text.getShell(), input.getOwner(), input.getValue() );
+		result = Convenience.browseFileSystemForFile( text.getShell(), input.getOwner(), input.getValue() );
 		if( result!= null ) {
 			super.text.setText( result );
 		}
 	}
-	
+
 }

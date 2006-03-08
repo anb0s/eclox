@@ -16,10 +16,16 @@
 	In the editor, added support for directory path editor. Updated the editor
 	type for following settings: HTML_OUTPUT, LATEX_OUTPUT, RTF_OUTPUT,
 	MAN_OUTPUT, XML_OUTPUT and OUTPUT_DIRECTORY.
+
+	In the editor, added support for file path editor. Updated the editor
+	type for following settings: INPUT_FILTER, HTML_HEADER, HTML_FOOTER, 
+	HTML_STYLESHEET, CHM_FILE, HCC_LOCATION, LATEX_HEADER, XML_SCHEMA, 
+	XML_DTD, PERL_PATH, DOT_PATH, FILE_VERSION_FILTER, WARN_LOGFILE.
 	
-	In the editor, added support for a list editor. Updated the setting
-	definitions of ALIASES, FILE_PATTERNS, EXCLUDE_PATTERNS, EXAMPLE_PATTERNS,
-	INCLUDE_FILE_PATTERNS and PREDEFINED to use this editor.
+	In the editor, added support for list, directory list, and file/directory
+	list editors. Updated the setting definitions of ALIASES, FILE_PATTERNS,
+	EXCLUDE_PATTERNS, EXAMPLE_PATTERNS,	INCLUDE_FILE_PATTERNS, PREDEFINED,
+	INPUT, EXCLUDE, EXAMPLE_PATH, IMAGE_PATH to use these editors.
 	
 	Updated the default editor icon.
 	

@@ -32,7 +32,7 @@ public class DirectoryListEditor extends ListEditor {
 
 
 	protected String editValueCompound( Shell parent, Setting setting, String compound ) {
-		return Convenience.browserForPath( parent, setting.getOwner(), compound, Convenience.BROWSE_DIRECTORY );
+		return Convenience.browserForPath( parent, setting.getOwner(), compound, Convenience.BROWSE_FILESYSTEM_DIRECTORY );
 	}
 
 }

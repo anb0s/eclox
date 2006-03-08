@@ -378,20 +378,15 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 		assert listViewer != null;
 		assert valueCompounds != null;
 		
-		// Inserts a new value and commits the changes.
-		valueCompounds.add( "new value" );
-		commit();
+		// Edits a new value.
+		String	newCompound = editValueCompound( listViewer.getControl().getShell(), setting, "new value" );
 		
-		// Selects the new inserted value compound and edits it.
-		boolean modified;
-		
-		listViewer.setSelection( new StructuredSelection(new Integer(valueCompounds.size() -1)) );
-		modified = editSelectedValueCompound();
-		
-		// If the new item has not been modified, cancel the addition.
-		if( modified == false ) {
-			valueCompounds.remove( valueCompounds.size() - 1 );
+		// Inserts the new compound if it has been validated.
+		if( newCompound != null )
+		{
+			valueCompounds.add( newCompound );
 			commit();
+			listViewer.setSelection( new StructuredSelection(new Integer(valueCompounds.size() -1)) );
 		}
 	}
 	
