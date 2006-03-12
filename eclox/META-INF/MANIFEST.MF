@@ -12,5 +12,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.ui.views,
  org.eclipse.core.runtime,
- org.eclipse.ui.forms
+ org.eclipse.ui.forms,
+ org.eclipse.ui.console
 Eclipse-AutoStart: true
