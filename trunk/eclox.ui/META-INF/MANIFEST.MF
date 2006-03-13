@@ -1,11 +1,12 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eclox Ui Plug-in
-Bundle-SymbolicName: eclox.ui
+Bundle-Name: Eclox Source Documentation Plug-in
+Bundle-SymbolicName: org.gna.eclox.ui
 Bundle-Version: 0.4.4
 Bundle-Activator: eclox.ui.Plugin
 Bundle-Vendor: Guillaume Brocker
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.ui.console
 Eclipse-AutoStart: true

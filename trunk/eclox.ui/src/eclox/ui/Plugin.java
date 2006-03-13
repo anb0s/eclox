@@ -4,13 +4,23 @@ import org.eclipse.ui.plugin.*;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.BundleContext;
 
+import eclox.ui.console.Console;
+
 /**
  * The main plugin class to be used in the desktop.
  */
 public class Plugin extends AbstractUIPlugin {
 
-	//The shared instance.
+	/**
+	 * the shared instance
+	 */
 	private static Plugin plugin;
+	
+	/**
+	 * the managed console instance
+	 */
+	private Console console = new Console();
+	
 	
 	/**
 	 * The constructor.
@@ -39,6 +49,16 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public static Plugin getDefault() {
 		return plugin;
+	}
+	
+	/**
+	 * Retrieves the managed console instance.
+	 * 
+	 * @return	a console instance
+	 */
+	public Console getConsole()
+	{
+		return console;
 	}
 
 	/**

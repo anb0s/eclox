@@ -27,6 +27,8 @@ import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 
+import eclox.ui.Plugin;
+
 
 /**
  * Implements the doxygen output console
@@ -36,17 +38,13 @@ import org.eclipse.ui.console.MessageConsole;
 public class Console extends MessageConsole {
 	
 	/**
-	 * the default console instance
-	 */
-	private static Console console = new Console();
-	
-	/**
 	 * Shows the doxygen console
 	 *
 	 */
 	public static void show()
 	{
 		IConsoleManager	manager = ConsolePlugin.getDefault().getConsoleManager();
+		Console			console = Plugin.getDefault().getConsole();
 		
 		// Searches if the consoles is alreay registered.
 		IConsole	[]		existings = manager.getConsoles();

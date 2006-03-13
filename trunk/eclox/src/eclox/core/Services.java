@@ -33,7 +33,6 @@ import org.eclipse.ui.PlatformUI;
 
 import eclox.build.BuildInProgressError;
 import eclox.build.BuildJob;
-import eclox.ui.console.Console;
 import eclox.ui.view.BuildLogView;
 
 /**
@@ -63,8 +62,6 @@ public final class Services {
 		else if( autoSaveValue == eclox.preferences.Values.AUTO_SAVE_ALWAYS ) {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( false );
 		}
-		
-		Console.show();
 		
 		BuildLogView.show();
 		BuildJob.getDefault().setDoxyfile(doxyfile);
