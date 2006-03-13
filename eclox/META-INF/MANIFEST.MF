@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eclox Source Documentation Plug-in
-Bundle-SymbolicName: org.gna.eclox.core; singleton:=true
-Bundle-Version: 0.4.4
+Bundle-Name: Eclox Plug-in
+Bundle-SymbolicName: org.gna.eclox; singleton:=true
+Bundle-Version: 0.5.0
 Bundle-ClassPath: eclox.jar
 Bundle-Activator: eclox.core.Plugin
 Bundle-Vendor: Guillaume Brocker

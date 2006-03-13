@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclox Source Documentation Plug-in
 Bundle-SymbolicName: org.gna.eclox.ui
-Bundle-Version: 0.4.4
+Bundle-Version: 0.5.0
 Bundle-Activator: eclox.ui.Plugin
 Bundle-Vendor: Guillaume Brocker
 Bundle-Localization: plugin

@@ -33,12 +33,6 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
    </url>
 
    <plugin
-         id="org.gna.eclox.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.gna.eclox.help"
          download-size="0"
          install-size="0"
@@ -50,5 +44,17 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.gna.eclox"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
+
+   <plugin
+         id="org.gna.eclox.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

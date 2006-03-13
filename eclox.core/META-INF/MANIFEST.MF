@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclox Core Plug-in
+Bundle-SymbolicName: org.gna.eclox.core
+Bundle-Version: 0.5.0
+Bundle-Vendor: Guillaume Brocker
+Bundle-Localization: plugin
