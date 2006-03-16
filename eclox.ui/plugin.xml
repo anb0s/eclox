@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="eclox.ui.editor.Editor"
+            default="true"
+            extensions="doxyfile"
+            filenames="doxyfile"
+            icon="icons/file-16.png"
+            id="eclox.ui.editor.Editor"
+            name="Doxyfile Editor"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="eclox.ui.wizard.NewDoxyfileWizard"
+            hasPages="true"
+            icon="icons/book-16.png"
+            id="eclox.ui.wizard.NewDoxyfile"
+            name="New Doxyfile"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="eclox.ui.doxyfilepupop"
+            nameFilter="*doxyfile*"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="eclox.ui.action.BuildPopupActionDelegate"
+               icon="icons/book-16.png"
+               id="eclox.ui.action.build"
+               label="Build Documentation"/>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="eclox.ui.PreferencePage"
+            id="eclox.ui.preferencePage"
+            name="Doxygen"/>
+   </extension>
+
+</plugin>
