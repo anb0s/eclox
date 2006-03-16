@@ -2,8 +2,9 @@
 <feature
       id="org.gna.eclox"
       label="eclox"
-      version="0.4.4"
-      provider-name="Guillaume Brocker">
+      version="0.5.0"
+      provider-name="Guillaume Brocker"
+      plugin="org.gna.eclox">
 
    <description url="http://home.gna.org/eclox">
       Eclox provides the Doxygen documentation system for Eclipse.
