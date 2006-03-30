@@ -1,6 +1,6 @@
 /*
 	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003-2004 Guillaume Brocker
+	Copyright (C) 2003-2006 Guillaume Brocker
 
 	This file is part of eclox.
 
@@ -22,7 +22,13 @@
 package eclox.core.build;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.SelectableChannel;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -32,72 +38,80 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 import eclox.core.doxygen.Doxygen;
-import eclox.core.doxygen.DoxygenException;
 
 /**
  * Implement a build job.
  * 
- * @author gbrocker
+ * @author Guillaume Brocker
  */
 public class BuildJob extends Job {
-	/**
-	 * Implement an internal watch exception class.
-	 */
-	private class WatchException extends Throwable {
-		/**
-		 * The watch status
-		 */
-		public IStatus status;
-		
-		/**
-		 * Constructor.
-		 * 
-		 * @param	The watch status.
-		 */
-		public WatchException(IStatus status) {
-			this.status = status;
-		}
-	}
 	
 	/**
-	 * Implement a build output listener manager.
+	 * A string buffer containing the job's log.
 	 */
-// TODO eclox split refactoring
-//	private class BuildOutputListenerManager extends ListenerManager {
-//		/**
-//		 * Constructor.
-//		 */
-//		public BuildOutputListenerManager() {
-//			super(BuildOutputListener.class);
-//		}
-//		
-//		/**
-//		 * Add a new listener.
-//		 * 
-//		 * @param	listener	The listener to add.
-//		 */
-//		public void addListener(BuildOutputListener listener) {
-//			super.addListener(listener);
-//		}
-//		
-//		/**
-//		 * Remove a listener.
-//		 * 
-//		 * @param	listener	The listener to remove.
-//		 */
-//		public void removeListener(BuildOutputListener listener) {
-//			super.removeListener(listener);
-//		}
-//		
-//		/**
-//		 * Fire the build output changed event to the registered listeners.
-//		 * 
-//		 * @param	event	The notification event. 
-//		 */
-//		public void fireBuildOutputChangedEvent(BuildOutputEvent event) {
-//			super.fireEvent(event, "buildOutputChanged");
-//		}
-//	}
+	private StringBuffer log = new StringBuffer();
+	
+	/**
+	 * Implements a runnable object that will log output and
+	 * error streams of the given process.
+	 * 
+	 * @author Guillaume Brocker
+	 */
+	private class ProcessStreamsLogger implements Runnable
+	{
+		private Selector		selector = Selector.open();
+				
+		/**
+		 * Constructor
+		 * 
+		 * @param process	a process whose outpus will be logged
+		 * 
+		 * @throws IOException
+		 */
+		public ProcessStreamsLogger( Process process ) throws IOException 
+		{
+			SelectableChannel channel;
+			
+			channel = (SelectableChannel) Channels.newChannel( process.getInputStream() );
+			channel.register( selector, channel.validOps() );
+			
+			channel = (SelectableChannel) Channels.newChannel( process.getErrorStream() );
+			channel.register( selector, channel.validOps() );
+		}
+		
+		public void run() {
+			for(;;)
+			{
+				try
+				{
+					// Selects channels ready to read.
+					selector.select();
+					
+					// Retrieves the iterator on the ready channels.
+					Iterator		it = selector.selectedKeys().iterator();
+					while( it.hasNext() )
+					{
+						// Retrieves usefull objects 
+						SelectionKey			key = (SelectionKey) it.next();
+						ReadableByteChannel	channel = (ReadableByteChannel) key.channel();
+						ByteBuffer			buffer = ByteBuffer.allocate( 1024 );
+
+						// Reads the channel content and append it to the log.
+						channel.read( buffer );
+						log.append( buffer.toString() );
+						
+						// Removes the current selection from the selected keys.
+						it.remove();
+					}
+				}
+				catch( IOException e )
+				{
+					break;
+				}
+			}			
+		}
+		
+	};
 	
 	/**
 	 * The global build job instance.
@@ -110,28 +124,12 @@ public class BuildJob extends Job {
 	private IFile doxyfile;
 	
 	/**
-	 * The build output listener manager.
-	 */
-//	 TODO eclipse split refactoring
-//	private BuildOutputListenerManager buildOutputListenerManager = new BuildOutputListenerManager();
-	
-	/**
 	 * Constructor.
 	 */
 	private BuildJob() {
 		super("Doxygen Build");
 		this.setPriority(Job.BUILD);
 	}
-	
-	/**
-	 * Add a new build output listener.
-	 * 
-	 * @param	listener	A new build output listener to add.
-	 */
-//	 TODO eclipse split refactoring
-//	public void addBuildOutputListener(BuildOutputListener listener) {
-//		this.buildOutputListenerManager.addListener(listener);
-//	}
 	
 	/**
 	 * Launches the build of the specified file.
@@ -179,17 +177,6 @@ public class BuildJob extends Job {
 	}
 	
 	/**
-	 * Remove a build output listener
-	 * 
-	 * @param	listener	The build output listener to remove.
-	 */
-//	 TODO eclipse split refactoring
-
-//	public void removeBuildOutputListener(BuildOutputListener listener) {
-//		this.buildOutputListenerManager.removeListener(listener);
-//	}
-	
-	/**
 	 * Run the job.
 	 * 
 	 * @param	monitor	The progress monitor to use to report work progression
@@ -198,31 +185,21 @@ public class BuildJob extends Job {
 	 * @return	The job status.
 	 */
 	protected IStatus run(IProgressMonitor monitor) {
-		IStatus	result = null;
-		try {				
+		try
+		{
 			Process buildProcess = Doxygen.build(this.doxyfile);
-
+			Thread	outputLogger = new Thread( new ProcessStreamsLogger(buildProcess) );
+	
 			monitor.beginTask(this.doxyfile.getFullPath().toString(), 100);
-			BuildHistory.getDefault().log(this.doxyfile);
-			for(;;) {
-				this.watchBuildProcessOutput(buildProcess.getInputStream());
-				this.watchBuildProcessOutput(buildProcess.getErrorStream());
-				this.watchBuildProcessLife(buildProcess);
-				this.watchProgressMonitor(monitor);
-				Thread.yield();
-			}
+			outputLogger.start();
+			buildProcess.waitFor();
+			monitor.done();
+			return Status.OK_STATUS;
 		}
-		catch(WatchException watchException) {
-			result = watchException.status;
+		catch( Throwable throwable )
+		{
+			return new Status( Status.ERROR, "!!plugin ID!!", 0, "Unexpected exception", throwable );
 		}
-		catch(DoxygenException doxygenException) {
-			result = new Status(Status.ERROR, eclox.core.Plugin.getDefault().toString(), 0, doxygenException.getMessage(), null);
-		}
-		catch(Throwable throwable) {
-			result = new Status(Status.ERROR, eclox.core.Plugin.getDefault().toString(), 0, "Unexpected error while building.", throwable);
-		}
-		monitor.done();
-		return result;
 	}
 	
 	/**
@@ -239,55 +216,4 @@ public class BuildJob extends Job {
 		}
 	}
 	
-	/**
-	 * Watch for the build process life.
-	 * 
-	 * @param	process	The build process to watch.
-	 * 
-	 * @throws	WatchException	the specified process has terminated.
-	 */
-	private void watchBuildProcessLife(Process process) throws WatchException {
-		try {
-			process.exitValue();
-			throw new WatchException(Status.OK_STATUS);
-		}
-		catch(IllegalThreadStateException e) {
-			// Nothing to do, the process is still alive.
-		}
-	}
-	
-	/**
-	 * Watch for data on the specified input stream. When data has been found,
-	 * it raises a build output changed event.
-	 * 
-	 * @param	input	The intput stream to watch.
-	 * 
-	 * @throws	IOException	an error occured while reding the input.
-	 */
-	private void watchBuildProcessOutput(InputStream input) throws IOException {
-		int	available = input.available();
-		
-		if(available != 0) {
-			byte buffer[] = new byte[available];
-			
-			input.read(buffer);
-// TODO eclipse split refactoring
-//			this.buildOutputListenerManager.fireBuildOutputChangedEvent(
-//				new BuildOutputEvent(this, new String(buffer))
-//			);
-		}
-	}
-	
-	/**
-	 * Watch the progress monitor for user cancel request.
-	 * 
-	 * @param	monitor	The progress monitor to watch.
-	 * 
-	 * @throws	WatchException	the user has requestred the job to terminate.
-	 */
-	private void watchProgressMonitor(IProgressMonitor monitor) throws WatchException {
-		if(monitor.isCanceled() == true) {
-			throw new WatchException(Status.CANCEL_STATUS);
-		}
-	}
 }
