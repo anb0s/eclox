@@ -42,6 +42,7 @@ import eclox.core.build.BuildHistory;
 import eclox.core.build.BuildJob;
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.ui.Plugin;
+import eclox.ui.console.Console;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
 
 /**
@@ -195,6 +196,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			
 			// If there is a doxyfile, build it.
 			if(doxyfile != null) {
+				Console.show();
 				BuildJob.buildDoxyfile( doxyfile );
 			}
 		}
