@@ -21,12 +21,14 @@
 
 package eclox.ui.console;
 
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleDocumentPartitioner;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.MessageConsoleStream;
 
+import eclox.core.build.BuildJob;
 import eclox.ui.Plugin;
 
 
@@ -38,9 +40,11 @@ import eclox.ui.Plugin;
 public class Console extends MessageConsole {
 	
 	/**
-	 * Shows the doxygen console.
+	 * Shows the doxygen console and return that console
+	 * 
+	 * @return	the console that has been shown
 	 */
-	public static void show()
+	public static Console show()
 	{
 		IConsoleManager	manager = ConsolePlugin.getDefault().getConsoleManager();
 		Console			console = Plugin.getDefault().getConsole();
@@ -61,8 +65,55 @@ public class Console extends MessageConsole {
 		
 		// Finaly shows the console to the world.
 		manager.showConsoleView( console );
+		return console;
+	}
+	
+	/**
+	 * Implements a runnable object that will monitor the log of the given
+	 * build job and append new entries to the given message console stream
+	 * 
+	 * @author Guillaume Brocker
+	 */
+	class LogMonitor implements Runnable
+	{
+		private BuildJob				job;
+		private MessageConsoleStream	stream;
+		private int current				= 0;
+		
+		public LogMonitor( BuildJob job, MessageConsoleStream stream )
+		{
+			this.job = job;
+			this.stream = stream;
+			
+			schedule();
+		}
+		
+		public void run() {
+			String	log = job.getLog();
+			int		logLength = log.length(); 
+			if( current != logLength )
+			{
+				stream.print( log.substring(current) );
+				current = logLength;
+			}
+			
+			schedule();			
+		}
+		
+		private void schedule()
+		{
+			if( job.getState() != Job.NONE )
+			{
+				ConsolePlugin.getStandardDisplay().timerExec( 125, this );
+			}
+		}		
 	}
 
+	/**
+	 * the current build job
+	 */
+//	private BuildJob job;
+	
 	/**
 	 * Constructor
 	 */
@@ -70,9 +121,26 @@ public class Console extends MessageConsole {
 	{
 		super( "Doxygen", null );
 	}
-
-	protected IConsoleDocumentPartitioner getPartitioner()
+	
+	/**
+	 * Updates the current build job whose log will be displayed or null if none
+	 * 
+	 * @param	job	a doxygen build job or null if none
+	 */
+	public void setJob( BuildJob job )
 	{
-		return null;
+		// References the new job.
+//		this.job = job;
+		
+		// Updates the console name.
+		String	name = "Doxyfile";
+		if( job != null )
+		{
+			name = name.concat( " [" + job.getDoxyfile().getFullPath().toString() + "]" );
+		}
+		setName( name );
+		clearConsole();
+		
+		new LogMonitor( job, newMessageStream() );
 	}
 }

@@ -23,8 +23,8 @@ package eclox.ui.action;
 
 import org.eclipse.jface.action.Action;
 
-import eclox.core.Plugin;
-import eclox.core.build.BuildJob;
+//import eclox.core.Plugin;
+//import eclox.core.build.BuildJob;
 
 /**
  * Implement a stop buld action.
