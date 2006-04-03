@@ -92,6 +92,7 @@ public class BuildJob extends Job {
 				if( line != null )
 				{
 					log.append( line );
+					log.append( "\n" );
 				}
 				else
 				{
@@ -196,6 +197,15 @@ public class BuildJob extends Job {
 		return this.doxyfile;
 	}
 	
+	/**
+	 * Retrives the build log of the job.
+	 * 
+	 * @return	the build log
+	 */
+	public String getLog() {
+		return log.toString();
+	}
+	
 	public boolean belongsTo(Object family) {
 		if( family == FAMILY )
 		{
@@ -220,12 +230,10 @@ public class BuildJob extends Job {
 		{
 			Process	buildProcess = Doxygen.build(this.doxyfile);
 			Thread	outLogger = new Thread( new StreamLogger(buildProcess.getInputStream()), "Doxygen Output Logger" );
-			Thread	errLogger = new Thread( new StreamLogger(buildProcess.getErrorStream()), "Doxygen Error Logger" );
 			
 			log.delete( 0, log.length() );
 			monitor.beginTask( this.doxyfile.getFullPath().toString(), 100 );
 			outLogger.start();
-			errLogger.start();
 			buildProcess.waitFor();
 			monitor.done();
 			return Status.OK_STATUS;

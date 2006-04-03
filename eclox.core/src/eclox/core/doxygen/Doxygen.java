@@ -45,12 +45,14 @@ public final class Doxygen {
 	 */
 	public static Process build( IFile file ) throws DoxygenException {
 		try {
-			IPath		workDir = getDir( file ); 
 			String[]	command = new String[2];
-
 			command[0] = getBuilderCommand();
 			command[1] = file.getLocation().makeAbsolute().toOSString();
-			return Runtime.getRuntime().exec( command, null, workDir.toFile() );
+			
+			ProcessBuilder	processBuilder = new ProcessBuilder( command );
+			processBuilder.directory( getDir(file).toFile() );
+			processBuilder.redirectErrorStream( true );
+			return processBuilder.start();
 		}
 		catch(Throwable throwable) {
 			throw new DoxygenException("Unable to launch Doxygen. Please check your path environment variable or edit the preferences.", throwable);
