@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 import eclox.core.build.BuildHistory;
-import eclox.core.build.BuildJob;
+
 
 /**
  * Implements the core eclox plugin
@@ -59,7 +59,6 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		BuildJob.getDefault().cancel();
 		BuildHistory.getDefault().store();
 		super.stop(context);
 		plugin = null;
