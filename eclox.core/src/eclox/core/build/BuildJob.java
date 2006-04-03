@@ -21,20 +21,17 @@
 
 package eclox.core.build;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.SelectableChannel;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.util.Iterator;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 
 import eclox.core.doxygen.Doxygen;
@@ -47,20 +44,24 @@ import eclox.core.doxygen.Doxygen;
 public class BuildJob extends Job {
 	
 	/**
-	 * A string buffer containing the job's log.
+	 * a string that is used to identify the doxygen build job family 
 	 */
-	private StringBuffer log = new StringBuffer();
+	public static String FAMILY = "Doxygen Build Job";
+	
 	
 	/**
-	 * Implements a runnable object that will log output and
-	 * error streams of the given process.
+	 * Implements a runnable object that will read the content of a stream line by line,
+	 * prefix and appende each line to the log. 
 	 * 
 	 * @author Guillaume Brocker
 	 */
-	private class ProcessStreamsLogger implements Runnable
+	private class StreamLogger implements Runnable
 	{
-		private Selector		selector = Selector.open();
-				
+		/**
+		 * the buffered input stream reader used to get text from the given stream
+		 */
+		BufferedReader	reader;
+		
 		/**
 		 * Constructor
 		 * 
@@ -68,67 +69,58 @@ public class BuildJob extends Job {
 		 * 
 		 * @throws IOException
 		 */
-		public ProcessStreamsLogger( Process process ) throws IOException 
+		public StreamLogger( InputStream stream ) throws IOException 
 		{
-			SelectableChannel channel;
-			
-			channel = (SelectableChannel) Channels.newChannel( process.getInputStream() );
-			channel.register( selector, channel.validOps() );
-			
-			channel = (SelectableChannel) Channels.newChannel( process.getErrorStream() );
-			channel.register( selector, channel.validOps() );
+			reader = new BufferedReader( new InputStreamReader(stream) );
 		}
 		
 		public void run() {
 			for(;;)
 			{
+				// Reads the new line.
+				String	line;
 				try
 				{
-					// Selects channels ready to read.
-					selector.select();
-					
-					// Retrieves the iterator on the ready channels.
-					Iterator		it = selector.selectedKeys().iterator();
-					while( it.hasNext() )
-					{
-						// Retrieves usefull objects 
-						SelectionKey			key = (SelectionKey) it.next();
-						ReadableByteChannel	channel = (ReadableByteChannel) key.channel();
-						ByteBuffer			buffer = ByteBuffer.allocate( 1024 );
-
-						// Reads the channel content and append it to the log.
-						channel.read( buffer );
-						log.append( buffer.toString() );
-						
-						// Removes the current selection from the selected keys.
-						it.remove();
-					}
+					line = reader.readLine();
 				}
 				catch( IOException e )
 				{
 					break;
 				}
+				
+				// If there is a line, appends it to the log.
+				if( line != null )
+				{
+					log.append( line );
+				}
+				else
+				{
+					break;
+				}
+				
 			}			
 		}
 		
 	};
 	
 	/**
-	 * The global build job instance.
-	 */
-	private static BuildJob defaultInstance = new BuildJob();
-	
-	/**
-	 * The current doxyfile to build.
+	 * the current doxyfile to build
 	 */
 	private IFile doxyfile;
 	
 	/**
+	 * A string buffer containing the job's log.
+	 */
+	private StringBuffer log = new StringBuffer();
+	
+	/**
 	 * Constructor.
 	 */
-	private BuildJob() {
-		super("Doxygen Build");
-		this.setPriority(Job.BUILD);
+	private BuildJob( IFile doxyfile) {
+		super( "Doxygen Build" );
+		
+		this.doxyfile = doxyfile;
+		this.setPriority( Job.BUILD );
 	}
 	
 	/**
@@ -141,11 +133,11 @@ public class BuildJob extends Job {
 	 * 
 	 * @author gbrocker
 	 */
-	public static void buildDoxyfile( IFile doxyfile ) throws /*PartInitException,*/ BuildInProgressError {
-		Preferences preferences = eclox.core.Plugin.getDefault().getPluginPreferences();
-		String		autoSaveValue = preferences.getString( eclox.core.preferences.Names.AUTO_SAVE );
-		
+	public static BuildJob buildDoxyfile( IFile doxyfile ) /*PartInitException,*/  {
 //		 TODO eclipse split refactoring
+//		Preferences preferences = eclox.core.Plugin.getDefault().getPluginPreferences();
+//		String		autoSaveValue = preferences.getString( eclox.core.preferences.Names.AUTO_SAVE );
+//		
 //		if( autoSaveValue == eclox.core.preferences.Values.AUTO_SAVE_ASK ) {
 //			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( true );
 //		}
@@ -153,18 +145,46 @@ public class BuildJob extends Job {
 //			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( false );
 //		}
 		
-		BuildJob.getDefault().setDoxyfile(doxyfile);
-		BuildJob.getDefault().schedule();
+		// If no current job exists for the given doxyfile, then creates a new one.
+		BuildJob	buildJob = findJob( doxyfile );
+		if( buildJob == null )
+		{
+			buildJob = new BuildJob( doxyfile );
+		}
+		buildJob.schedule();
+		
+		// Job's done.
+		return buildJob;
 	}
-
 	
 	/**
-	 * Retrieve the current build job instance.
+	 * Retrieves the build job assocuated to the given doxyfile.
 	 * 
-	 * @return	The current build job instance.
+	 * @param	doxyfile	a given doxyfile instance
+	 * 
+	 * @return	a build job that is in charge of building the gven doxyfile, or null
+	 * 			when none
 	 */
-	public static BuildJob getDefault() {
-		return BuildJob.defaultInstance;
+	public static BuildJob findJob( IFile doxyfile )
+	{
+		// Retrieves all jobs of the build job family.
+		IJobManager	jobManager = Platform.getJobManager();
+		Job			jobs[] = jobManager.find( FAMILY );
+		BuildJob	result = null;
+		
+		// Walks through the found jobs to find a relevant build job.
+		for( int i = 0; i != jobs.length; ++i )
+		{
+			BuildJob	buildJob = (BuildJob) jobs[i];
+			if( buildJob.getDoxyfile() == doxyfile )
+			{
+				result = buildJob;
+				break;
+			}
+		}
+		
+		// Job's done.
+		return result;
 	}
 	
 	/**
@@ -176,6 +196,17 @@ public class BuildJob extends Job {
 		return this.doxyfile;
 	}
 	
+	public boolean belongsTo(Object family) {
+		if( family == FAMILY )
+		{
+			return true;
+		}
+		else
+		{
+			return super.belongsTo( family );
+		}
+	}
+
 	/**
 	 * Run the job.
 	 * 
@@ -184,14 +215,17 @@ public class BuildJob extends Job {
 	 * 
 	 * @return	The job status.
 	 */
-	protected IStatus run(IProgressMonitor monitor) {
+	protected IStatus run( IProgressMonitor monitor ) {
 		try
 		{
-			Process buildProcess = Doxygen.build(this.doxyfile);
-			Thread	outputLogger = new Thread( new ProcessStreamsLogger(buildProcess) );
-	
-			monitor.beginTask(this.doxyfile.getFullPath().toString(), 100);
-			outputLogger.start();
+			Process	buildProcess = Doxygen.build(this.doxyfile);
+			Thread	outLogger = new Thread( new StreamLogger(buildProcess.getInputStream()), "Doxygen Output Logger" );
+			Thread	errLogger = new Thread( new StreamLogger(buildProcess.getErrorStream()), "Doxygen Error Logger" );
+			
+			log.delete( 0, log.length() );
+			monitor.beginTask( this.doxyfile.getFullPath().toString(), 100 );
+			outLogger.start();
+			errLogger.start();
 			buildProcess.waitFor();
 			monitor.done();
 			return Status.OK_STATUS;
@@ -199,20 +233,6 @@ public class BuildJob extends Job {
 		catch( Throwable throwable )
 		{
 			return new Status( Status.ERROR, "!!plugin ID!!", 0, "Unexpected exception", throwable );
-		}
-	}
-	
-	/**
-	 * Set the next doxyfile to build.
-	 * 
-	 * @param	doxyfile	The next doxyfile to build.
-	 */
-	public void setDoxyfile(IFile doxyfile) throws BuildInProgressError {
-		if(this.getState() == Job.NONE) {
-			this.doxyfile = doxyfile;
-		}
-		else {
-			throw new BuildInProgressError();
 		}
 	}
 	
