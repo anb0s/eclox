@@ -37,13 +37,15 @@ public class StopAction extends Action {
 	 */
 	public StopAction() {
 		super( "Stop", null );
-		setEnabled(BuildJob.getDefault().getState()==BuildJob.RUNNING);
+//		 TODO refactoring expected.
+//		setEnabled(BuildJob.getDefault().getState()==BuildJob.RUNNING);
 	}
 	
 	/**
 	 * Run the action.
 	 */
 	public void run() {
-		BuildJob.getDefault().cancel();
+// TODO refactoring expected.
+//		BuildJob.getDefault().cancel();
 	}
 }

@@ -38,8 +38,7 @@ import eclox.ui.Plugin;
 public class Console extends MessageConsole {
 	
 	/**
-	 * Shows the doxygen console
-	 *
+	 * Shows the doxygen console.
 	 */
 	public static void show()
 	{
@@ -64,6 +63,9 @@ public class Console extends MessageConsole {
 		manager.showConsoleView( console );
 	}
 
+	/**
+	 * Constructor
+	 */
 	public Console()
 	{
 		super( "Doxygen", null );

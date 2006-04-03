@@ -30,6 +30,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import eclox.core.build.BuildJob;
 import eclox.ui.Plugin;
+import eclox.ui.console.Console;
 
 /**
  * Implement a popup menu action delegate for contextual building.
@@ -50,6 +51,7 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 				IStructuredSelection	structuredSelection = (IStructuredSelection) this.selection;
 				IFile					doxyfile = (IFile) structuredSelection.getFirstElement();
 				
+				Console.show();
 				BuildJob.buildDoxyfile( doxyfile );
 			}
 			catch(Throwable throwable) {
