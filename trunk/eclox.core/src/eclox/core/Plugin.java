@@ -24,8 +24,6 @@ package eclox.core;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-import eclox.core.build.BuildHistory;
-
 
 /**
  * Implements the core eclox plugin
@@ -52,14 +50,12 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		BuildHistory.getDefault().load();
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		BuildHistory.getDefault().store();
 		super.stop(context);
 		plugin = null;
 	}

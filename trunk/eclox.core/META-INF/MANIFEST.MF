@@ -9,7 +9,6 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime
 Bundle-Activator: eclox.core.Plugin
 Export-Package: eclox.core,
- eclox.core.build,
  eclox.core.doxyfiles,
  eclox.core.doxyfiles.io,
  eclox.core.doxygen,
