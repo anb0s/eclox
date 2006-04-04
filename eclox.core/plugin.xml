@@ -5,5 +5,14 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="eclox.core.preferences.Initializer"/>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            file-extensions="Doxyfile, doxyfile"
+            file-names="Doxyfile, doxyfile, *"
+            id="doxyfile"
+            name="Doxyfile"
+            priority="normal"/>
+   </extension>
 
 </plugin>

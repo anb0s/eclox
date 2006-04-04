@@ -19,22 +19,26 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.core.build;
+package eclox.core.doxygen;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 
-import eclox.core.doxygen.Doxygen;
 
 /**
  * Implement a build job.
@@ -44,65 +48,44 @@ import eclox.core.doxygen.Doxygen;
 public class BuildJob extends Job {
 	
 	/**
+	 * Implements a resource change listener that will remove a given job if its
+	 * doxyfile gets deleted.
+	 * 
+	 * @author	Guillaume Brocker
+	 */
+	private class MyResourceChangeListener implements IResourceChangeListener
+	{
+		/**
+		 * the build job whose doxyfile will be monitored
+		 */
+		private BuildJob job;
+		
+		public MyResourceChangeListener( BuildJob job )
+		{
+			this.job = job;
+		}
+		
+		public void resourceChanged(IResourceChangeEvent event) {
+			IResourceDelta	doxyfileDelta = event.getDelta().findMember( job.getDoxyfile().getFullPath() );
+			if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
+			{
+				jobs.remove( job );
+				ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
+			}
+		}
+		
+	}
+	
+	/**
 	 * a string that is used to identify the doxygen build job family 
 	 */
 	public static String FAMILY = "Doxygen Build Job";
 	
-	
 	/**
-	 * Implements a runnable object that will read the content of a stream line by line,
-	 * prefix and appende each line to the log. 
-	 * 
-	 * @author Guillaume Brocker
+	 * a collection containing all created build jobs
 	 */
-	private class StreamLogger implements Runnable
-	{
-		/**
-		 * the buffered input stream reader used to get text from the given stream
-		 */
-		BufferedReader	reader;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param process	a process whose outpus will be logged
-		 * 
-		 * @throws IOException
-		 */
-		public StreamLogger( InputStream stream ) throws IOException 
-		{
-			reader = new BufferedReader( new InputStreamReader(stream) );
-		}
-		
-		public void run() {
-			for(;;)
-			{
-				// Reads the new line.
-				String	line;
-				try
-				{
-					line = reader.readLine();
-				}
-				catch( IOException e )
-				{
-					break;
-				}
-				
-				// If there is a line, appends it to the log.
-				if( line != null )
-				{
-					log.append( line );
-					log.append( "\n" );
-				}
-				else
-				{
-					break;
-				}
-				
-			}			
-		}
-		
-	};
+	private static Collection jobs = new HashSet();
+	
 	
 	/**
 	 * the current doxyfile to build
@@ -122,6 +105,11 @@ public class BuildJob extends Job {
 		
 		this.doxyfile = doxyfile;
 		this.setPriority( Job.BUILD );
+		this.setRule( doxyfile );
+		
+		// References the jobs in the global collection and add a doxyfile listener.
+		jobs.add( this );
+		ResourcesPlugin.getWorkspace().addResourceChangeListener( new MyResourceChangeListener(this), IResourceChangeEvent.POST_CHANGE );
 	}
 	
 	/**
@@ -134,7 +122,7 @@ public class BuildJob extends Job {
 	 * 
 	 * @author gbrocker
 	 */
-	public static BuildJob buildDoxyfile( IFile doxyfile ) /*PartInitException,*/  {
+	public static BuildJob scheduleBuild( IFile doxyfile ) /*PartInitException,*/  {
 //		 TODO eclipse split refactoring
 //		Preferences preferences = eclox.core.Plugin.getDefault().getPluginPreferences();
 //		String		autoSaveValue = preferences.getString( eclox.core.preferences.Names.AUTO_SAVE );
@@ -159,6 +147,16 @@ public class BuildJob extends Job {
 	}
 	
 	/**
+	 * Retrieves all doxygen build jobs.
+	 * 
+	 * @return	an arry containing all doxygen build jobs (can be empty).
+	 */
+	public static BuildJob[] getAllJobs()
+	{
+		return (BuildJob[]) jobs.toArray( new BuildJob[0] );
+	}
+	
+	/**
 	 * Retrieves the build job assocuated to the given doxyfile.
 	 * 
 	 * @param	doxyfile	a given doxyfile instance
@@ -168,15 +166,12 @@ public class BuildJob extends Job {
 	 */
 	public static BuildJob findJob( IFile doxyfile )
 	{
-		// Retrieves all jobs of the build job family.
-		IJobManager	jobManager = Platform.getJobManager();
-		Job			jobs[] = jobManager.find( FAMILY );
-		BuildJob	result = null;
-		
 		// Walks through the found jobs to find a relevant build job.
-		for( int i = 0; i != jobs.length; ++i )
+		BuildJob	result = null;
+		Iterator	i = jobs.iterator();
+		while( i.hasNext() )
 		{
-			BuildJob	buildJob = (BuildJob) jobs[i];
+			BuildJob	buildJob = (BuildJob) i.next();
 			if( buildJob.getDoxyfile() == doxyfile )
 			{
 				result = buildJob;
@@ -229,11 +224,9 @@ public class BuildJob extends Job {
 		try
 		{
 			Process	buildProcess = Doxygen.build(this.doxyfile);
-			Thread	outLogger = new Thread( new StreamLogger(buildProcess.getInputStream()), "Doxygen Output Logger" );
 			
-			log.delete( 0, log.length() );
 			monitor.beginTask( this.doxyfile.getFullPath().toString(), 100 );
-			outLogger.start();
+			logStream( buildProcess.getInputStream() );
 			buildProcess.waitFor();
 			monitor.done();
 			return Status.OK_STATUS;
@@ -241,6 +234,42 @@ public class BuildJob extends Job {
 		catch( Throwable throwable )
 		{
 			return new Status( Status.ERROR, "!!plugin ID!!", 0, "Unexpected exception", throwable );
+		}
+	}
+	
+	/**
+	 * Logs the given stream content until the stream gets closed.
+	 * 
+	 * @param stream	the stream to log
+	 */
+	private void logStream( InputStream stream )
+	{
+		BufferedReader	reader = new BufferedReader( new InputStreamReader(stream) );
+		String			line;
+		
+		log.delete( 0, log.length() );
+		for(;;)
+		{
+			// Reads the new line.
+			try
+			{
+				line = reader.readLine();
+			}
+			catch( IOException e )
+			{
+				break;
+			}
+			
+			// If there is a line, appends it to the log.
+			if( line != null )
+			{
+				log.append( line );
+				log.append( "\n" );
+			}
+			else
+			{
+				break;
+			}	
 		}
 	}
 	
