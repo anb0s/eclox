@@ -28,7 +28,7 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
-import eclox.core.build.BuildJob;
+import eclox.core.doxygen.BuildJob;
 import eclox.ui.Plugin;
 
 
