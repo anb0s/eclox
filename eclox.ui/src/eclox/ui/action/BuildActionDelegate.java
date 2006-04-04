@@ -38,9 +38,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.PlatformUI;
 
-import eclox.core.build.BuildHistory;
-import eclox.core.build.BuildJob;
 import eclox.core.doxyfiles.Doxyfile;
+import eclox.core.doxygen.BuildJob;
 import eclox.ui.Plugin;
 import eclox.ui.console.Console;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
@@ -97,10 +96,10 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		this.menu = new Menu(parent);
 	
 		// Fill it up with the build history items.
-		IFile[]	doxyfiles = BuildHistory.getDefault().toArray();
-		for(int i=0; i < doxyfiles.length; i++) {
+		BuildJob[]	buildJobs = BuildJob.getAllJobs();
+		for(int i=0; i < buildJobs.length; i++) {
 			MenuItem	menuItem = new MenuItem(this.menu, SWT.PUSH);
-			IFile		currentDoxyfile = doxyfiles[i];
+			IFile		currentDoxyfile = buildJobs[i].getDoxyfile();
 		
 			menuItem.addSelectionListener( new MenuSelectionListener() );
 			menuItem.setData( currentDoxyfile );
@@ -154,10 +153,11 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			
 			// If there is no next doxyfile to build and the history is not empty
 			// set the first history element as the next doxyfile.
-			if(this.nextDoxyfile == null && BuildHistory.getDefault().size() != 0) {
-				IFile[]	historyFiles = BuildHistory.getDefault().toArray();
-				this.nextDoxyfile = historyFiles[0];
-			}
+// TODO refactoring expected. 
+//			if(this.nextDoxyfile == null && BuildHistory.getDefault().size() != 0) {
+//				IFile[]	historyFiles = BuildHistory.getDefault().toArray();
+//				this.nextDoxyfile = historyFiles[0];
+//			}
 			
 			// Check the existance of the doxyfile.
 			if(this.nextDoxyfile != null && this.nextDoxyfile.exists() == false) {
@@ -197,7 +197,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			// If there is a doxyfile, build it.
 			if(doxyfile != null) {
 				Console console = Console.show();
-				BuildJob job = BuildJob.buildDoxyfile( doxyfile );
+				BuildJob job = BuildJob.scheduleBuild( doxyfile );
 				console.setJob( job );
 			}
 		}

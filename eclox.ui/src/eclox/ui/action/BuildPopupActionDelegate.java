@@ -28,7 +28,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import eclox.core.build.BuildJob;
+import eclox.core.doxygen.BuildJob;
 import eclox.ui.Plugin;
 import eclox.ui.console.Console;
 
@@ -52,7 +52,7 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 				IFile					doxyfile = (IFile) structuredSelection.getFirstElement();
 				
 				Console	console = Console.show();
-				BuildJob job = BuildJob.buildDoxyfile( doxyfile );
+				BuildJob job = BuildJob.scheduleBuild( doxyfile );
 				console.setJob( job );
 			}
 			catch(Throwable throwable) {

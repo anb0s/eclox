@@ -41,5 +41,20 @@
             id="eclox.ui.preferencePage"
             name="Doxygen"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="eclox.ui.buildActionSet"
+            label="Doxygen Build"
+            visible="true">
+         <action
+               class="eclox.ui.action.BuildActionDelegate"
+               icon="icons/book-16.png"
+               id="eclox.ui.buildAction"
+               label="Doxygen Build"
+               style="pulldown"
+               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"/>
+      </actionSet>
+   </extension>
 
 </plugin>
