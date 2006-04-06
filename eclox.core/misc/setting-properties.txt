@@ -770,7 +770,7 @@ TAGFILES.note = Note to be done!
 
 GENERATE_TAGFILE.text = Generate Tag Files
 GENERATE_TAGFILE.group = External References
-GENERATE_TAGFILE.type = boolean
+GENERATE_TAGFILE.type = file
 GENERATE_TAGFILE.note = When a file name is specified after GENERATE_TAGFILE, doxygen will create a tag file that is based on the input files it reads.
 
 ALLEXTERNALS.text = All Externals
