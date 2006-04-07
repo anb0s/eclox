@@ -711,7 +711,7 @@ MACRO_EXPANSION.group = Preprocessing
 MACRO_EXPANSION.type = boolean
 MACRO_EXPANSION.note = If the MACRO_EXPANSION tag is set to YES Doxygen will expand all macro names in the source code. If set to NO (the default) only conditional compilation will be performed. Macro expansion can be done in a controlled way by setting EXPAND_ONLY_PREDEF to YES.
 
-EXPAND_ONLY_PREDEF.text = Expan Only Predefined
+EXPAND_ONLY_PREDEF.text = Expand Only Predefined
 EXPAND_ONLY_PREDEF.group = Preprocessing
 EXPAND_ONLY_PREDEF.type = boolean
 EXPAND_ONLY_PREDEF.note = If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES then the macro expansion is limited to the macros specified with the PREDEFINED and EXPAND_AS_PREDEFINED tags.
@@ -736,9 +736,9 @@ PREDEFINED.group = Preprocessing
 PREDEFINED.type = text list
 PREDEFINED.note = The PREDEFINED tag can be used to specify one or more macro names that are defined before the preprocessor is started (similar to the -D option of gcc). The argument of the tag is a list of macros of the form: name or name=definition (no spaces). If the definition and the = are omitted =1 is assumed. To prevent a macro definition from being undefined via #undef or recursively expanded use the := operator instead of the = operator.
 
-EXPAND_AS_DEFINED.text = Expan as Defined
+EXPAND_AS_DEFINED.text = Expand as Defined
 EXPAND_AS_DEFINED.group = Preprocessing
-EXPAND_AS_DEFINED.type = boolean
+EXPAND_AS_DEFINED.type = text list
 EXPAND_AS_DEFINED.note = If the MACRO_EXPANSION and EXPAND_ONLY_PREDEF tags are set to YES then this tag can be used to specify a list of macro names that should be expanded. The macro definition that is found in the sources will be used. Use the PREDEFINED tag if you want to use a different macro definition.
 
 SKIP_FUNCTION_MACROS.text = Skip Function Macros

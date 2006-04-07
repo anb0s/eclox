@@ -172,7 +172,7 @@ public class BuildJob extends Job {
 	 */
 	public String getLog() {
 		synchronized ( log ) {
-			return log.toString();
+			return new String( log.toString() );
 		}
 	}
 	
