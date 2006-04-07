@@ -113,40 +113,6 @@ public class BuildJob extends Job {
 	}
 	
 	/**
-	 * Launches the build of the specified file.
-	 *
-	 * @param	doxyfile	a file resource to build
-	 * 
-	 * @throws PartInitException	the build log view could not be displayed
-	 * @throws BuildInProgreeError	a build is already in progrees
-	 * 
-	 * @author gbrocker
-	 */
-	public static BuildJob scheduleBuild( IFile doxyfile ) /*PartInitException,*/  {
-//		 TODO eclipse split refactoring
-//		Preferences preferences = eclox.core.Plugin.getDefault().getPluginPreferences();
-//		String		autoSaveValue = preferences.getString( eclox.core.preferences.Names.AUTO_SAVE );
-//		
-//		if( autoSaveValue == eclox.core.preferences.Values.AUTO_SAVE_ASK ) {
-//			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( true );
-//		}
-//		else if( autoSaveValue == eclox.core.preferences.Values.AUTO_SAVE_ALWAYS ) {
-//			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( false );
-//		}
-		
-		// If no current job exists for the given doxyfile, then creates a new one.
-		BuildJob	buildJob = findJob( doxyfile );
-		if( buildJob == null )
-		{
-			buildJob = new BuildJob( doxyfile );
-		}
-		buildJob.schedule();
-		
-		// Job's done.
-		return buildJob;
-	}
-	
-	/**
 	 * Retrieves all doxygen build jobs.
 	 * 
 	 * @return	an arry containing all doxygen build jobs (can be empty).
@@ -157,17 +123,18 @@ public class BuildJob extends Job {
 	}
 	
 	/**
-	 * Retrieves the build job assocuated to the given doxyfile.
+	 * Retrieves the build job associated to the given doxyfile. If needed,
+	 * a new job will be created.
 	 * 
 	 * @param	doxyfile	a given doxyfile instance
 	 * 
-	 * @return	a build job that is in charge of building the gven doxyfile, or null
-	 * 			when none
+	 * @return	a build job that is in charge of building the given doxyfile
 	 */
-	public static BuildJob findJob( IFile doxyfile )
+	public static BuildJob getJob( IFile doxyfile )
 	{
-		// Walks through the found jobs to find a relevant build job.
 		BuildJob	result = null;
+		
+		// Walks through the found jobs to find a relevant build job.
 		Iterator	i = jobs.iterator();
 		while( i.hasNext() )
 		{
@@ -177,6 +144,12 @@ public class BuildJob extends Job {
 				result = buildJob;
 				break;
 			}
+		}
+		
+		// If no jobs has been found, then creates a new one.
+		if( result == null )
+		{
+			result = new BuildJob( doxyfile );
 		}
 		
 		// Job's done.
@@ -198,7 +171,32 @@ public class BuildJob extends Job {
 	 * @return	the build log
 	 */
 	public String getLog() {
-		return log.toString();
+		synchronized ( log ) {
+			return log.toString();
+		}
+	}
+	
+	/**
+	 * Waits for the log to change or returns immediatly if the job
+	 * is not running and the log won't get updated.
+	 */
+	public void waitLog() throws InterruptedException {
+		if( getState() != Job.NONE ) {
+			synchronized ( log ) {
+				log.wait();
+			}
+		}
+	}
+	
+	/**
+	 * Tells if the log is empty. This method avoids to retrieve the whole
+	 * log content just to know if it contains some thing.
+	 * 
+	 * @return	a boolean
+	 */
+	public boolean isLogEmpty()
+	{
+		return log.length() == 0;
 	}
 	
 	public boolean belongsTo(Object family) {
@@ -248,26 +246,24 @@ public class BuildJob extends Job {
 		String			line;
 		
 		log.delete( 0, log.length() );
-		for(;;)
-		{
+		for(;;)	{
 			// Reads the new line.
-			try
-			{
+			try	{
 				line = reader.readLine();
 			}
-			catch( IOException e )
-			{
+			catch( IOException e ) {
 				break;
 			}
 			
 			// If there is a line, appends it to the log.
-			if( line != null )
-			{
-				log.append( line );
-				log.append( "\n" );
+			if( line != null ) {
+				synchronized ( log ) {
+					log.append( line );
+					log.append( "\n" );
+					log.notifyAll();
+				}				
 			}
-			else
-			{
+			else {
 				break;
 			}	
 		}
