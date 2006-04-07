@@ -47,7 +47,7 @@ public class Setting extends Chunk {
 	/**
      * The value pattern.
      */
-    private static Pattern valuePattern = Pattern.compile("([^ \"]+)\\s*|\"(.*?)\"\\s*");
+    private static Pattern valuePattern = Pattern.compile("([^ \"]+)\\s*|\"((\\\\\"|.)*?)\"\\s*");
     
     /**
      * The default setting properties.
