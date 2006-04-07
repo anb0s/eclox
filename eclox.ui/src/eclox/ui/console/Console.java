@@ -21,15 +21,16 @@
 
 package eclox.ui.console;
 
+import java.io.IOException;
+
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IConsole;
-import org.eclipse.ui.console.IConsoleManager;
+import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
-import org.eclipse.ui.console.MessageConsoleStream;
 
 import eclox.core.doxygen.BuildJob;
-import eclox.ui.Plugin;
 
 
 /**
@@ -38,109 +39,170 @@ import eclox.ui.Plugin;
  * @author Guillaume Brocker
  */
 public class Console extends MessageConsole {
-	
-	/**
-	 * Shows the doxygen console and return that console
-	 * 
-	 * @return	the console that has been shown
-	 */
-	public static Console show()
-	{
-		IConsoleManager	manager = ConsolePlugin.getDefault().getConsoleManager();
-		Console			console = Plugin.getDefault().getConsole();
-		
-		// Searches if the consoles is alreay registered.
-		IConsole	[]		existings = manager.getConsoles();
-		boolean			exists = false;
-		for (int i = 0; i < existings.length; i++) {
-			if(console == existings[i])
-				exists = true;
-		}
-		
-		// Adds the console if not already registered.
-		if( exists == false )
-		{
-			manager.addConsoles( new IConsole[] { console } );
-		}
-		
-		// Finaly shows the console to the world.
-		manager.showConsoleView( console );
-		return console;
-	}
-	
-	/**
-	 * Implements a runnable object that will monitor the log of the given
-	 * build job and append new entries to the given message console stream
-	 * 
-	 * @author Guillaume Brocker
-	 */
-	class LogMonitor implements Runnable
-	{
-		private BuildJob				job;
-		private MessageConsoleStream	stream;
-		private int current				= 0;
-		
-		public LogMonitor( BuildJob job, MessageConsoleStream stream )
-		{
-			this.job = job;
-			this.stream = stream;
-			
-			schedule();
-		}
-		
-		public void run() {
-			String	log = job.getLog();
-			int		logLength = log.length(); 
-			if( current != logLength )
-			{
-				stream.print( log.substring(current) );
-				current = logLength;
-			}
-			
-			schedule();			
-		}
-		
-		private void schedule()
-		{
-			if( job.getState() != Job.NONE )
-			{
-				ConsolePlugin.getStandardDisplay().timerExec( 125, this );
-			}
-		}		
-	}
 
+	/**
+	 * Implements a job listener that will maintain the console up-to-date
+	 * with the job state.
+	 * 
+	 * @author gbrocker
+	 */
+	private class MyJobListener implements IJobChangeListener
+	{
+		private Console console;
+		
+		public MyJobListener( Console console )
+		{
+			this.console = console;
+		}
+		
+		public void aboutToRun(IJobChangeEvent event)
+		{}
+
+		public void awake(IJobChangeEvent event)
+		{}
+
+		public void done(IJobChangeEvent event)
+		{}
+
+		public void running(IJobChangeEvent event)
+		{
+			console.startWatchThread();
+		}
+
+		public void scheduled(IJobChangeEvent event)
+		{}
+
+		public void sleeping(IJobChangeEvent event)
+		{}
+		
+	}
+	
+	private class MyJobWatchThread implements Runnable {
+		
+		private Console console;
+		
+		public MyJobWatchThread( Console console )
+		{
+			this.console = console;	
+		}
+		
+		public void run()
+		{
+			clearConsole();
+			updateConsoleName();
+			watchJobLog();
+			updateConsoleName();
+		}
+		
+		private void clearConsole()
+		{
+			ConsolePlugin.getStandardDisplay().syncExec(
+						new Runnable()
+						{
+							public void run()
+							{
+								console.clearConsole();		
+							}
+						}
+					);
+		}
+		
+		private void watchJobLog()
+		{
+			try {				
+				int						logOffset = 0;
+				IOConsoleOutputStream	stream = console.newOutputStream();
+				
+				for(;;) {
+					// Waits for the log to change.
+					console.job.waitLog();
+					
+					// Retrieves the log.
+					String	log			= console.job.getLog();
+					int		logLength	= log.length();
+					
+					// Puts the log changes to the console.
+					if( logLength > logOffset ) {
+						stream.write( log.substring(logOffset) );
+						stream.flush();
+						logOffset = logLength;
+					}
+					else {
+						break;
+					}
+				}
+			}
+			catch( IOException io ) {
+				// TODO log.
+			}
+			catch( InterruptedException interrupted ) {
+				// Nothing to do.
+			}
+		}
+		
+		private void updateConsoleName()
+		{
+			ConsolePlugin.getStandardDisplay().syncExec(
+						new Runnable()
+						{
+							public void run()
+							{
+								console.updateName();		
+							}
+						}
+					);
+		}
+	}
+		
 	/**
 	 * the current build job
 	 */
-//	private BuildJob job;
+	private BuildJob job;
+	
+	/**
+	 * the current build job listener
+	 */
+	private MyJobListener jobListener;
+	
+	/**
+	 * the current log reader
+	 */
+	private Thread logReaderThread;
 	
 	/**
 	 * Constructor
+	 * 
+	 * @param	job	a build job whose log will be shown
 	 */
-	public Console()
+	public Console( BuildJob job )
 	{
 		super( "Doxygen", null );
+		
+		this.job = job;
+		this.jobListener = new MyJobListener(this);
+		this.job.addJobChangeListener( jobListener );
 	}
 	
 	/**
-	 * Updates the current build job whose log will be displayed or null if none
-	 * 
-	 * @param	job	a doxygen build job or null if none
+	 * Updates the name of the console from its current job
 	 */
-	public void setJob( BuildJob job )
+	private void updateName()
 	{
-		// References the new job.
-//		this.job = job;
+		// Pre-condition
+		assert job != null;
 		
-		// Updates the console name.
-		String	name = "Doxyfile";
-		if( job != null )
-		{
-			name = name.concat( " [" + job.getDoxyfile().getFullPath().toString() + "]" );
+		String name = new String();
+		name = name.concat( job.getDoxyfile().getFullPath().toString() );
+		name = name.concat( " [Doxygen Build]" );		
+		if( job.getState() == Job.NONE && job.isLogEmpty() == false ) {
+			name = new String("<done> ").concat( name ); 
 		}
 		setName( name );
-		clearConsole();
-		
-		new LogMonitor( job, newMessageStream() );
 	}
+	
+	private void startWatchThread() {
+		logReaderThread = new Thread( new MyJobWatchThread(this) );
+		logReaderThread.start();
+	}
+	
 }

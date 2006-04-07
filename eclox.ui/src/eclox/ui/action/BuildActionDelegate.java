@@ -41,7 +41,6 @@ import org.eclipse.ui.PlatformUI;
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
 import eclox.ui.Plugin;
-import eclox.ui.console.Console;
 import eclox.ui.dialog.DoxyfileSelecterDialog;
 
 /**
@@ -196,9 +195,9 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			
 			// If there is a doxyfile, build it.
 			if(doxyfile != null) {
-				Console console = Console.show();
-				BuildJob job = BuildJob.scheduleBuild( doxyfile );
-				console.setJob( job );
+				BuildJob job = BuildJob.getJob( doxyfile );
+				Plugin.getDefault().getConsoleManager().showConsole( job );
+				job.schedule();				
 			}
 		}
 		catch(Throwable throwable) {
