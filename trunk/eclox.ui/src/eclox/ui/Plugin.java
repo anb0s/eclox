@@ -8,7 +8,7 @@ import org.eclipse.ui.plugin.*;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.BundleContext;
 
-import eclox.ui.console.Console;
+import eclox.ui.console.ConsoleManager;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -20,11 +20,11 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	private static Plugin plugin;
 	
-	/**
-	 * the managed console instance
-	 */
-	private Console console = new Console();
 	
+	/**
+	 * the managed console manager 
+	 */
+	private ConsoleManager consoleManager;
 	
 	/**
 	 * The constructor.
@@ -38,14 +38,16 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		consoleManager = new ConsoleManager();
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
+		consoleManager = null;
 		plugin = null;
+		super.stop(context);
 	}
 
 	/**
@@ -56,13 +58,12 @@ public class Plugin extends AbstractUIPlugin {
 	}
 	
 	/**
-	 * Retrieves the managed console instance.
+	 * Retrieves the console manager of the plugin.
 	 * 
-	 * @return	a console instance
+	 * @return the managed console manager instance
 	 */
-	public Console getConsole()
-	{
-		return console;
+	public ConsoleManager getConsoleManager() {
+		return consoleManager; 
 	}
 	
 	/**
