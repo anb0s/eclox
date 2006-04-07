@@ -1,3 +1,7 @@
+* eclox-0.5.0 (in progress) *
+	Fix bug #5700. "Generate Tag File" was not using the right editor
+	(was "boolean" and should have been "file").
+	
 * eclox-0.4.4 (08-mar-2006) *
 	In the editor, double-clicking a setting brings the user directly to the
 	edition controls.
