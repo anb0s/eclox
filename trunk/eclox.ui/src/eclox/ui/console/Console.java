@@ -165,11 +165,6 @@ public class Console extends MessageConsole {
 	private MyJobListener jobListener;
 	
 	/**
-	 * the current log reader
-	 */
-	private Thread logReaderThread;
-	
-	/**
 	 * Constructor
 	 * 
 	 * @param	job	a build job whose log will be shown
@@ -201,7 +196,7 @@ public class Console extends MessageConsole {
 	}
 	
 	private void startWatchThread() {
-		logReaderThread = new Thread( new MyJobWatchThread(this) );
+		Thread logReaderThread = new Thread( new MyJobWatchThread(this) );
 		logReaderThread.start();
 	}
 	
