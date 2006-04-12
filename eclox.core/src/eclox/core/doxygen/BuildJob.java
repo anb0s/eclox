@@ -21,13 +21,17 @@
 
 package eclox.core.doxygen;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.Pipe;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.Pipe.SourceChannel;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -38,6 +42,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+
+import eclox.core.Plugin;
 
 
 /**
@@ -88,14 +94,25 @@ public class BuildJob extends Job {
 	
 	
 	/**
+	 * Retrieves all doxygen build jobs.
+	 * 
+	 * @return	an arry containing all doxygen build jobs (can be empty).
+	 */
+	public static BuildJob[] getAllJobs()
+	{
+		return (BuildJob[]) jobs.toArray( new BuildJob[0] );
+	}
+
+	
+	/**
 	 * the current doxyfile to build
 	 */
 	private IFile doxyfile;
 	
 	/**
-	 * A string buffer containing the job's log.
+	 * the collection of pipes used by clients to receive the build job output while running
 	 */
-	private StringBuffer log = new StringBuffer();
+	private Collection pipes = new Vector();
 	
 	/**
 	 * Constructor.
@@ -111,17 +128,7 @@ public class BuildJob extends Job {
 		jobs.add( this );
 		ResourcesPlugin.getWorkspace().addResourceChangeListener( new MyResourceChangeListener(this), IResourceChangeEvent.POST_CHANGE );
 	}
-	
-	/**
-	 * Retrieves all doxygen build jobs.
-	 * 
-	 * @return	an arry containing all doxygen build jobs (can be empty).
-	 */
-	public static BuildJob[] getAllJobs()
-	{
-		return (BuildJob[]) jobs.toArray( new BuildJob[0] );
-	}
-	
+		
 	/**
 	 * Retrieves the build job associated to the given doxyfile. If needed,
 	 * a new job will be created.
@@ -131,6 +138,27 @@ public class BuildJob extends Job {
 	 * @return	a build job that is in charge of building the given doxyfile
 	 */
 	public static BuildJob getJob( IFile doxyfile )
+	{
+		BuildJob	result = findJob( doxyfile );
+
+		// If no jobs has been found, then creates a new one.
+		if( result == null )
+		{
+			result = new BuildJob( doxyfile );
+		}
+		
+		// Job's done.
+		return result;
+	}
+	
+	/**
+	 * Searches for a build job associated to the given doxyfile.
+	 * 
+	 * @param	doxyfile	a given doxyfile instance
+	 * 
+	 * @return	a build job for the given doxyfile or null if none
+	 */
+	public static BuildJob findJob( IFile doxyfile )
 	{
 		BuildJob	result = null;
 		
@@ -146,13 +174,6 @@ public class BuildJob extends Job {
 			}
 		}
 		
-		// If no jobs has been found, then creates a new one.
-		if( result == null )
-		{
-			result = new BuildJob( doxyfile );
-		}
-		
-		// Job's done.
 		return result;
 	}
 	
@@ -166,37 +187,20 @@ public class BuildJob extends Job {
 	}
 	
 	/**
-	 * Retrives the build log of the job.
+	 * Creates a new channel where a thread can read the ouput of the build job.
 	 * 
-	 * @return	the build log
-	 */
-	public String getLog() {
-		synchronized ( log ) {
-			return new String( log.toString() );
-		}
-	}
-	
-	/**
-	 * Waits for the log to change or returns immediatly if the job
-	 * is not running and the log won't get updated.
-	 */
-	public void waitLog() throws InterruptedException {
-		if( getState() != Job.NONE ) {
-			synchronized ( log ) {
-				log.wait();
-			}
-		}
-	}
-	
-	/**
-	 * Tells if the log is empty. This method avoids to retrieve the whole
-	 * log content just to know if it contains some thing.
+	 * If the job has already started, some parts of the log will be lost.
 	 * 
-	 * @return	a boolean
+	 * @return	a channel where the output of the build job can be retrieved.
 	 */
-	public boolean isLogEmpty()
+	public SourceChannel newOutputChannel() throws IOException
 	{
-		return log.length() == 0;
+		synchronized( pipes ) {
+			Pipe	pipe = Pipe.open();
+			
+			pipes.add( pipe );
+			return pipe.source();
+		}
 	}
 	
 	public boolean belongsTo(Object family) {
@@ -223,10 +227,15 @@ public class BuildJob extends Job {
 		{
 			Process	buildProcess = Doxygen.build(this.doxyfile);
 			
+			// Wait a little bit to allow client thread to get synchronized.
+			Thread.sleep( 1000 );
+						
 			monitor.beginTask( this.doxyfile.getFullPath().toString(), 100 );
-			logStream( buildProcess.getInputStream() );
+			feedPipes( buildProcess.getInputStream() );
 			buildProcess.waitFor();
 			monitor.done();
+			closePipes();
+
 			return Status.OK_STATUS;
 		}
 		catch( Throwable throwable )
@@ -235,37 +244,70 @@ public class BuildJob extends Job {
 		}
 	}
 	
+	
 	/**
-	 * Logs the given stream content until the stream gets closed.
+	 * Closes and removes all registered pipes.
+	 */
+	private void closePipes()
+	{
+		synchronized ( pipes ) {
+			// Closes all sink pipe ends.
+			Iterator	i = pipes.iterator();
+			while( i.hasNext() ) {
+				Pipe	pipe = (Pipe) i.next();
+				
+				try {
+					pipe.sink().close();
+				}
+				catch( IOException io ) {
+					Plugin.log( io );
+				}
+			}
+			
+			// Clears the registered pipes.
+			pipes.clear();
+		}
+	}
+	
+	/**
+	 * Forward the given stream to the registered pipes.
 	 * 
 	 * @param stream	the stream to log
 	 */
-	private void logStream( InputStream stream )
+	private void feedPipes( InputStream stream )
 	{
-		BufferedReader	reader = new BufferedReader( new InputStreamReader(stream) );
-		String			line;
-		
-		log.delete( 0, log.length() );
-		for(;;)	{
-			// Reads the new line.
-			try	{
-				line = reader.readLine();
-			}
-			catch( IOException e ) {
-				break;
-			}
+		try {
+			ReadableByteChannel	sourceChannel = Channels.newChannel( stream );
+			ByteBuffer			buffer = ByteBuffer.allocate( 64 );
 			
-			// If there is a line, appends it to the log.
-			if( line != null ) {
-				synchronized ( log ) {
-					log.append( line );
-					log.append( "\n" );
-					log.notifyAll();
-				}				
+			for(;;)	{
+				int	readLength;
+				
+				buffer.clear();
+				readLength = sourceChannel.read( buffer );
+				
+				// If there is a line, appends it to the log.
+				if( readLength > 0 ) {
+					synchronized ( pipes ) {
+						buffer.flip();
+						Iterator	i = pipes.iterator();
+						while( i.hasNext() ) {
+							Pipe	pipe = (Pipe) i.next();
+							buffer.rewind();
+							pipe.sink().write( buffer );
+						}
+					}
+				}
+				else if( readLength == 0 ) {
+					Thread.yield();
+				}
+				else {
+					break;
+				}
 			}
-			else {
-				break;
-			}	
+		}
+		catch( IOException io ) {
+			Plugin.log( io );
 		}
 	}
 	
