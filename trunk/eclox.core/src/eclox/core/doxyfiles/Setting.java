@@ -109,7 +109,7 @@ public class Setting extends Chunk {
                 defaultProperties.load( propertiesInput );
             }
             catch( Throwable throwable ) {
-                Plugin.getDefault().logError( throwable );
+                Plugin.log( throwable );
             }            
         }
     }

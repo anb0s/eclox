@@ -90,7 +90,7 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 	 *  
 	 * @param throwable	a throwable instance to log
 	 */
-	public void logError( Throwable throwable ) {
-	    getLog().log( new Status(Status.ERROR, getBundle().getSymbolicName(), 0, "Exception caught.", throwable) );
+	public static void log( Throwable throwable ) {
+	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Exception caught. " + throwable.toString(), throwable) );
 	}
 }
