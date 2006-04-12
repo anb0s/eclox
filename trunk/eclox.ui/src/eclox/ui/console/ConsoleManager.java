@@ -70,10 +70,10 @@ public final class ConsoleManager {
 						IFile	file = (IFile) element;
 					
 						if( Doxyfile.isDoxyfile(file) ) {
-							BuildJob job = BuildJob.getJob( file );
+							BuildJob job = BuildJob.findJob( file );
 						
 							if( job != null ) {
-								consoleManager.showConsole( job );
+								consoleManager.addConsole( job );
 							}
 						}
 					}
@@ -98,14 +98,14 @@ public final class ConsoleManager {
 	}
 	
 	/**
-	 * Shows the console attached to the given build job. The console
-	 * may be created if none is already attached.
+	 * Adds a new console for the given. The method returns immediatly is
+	 * there is already a console for the given job.
 	 * 
-	 * @param	job	a build job
+	 * @param	job	a given build job
 	 * 
-	 * @return	the console attached to the given build job
+	 * @return	the console attached to the given job
 	 */
-	public Console showConsole( BuildJob job )
+	public Console addConsole( BuildJob job )
 	{
 		IConsoleManager	manager = ConsolePlugin.getDefault().getConsoleManager();
 		Console			console = (Console) consoles.get( job );
@@ -116,8 +116,23 @@ public final class ConsoleManager {
 			consoles.put( job, console );
 			manager.addConsoles( new IConsole[] { console } );
 		}
-		
+		return console;
+	}
+	
+	/**
+	 * Shows the console attached to the given build job. The console
+	 * may be created if none is already attached.
+	 * 
+	 * @param	job	a build job
+	 * 
+	 * @return	the console attached to the given build job
+	 */
+	public Console showConsole( BuildJob job )
+	{	
 		// Shows the console and the job's done!
+		IConsoleManager	manager = ConsolePlugin.getDefault().getConsoleManager();
+		Console			console = addConsole(job);
+		
 		manager.showConsoleView( console );
 		return console;
 	}
