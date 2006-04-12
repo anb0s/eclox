@@ -22,15 +22,17 @@
 package eclox.ui.console;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.Pipe;
 
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.console.ConsolePlugin;
 import org.eclipse.ui.console.IOConsoleOutputStream;
 import org.eclipse.ui.console.MessageConsole;
 
 import eclox.core.doxygen.BuildJob;
+import eclox.ui.Plugin;
 
 
 /**
@@ -89,9 +91,7 @@ public class Console extends MessageConsole {
 		public void run()
 		{
 			clearConsole();
-			updateConsoleName();
 			watchJobLog();
-			updateConsoleName();
 		}
 		
 		private void clearConsole()
@@ -110,47 +110,37 @@ public class Console extends MessageConsole {
 		private void watchJobLog()
 		{
 			try {				
-				int						logOffset = 0;
 				IOConsoleOutputStream	stream = console.newOutputStream();
+				Pipe.SourceChannel		sourceChannel = job.newOutputChannel();
+				ByteBuffer				buffer = ByteBuffer.allocate( 64 );
 				
 				for(;;) {
-					// Waits for the log to change.
-					console.job.waitLog();
+					int	readLength;
 					
-					// Retrieves the log.
-					String	log			= console.job.getLog();
-					int		logLength	= log.length();
+					buffer.clear();
+					readLength = sourceChannel.read( buffer );
 					
-					// Puts the log changes to the console.
-					if( logLength > logOffset ) {
-						stream.write( log.substring(logOffset) );
-						stream.flush();
-						logOffset = logLength;
+					if( readLength > 0 ) {
+						byte[]	array = new byte[ buffer.position() ];
+						
+						buffer.flip();
+						buffer.get( array );
+						stream.write( array );
+					}
+					else if( readLength == 0 ) {
+						Thread.yield();
 					}
 					else {
 						break;
 					}
 				}
+				
+				sourceChannel.close();
+				stream.flush();
 			}
 			catch( IOException io ) {
-				// TODO log.
+				Plugin.log( io );
 			}
-			catch( InterruptedException interrupted ) {
-				// Nothing to do.
-			}
-		}
-		
-		private void updateConsoleName()
-		{
-			ConsolePlugin.getStandardDisplay().syncExec(
-						new Runnable()
-						{
-							public void run()
-							{
-								console.updateName();		
-							}
-						}
-					);
 		}
 	}
 		
@@ -171,32 +161,15 @@ public class Console extends MessageConsole {
 	 */
 	public Console( BuildJob job )
 	{
-		super( "Doxygen", null );
+		super( job.getDoxyfile().getFullPath().toString() + " [Doxygen Build]", null );
 		
 		this.job = job;
 		this.jobListener = new MyJobListener(this);
 		this.job.addJobChangeListener( jobListener );
 	}
 	
-	/**
-	 * Updates the name of the console from its current job
-	 */
-	private void updateName()
-	{
-		// Pre-condition
-		assert job != null;
-		
-		String name = new String();
-		name = name.concat( job.getDoxyfile().getFullPath().toString() );
-		name = name.concat( " [Doxygen Build]" );		
-		if( job.getState() == Job.NONE && job.isLogEmpty() == false ) {
-			name = new String("<done> ").concat( name ); 
-		}
-		setName( name );
-	}
-	
 	private void startWatchThread() {
-		Thread logReaderThread = new Thread( new MyJobWatchThread(this) );
+		Thread logReaderThread = new Thread( new MyJobWatchThread(this), "Doxygen Build Console Feeder" );
 		logReaderThread.start();
 	}
 	

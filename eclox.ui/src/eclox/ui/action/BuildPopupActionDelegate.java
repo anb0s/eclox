@@ -49,8 +49,8 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 			try {
 				IStructuredSelection	structuredSelection = (IStructuredSelection) this.selection;
 				IFile					doxyfile = (IFile) structuredSelection.getFirstElement();
+				BuildJob				job = BuildJob.getJob( doxyfile );
 				
-				BuildJob job = BuildJob.getJob( doxyfile );
 				Plugin.getDefault().getConsoleManager().showConsole( job );
 				job.schedule();				
 			}

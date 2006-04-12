@@ -5,6 +5,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.*;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.osgi.framework.BundleContext;
 
@@ -64,6 +65,15 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public ConsoleManager getConsoleManager() {
 		return consoleManager; 
+	}
+	
+	/**
+	 * Adds the specified throwable object into the plugin's log as an error.
+	 *  
+	 * @param throwable	a throwable instance to log
+	 */
+	public static void log( Throwable throwable ) {
+	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Exception caught. " + throwable.toString(), throwable) );
 	}
 	
 	/**
