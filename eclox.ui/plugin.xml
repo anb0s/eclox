@@ -56,5 +56,11 @@
                toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"/>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.console.consoleFactories">
+      <consoleFactory
+            class="eclox.ui.console.ConsoleFactory"
+            label="Doxygen Build"/>
+   </extension>
 
 </plugin>

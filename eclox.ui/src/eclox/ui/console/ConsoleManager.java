@@ -21,9 +21,6 @@
 
 package eclox.ui.console;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -70,11 +67,7 @@ public final class ConsoleManager {
 						IFile	file = (IFile) element;
 					
 						if( Doxyfile.isDoxyfile(file) ) {
-							BuildJob job = BuildJob.findJob( file );
-						
-							if( job != null ) {
-								consoleManager.addConsole( job );
-							}
+							consoleManager.setCurrentJob( BuildJob.getJob( file ) );
 						}
 					}
 				}
@@ -84,9 +77,9 @@ public final class ConsoleManager {
 	}
 
 	/**
-	 * Holds all managed consoles.
+	 * the reference to the managed console
 	 */
-	private Map	consoles = new HashMap();
+	private Console console;
 	
 	
 	/**
@@ -98,43 +91,41 @@ public final class ConsoleManager {
 	}
 	
 	/**
-	 * Adds a new console for the given. The method returns immediatly is
-	 * there is already a console for the given job.
+	 * Updates the current build job.
 	 * 
-	 * @param	job	a given build job
-	 * 
-	 * @return	the console attached to the given job
+	 * @param	job	a build job
 	 */
-	public Console addConsole( BuildJob job )
+	public void setCurrentJob( BuildJob job )
 	{
+		if( console == null ) {
+			showConsole( job );
+		}
+		else {
+			console.setJob( job );
+		}
+	}
+	
+	/**
+	 * Shows the console attached to the given optionnal build job. The console
+	 * may be created if none is already attached.
+	 * 
+	 * @param	job	a build job or null to just show the console
+	 */
+	public void showConsole( BuildJob job )
+	{	
+		// Shows the console and the job's done!
 		IConsoleManager	manager = ConsolePlugin.getDefault().getConsoleManager();
-		Console			console = (Console) consoles.get( job );
 		
 		// Creates the console if none exists for the given job.
 		if( console == null ) {
 			console = new Console( job );
-			consoles.put( job, console );
 			manager.addConsoles( new IConsole[] { console } );
 		}
-		return console;
-	}
-	
-	/**
-	 * Shows the console attached to the given build job. The console
-	 * may be created if none is already attached.
-	 * 
-	 * @param	job	a build job
-	 * 
-	 * @return	the console attached to the given build job
-	 */
-	public Console showConsole( BuildJob job )
-	{	
-		// Shows the console and the job's done!
-		IConsoleManager	manager = ConsolePlugin.getDefault().getConsoleManager();
-		Console			console = addConsole(job);
-		
+
 		manager.showConsoleView( console );
-		return console;
+		if( job != null ) {
+			console.setJob( job );
+		}
 	}
 	
 }
