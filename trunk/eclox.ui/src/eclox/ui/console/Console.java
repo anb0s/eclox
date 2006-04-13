@@ -21,18 +21,17 @@
 
 package eclox.ui.console;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.Pipe;
-
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.custom.StyledText;
+import org.eclipse.ui.console.AbstractConsole;
 import org.eclipse.ui.console.ConsolePlugin;
-import org.eclipse.ui.console.IOConsoleOutputStream;
-import org.eclipse.ui.console.MessageConsole;
+import org.eclipse.ui.console.IConsoleView;
+import org.eclipse.ui.part.IPageBookViewPage;
 
 import eclox.core.doxygen.BuildJob;
-import eclox.ui.Plugin;
+import eclox.core.doxygen.IBuildJobListener;
 
 
 /**
@@ -40,137 +39,232 @@ import eclox.ui.Plugin;
  * 
  * @author Guillaume Brocker
  */
-public class Console extends MessageConsole {
+public class Console extends AbstractConsole {
 
 	/**
-	 * Implements a job listener that will maintain the console up-to-date
-	 * with the job state.
+	 * Implements a build job listener that will maintain the console up-to-date
+	 * with the job log.
 	 * 
 	 * @author gbrocker
 	 */
-	private class MyJobListener implements IJobChangeListener
+	private class MyBuildJobListener implements IBuildJobListener
 	{
-		private Console console;
-		
-		public MyJobListener( Console console )
-		{
-			this.console = console;
-		}
-		
-		public void aboutToRun(IJobChangeEvent event)
-		{}
-
-		public void awake(IJobChangeEvent event)
-		{}
-
-		public void done(IJobChangeEvent event)
-		{}
-
-		public void running(IJobChangeEvent event)
-		{
-			console.startWatchThread();
+		public void buildJobLogCleared(BuildJob job) {
+			ConsolePlugin.getStandardDisplay().syncExec(
+					new Runnable()
+					{
+						public void run()
+						{
+							clearConsole();		
+						}
+					}
+				);
 		}
 
-		public void scheduled(IJobChangeEvent event)
-		{}
-
-		public void sleeping(IJobChangeEvent event)
-		{}
+		public void buildJobLogUpdated(BuildJob job, String output) {
+			final String	text = new String( output );
+			ConsolePlugin.getStandardDisplay().syncExec(
+					new Runnable()
+					{
+						public void run()
+						{
+							append( text );		
+						}
+					}
+				);
+		}
 		
+	}
+
+	private class MyJobChangedListener implements IJobChangeListener {
+	
+		public void aboutToRun(IJobChangeEvent event) {
+			ConsolePlugin.getStandardDisplay().syncExec(
+					new Runnable()
+					{
+						public void run()
+						{
+							updateActionStates();		
+						}
+					}
+				);
+		}
+
+		public void awake(IJobChangeEvent event) {
+		}
+
+		public void done(IJobChangeEvent event) {
+			ConsolePlugin.getStandardDisplay().syncExec(
+					new Runnable()
+					{
+						public void run()
+						{
+							updateActionStates();		
+						}
+					}
+				);
+		}
+
+		public void running(IJobChangeEvent event) {
+		}
+
+		public void scheduled(IJobChangeEvent event) {
+		}
+
+		public void sleeping(IJobChangeEvent event) {
+		}		
+				
 	}
 	
-	private class MyJobWatchThread implements Runnable {
-		
-		private Console console;
-		
-		public MyJobWatchThread( Console console )
-		{
-			this.console = console;	
-		}
-		
-		public void run()
-		{
-			clearConsole();
-			watchJobLog();
-		}
-		
-		private void clearConsole()
-		{
-			ConsolePlugin.getStandardDisplay().syncExec(
-						new Runnable()
-						{
-							public void run()
-							{
-								console.clearConsole();		
-							}
-						}
-					);
-		}
-		
-		private void watchJobLog()
-		{
-			try {				
-				IOConsoleOutputStream	stream = console.newOutputStream();
-				Pipe.SourceChannel		sourceChannel = job.newOutputChannel();
-				ByteBuffer				buffer = ByteBuffer.allocate( 64 );
-				
-				for(;;) {
-					int	readLength;
-					
-					buffer.clear();
-					readLength = sourceChannel.read( buffer );
-					
-					if( readLength > 0 ) {
-						byte[]	array = new byte[ buffer.position() ];
-						
-						buffer.flip();
-						buffer.get( array );
-						stream.write( array );
-					}
-					else if( readLength == 0 ) {
-						Thread.yield();
-					}
-					else {
-						break;
-					}
-				}
-				
-				sourceChannel.close();
-				stream.flush();
-			}
-			catch( IOException io ) {
-				Plugin.log( io );
-			}
-		}
-	}
-		
+	
+	/**
+	 * the base build console name
+	 */
+	private static String BASE_NAME = "[Doxygen Build]";
+	
 	/**
 	 * the current build job
 	 */
 	private BuildJob job;
 	
 	/**
+	 * the current console page
+	 */
+	private ConsolePage page;
+	
+	/**
+	 * a boolean telling if the console scrolling is locked or not
+	 */
+	private boolean scrollLocked = false;
+	
+	/**
 	 * the current build job listener
 	 */
-	private MyJobListener jobListener;
+	private MyBuildJobListener jobListener = new MyBuildJobListener();
+	
+	/**
+	 * the current job change listener
+	 */
+	private MyJobChangedListener jobChangedListener = new MyJobChangedListener();
 	
 	/**
 	 * Constructor
-	 * 
-	 * @param	job	a build job whose log will be shown
 	 */
 	public Console( BuildJob job )
 	{
-		super( job.getDoxyfile().getFullPath().toString() + " [Doxygen Build]", null );
-		
-		this.job = job;
-		this.jobListener = new MyJobListener(this);
-		this.job.addJobChangeListener( jobListener );
+		super( BASE_NAME, null );		
+		page = new ConsolePage( this );
 	}
 	
-	private void startWatchThread() {
-		Thread logReaderThread = new Thread( new MyJobWatchThread(this), "Doxygen Build Console Feeder" );
-		logReaderThread.start();
+	public IPageBookViewPage createPage(IConsoleView view) {
+		return page;
+	}
+	
+	/**
+	 * Appends text to the console.
+	 * 
+	 * @param	text	a string containing the text to append
+	 */
+	public void append( String text ) {
+		StyledText	styledText = page.getStyledText();
+		if( styledText != null ) {
+			styledText.append( text );
+			scroll();
+		}
+	}
+	
+	/**
+	 * Clears the console content.
+	 */
+	public void clearConsole() {
+		StyledText	styledText = page.getStyledText();
+		if( styledText != null ) {
+			styledText.setText( new String() );
+		}
+	}
+	
+	/**
+	 * Retrieves the job currently monitored by the console
+	 * 
+	 * @return	a build job or null if none
+	 */
+	public BuildJob getJob()
+	{
+		return job;
+	}
+
+	/**
+	 * Makes the console display the log from the given build job.
+	 * 
+	 * @param	job	a given build job instance
+	 */
+	public void setJob( BuildJob job )
+	{
+		// Skips the job if it is already current.
+		if( this.job == job ) {
+			return;
+		}
+		
+		// Expurges the old job.
+		if( this.job != null ) {
+			this.job.removeBuidJobListener( this.jobListener );
+			this.job.removeJobChangeListener( this.jobChangedListener );
+			this.job = null;
+		}
+		
+		// Updates the console contents.
+		setName( BASE_NAME + " " + job.getDoxyfile().getFullPath().toString() );
+		
+		// Installs the new job.
+		this.job = job;
+		this.job.addBuidJobListener( this.jobListener );
+		this.job.addJobChangeListener( this.jobChangedListener );
+		
+		// Updates the page controls.
+		showJobLog();
+		updateActionStates();
+	}
+	
+	/**
+	 * Updates the lock of the console scroll.
+	 * 
+	 * @param	locked	a boolean giving the new lock state
+	 */
+	public void setScrollLocked( boolean locked ) {
+		scrollLocked = locked;
+	}
+	
+	/**
+	 * Shows the current job's log in the console.
+	 */
+	private void showJobLog()
+	{
+		StyledText	styledText = page.getStyledText();
+		if( job != null && page != null && styledText != null ) {
+			styledText.setRedraw( false );
+			styledText.setText( this.job.getLog() );
+			scroll();
+			styledText.setRedraw( true );
+		}
+	}
+	
+	/**
+	 * Scolls the console to the end of the log
+	 */
+	private void scroll()
+	{
+		StyledText	styledText = page.getStyledText();
+		if( scrollLocked == false && styledText != null) {
+			styledText.setSelection( styledText.getCharCount() );
+			styledText.showSelection();
+		}
+	}
+	
+	/**
+	 * Updates the state of some action according to the current job's state
+	 */
+	private void updateActionStates() {
+		page.getCancelJobAction().setEnabled( job.getState() == Job.RUNNING );
 	}
 	
 }
