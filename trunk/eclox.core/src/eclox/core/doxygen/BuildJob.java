@@ -21,17 +21,13 @@
 
 package eclox.core.doxygen;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.Pipe;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.Pipe.SourceChannel;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -110,9 +106,14 @@ public class BuildJob extends Job {
 	private IFile doxyfile;
 	
 	/**
-	 * the collection of pipes used by clients to receive the build job output while running
+	 * the buffer containing the whole build output log 
 	 */
-	private Collection pipes = new Vector();
+	private StringBuffer log = new StringBuffer();
+	
+	/**
+	 * a set containing all registered build job listeners
+	 */
+	private Set listeners = new HashSet();
 	
 	/**
 	 * Constructor.
@@ -178,6 +179,30 @@ public class BuildJob extends Job {
 	}
 	
 	/**
+	 * Adds the given listener to the job.
+	 * 
+	 * @param	listener	a given listener instance	
+	 */
+	public void addBuidJobListener( IBuildJobListener listener )
+	{
+		synchronized ( listeners ) {
+			listeners.add( listener );
+		}
+	}
+	
+	/**
+	 * Removes the given listener from the job.
+	 * 
+	 * @param	listener	a given listener instance	
+	 */
+	public void removeBuidJobListener( IBuildJobListener listener )
+	{
+		synchronized( listeners ) {
+			listeners.remove( listener );
+		}
+	}
+	
+	/**
 	 * Retrieve the current doxyfile.
 	 * 
 	 * @return	The current doxyfile.	
@@ -187,22 +212,25 @@ public class BuildJob extends Job {
 	}
 	
 	/**
-	 * Creates a new channel where a thread can read the ouput of the build job.
-	 * 
-	 * If the job has already started, some parts of the log will be lost.
-	 * 
-	 * @return	a channel where the output of the build job can be retrieved.
+	 * Clears the log and notifies attached listeners
 	 */
-	public SourceChannel newOutputChannel() throws IOException
-	{
-		synchronized( pipes ) {
-			Pipe	pipe = Pipe.open();
-			
-			pipes.add( pipe );
-			return pipe.source();
-		}
+	public void clearLog() {
+		log.delete( 0, log.length() );
+		fireLogCleared();
 	}
 	
+	/**
+	 * Retrieves the job's whole log.
+	 * 
+	 * @return	a string containing the build job's log.
+	 */
+	public String getLog() {
+		return log.toString();
+	}
+	
+	/**
+	 * Overrides.
+	 */
 	public boolean belongsTo(Object family) {
 		if( family == FAMILY )
 		{
@@ -227,87 +255,85 @@ public class BuildJob extends Job {
 		{
 			Process	buildProcess = Doxygen.build(this.doxyfile);
 			
-			// Wait a little bit to allow client thread to get synchronized.
-			Thread.sleep( 1000 );
-						
 			monitor.beginTask( this.doxyfile.getFullPath().toString(), 100 );
-			feedPipes( buildProcess.getInputStream() );
+			clearLog();
+			feedLog( buildProcess, monitor );
 			buildProcess.waitFor();
 			monitor.done();
-			closePipes();
-
+			
 			return Status.OK_STATUS;
 		}
 		catch( Throwable throwable )
 		{
-			return new Status( Status.ERROR, "!!plugin ID!!", 0, "Unexpected exception", throwable );
+			return new Status(
+					Status.ERROR,
+					Plugin.getDefault().getBundle().getSymbolicName(),
+					0, "Unexpected error. " + throwable.toString(),
+					throwable );
 		}
 	}
-	
-	
-	/**
-	 * Closes and removes all registered pipes.
-	 */
-	private void closePipes()
-	{
-		synchronized ( pipes ) {
-			// Closes all sink pipe ends.
-			Iterator	i = pipes.iterator();
-			while( i.hasNext() ) {
-				Pipe	pipe = (Pipe) i.next();
-				
-				try {
-					pipe.sink().close();
-				}
-				catch( IOException io ) {
-					Plugin.log( io );
-				}
-			}
-			
-			// Clears the registered pipes.
-			pipes.clear();
-		}
-	}
-	
+		
 	/**
 	 * Forward the given stream to the registered pipes.
 	 * 
-	 * @param stream	the stream to log
+	 * @param	process	the process to monitor
+	 * @param	monitor	the progress monitor to use to report the progression
 	 */
-	private void feedPipes( InputStream stream )
+	private void feedLog( Process process, IProgressMonitor monitor ) throws IOException
 	{
-		try {
-			ReadableByteChannel	sourceChannel = Channels.newChannel( stream );
-			ByteBuffer			buffer = ByteBuffer.allocate( 64 );
+		BufferedReader	reader = new BufferedReader( new InputStreamReader(process.getInputStream()) );
+		String			newLine;
 			
-			for(;;)	{
-				int	readLength;
+		for(;;)	{
+			// Processes a new process output line.
+			newLine = reader.readLine();
+			if( newLine != null ) {
+				// Appends a line ending to the new line.
+				newLine = newLine.concat( "\n" );
 				
-				buffer.clear();
-				readLength = sourceChannel.read( buffer );
-				
-				// If there is a line, appends it to the log.
-				if( readLength > 0 ) {
-					synchronized ( pipes ) {
-						buffer.flip();
-						Iterator	i = pipes.iterator();
-						while( i.hasNext() ) {
-							Pipe	pipe = (Pipe) i.next();
-							buffer.rewind();
-							pipe.sink().write( buffer );
-						}
-					}
-				}
-				else if( readLength == 0 ) {
-					Thread.yield();
-				}
-				else {
-					break;
-				}
+				// Updates the log.
+				log.append( newLine );
+				fireLogUpdated( newLine );
+			}
+			else {
+				break;
+			}
+			
+			// Tests if the jobs is supposed to terminate.
+			if( monitor.isCanceled() == true ) {
+				process.destroy();
+				break;
 			}
 		}
-		catch( IOException io ) {
-			Plugin.log( io );
+	}
+	
+	/**
+	 * Notifies observers that the log has been cleared.
+	 */
+	private void fireLogCleared() {
+		synchronized ( listeners ) {
+			Iterator	i = listeners.iterator();
+			while( i.hasNext() ) {
+				IBuildJobListener	listener = (IBuildJobListener) i.next();
+				
+				listener.buildJobLogCleared( this );
+			}
+		}		
+	}
+	
+	/**
+	 * Notifies observers that the log has been updated with new text.
+	 * 
+	 * @param newText	a string containing the new text of the log
+	 */
+	private void fireLogUpdated( String newText ) {
+		synchronized ( listeners ) {
+			Iterator	i = listeners.iterator();
+			while( i.hasNext() ) {
+				IBuildJobListener	listener = (IBuildJobListener) i.next();
+				
+				listener.buildJobLogUpdated( this, newText );
+			}
 		}
 	}
 	
