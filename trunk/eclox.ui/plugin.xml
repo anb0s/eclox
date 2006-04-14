@@ -8,7 +8,7 @@
             default="true"
             extensions="doxyfile"
             filenames="doxyfile"
-            icon="icons/file-16.png"
+            icon="icons/doxyfile.png"
             id="eclox.ui.editor.Editor"
             name="Doxyfile Editor"/>
    </extension>
@@ -17,9 +17,9 @@
       <wizard
             class="eclox.ui.wizard.NewDoxyfileWizard"
             hasPages="true"
-            icon="icons/book-16.png"
+            icon="icons/doxyfile_wizard.png"
             id="eclox.ui.wizard.NewDoxyfile"
-            name="New Doxyfile"/>
+            name="Doxyfile"/>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -29,7 +29,7 @@
             objectClass="org.eclipse.core.resources.IFile">
          <action
                class="eclox.ui.action.BuildPopupActionDelegate"
-               icon="icons/book-16.png"
+               icon="icons/eclox.png"
                id="eclox.ui.action.build"
                label="Build Documentation"/>
       </objectContribution>
@@ -49,11 +49,12 @@
             visible="true">
          <action
                class="eclox.ui.action.BuildActionDelegate"
-               icon="icons/book-16.png"
+               icon="icons/eclox.png"
                id="eclox.ui.buildAction"
                label="Doxygen Build"
                style="pulldown"
-               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"/>
+               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
+               tooltip="Build Doxyfile"/>
       </actionSet>
    </extension>
    <extension

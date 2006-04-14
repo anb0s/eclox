@@ -41,6 +41,8 @@ import org.eclipse.ui.forms.IManagedForm;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.Setting;
+import eclox.ui.Images;
+import eclox.ui.Plugin;
 
 public class Custom implements IFilter {
     
@@ -219,7 +221,7 @@ public class Custom implements IFilter {
         
         // Creates the clear button.
         clearButton = managedForm.getToolkit().createButton( parent, null, SWT.FLAT );
-        clearButton.setImage( PlatformUI.getWorkbench().getSharedImages().getImage( ISharedImages.IMG_TOOL_DELETE ) );
+        clearButton.setImage( Plugin.getImageDescriptor( Images.ERASE ).createImage() );
         clearButton.addSelectionListener( new MyClearSelectionListener() );
         
         // Installs the layout into the parent, and layout data on controls
