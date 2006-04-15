@@ -24,6 +24,7 @@ package eclox.ui.editor;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -37,10 +38,13 @@ import eclox.core.doxyfiles.ISettingValueListener;
 import eclox.core.doxyfiles.Setting;
 import eclox.core.doxyfiles.io.Serializer;
 import eclox.ui.Plugin;
+import eclox.ui.editor.internal.ResourceChangeListener;
 
 
 
 /**
+ * Implements the doxyfile editor.
+ * 
  * @author gbrocker
  */
 public class Editor extends FormEditor implements ISettingValueListener {
@@ -54,6 +58,11 @@ public class Editor extends FormEditor implements ISettingValueListener {
      * The doxyfile content.
      */
     private Doxyfile doxyfile;
+    
+    /**
+     * the resource listener that will manage the editor life-cycle
+     */
+    private ResourceChangeListener resourceChangeListener;
     
     /**
      * The dirty state of the editor
@@ -79,40 +88,39 @@ public class Editor extends FormEditor implements ISettingValueListener {
      */
     public void doSave( IProgressMonitor monitor ) {
         // Retrieves the file input.
-    		IEditorInput			editorInput = this.getEditorInput();
-    		IFileEditorInput		fileEditorInput = (IFileEditorInput) editorInput;
-    		IFile				file = fileEditorInput.getFile();
-    	
-    		try {
-    			// Comits all pending changes.
-	    		getActivePageInstance().getManagedForm().commit( true );
-	    		
-	        	// Stores the doxyfile content.
-		    	Serializer	serializer = new Serializer( doxyfile );
-		    	file.setContents( serializer, false, true, monitor );
-		    	
-		    	// Clears the dirty property set on some settings.
-		    	Iterator		i = doxyfile.settingIterator();
-		    	while( i.hasNext() ) {
-		    		Setting	setting = (Setting) i.next();
-		    		setting.removeProperty( PROP_SETTING_DIRTY );
-		    	}
-		    	
-		    	// Resets the dirty flag.
-		    	this.dirty = false;
-		    	this.firePropertyChange( IEditorPart.PROP_DIRTY );
+		IEditorInput		editorInput = this.getEditorInput();
+		IFileEditorInput	fileEditorInput = (IFileEditorInput) editorInput;
+		IFile				file = fileEditorInput.getFile();
+	
+		try {
+			// Comits all pending changes.
+    		getActivePageInstance().getManagedForm().commit( true );
+    		
+        	// Stores the doxyfile content.
+	    	Serializer	serializer = new Serializer( doxyfile );
+	    	file.setContents( serializer, false, true, monitor );
+	    	
+	    	// Clears the dirty property set on some settings.
+	    	Iterator		i = doxyfile.settingIterator();
+	    	while( i.hasNext() ) {
+	    		Setting	setting = (Setting) i.next();
+	    		setting.removeProperty( PROP_SETTING_DIRTY );
 	    	}
-	    	catch( Throwable throwable ) {
-	    		Plugin.showError( throwable );
-	    	}
+	    	
+	    	// Resets the dirty flag.
+	    	this.dirty = false;
+	    	this.firePropertyChange( IEditorPart.PROP_DIRTY );
+    	}
+    	catch( Throwable throwable ) {
+    		Plugin.showError( throwable );
+    	}
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.ISaveablePart#doSaveAs()
      */
     public void doSaveAs() {
-        // TODO Auto-generated method stub
-
+        // TODO implement "save as"
     }
     
     /**
@@ -130,6 +138,10 @@ public class Editor extends FormEditor implements ISettingValueListener {
     public void init( IEditorSite site, IEditorInput input ) throws PartInitException {
         try {
             IFileEditorInput	fileInput = (IFileEditorInput) input;
+            
+            // Attaches the resource change listener
+            resourceChangeListener = new ResourceChangeListener(this);
+            ResourcesPlugin.getWorkspace().addResourceChangeListener( resourceChangeListener );
             
             // Parses the doxyfile and attaches to all settings.
             this.doxyfile = new Doxyfile(fileInput.getFile());
@@ -155,7 +167,7 @@ public class Editor extends FormEditor implements ISettingValueListener {
      * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
      */
     public boolean isSaveAsAllowed() {
-        // TODO Auto-generated method stub
+        // TODO implement "save as"
         return false;
     }
     
@@ -184,6 +196,10 @@ public class Editor extends FormEditor implements ISettingValueListener {
         
         // Un-references the doxyfile.
         this.doxyfile = null;
+        
+        // Dettaches the resource change listener
+        ResourcesPlugin.getWorkspace().removeResourceChangeListener( resourceChangeListener );
+        resourceChangeListener = null;
 
         // Continue...
         super.dispose();
