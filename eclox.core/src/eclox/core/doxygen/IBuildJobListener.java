@@ -44,4 +44,11 @@ public interface IBuildJobListener {
 	 */
 	void buildJobLogCleared( BuildJob job );
 	
+	/**
+	 * Notifies that the given build job has been removed.
+	 * 
+	 * @param	job	the build job that raised the notification
+	 */
+	void buildJobRemoved( BuildJob job );
+	
 }
