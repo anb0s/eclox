@@ -72,6 +72,7 @@ public class BuildJob extends Job {
 			if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
 			{
 				jobs.remove( job );
+				job.fireRemoved();
 				ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
 			}
 		}
@@ -333,6 +334,20 @@ public class BuildJob extends Job {
 				IBuildJobListener	listener = (IBuildJobListener) i.next();
 				
 				listener.buildJobLogUpdated( this, newText );
+			}
+		}
+	}
+	
+	/**
+	 * Notifies observers that the job has been removed.
+	 */
+	private void fireRemoved() {
+		synchronized ( listeners ) {
+			Iterator	i = listeners.iterator();
+			while( i.hasNext() ) {
+				IBuildJobListener	listener = (IBuildJobListener) i.next();
+				
+				listener.buildJobRemoved( this );
 			}
 		}
 	}
