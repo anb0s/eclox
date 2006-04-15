@@ -49,8 +49,11 @@ public class Console extends AbstractConsole {
 	 */
 	private class MyBuildJobListener implements IBuildJobListener
 	{
+		/* (non-Javadoc)
+		 * @see eclox.core.doxygen.IBuildJobListener#buildJobLogCleared(eclox.core.doxygen.BuildJob)
+		 */
 		public void buildJobLogCleared(BuildJob job) {
-			ConsolePlugin.getStandardDisplay().syncExec(
+			ConsolePlugin.getStandardDisplay().asyncExec(
 					new Runnable()
 					{
 						public void run()
@@ -61,9 +64,12 @@ public class Console extends AbstractConsole {
 				);
 		}
 
+		/* (non-Javadoc)
+		 * @see eclox.core.doxygen.IBuildJobListener#buildJobLogUpdated(eclox.core.doxygen.BuildJob, java.lang.String)
+		 */
 		public void buildJobLogUpdated(BuildJob job, String output) {
 			final String	text = new String( output );
-			ConsolePlugin.getStandardDisplay().syncExec(
+			ConsolePlugin.getStandardDisplay().asyncExec(
 					new Runnable()
 					{
 						public void run()
@@ -73,6 +79,23 @@ public class Console extends AbstractConsole {
 					}
 				);
 		}
+
+		/* (non-Javadoc)
+		 * @see eclox.core.doxygen.IBuildJobListener#buildJobRemoved(eclox.core.doxygen.BuildJob)
+		 */
+		public void buildJobRemoved(BuildJob job) {
+			if( job == getJob() ) {
+				ConsolePlugin.getStandardDisplay().asyncExec(
+						new Runnable() {
+							public void run() {
+								setJob( null );		
+							}
+						}
+					);
+			}
+		}
+		
+		
 		
 	}
 
@@ -194,9 +217,10 @@ public class Console extends AbstractConsole {
 	}
 
 	/**
-	 * Makes the console display the log from the given build job.
+	 * Makes the console display the log from the given build job. If the given
+	 * job is a null, then the console will reset its state.
 	 * 
-	 * @param	job	a given build job instance
+	 * @param	job	a given build job instance or null
 	 */
 	public void setJob( BuildJob job )
 	{
@@ -212,17 +236,23 @@ public class Console extends AbstractConsole {
 			this.job = null;
 		}
 		
-		// Updates the console contents.
-		setName( BASE_NAME + " " + job.getDoxyfile().getFullPath().toString() );
-		
-		// Installs the new job.
+		// References the new job.
 		this.job = job;
-		this.job.addBuidJobListener( this.jobListener );
-		this.job.addJobChangeListener( this.jobChangedListener );
 		
-		// Updates the page controls.
-		showJobLog();
-		updateActionStates();
+		// Updates the console contents.
+		if( this.job != null ) {
+			this.job.addBuidJobListener( this.jobListener );
+			this.job.addJobChangeListener( this.jobChangedListener );
+		
+			setName( BASE_NAME + " " + job.getDoxyfile().getFullPath().toString() );
+			showJobLog();
+			updateActionStates();
+		}
+		else {
+			setName( BASE_NAME );
+			clearConsole();
+			updateActionStates();
+		}
 	}
 	
 	/**
@@ -264,7 +294,7 @@ public class Console extends AbstractConsole {
 	 * Updates the state of some action according to the current job's state
 	 */
 	private void updateActionStates() {
-		page.getCancelJobAction().setEnabled( job.getState() == Job.RUNNING );
+		page.getCancelJobAction().setEnabled( job != null && job.getState() == Job.RUNNING );
 	}
 	
 }
