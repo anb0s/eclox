@@ -119,7 +119,7 @@ public class BuildJob extends Job {
 	/**
 	 * Constructor.
 	 */
-	private BuildJob( IFile doxyfile) {
+	private BuildJob( IFile doxyfile ) {
 		super( "Doxygen Build" );
 		
 		this.doxyfile = doxyfile;
@@ -136,6 +136,7 @@ public class BuildJob extends Job {
 	 * a new job will be created.
 	 * 
 	 * @param	doxyfile	a given doxyfile instance
+	 * @param	doxygen		a string containing the doxygen command to use
 	 * 
 	 * @return	a build job that is in charge of building the given doxyfile
 	 */
@@ -254,7 +255,7 @@ public class BuildJob extends Job {
 	protected IStatus run( IProgressMonitor monitor ) {
 		try
 		{
-			Process	buildProcess = Doxygen.build(this.doxyfile);
+			Process	buildProcess = Doxygen.build( this.doxyfile );
 			
 			monitor.beginTask( this.doxyfile.getFullPath().toString(), 100 );
 			clearLog();
