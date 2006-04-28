@@ -3,7 +3,7 @@
 <plugin>
    <extension
          point="org.eclipse.core.runtime.preferences">
-      <initializer class="eclox.core.preferences.Initializer"/>
+      <initializer class="eclox.core.PreferencesInitializer"/>
    </extension>
    <extension
          point="org.eclipse.core.runtime.contentTypes">
@@ -13,6 +13,17 @@
             id="doxyfile"
             name="Doxyfile"
             priority="normal"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="eclox.core.ui.PreferencePage"
+            id="eclox.core.PreferencePage"
+            name="Doxygen"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="eclox.core.PreferencesInitializer"/>
    </extension>
 
 </plugin>

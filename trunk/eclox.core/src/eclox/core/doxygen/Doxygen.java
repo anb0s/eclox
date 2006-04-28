@@ -29,6 +29,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
+import eclox.core.IPreferences;
+import eclox.core.Plugin;
+
 
 /**
  * Implement the doxygen frontend.
@@ -36,17 +39,25 @@ import org.eclipse.core.runtime.IPath;
  * @author gbrocker
  */
 public final class Doxygen {
+	
+	/**
+	 * a string containing defining the default doxygen command to use
+	 */
+	private final static String DEFAULT_DOXYGEN_COMMAND = "doxygen";
+	
+	
 	/**
 	 * Launch a documentation build.
 	 * 
-	 * @param	file	The file representing the doxygne configuration to use for the build.
+	 * @param	file	the file representing the doxygne configuration to use for the build
 	 * 
 	 * @return	The process that run the build.
 	 */
 	public static Process build( IFile file ) throws DoxygenException {
 		try {
 			String[]	command = new String[2];
-			command[0] = getBuilderCommand();
+			
+			command[0] = getCommand();
 			command[1] = file.getLocation().makeAbsolute().toOSString();
 			
 			ProcessBuilder	processBuilder = new ProcessBuilder( command );
@@ -62,14 +73,14 @@ public final class Doxygen {
 	/**
 	 * Generate an empty configuration file.
 	 * 
-	 * @param	file	The configuration file to generate.
+	 * @param	file	the configuration file to generate.
 	 */	
 	public static void generate( IFile file ) throws DoxygenException, IOException, InterruptedException, CoreException {
 		Process		process;
 		String[]	command = new String[3];
 		
 		// Build the command. 
-		command[0] = getBuilderCommand();
+		command[0] = getCommand();
 		command[1] =  "-g";
 		command[2] = file.getLocation().toOSString();
 		
@@ -90,23 +101,6 @@ public final class Doxygen {
 		file.refreshLocal( 0, null );
 	}
 	
-	/**
-	 * Retrieves the command for the doxygen builder.
-	 * 
-	 * @return	A string containing the bulder command.
-	 */
-	private static String getBuilderCommand() {
-		// TODO eclox split refactoring
-		//IPreferenceStore	store = eclox.core.Plugin.getDefault().getPreferenceStore();
-		//String				command = store.getString( eclox.preferences.Names.COMPILER_PATH );
-		String command = new String();
-		
-		if( command.length() == 0 ) {
-			command = "doxygen";
-		}
-	
-		return command;
-	}
 	
 	/**
 	 * Retrieve the diretory of the specified file.
@@ -118,4 +112,16 @@ public final class Doxygen {
 	private static IPath getDir( IFile file ) {
 		return file.getLocation().makeAbsolute().removeLastSegments( 1 );
 	}
+	
+	
+	/**
+	 * Retrieves the doxygen command to use.
+	 */
+	private static String getCommand()
+	{
+		String command = Plugin.getDefault().getPluginPreferences().getString( IPreferences.DOXYGEN_COMMAND );
+		
+		return command.length() != 0 ? command : DEFAULT_DOXYGEN_COMMAND;
+	}
+	
 }
