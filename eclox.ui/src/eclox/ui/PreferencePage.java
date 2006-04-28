@@ -23,6 +23,7 @@
 package eclox.ui;
 
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -31,8 +32,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-import eclox.core.Plugin;
-import eclox.core.preferences.Values;
 
 /**
  * Implements the plugin preference page.
@@ -49,49 +48,36 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
 	}
 	
 	public void init( IWorkbench workbench ) {
+		setPreferenceStore( Plugin.getDefault().getPreferenceStore() );
 	}
 	
 	/**
 	 * Creates the preference page fields.
 	 */
 	protected void createFieldEditors() {
-//		 TODO eclipse split refactoring
-//		Composite	rootControl = getFieldEditorParent();
-//		Preferences	preferenceStore = Plugin.getDefault().getPluginPreferences();
-//		
-//		// Create the controls.
-//		FileFieldEditor	doxPath = new FileFieldEditor(eclox.core.preferences.Names.COMPILER_PATH, "Compiler path:", true, rootControl);
-//		doxPath.setPreferenceStore(preferenceStore);
-//		addField(doxPath);
-//		
+		Composite	rootControl = getFieldEditorParent();
+	
+		// Create the controls.
+		
 //		IntegerFieldEditor buildHistorySize = new IntegerFieldEditor(eclox.core.preferences.Names.BUILD_HISTORY_SIZE, "Maximal build history size:", rootControl);
 //		buildHistorySize.setPreferenceStore(preferenceStore);
 //		buildHistorySize.setValidRange(1, 15);
 //		buildHistorySize.setErrorMessage("Value must be an integer between 1 and 15.");
 //		addField(buildHistorySize);
 //		
-//		RadioGroupFieldEditor autoSave = new RadioGroupFieldEditor(
-//			eclox.core.preferences.Names.AUTO_SAVE,
-//			"Save all editors before building",
-//			1,
-//			new String[][] {
-//				{Values.AUTO_SAVE_NEVER, Values.AUTO_SAVE_NEVER},
-//				{Values.AUTO_SAVE_ALWAYS, Values.AUTO_SAVE_ALWAYS},
-//				{Values.AUTO_SAVE_ASK, Values.AUTO_SAVE_ASK},
-//			},
-//			rootControl,
-//			true );
-//		autoSave.setPreferenceStore( preferenceStore );
-//		addField( autoSave );
+		RadioGroupFieldEditor autoSave = new RadioGroupFieldEditor(
+			IPreferences.AUTO_SAVE,
+			"Save all editors before building",
+			1,
+			new String[][] {
+				{IPreferences.AUTO_SAVE_NEVER, IPreferences.AUTO_SAVE_NEVER},
+				{IPreferences.AUTO_SAVE_ALWAYS, IPreferences.AUTO_SAVE_ALWAYS},
+				{IPreferences.AUTO_SAVE_ASK, IPreferences.AUTO_SAVE_ASK},
+			},
+			rootControl,
+			true );
+		autoSave.setPreferenceStore( getPreferenceStore() );
+		addField( autoSave );
 	}
 
-	/**
-	 * Retrieves the preference store for this page.
-	 *
-	 * @return	The preference store instance for this page.
-	 */
-//	 TODO eclipse split refactoring
-//	protected IPreferenceStore doGetPreferenceStore() {
-//		return Plugin.getDefault().getPreferences();
-//	}
 }
