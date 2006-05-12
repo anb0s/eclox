@@ -22,10 +22,6 @@
 
 package eclox.ui;
 
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.FileFieldEditor;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -59,12 +55,11 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
 	
 		// Create the controls.
 		
-//		IntegerFieldEditor buildHistorySize = new IntegerFieldEditor(eclox.core.preferences.Names.BUILD_HISTORY_SIZE, "Maximal build history size:", rootControl);
-//		buildHistorySize.setPreferenceStore(preferenceStore);
-//		buildHistorySize.setValidRange(1, 15);
-//		buildHistorySize.setErrorMessage("Value must be an integer between 1 and 15.");
-//		addField(buildHistorySize);
-//		
+		IntegerFieldEditor historySize = new IntegerFieldEditor(IPreferences.BUILD_HISTORY_SIZE, "Build history size:", rootControl);
+		historySize.setPreferenceStore( getPreferenceStore() );
+		historySize.setValidRange( 1, 100 );
+		addField( historySize );
+
 		RadioGroupFieldEditor autoSave = new RadioGroupFieldEditor(
 			IPreferences.AUTO_SAVE,
 			"Save all editors before building",

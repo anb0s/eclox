@@ -95,8 +95,8 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		this.menu = new Menu(parent);
 	
 		// Fill it up with the build history items.
-		BuildJob[]	buildJobs = BuildJob.getAllJobs();
-		for(int i=0; i < buildJobs.length; i++) {
+		BuildJob[]	buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobs();
+		for( int i = buildJobs.length - 1; i >= 0; i-- ) {
 			MenuItem	menuItem = new MenuItem(this.menu, SWT.PUSH);
 			IFile		currentDoxyfile = buildJobs[i].getDoxyfile();
 		
@@ -104,14 +104,18 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			menuItem.setData( currentDoxyfile );
 			menuItem.setText( currentDoxyfile.getName() + " [" + currentDoxyfile.getFullPath().toString() + "]" );
 		}
+		// Add some sugar in the ui
+		if( buildJobs.length > 0 ) {
+			new MenuItem(this.menu, SWT.SEPARATOR);
+		}
 		
 		// Add the fallback menu item to let the user choose another doxyfile.
-		MenuItem separatorMenuItem = new MenuItem(this.menu, SWT.SEPARATOR);
 		MenuItem chooseMenuItem = new MenuItem(this.menu, SWT.PUSH);
 		
 		chooseMenuItem.addSelectionListener(new MenuSelectionListener());
 		chooseMenuItem.setText("Choose Doxyfile...");			 
 	
+		// Job's done.
 		return this.menu;
 	}
 
@@ -152,11 +156,14 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			
 			// If there is no next doxyfile to build and the history is not empty
 			// set the first history element as the next doxyfile.
-// TODO refactoring expected. 
-//			if(this.nextDoxyfile == null && BuildHistory.getDefault().size() != 0) {
-//				IFile[]	historyFiles = BuildHistory.getDefault().toArray();
-//				this.nextDoxyfile = historyFiles[0];
-//			}
+			if( this.nextDoxyfile == null ) {
+				BuildJob[]	buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobs();
+				int			buildJobsCount = buildJobs.length;
+				
+				if( buildJobsCount > 0 ) {
+					this.nextDoxyfile = buildJobs[buildJobsCount - 1].getDoxyfile();	
+				}				
+			}
 			
 			// Check the existance of the doxyfile.
 			if(this.nextDoxyfile != null && this.nextDoxyfile.exists() == false) {
@@ -195,9 +202,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			
 			// If there is a doxyfile, build it.
 			if(doxyfile != null) {
-				BuildJob job = BuildJob.getJob( doxyfile );
-				Plugin.getDefault().getConsoleManager().showConsole( job );
-				job.schedule();				
+				Plugin.getDefault().getBuildManager().build( doxyfile );
 			}
 		}
 		catch(Throwable throwable) {
