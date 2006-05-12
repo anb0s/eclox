@@ -117,7 +117,13 @@ public class BuildManager {
 		}
 		else if( autoSave == IPreferences.AUTO_SAVE_ASK )
 		{
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( true );
+			boolean saved;
+			
+			saved = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( true );
+			if( saved == false )
+			{
+				return;
+			}
 		}
 		
 		// Retreives the build job for the given doxyfile.

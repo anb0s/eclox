@@ -32,7 +32,7 @@ import eclox.core.doxyfiles.Setting;
  */
 public class TextListEditor extends ListEditor {
 	
-		/**
+	/**
 	 * Implements an input validator for the input dialog used to edit value compunds.
 	 */
 	private class MyInputValidator implements IInputValidator {
