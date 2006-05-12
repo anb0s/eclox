@@ -27,10 +27,6 @@ package eclox.ui;
  * @author gbrocker
  */
 public interface IPreferences {
-	/**
-	 * Constant name for the doxygen binary's path.
-	 */
-//	public static final String COMPILER_PATH = "compiler-path";
 	
 	/**
 	 * Constant name for the build history content.
@@ -42,6 +38,11 @@ public interface IPreferences {
 	 */
 //	public static final String BUILD_HISTORY_SIZE = "build-history-size";
 	
+	/**
+	 * Constant name for teh build job history size.
+	 */
+	public static final String BUILD_HISTORY_SIZE = "buildHistory.size";
+
 	/**
 	 * Constant name for workspace autosave flag.
 	 */

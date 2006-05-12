@@ -37,9 +37,10 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
+            category="eclox.core.PreferencePage/"
             class="eclox.ui.PreferencePage"
             id="eclox.ui.preferencePage"
-            name="Doxygen"/>
+            name="Misc"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

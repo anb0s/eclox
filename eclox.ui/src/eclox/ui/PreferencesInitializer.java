@@ -24,6 +24,8 @@ package eclox.ui;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+import eclox.ui.IPreferences;
+
 
 /**
  * Implements the prefenrence initializer for the plugin.
@@ -38,8 +40,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore	preferences = Plugin.getDefault().getPreferenceStore();
 		
-//		preferences.setDefault( IPreferences.BUILD_HISTORY_CONTENT, "" );
-//		preferences.setDefault( IPreferences.BUILD_HISTORY_SIZE, 4 );
+		preferences.setDefault( IPreferences.BUILD_HISTORY_SIZE, 5 );
 		preferences.setDefault( IPreferences.AUTO_SAVE, IPreferences.AUTO_SAVE_ASK );
 	}
 

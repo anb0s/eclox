@@ -23,6 +23,11 @@ public class Plugin extends AbstractUIPlugin {
 	
 	
 	/**
+	 * the managed build manager
+	 */
+	private BuildManager buildManager;
+	
+	/**
 	 * the managed console manager 
 	 */
 	private ConsoleManager consoleManager;
@@ -40,12 +45,14 @@ public class Plugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		consoleManager = new ConsoleManager();
+		buildManager = new BuildManager();
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
+		buildManager = null;
 		consoleManager = null;
 		plugin = null;
 		super.stop(context);
@@ -56,6 +63,15 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public static Plugin getDefault() {
 		return plugin;
+	}
+	
+	/**
+	 * Retrieves the build manager of the plugin.
+	 * 
+	 * @return the managed build manager instance
+	 */
+	public BuildManager getBuildManager() {
+		return buildManager; 
 	}
 	
 	/**
