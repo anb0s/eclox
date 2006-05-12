@@ -22,6 +22,7 @@ package eclox.ui.editor.settings.editors;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
@@ -154,6 +155,22 @@ public final class Convenience {
 	 */
 	private static class PathInputDialog extends InputDialog {
 
+		/**
+		 * Implements an input validator for the input dialog used to edit value compunds.
+		 */
+		private static class MyInputValidator implements IInputValidator {
+
+			public String isValid(String newText) {
+				if( newText.length() == 0 ) {
+					return "Empty value is not allowed.";
+				}
+				else {
+					return null;
+				}
+			}
+			
+		}
+
 		private final static int BROWSE_FILESYSTEM_FILE_ID = IDialogConstants.CLIENT_ID + 3;
 		
 		private final static int BROWSE_FILESYSTEM_DIRECTORY_ID = IDialogConstants.CLIENT_ID + 4;
@@ -176,7 +193,7 @@ public final class Convenience {
 					"Value Edition",
 					"Edit the path. You may use buttons bellow to browse for a path.",
 					initValue,
-					null );
+					new MyInputValidator() );
 			
 			this.doxyfile = doxyfile;
 			this.styles = styles;

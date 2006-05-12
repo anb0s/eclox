@@ -19,6 +19,7 @@
 
 package eclox.ui.editor.settings.editors;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -530,6 +531,11 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 		
 		// Commits changes.
 		commit();
+		
+		// Updates the selection of the list viewer with the
+		List	newSelectedItems = new ArrayList();
+		newSelectedItems.add( selectedItems.get(selectedItems.size() - 1) );
+		listViewer.setSelection( new StructuredSelection(newSelectedItems), true );
 	}
 
 	/**
