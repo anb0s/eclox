@@ -25,8 +25,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.PlatformUI;
 
 import eclox.core.doxygen.BuildJob;
 import eclox.core.doxygen.IBuildJobListener;
@@ -104,6 +106,20 @@ public class BuildManager {
 	 */
 	public void build( IFile doxyfile )
 	{
+		// Retrieves the plugin preferences.
+		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
+		
+		// Ask the user if he wants to save all opened editors before proceeding to build.
+		final String	autoSave = preferences.getString( IPreferences.AUTO_SAVE );
+		if( autoSave == IPreferences.AUTO_SAVE_ALWAYS )
+		{
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( false );
+		}
+		else if( autoSave == IPreferences.AUTO_SAVE_ASK )
+		{
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( true );
+		}
+		
 		// Retreives the build job for the given doxyfile.
 		BuildJob		job = BuildJob.getJob( doxyfile );
 		
@@ -113,7 +129,7 @@ public class BuildManager {
 		}
 		
 		// Updates the job history.
-		int	preferedHistorySize = Plugin.getDefault().getPluginPreferences().getInt( IPreferences.BUILD_HISTORY_SIZE );
+		int	preferedHistorySize = preferences.getInt( IPreferences.BUILD_HISTORY_SIZE );
 		
 		jobHistory.remove( job );
 		if( jobHistory.size() >= preferedHistorySize && jobHistory.isEmpty() == false ) {
