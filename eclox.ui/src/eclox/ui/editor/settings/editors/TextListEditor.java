@@ -41,9 +41,6 @@ public class TextListEditor extends ListEditor {
 			if( newText.length() == 0 ) {
 				return "Empty value is not allowed.";
 			}
-			else if( newText.contains( "\"" ) ) {
-				return "\" is a forbidden character.";
-			}
 			else {
 				return null;
 			}
@@ -57,12 +54,12 @@ public class TextListEditor extends ListEditor {
 				parent,
 				"Value Edition",
 				"Enter the new text for the value.",
-				compound,
+				Convenience.unescapeValue( compound ),
 				new MyInputValidator() );
 		
 		// Lauches the value edition
 		if( dialog.open() == InputDialog.OK ) {			
-			return dialog.getValue();
+			return Convenience.escapeValue( dialog.getValue() );
 		}
 		else {
 			return null;
