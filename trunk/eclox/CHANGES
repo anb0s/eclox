@@ -1,8 +1,35 @@
-* eclox-0.5.0 (in progress) *
+* eclox-0.5.0 (16-may-2006) *
 	Fix bug #5700. "Generate Tag File" was not using the right editor
 	(was "boolean" and should have been "file").
 	
+	Fix bug #5927 : strip From Path option is incorrect. Also fixes
+	bad type for STRIP_FROM_INC_PATH.
+	
 	Fix wrong type for setting EXPAND_AS_DEFINED.
+	
+	Refactored the code so that the core doxygen API is splitted from
+	the ui implementation. And a branding plugin has been added.
+	
+	The documentation building API has been deeply refactored. This 
+	brings improved output logging (now based on the eclipse's console
+	API) and control over build jobs.
+	
+	Fix bug #5719 : double quote escapes in setting values.
+	Now it is possible for settings to support escaped quotes in their value
+	when splitting. The ui part is now able to handle double quotes (un)escapes
+	transparently and automatically. The user now interacts with the unescaped
+	string version. When the edited string returns back to the doxyfile, it is
+	automatically escaped. A preference allows the user to deactivate this
+	bahviour (default is on).
+	
+	Some icons have been updated (doxyfile, clear custom filter field and
+	doxygen build action).
+	
+	Now an editor automatically closes when its related doxyfile gets deleted
+	from the workspace.
+	
+	In the list editor, the focus management has been improved (after item
+	removal for example).
 	
 	
 * eclox-0.4.4 (08-mar-2006) *

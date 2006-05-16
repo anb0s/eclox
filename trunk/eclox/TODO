@@ -1,6 +1,5 @@
 TODO (later):
 
-- Create a "doxygen" console to replace the current build log view.
 - Create a "doxyfiles" view, listing all avaliable doxyfiles in all opened projects.
 - For each plateform, setup default path for doxygen binary.
 - Detect overriden assignments and display a warning.
@@ -19,7 +18,6 @@ TODO (later):
 
 WISHES:
 
-- Synchronisation des messages de sortie de la compilation.
 - Copier le texte de la sortie de compilation.
 - Bouttons dans la barre d'outils du l'éditeur pour compiler et browser directement la documentation générée.
 - Dans le menu contextuel du fichier doxygen, ajouter des actions pour browser la documentation générée.
