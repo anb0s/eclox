@@ -42,6 +42,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		
 		preferences.setDefault( IPreferences.BUILD_HISTORY_SIZE, 5 );
 		preferences.setDefault( IPreferences.AUTO_SAVE, IPreferences.AUTO_SAVE_ASK );
+		preferences.setDefault( IPreferences.HANDLE_ESCAPED_VALUES, true );
 	}
 
 }

@@ -22,6 +22,7 @@
 
 package eclox.ui;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -54,6 +55,10 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
 		Composite	rootControl = getFieldEditorParent();
 	
 		// Create the controls.
+		
+		BooleanFieldEditor escapeValueStrings = new BooleanFieldEditor(IPreferences.HANDLE_ESCAPED_VALUES, "Handle escapes for \" and \\ in value strings", rootControl);
+		escapeValueStrings.setPreferenceStore( getPreferenceStore() );
+		addField( escapeValueStrings );
 		
 		IntegerFieldEditor historySize = new IntegerFieldEditor(IPreferences.BUILD_HISTORY_SIZE, "Build history size:", rootControl);
 		historySize.setPreferenceStore( getPreferenceStore() );

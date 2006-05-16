@@ -39,7 +39,7 @@ public interface IPreferences {
 //	public static final String BUILD_HISTORY_SIZE = "build-history-size";
 	
 	/**
-	 * Constant name for teh build job history size.
+	 * Constant name for the build job history size.
 	 */
 	public static final String BUILD_HISTORY_SIZE = "buildHistory.size";
 
@@ -63,4 +63,9 @@ public interface IPreferences {
 	 * Constant for AUTO_SAVE none ask.
 	 */
 	public static final String AUTO_SAVE_ASK = "ask";
+	
+	/**
+	 * Constant name for the automatic value string escapes.
+	 */
+	public static final String HANDLE_ESCAPED_VALUES = "editor.handleEscapedValues";
 }

@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
 import eclox.core.doxyfiles.Doxyfile;
+import eclox.ui.IPreferences;
+import eclox.ui.Plugin;
 
 /**
  * Implements convenience methods for setting editors.
@@ -37,6 +39,96 @@ import eclox.core.doxyfiles.Doxyfile;
  * @author gbrocker
  */
 public final class Convenience {
+	
+	/**
+	 * Implements a specialized input dialog that adds buttons for browsing
+	 * workspace or file system for paths. 
+	 */
+	private static class PathInputDialog extends InputDialog {
+
+		/**
+		 * Implements an input validator for the input dialog used to edit value compunds.
+		 */
+		private static class MyInputValidator implements IInputValidator {
+
+			public String isValid(String newText) {
+				if( newText.length() == 0 ) {
+					return "Empty value is not allowed.";
+				}
+				else {
+					return null;
+				}
+			}
+			
+		}
+
+		private final static int BROWSE_FILESYSTEM_FILE_ID = IDialogConstants.CLIENT_ID + 3;
+		
+		private final static int BROWSE_FILESYSTEM_DIRECTORY_ID = IDialogConstants.CLIENT_ID + 4;
+		
+		private Doxyfile doxyfile;
+		
+		private int styles;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param	shell		the parent shell
+		 * @param	doxyfile	the reference doxyfile
+		 * @param	initValue	the initial value
+	 	 * @param	styles		a combination of browse facility flags
+	 	 */
+		public PathInputDialog( Shell shell, Doxyfile doxyfile, String initValue, int styles ) {
+			super(
+					shell,
+					"Value Edition",
+					"Edit the path. You may use buttons bellow to browse for a path.",
+					initValue,
+					new MyInputValidator() );
+			
+			this.doxyfile = doxyfile;
+			this.styles = styles;
+		}
+		
+		protected void createButtonsForButtonBar(Composite parent) {
+			// Create additionnal buttons.
+			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 )
+			{
+				createButton( parent, BROWSE_FILESYSTEM_FILE_ID, "Browse File...", false );
+			}
+			if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
+			{
+				createButton( parent, BROWSE_FILESYSTEM_DIRECTORY_ID, "Browse Directory...", false );
+			}
+			
+			// Create default buttons.
+			super.createButtonsForButtonBar(parent);
+		}
+
+		protected void buttonPressed(int buttonId) {
+			// Retrieves the path if one of the browse buttons is pressed.
+			String	path = null;
+			switch( buttonId ) {
+				case BROWSE_FILESYSTEM_DIRECTORY_ID:
+					path = Convenience.browseFileSystemForDirectory( getShell(), doxyfile, getText().getText() );
+					break;
+				
+				case BROWSE_FILESYSTEM_FILE_ID:
+					path = Convenience.browseFileSystemForFile( getShell(), doxyfile, getText().getText() );
+					break;
+				
+				default:
+					super.buttonPressed(buttonId);
+			}
+
+			// Updates the input text if a path has been retrieved.
+			if( path != null ) {
+				getText().setText( path );
+			}
+		}
+		
+	}
+
 	
 	/**
 	 * flag that activates the facility to browse for a file system file
@@ -148,94 +240,47 @@ public final class Convenience {
 			return null;
 		}
 	}
-
+	
 	/**
-	 * Implements a specialized input dialog that adds buttons for browsing
-	 * workspace or file system for paths. 
+	 * Escapes the given value trsing. This will place back slashes before
+	 * any backslash or double quote.
+	 * 
+	 * @param	value	the value string to escape
+	 * 
+	 * @return	the escaped value string
+	 * 
+	 * @see		unescapeValue
 	 */
-	private static class PathInputDialog extends InputDialog {
-
-		/**
-		 * Implements an input validator for the input dialog used to edit value compunds.
-		 */
-		private static class MyInputValidator implements IInputValidator {
-
-			public String isValid(String newText) {
-				if( newText.length() == 0 ) {
-					return "Empty value is not allowed.";
-				}
-				else {
-					return null;
-				}
-			}
-			
+	public static String escapeValue( String value )
+	{
+		String	result = value;
+		
+		if( Plugin.getDefault().getPluginPreferences().getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
+			result = result.replace( "\\", "\\\\" );
+			result = result.replace( "\"", "\\\"" );
 		}
-
-		private final static int BROWSE_FILESYSTEM_FILE_ID = IDialogConstants.CLIENT_ID + 3;
+		return result;
+	}
+	
+	/**
+	 * Unescapes the given value string. This will remove escape backslashes 
+	 * located before backslaashes and double quotes.
+	 * 
+	 * @param	value	the value trsing to unescape
+	 * 
+	 * @return	the escaped value string
+	 * 
+	 * @see		escapeValue
+	 */
+	public static String unescapeValue( String value )
+	{
+		String	result = value;
 		
-		private final static int BROWSE_FILESYSTEM_DIRECTORY_ID = IDialogConstants.CLIENT_ID + 4;
-		
-		private Doxyfile doxyfile;
-		
-		private int styles;
-		
-		/**
-		 * Constructor
-		 * 
-		 * @param	shell		the parent shell
-		 * @param	doxyfile	the reference doxyfile
-		 * @param	initValue	the initial value
-	 	 * @param	styles		a combination of browse facility flags
-	 	 */
-		public PathInputDialog( Shell shell, Doxyfile doxyfile, String initValue, int styles ) {
-			super(
-					shell,
-					"Value Edition",
-					"Edit the path. You may use buttons bellow to browse for a path.",
-					initValue,
-					new MyInputValidator() );
-			
-			this.doxyfile = doxyfile;
-			this.styles = styles;
+		if( Plugin.getDefault().getPluginPreferences().getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
+			result = result.replace( "\\\"", "\"" );
+			result = result.replace( "\\\\", "\\" );
 		}
-		
-		protected void createButtonsForButtonBar(Composite parent) {
-			// Create additionnal buttons.
-			if( (styles & BROWSE_FILESYSTEM_FILE) != 0 )
-			{
-				createButton( parent, BROWSE_FILESYSTEM_FILE_ID, "Browse File...", false );
-			}
-			if( (styles & BROWSE_FILESYSTEM_DIRECTORY) != 0 )
-			{
-				createButton( parent, BROWSE_FILESYSTEM_DIRECTORY_ID, "Browse Directory...", false );
-			}
-			
-			// Create default buttons.
-			super.createButtonsForButtonBar(parent);
-		}
-
-		protected void buttonPressed(int buttonId) {
-			// Retrieves the path if one of the browse buttons is pressed.
-			String	path = null;
-			switch( buttonId ) {
-				case BROWSE_FILESYSTEM_DIRECTORY_ID:
-					path = Convenience.browseFileSystemForDirectory( getShell(), doxyfile, getText().getText() );
-					break;
-				
-				case BROWSE_FILESYSTEM_FILE_ID:
-					path = Convenience.browseFileSystemForFile( getShell(), doxyfile, getText().getText() );
-					break;
-				
-				default:
-					super.buttonPressed(buttonId);
-			}
-
-			// Updates the input text if a path has been retrieved.
-			if( path != null ) {
-				getText().setText( path );
-			}
-		}
-		
+		return result;
 	}
 
 }
