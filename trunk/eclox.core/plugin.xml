@@ -25,5 +25,15 @@
          point="org.eclipse.core.runtime.preferences">
       <initializer class="eclox.core.PreferencesInitializer"/>
    </extension>
+   <extension
+         id="doxygen.marker"
+         name="Doxygen Marker"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <attribute name="priority"/>
+      <attribute name="message"/>
+      <attribute name="severity"/>
+      <attribute name="location"/>
+   </extension>
 
 </plugin>
