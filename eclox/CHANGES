@@ -1,3 +1,11 @@
+* eclox-0.5.1 *
+
+	Fix the build options so the feature's about.ini is included. So now
+	the feature description is available from ecllipse's about box.
+	
+	Removed deprecated icons from the branding plugin.
+	
+	
 * eclox-0.5.0 (16-may-2006) *
 	Fix bug #5700. "Generate Tag File" was not using the right editor
 	(was "boolean" and should have been "file").
