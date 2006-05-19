@@ -28,14 +28,21 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -48,6 +55,23 @@ import eclox.core.Plugin;
  * @author Guillaume Brocker
  */
 public class BuildJob extends Job {
+	
+	/**
+	 * Defines the pattern used to match doxygen warnings and errors
+	 */
+	private static final Pattern problemPattern = Pattern.compile("^(.+?):\\s*(\\d+)\\s*:\\s*(.+?)\\s*:\\s*(.*)$", Pattern.MULTILINE);
+	
+	/**
+	 * Defines the warning severity string.
+	 */
+	private static final String SEVERITY_WARNING = "warning";
+	
+	/**
+	 * Defines the warning severity string.
+	 */
+	private static final String SEVERITY_ERROR = "error";
+	
+	
 	
 	/**
 	 * Implements a resource change listener that will remove a given job if its
@@ -72,6 +96,7 @@ public class BuildJob extends Job {
 			if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
 			{
 				jobs.remove( job );
+				job.clearMarkers();
 				job.fireRemoved();
 				ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
 			}
@@ -91,17 +116,6 @@ public class BuildJob extends Job {
 	
 	
 	/**
-	 * Retrieves all doxygen build jobs.
-	 * 
-	 * @return	an arry containing all doxygen build jobs (can be empty).
-	 */
-	public static BuildJob[] getAllJobs()
-	{
-		return (BuildJob[]) jobs.toArray( new BuildJob[0] );
-	}
-
-	
-	/**
 	 * the current doxyfile to build
 	 */
 	private IFile doxyfile;
@@ -115,6 +129,11 @@ public class BuildJob extends Job {
 	 * a set containing all registered build job listeners
 	 */
 	private Set listeners = new HashSet();
+	
+	/**
+	 * a collection containing all markers corresponding to doxygen warning and errors
+	 */
+	private Collection markers = new Vector();
 	
 	/**
 	 * Constructor.
@@ -131,6 +150,16 @@ public class BuildJob extends Job {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener( new MyResourceChangeListener(this), IResourceChangeEvent.POST_CHANGE );
 	}
 		
+	/**
+	 * Retrieves all doxygen build jobs.
+	 * 
+	 * @return	an arry containing all doxygen build jobs (can be empty).
+	 */
+	public static BuildJob[] getAllJobs()
+	{
+		return (BuildJob[]) jobs.toArray( new BuildJob[0] );
+	}
+
 	/**
 	 * Retrieves the build job associated to the given doxyfile. If needed,
 	 * a new job will be created.
@@ -222,6 +251,30 @@ public class BuildJob extends Job {
 	}
 	
 	/**
+	 * Clears the markers managed by the build job.
+	 */
+	public void clearMarkers()
+	{
+		// Removes all markers from their respective resource
+		Iterator	i = markers.iterator();
+		while( i.hasNext() )
+		{
+			IMarker	marker = (IMarker) i.next();
+			try
+			{
+				marker.delete();
+			}
+			catch( Throwable t )
+			{
+				Plugin.log( t );
+			}
+		}
+		
+		// Clear the marker collection
+		markers.clear();
+	}
+	
+	/**
 	 * Retrieves the job's whole log.
 	 * 
 	 * @return	a string containing the build job's log.
@@ -257,10 +310,20 @@ public class BuildJob extends Job {
 		{
 			Process	buildProcess = Doxygen.build( this.doxyfile );
 			
-			monitor.beginTask( this.doxyfile.getFullPath().toString(), 100 );
+			monitor.beginTask( this.doxyfile.getFullPath().toString(), 4 );
+			
 			clearLog();
+			clearMarkers();
+			monitor.worked( 1 );
+			
 			feedLog( buildProcess, monitor );
+			monitor.worked( 2 );
+			
+			createMarkers( monitor );
+			monitor.worked( 3 );
+			
 			buildProcess.waitFor();
+			monitor.worked( 4 );
 			monitor.done();
 			
 			return Status.OK_STATUS;
@@ -274,12 +337,48 @@ public class BuildJob extends Job {
 					throwable );
 		}
 	}
+	
+	/**
+	 * Creates resource markers while finding warning and errors in the 
+	 * managed log.
+	 * 
+	 * @param	monitor	the progress monitor used to watch for cancel requests.
+	 */
+	private void createMarkers( IProgressMonitor monitor ) throws CoreException 
+	{
+		IWorkspaceRoot	workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+		Matcher			matcher = problemPattern.matcher( log );
+		
+		while( matcher.find() == true )
+		{
+			String		originalMessage = new String( matcher.group(0) );
+			Path		resourcePath = new Path( matcher.group(1) );
+			Integer		lineNumer = new Integer( matcher.group(2) );
+			int			severity = matcher.group(3).compareToIgnoreCase(SEVERITY_WARNING) == 0 ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_ERROR;
+			String		message = new String( matcher.group(4) );
+			IFile		file = workspaceRoot.getFileForLocation( resourcePath );
+			
+			if( file != null )
+			{
+				IMarker	marker = file.createMarker( IMarkers.DOXYGEN_MARKER );
+				
+				marker.setAttribute( IMarker.MESSAGE, message );
+				marker.setAttribute( IMarker.LINE_NUMBER, lineNumer.intValue() );
+				marker.setAttribute( IMarker.LOCATION, file.getProjectRelativePath().toPortableString() );
+				marker.setAttribute( IMarker.PRIORITY, IMarker.PRIORITY_NORMAL );
+				marker.setAttribute( IMarker.SEVERITY, severity );
+				
+				markers.add( marker );
+			}
+			
+		}
+	}
 		
 	/**
-	 * Forward the given stream to the registered pipes.
+	 * Monitors the given process output and appends that to the managed log.
 	 * 
 	 * @param	process	the process to monitor
-	 * @param	monitor	the progress monitor to use to report the progression
+	 * @param	monitor	the progress monitor used to watch for cancel requests.
 	 */
 	private void feedLog( Process process, IProgressMonitor monitor ) throws IOException
 	{
