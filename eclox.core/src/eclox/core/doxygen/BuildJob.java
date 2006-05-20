@@ -95,8 +95,8 @@ public class BuildJob extends Job {
 			IResourceDelta	doxyfileDelta = event.getDelta().findMember( job.getDoxyfile().getFullPath() );
 			if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
 			{
-				jobs.remove( job );
 				job.clearMarkers();
+				jobs.remove( job );
 				job.fireRemoved();
 				ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
 			}
@@ -135,6 +135,29 @@ public class BuildJob extends Job {
 	 */
 	private Collection markers = new Vector();
 	
+	
+	/**
+	 * Retrieves the marker severity for the given text. The given
+	 * text may be warning or error.
+	 * 
+	 * @param severity	a string to convert to a marker severity
+	 * 
+	 * @return the marker severity value
+	 */
+	private static int getMarkerSeverity( String severity )
+	{
+		if( severity.compareToIgnoreCase(SEVERITY_ERROR) == 0 ) {
+			return IMarker.SEVERITY_ERROR;
+		}
+		else if( severity.compareToIgnoreCase(SEVERITY_WARNING) == 0 ) {
+			return IMarker.SEVERITY_WARNING;
+		}
+		else {
+			return IMarker.SEVERITY_ERROR;
+		}
+	}
+	
+	
 	/**
 	 * Constructor.
 	 */
@@ -150,6 +173,7 @@ public class BuildJob extends Job {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener( new MyResourceChangeListener(this), IResourceChangeEvent.POST_CHANGE );
 	}
 		
+	
 	/**
 	 * Retrieves all doxygen build jobs.
 	 * 
@@ -351,10 +375,9 @@ public class BuildJob extends Job {
 		
 		while( matcher.find() == true )
 		{
-			String		originalMessage = new String( matcher.group(0) );
 			Path		resourcePath = new Path( matcher.group(1) );
 			Integer		lineNumer = new Integer( matcher.group(2) );
-			int			severity = matcher.group(3).compareToIgnoreCase(SEVERITY_WARNING) == 0 ? IMarker.SEVERITY_WARNING : IMarker.SEVERITY_ERROR;
+			int			severity = getMarkerSeverity( matcher.group(3) );
 			String		message = new String( matcher.group(4) );
 			IFile		file = workspaceRoot.getFileForLocation( resourcePath );
 			
