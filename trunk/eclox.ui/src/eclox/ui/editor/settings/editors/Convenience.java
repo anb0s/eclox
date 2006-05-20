@@ -19,6 +19,8 @@
 
 package eclox.ui.editor.settings.editors;
 
+import java.io.File;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -185,6 +187,12 @@ public final class Convenience {
 			initialPath = doxyfile.getParentContainer().getLocation().append( initialPath );
 		}
 		
+		// If the initial path is not valid, use the doxyfile location as fall back.
+		File	file = new File( initialPath.toOSString() );
+		if( file.exists() == false ) {
+			initialPath = doxyfile.getParentContainer().getLocation();
+		}
+
 		// Displayes the directory dialog to the user
 		FileDialog		dialog = new FileDialog( shell );
 		String			choosenPathString;
@@ -220,6 +228,12 @@ public final class Convenience {
 		IPath	initialPath = new Path( path );
 		if( initialPath.isAbsolute() == false ) {
 			initialPath = doxyfile.getParentContainer().getLocation().append( initialPath );
+		}
+		
+		// If the initial path is not valid, use the doxyfile location as fall back.
+		File	file = new File( initialPath.toOSString() );
+		if( file.exists() == false ) {
+			initialPath = doxyfile.getParentContainer().getLocation();
 		}
 		
 		// Displayes the directory dialog to the user

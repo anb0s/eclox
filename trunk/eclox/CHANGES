@@ -1,5 +1,12 @@
 * eclox-0.5.1 *
 
+	Fix a bug in the directory browser dialog that caused the initial path
+	to be invalid in some conditions.
+
+	Added build log analysis. So now problem reported by doxygen are
+	converted to markers on files. This will help to find and fix
+	mistakes in documentation blocks.
+
 	Fix the build options so the feature's about.ini is included. So now
 	the feature description is available from ecllipse's about box.
 	
