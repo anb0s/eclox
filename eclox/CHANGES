@@ -1,4 +1,4 @@
-* eclox-0.5.1 *
+* eclox-0.5.1 (20-may-2006) *
 
 	Fix a bug in the directory browser dialog that caused the initial path
 	to be invalid in some conditions.
