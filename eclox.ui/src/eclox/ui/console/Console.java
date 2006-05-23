@@ -143,7 +143,7 @@ public class Console extends AbstractConsole {
 	/**
 	 * the base build console name
 	 */
-	private static String BASE_NAME = "[Doxygen Build]";
+	private static String BASE_NAME = "Doxygen";
 	
 	/**
 	 * the current build job
@@ -244,7 +244,7 @@ public class Console extends AbstractConsole {
 			this.job.addBuidJobListener( this.jobListener );
 			this.job.addJobChangeListener( this.jobChangedListener );
 		
-			setName( BASE_NAME + " " + job.getDoxyfile().getFullPath().toString() );
+			setName( BASE_NAME + " [" + job.getDoxyfile().getFullPath().toString() + "]" );
 			showJobLog();
 			updateActionStates();
 		}
