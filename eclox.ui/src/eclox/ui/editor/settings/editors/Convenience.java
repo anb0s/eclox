@@ -270,8 +270,8 @@ public final class Convenience {
 		String	result = value;
 		
 		if( Plugin.getDefault().getPluginPreferences().getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
-			result = result.replace( "\\", "\\\\" );
-			result = result.replace( "\"", "\\\"" );
+			result = replace( result, "\\", "\\\\" );	// Replaces all \ by \\
+			result = replace( result, "\"", "\\\"" );	// Replaces all " by \"
 		}
 		return result;
 	}
@@ -291,10 +291,27 @@ public final class Convenience {
 		String	result = value;
 		
 		if( Plugin.getDefault().getPluginPreferences().getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
-			result = result.replace( "\\\"", "\"" );
-			result = result.replace( "\\\\", "\\" );
+			result = replace( result, "\\\"", "\"" );	// Replaces all \" by "
+			result = replace( result, "\\\\", "\\" );	// Replaces all \\ by \
 		}
 		return result;
 	}
 
+	/**
+	 * In the given string, replaces all matching substring by the given replacement.
+	 * 
+	 * @param	string	the string to update
+	 * @param	search	the sub string to serach and replace
+	 * @param	replace	the string to place where search matches
+	 * 
+	 * @return	the resulting string
+	 */
+	public static String replace( String string, String search, String replace ) {
+		StringBuffer	buffer = new StringBuffer( string );
+		
+		for( int i = buffer.lastIndexOf(search); i != -1; i = buffer.indexOf(search, i+replace.length()) ) {
+			buffer = buffer.replace( i, i + search.length(), replace );
+		}
+		return buffer.toString();
+	}
 }

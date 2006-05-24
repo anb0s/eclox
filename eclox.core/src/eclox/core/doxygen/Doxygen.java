@@ -59,11 +59,14 @@ public final class Doxygen {
 			
 			command[0] = getCommand();
 			command[1] = file.getLocation().makeAbsolute().toOSString();
+
+// TODO This is code only supported by jre >= 1.5
+//			ProcessBuilder	processBuilder = new ProcessBuilder( command );
+//			processBuilder.directory( getDir(file).toFile() );
+//			processBuilder.redirectErrorStream( true );
+//			return processBuilder.start();
 			
-			ProcessBuilder	processBuilder = new ProcessBuilder( command );
-			processBuilder.directory( getDir(file).toFile() );
-			processBuilder.redirectErrorStream( true );
-			return processBuilder.start();
+			return Runtime.getRuntime().exec( command, null, getDir(file).toFile() );
 		}
 		catch(Throwable throwable) {
 			throw new DoxygenException("Unable to launch Doxygen. Please check your path environment variable or edit the preferences.", throwable);

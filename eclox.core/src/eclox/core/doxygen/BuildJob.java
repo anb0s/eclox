@@ -22,6 +22,7 @@
 package eclox.core.doxygen;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
@@ -71,6 +72,62 @@ public class BuildJob extends Job {
 	 */
 	private static final String SEVERITY_ERROR = "error";
 	
+	
+	
+	/**
+	 * Implements a runnable log feeder that reads the given input stream
+	 * line per line and writes those lines back to the managed log. Once
+	 * the stream end has been reached, the feeder exists.
+	 * 
+	 * @author	Guillaume Brocker
+	 */
+	private class MyLogFeeder implements Runnable
+	{
+		
+		/**
+		 * the input stream to read and write by to the log
+		 */
+		private InputStream	input;
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param	input	the input stream to read to write back to the log
+		 */
+		public MyLogFeeder( InputStream input )
+		{
+			this.input = input;
+		}
+		
+		public void run()
+		{
+			try
+			{
+				BufferedReader	reader = new BufferedReader( new InputStreamReader(input) );
+				String			newLine;
+					
+				for(;;)	{
+					// Processes a new process output line.
+					newLine = reader.readLine();
+					if( newLine != null ) {
+						// Appends a line ending to the new line.
+						newLine = newLine.concat( "\n" );
+						
+						// Updates the log.
+						log.append( newLine );
+						fireLogUpdated( newLine );
+					}
+					else {
+						break;
+					}
+				}
+			}
+			catch( Throwable t )
+			{
+				Plugin.log( t );
+			}
+		}
+	}
 	
 	
 	/**
@@ -405,21 +462,17 @@ public class BuildJob extends Job {
 	 */
 	private void feedLog( Process process, IProgressMonitor monitor ) throws IOException
 	{
-		BufferedReader	reader = new BufferedReader( new InputStreamReader(process.getInputStream()) );
-		String			newLine;
-			
+		// Creates threads to get doxygen outputs
+		Thread	inputLogFeeder = new Thread( new MyLogFeeder(process.getInputStream()) );
+		Thread	errorLogFeeder = new Thread( new MyLogFeeder(process.getErrorStream()) );
+		
+		inputLogFeeder.start();
+		errorLogFeeder.start();
+		
+		// Wait either for the feeders to terminate or the user to cancel the job.
 		for(;;)	{
-			// Processes a new process output line.
-			newLine = reader.readLine();
-			if( newLine != null ) {
-				// Appends a line ending to the new line.
-				newLine = newLine.concat( "\n" );
-				
-				// Updates the log.
-				log.append( newLine );
-				fireLogUpdated( newLine );
-			}
-			else {
+			// Tests of the log feeders have terminated.
+			if( inputLogFeeder.isAlive() == false && errorLogFeeder.isAlive() == false ) {
 				break;
 			}
 			
@@ -428,6 +481,9 @@ public class BuildJob extends Job {
 				process.destroy();
 				break;
 			}
+			
+			// Allows other threads to run.
+			Thread.yield();
 		}
 	}
 	
