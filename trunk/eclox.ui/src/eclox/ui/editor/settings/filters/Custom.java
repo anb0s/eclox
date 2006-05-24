@@ -144,7 +144,7 @@ public class Custom implements IFilter {
 	        		Setting	setting = (Setting) element;
 	        		String	settingText = setting.getProperty(Setting.TEXT);
 	        		
-	        		return settingText.toLowerCase().contains( filterText.toLowerCase() );
+	        		return settingText.toLowerCase().indexOf( filterText.toLowerCase() ) != -1;
         		}
         		else {
         			return true;

@@ -300,7 +300,7 @@ public class Setting extends Chunk {
 			if( compound.length() == 0 ) {
 				continue;
 			}
-			else if( compound.contains(" ") ) {
+			else if( compound.indexOf(' ') != -1 ) {
 				value = value.concat( "\"" + compound + "\" " );
 			}
 			else {
