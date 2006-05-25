@@ -2,7 +2,7 @@
 <feature
       id="org.gna.eclox"
       label="eclox"
-      version="0.5.1"
+      version="0.5.2"
       provider-name="Guillaume Brocker"
       plugin="org.gna.eclox">
 
@@ -37,26 +37,26 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
          id="org.gna.eclox.help"
          download-size="0"
          install-size="0"
-         version="0.5.1"/>
+         version="0.5.2"/>
 
    <plugin
          id="org.gna.eclox.ui"
          download-size="0"
          install-size="0"
-         version="0.5.1"
+         version="0.5.2"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox"
          download-size="0"
          install-size="0"
-         version="0.5.1"/>
+         version="0.5.2"/>
 
    <plugin
          id="org.gna.eclox.core"
          download-size="0"
          install-size="0"
-         version="0.5.1"
+         version="0.5.2"
          unpack="false"/>
 
 </feature>
