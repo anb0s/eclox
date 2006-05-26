@@ -60,7 +60,7 @@ public class BuildJob extends Job {
 	/**
 	 * Defines the pattern used to match doxygen warnings and errors
 	 */
-	private static final Pattern problemPattern = Pattern.compile("^(.+?):\\s*(\\d+)\\s*:\\s*(.+?)\\s*:\\s*(.*)$", Pattern.MULTILINE);
+	private static final Pattern problemPattern = Pattern.compile("^(.+?):\\s*(\\d+)\\s*:\\s*(.+?)\\s*:\\s*(.*$(\\s+^  .*$)*)", Pattern.MULTILINE);
 	
 	/**
 	 * Defines the warning severity string.
