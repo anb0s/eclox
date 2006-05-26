@@ -24,6 +24,8 @@ package eclox.core.doxygen;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
@@ -43,8 +45,47 @@ public final class Doxygen {
 	/**
 	 * a string containing defining the default doxygen command to use
 	 */
-	private final static String DEFAULT_DOXYGEN_COMMAND = "doxygen";
+	public final static String DEFAULT_DOXYGEN_COMMAND = "doxygen";
 	
+	
+	/**
+	 * Retrieves the version string of the configured doxygen
+	 * 
+	 * @param	path	a string containing the command path to use or null to use the configured doxygen
+	 * 
+	 * @return	a string containing the doxygen version string
+	 */
+	public static String getVersion( String path ) throws RuntimeException {
+		try {
+			// Builds the command.
+			String[]	command = new String[2];
+			
+			command[0] = path != null ? path : getCommand();
+			command[1] = "--help";
+			
+			// Runs the command and retrieves the version string.
+			Process				doxygen = Runtime.getRuntime().exec( command );
+			InputStreamReader	reader = new InputStreamReader( doxygen.getInputStream() );
+			char[]				buffer = new char[512];
+			int					count;
+			
+			count = reader.read( buffer );
+			
+			// Matches the doxygen welcome message.
+			Pattern	pattern = Pattern.compile( "^doxygen\\s+version\\s+(.*?)$", Pattern.CASE_INSENSITIVE|Pattern.MULTILINE );
+			Matcher	matcher = pattern.matcher( new String(buffer, 0, count) );
+			
+			if( matcher.matches() ) {
+				return matcher.group( 1 ); 
+			}
+			else {
+				throw new RuntimeException( "The given path does not point to doxygen." );
+			}
+		}
+		catch( Throwable t ) {
+			throw new RuntimeException( t.getMessage(), t );
+		}
+	}
 	
 	/**
 	 * Launch a documentation build.
@@ -53,7 +94,7 @@ public final class Doxygen {
 	 * 
 	 * @return	The process that run the build.
 	 */
-	public static Process build( IFile file ) throws DoxygenException {
+	public static Process build( IFile file ) throws RuntimeException {
 		try {
 			String[]	command = new String[2];
 			
@@ -69,7 +110,7 @@ public final class Doxygen {
 			return Runtime.getRuntime().exec( command, null, getDir(file).toFile() );
 		}
 		catch(Throwable throwable) {
-			throw new DoxygenException("Unable to launch Doxygen. Please check your path environment variable or edit the preferences.", throwable);
+			throw new RuntimeException("Unable to launch Doxygen. Please check your path environment variable or edit the preferences.", throwable);
 		}
 	}
 	
@@ -78,7 +119,7 @@ public final class Doxygen {
 	 * 
 	 * @param	file	the configuration file to generate.
 	 */	
-	public static void generate( IFile file ) throws DoxygenException, IOException, InterruptedException, CoreException {
+	public static void generate( IFile file ) throws RuntimeException, IOException, InterruptedException, CoreException {
 		Process		process;
 		String[]	command = new String[3];
 		
@@ -97,7 +138,7 @@ public final class Doxygen {
 			for(line=reader.readLine(); line != null; line=reader.readLine()) {
 				errorMsg = errorMsg.concat(line);
 			}
-			throw new DoxygenException(errorMsg);
+			throw new RuntimeException( errorMsg );
 		}
 		
 		// Force some refresh to display the file.
@@ -119,6 +160,8 @@ public final class Doxygen {
 	
 	/**
 	 * Retrieves the doxygen command to use.
+	 * 
+	 * @return	a string containing the configured doxygen command
 	 */
 	private static String getCommand()
 	{

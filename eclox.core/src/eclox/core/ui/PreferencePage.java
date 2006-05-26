@@ -31,6 +31,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import eclox.core.IPreferences;
 import eclox.core.Plugin;
+import eclox.core.doxygen.Doxygen;
 
 /**
  * Implements the preferences for the core eclox plugin.
@@ -39,6 +40,53 @@ import eclox.core.Plugin;
  */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
+	/**
+	 * Implements a file field editor for the doxygen command path that will validate
+	 * the doxygen path.
+	 *
+	 *	@author	Guillaume Brocker
+	 */
+	private class DoxygenPathEditor extends FileFieldEditor
+	{
+		
+		/**
+		 * Contructor
+		 * 
+		 * @param parent	the parent control
+		 */
+		public DoxygenPathEditor( Composite parent ) {
+			super( IPreferences.DOXYGEN_COMMAND, "Path:", true, parent );
+		}
+		
+		/**
+		 * Refreshes the valid state of the editor.
+		 */
+		protected boolean checkState() {
+			try {
+				// Calls default validity check.
+				if( super.checkState() == false ) {
+					return false;
+				}
+				
+				// Retrieves the edited doxygen path
+				String	path = getStringValue();
+				if( path.length() == 0 ) {
+					path = Doxygen.DEFAULT_DOXYGEN_COMMAND;
+				}
+				
+				// Retrieves the doxygen version.
+				Doxygen.getVersion( path );
+				clearErrorMessage();
+				return true;
+			}
+			catch( Throwable t ) {
+				showErrorMessage( "Doxygen was not found at the given path." );
+				return false;
+			}
+		}
+		
+	}
+	
 	public PreferencePage()
 	{
 		super( GRID );
@@ -52,9 +100,9 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		Composite				rootControl = getFieldEditorParent();
 		
 		// Create the controls.
-		FileFieldEditor	compilerPath = new FileFieldEditor(IPreferences.DOXYGEN_COMMAND, "Command path:", true, rootControl);
-		compilerPath.setPreferenceStore( getPreferenceStore() );
-		addField(compilerPath);
+		DoxygenPathEditor	doxygenPath = new DoxygenPathEditor( rootControl );
+		doxygenPath.setPreferenceStore( getPreferenceStore() );
+		addField(doxygenPath);
 	}
 
 }

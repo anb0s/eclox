@@ -27,7 +27,7 @@
    </extension>
    <extension
          id="doxygen.marker"
-         name="Doxygen Marker"
+         name="Doxygen Problem"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.problemmarker"/>
       <attribute name="priority"/>
