@@ -250,7 +250,7 @@ GENERATE_DEPRECATEDLIST.note = The GENERATE_DEPRECATEDLIST tag can be used to en
 
 ENABLED_SECTIONS.text = Enabled Sections
 ENABLED_SECTIONS.group = Build
-ENABLED_SECTIONS.type = boolean
+ENABLED_SECTIONS.type = text list
 ENABLED_SECTIONS.note = The ENABLED_SECTIONS tag can be used to enable conditional documentation sections, marked by \if sectionname ... \endif.
 
 MAX_INITIALIZER_LINES.text = Maximum Initializer Lines
