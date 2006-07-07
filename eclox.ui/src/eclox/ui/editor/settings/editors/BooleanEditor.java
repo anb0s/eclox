@@ -37,11 +37,6 @@ import eclox.core.doxyfiles.Setting;
 public class BooleanEditor implements IEditor {
 	
 	/**
-	 * @brief	the container for all widgets 
-	 */
-	private Composite container;
-    
-    /**
      * @brief   the yes button
      */
     private Button  yesButton;
@@ -115,14 +110,14 @@ public class BooleanEditor implements IEditor {
 	public void createContent(Composite parent, FormToolkit formToolkit) {
 		// Initialize the parent control.
 		RowLayout	layout = new RowLayout(SWT.VERTICAL);
-		container = formToolkit.createComposite( parent );
+		
 		layout.marginWidth = 0;		
-		container.setLayout( layout );
+		parent.setLayout( layout );
 		
 		// Creates the buttons.
-		yesButton      = formToolkit.createButton( container, "Yes", SWT.RADIO );
-		noButton       = formToolkit.createButton( container, "No", SWT.RADIO );
-		defaultButton  = formToolkit.createButton( container, "Default", SWT.RADIO );
+		yesButton      = formToolkit.createButton( parent, "Yes", SWT.RADIO );
+		noButton       = formToolkit.createButton( parent, "No", SWT.RADIO );
+		defaultButton  = formToolkit.createButton( parent, "Default", SWT.RADIO );
 		
 		// Attaches a selection listener instance to each button.
 		yesButton.addSelectionListener( new MySelectionListener() );
@@ -135,7 +130,19 @@ public class BooleanEditor implements IEditor {
 	}
 
 	public void dispose() {
-		container.dispose();
+		// Pre-condition
+		assert yesButton != null;
+		assert noButton != null;
+		assert defaultButton != null;
+		
+		// Release all resources.
+		yesButton.dispose();
+		noButton.dispose();
+		defaultButton.dispose();
+		
+		yesButton = null;
+		noButton = null;
+		defaultButton = null;
 	}
 
 	public boolean isDirty() {
