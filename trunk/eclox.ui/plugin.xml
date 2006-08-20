@@ -8,8 +8,9 @@
             default="true"
             extensions="doxyfile"
             filenames="doxyfile"
-            icon="icons/doxyfile.png"
+            icon="icons/doxyfile.gif"
             id="eclox.ui.editor.Editor"
+            matchingStrategy="eclox.ui.editor.MatchingStrategy"
             name="Doxyfile Editor"/>
    </extension>
    <extension
