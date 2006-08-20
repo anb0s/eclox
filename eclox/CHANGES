@@ -5,6 +5,8 @@
 	Fix bug #6109 concerning missing radio buttons when editing a
 	boolean setting.
 	
+	Fix editor icon black background problem.
+	
 
 * eclox-0.5.2 (24-may-2006) *
 
