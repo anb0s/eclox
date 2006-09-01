@@ -72,8 +72,8 @@ public final class Doxygen {
 			count = reader.read( buffer );
 			
 			// Matches the doxygen welcome message.
-			Pattern	pattern = Pattern.compile( "^doxygen\\s+version\\s+(.*?)$", Pattern.CASE_INSENSITIVE|Pattern.MULTILINE );
-			Matcher	matcher = pattern.matcher( new String(buffer, 0, count) );
+			Pattern	pattern	= Pattern.compile( "^doxygen\\s+version\\s+([\\d\\.]+).*", Pattern.CASE_INSENSITIVE|Pattern.DOTALL );
+			Matcher	matcher	= pattern.matcher( new String(buffer, 0, count) );
 			
 			if( matcher.matches() ) {
 				return matcher.group( 1 ); 
