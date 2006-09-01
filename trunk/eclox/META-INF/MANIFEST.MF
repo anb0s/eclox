@@ -3,13 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Eclox
 Bundle-SymbolicName: org.gna.eclox; singleton:=true
 Bundle-Version: 0.5.3
-Bundle-ClassPath: eclox.jar
 Bundle-Vendor: Guillaume Brocker
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.resources,
- org.eclipse.ui.views,
- org.eclipse.core.runtime,
- org.eclipse.ui.forms,
- org.gna.eclox.core
 Eclipse-AutoStart: true
