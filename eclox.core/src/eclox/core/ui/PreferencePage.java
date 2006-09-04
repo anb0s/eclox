@@ -24,7 +24,9 @@ package eclox.core.ui;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -48,6 +50,7 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	 */
 	private class DoxygenPathEditor extends FileFieldEditor
 	{
+		public Label	messageLabel; ///< a label control used to show additionnal messages.
 		
 		/**
 		 * Contructor
@@ -56,6 +59,8 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		 */
 		public DoxygenPathEditor( Composite parent ) {
 			super( IPreferences.DOXYGEN_COMMAND, "Path:", true, parent );
+			
+			setValidateStrategy( VALIDATE_ON_KEY_STROKE );
 		}
 		
 		/**
@@ -63,6 +68,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		 */
 		protected boolean checkState() {
 			try {
+				// Resets the message label.
+				if( messageLabel != null )
+				{
+					messageLabel.setText( new String() );
+				}
+				
 				// Calls default validity check.
 				if( super.checkState() == false ) {
 					return false;
@@ -75,8 +86,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 				}
 				
 				// Retrieves the doxygen version.
-				Doxygen.getVersion( path );
+				String version = Doxygen.getVersion( path );
 				clearErrorMessage();
+				if( messageLabel != null )
+				{
+					messageLabel.setText( "Detected Doxygen " + version );
+				}
 				return true;
 			}
 			catch( Throwable t ) {
@@ -92,17 +107,25 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		super( GRID );
 	}
 	
-	public void init(IWorkbench workbench) {
+	public void init(IWorkbench workbench)
+	{
 		setPreferenceStore( new ScopedPreferenceStore( new InstanceScope(), Plugin.getDefault().getBundle().getSymbolicName() ) );
 	}
 
-	protected void createFieldEditors() {
-		Composite				rootControl = getFieldEditorParent();
-		
-		// Create the controls.
-		DoxygenPathEditor	doxygenPath = new DoxygenPathEditor( rootControl );
+	protected void createFieldEditors()
+	{
+		// Create the doxygen path editor.
+		DoxygenPathEditor	doxygenPath = new DoxygenPathEditor( getFieldEditorParent() );
 		doxygenPath.setPreferenceStore( getPreferenceStore() );
 		addField(doxygenPath);
+		
+		// Assignes the message label to the editor.
+		Label		messageLabel = new Label( getFieldEditorParent(), 0 );
+		GridData	gridData = new GridData();
+		
+		gridData.horizontalSpan = 3;
+		messageLabel.setLayoutData( gridData );
+		doxygenPath.messageLabel = messageLabel;
 	}
 
 }

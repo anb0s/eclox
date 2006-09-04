@@ -1,3 +1,8 @@
+* eclox-0.5.4 *
+
+	Fix bug #6740 : jar declared in classpath is missing.
+	
+
 * eclox-0.5.3 (20-aug-2006) *
 
 	Fix bug #6265 concerning "enabled section" setting.
