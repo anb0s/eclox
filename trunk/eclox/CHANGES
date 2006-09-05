@@ -1,6 +1,8 @@
-* eclox-0.5.4 *
+* eclox-0.5.4 (05-sep-2006) *
 
 	Fix bug #6740 : jar declared in classpath is missing.
+	
+	Fix bug #6795 : unable to edit doxygen preferences.
 	
 
 * eclox-0.5.3 (20-aug-2006) *
