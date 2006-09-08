@@ -5,4 +5,3 @@ Bundle-SymbolicName: org.gna.eclox; singleton:=true
 Bundle-Version: 0.5.4
 Bundle-Vendor: Guillaume Brocker
 Bundle-Localization: plugin
-Eclipse-AutoStart: true
