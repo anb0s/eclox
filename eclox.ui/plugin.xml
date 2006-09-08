@@ -10,7 +10,6 @@
             filenames="doxyfile"
             icon="icons/doxyfile.gif"
             id="eclox.ui.editor.Editor"
-            matchingStrategy="eclox.ui.editor.MatchingStrategy"
             name="Doxyfile Editor"/>
    </extension>
    <extension
