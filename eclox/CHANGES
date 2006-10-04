@@ -1,3 +1,9 @@
+* eclox-0.5.5 (inprogress) *
+
+	Add sr #1296 : Marking finish of doxygen. A message is printed once
+	the build job has finished.
+	
+
 * eclox-0.5.4 (05-sep-2006) *
 
 	Fix bug #6740 : jar declared in classpath is missing.
