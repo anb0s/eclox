@@ -99,6 +99,12 @@ public class Console extends AbstractConsole {
 		
 	}
 
+	/**
+	 * @brief	Implements a job change listener used to update the interface state according to the
+	 * 			build job events.
+	 * 
+	 * @author gbrocker
+	 */
 	private class MyJobChangedListener implements IJobChangeListener {
 	
 		public void aboutToRun(IJobChangeEvent event) {
@@ -118,10 +124,9 @@ public class Console extends AbstractConsole {
 
 		public void done(IJobChangeEvent event) {
 			ConsolePlugin.getStandardDisplay().syncExec(
-					new Runnable()
-					{
-						public void run()
-						{
+					new Runnable() {
+						public void run() {
+							append( "\nDoxygen has finished!\n" );
 							updateActionStates();		
 						}
 					}
