@@ -433,7 +433,7 @@ COLS_IN_ALPHA_INDEX.note = If the alphabetical index is enabled (see ALPHABETICA
 
 IGNORE_PREFIX.text = Ignore Prefix
 IGNORE_PREFIX.group = Alphabetical Class Index
-IGNORE_PREFIX.type = boolean
+IGNORE_PREFIX.type = text list
 IGNORE_PREFIX.note = In case all classes in a project start with a common prefix, all classes will be put under the same header in the alphabetical index. The IGNORE_PREFIX tag can be used to specify one or more prefixes that should be ignored while generating the index headers.
 
 #---------------------------------------------------------------------------
