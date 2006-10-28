@@ -1,5 +1,9 @@
 * eclox-0.5.5 (inprogress) *
 
+	Fix bug #7545 : "Save all editors before building" settings isn't preserved
+	correctly across Eclipse restarts. A bad string equality test was used
+	("==" instead of "equals").
+
 	Add sr #1296 : Marking finish of doxygen. A message is printed once
 	the build job has finished.
 	
