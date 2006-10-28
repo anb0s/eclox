@@ -111,11 +111,11 @@ public class BuildManager {
 		
 		// Ask the user if he wants to save all opened editors before proceeding to build.
 		final String	autoSave = preferences.getString( IPreferences.AUTO_SAVE );
-		if( autoSave == IPreferences.AUTO_SAVE_ALWAYS )
+		if( autoSave.equals( IPreferences.AUTO_SAVE_ALWAYS ) )
 		{
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().saveAllEditors( false );
 		}
-		else if( autoSave == IPreferences.AUTO_SAVE_ASK )
+		else if( autoSave.equals( IPreferences.AUTO_SAVE_ASK ) )
 		{
 			boolean saved;
 			
@@ -124,6 +124,16 @@ public class BuildManager {
 			{
 				return;
 			}
+		}
+		else if( autoSave.equals( IPreferences.AUTO_SAVE_NEVER) )
+		{
+			// Nothing to perform.
+		}
+		else
+		{
+			// Not supported.
+			assert( false );
+			Plugin.log( autoSave + ": unsupported auto save state.");
 		}
 		
 		// Retreives the build job for the given doxyfile.

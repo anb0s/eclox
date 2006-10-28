@@ -93,6 +93,15 @@ public class Plugin extends AbstractUIPlugin {
 	}
 	
 	/**
+	 * Adds the specified message into the plugin's log as an error.
+	 *  
+	 * @param message	a string containing a message to log.
+	 */
+	public static void log( String message ) {
+	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Error encountered. " + message, null) );
+	}
+	
+	/**
 	 * Show an error with the specified message.
 	 * 
 	 * @param message	A string containing the message to display.

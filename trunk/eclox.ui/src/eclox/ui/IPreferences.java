@@ -45,22 +45,38 @@ public interface IPreferences {
 
 	/**
 	 * Constant name for workspace autosave flag.
+	 * 
+	 * @see	AUTO_SAVE_NEVER
+	 * @see AUTO_SAVE_ALWAYS
+	 * @see AUTO_SAVE_ASK
 	 */
 	public static final String AUTO_SAVE = "editor.autosave";
 	
 	
 	/**
 	 * Constant for AUTO_SAVE never state.
+	 * 
+	 * @see	AUTO_SAVE
+	 * @see AUTO_SAVE_ALWAYS
+	 * @see AUTO_SAVE_ASK
 	 */
 	public static final String AUTO_SAVE_NEVER = "never";
 	
 	/**
-	 * Constant for AUTO_SAVE none always.
+	 * Constant for AUTO_SAVE always state.
+	 * 
+	 * @see	AUTO_SAVE
+	 * @see AUTO_SAVE_NEVER
+	 * @see AUTO_SAVE_ASK
 	 */
 	public static final String AUTO_SAVE_ALWAYS = "always";
 	
 	/**
-	 * Constant for AUTO_SAVE none ask.
+	 * Constant for AUTO_SAVE ask state.
+	 * 
+	 * @see	AUTO_SAVE
+	 * @see AUTO_SAVE_ALWAYS
+	 * @see AUTO_SAVE_NEVER
 	 */
 	public static final String AUTO_SAVE_ASK = "ask";
 	
