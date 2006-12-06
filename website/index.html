@@ -12,14 +12,18 @@
 </head>
 
 <body>
-	<h1>Eclox</h1>
-	<ul id="contents">
-		<li><a href="#about">about</a></li>
-		<li><a href="#download-install">download&nbsp;&amp;&nbsp;install</a></li>
-		<li><a href="#documentation-support">documentation&nbsp;&amp;&nbsp;support</a></li>
-		<li><a href="https://gna.org/projects/eclox">project page</a></li>
-		<li id="rate"><a href="http://www.eclipseplugincentral.com/Web_Links-index-req-ratelink-lid-76.html">Rate&nbsp;eclox@Eclipse&nbsp;Plugin&nbsp;Central</a></li>
-	</ul>
+	<div id="title">
+		<h1>Eclox</h1>
+	</div>
+	
+	<div id="contents">
+		<ul>
+			<li><a href="#about">about</a></li>
+			<li><a href="#download-install">download&nbsp;&amp;&nbsp;install</a></li>
+			<li><a href="#getting-involved">getting&nbsp;involved</a></li>
+			<li id="rate"><a href="http://www.eclipseplugincentral.com/Web_Links-index-req-ratelink-lid-76.html">Rate&nbsp;eclox@Eclipse&nbsp;Plugin&nbsp;Central</a></li>
+		</ul>
+	</div>
 
 <!--
 	<iframe src="http://willy.homedns.org/eclox-poll/" style="float: right; margin: 2.5em 7% 0 2.5em; padding: 3px; height: 15.5em; width: 430px; border: solid 1px rgb(210,215,255);" scrolling="auto" frameborder="0">
@@ -29,17 +33,15 @@
 	<p class="announce" id="get-eclox">
 		<big><a href="http://download.gna.org/eclox/packages/eclox_0.5.4.zip"><big><strong>Get eclox 0.5.4</strong></big> for all plateformes (153kB)</a></big>
 		<br>
-		<small>
-			<a href="#update-site">Update&nbsp;site</a>
-			&bull;
-			<a href="http://download.gna.org/eclox/packages">Other&nbsp;versions</a>
-			&bull;
-			<a href="#download-install">Learn&nbsp;more</a>
-		</small>
+		<a href="#update-site">Update&nbsp;site</a>
+		&bull;
+		<a href="http://download.gna.org/eclox/packages">Other&nbsp;versions</a>
+		&bull;
+		<a href="#download-install">Learn&nbsp;more</a>
 	</p>
 
 
-	<p class="announce" id="postcard">
+<!--	<p class="announce" id="postcard">
 		If you enjoy using eclox, I would love to receive a postcard from you at the following address:<br/>
 		<small><tt>
 		Guillaume Brocker<br/>
@@ -47,15 +49,13 @@
 		67700 Saverne FRANCE
 		</tt></small>
 	</p>
+-->
 
 	
-	<p id="screenshot">
-		<a href="images/editor.png"><img src="images/editor-thumb.png" alt="screenshot of the doxyfile editor"/></a>
-	</p>
-
-
 	<h2 id="about">About</h2>
 
+	<p><a id="screenshot" href="images/editor.png"><img src="images/editor-thumb.png" alt="screenshot of the doxyfile editor"/></a></p>
+	
 	<p>Eclox is a simple <a href="http://www.doxygen.org">doxygen</a> frontend
 	plug-in for <a href="http://www.eclipse.org">eclipse</a>.</p>
 
@@ -68,54 +68,46 @@
 	<a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public Licence (GPL)</a>.</p>
 
 
-	<h2 id="download-install">Download&nbsp;&amp;&nbsp;Install</h2>
 
-	<h3>Requirements</h3>
+	<h2 id="download-install">Download&nbsp;&amp;&nbsp;Install</h2>
 
 	<p>Latest eclox releases needs
 	<a href="http://java.sun.com/downloads/">JRE 1.4.2 (or above)</a>
 	and <a href="http://www.eclipse.org/downloads/">eclipse 3.1 (or above)</a>.
-	Eclox has not been officaly tested on GNU class-path yet.</p>
-	<p><a href="http://www.doxygen.org">Doxygen</a> must be installed on your system in order to generate documentation
+	Eclox has not been officaly tested on GNU class-path yet, so feedback is welcome.</p>
+	
+	<p><strong>Important!</strong> <a href="http://www.doxygen.org">Doxygen</a> must be installed on your system in order to generate documentation
 	but is not required to simply edit doxyfiles.</p>
 
 	<h3 id="update-site">Update site</h3>
-
+	
 	<p>The more convenient and the prefered way to install eclox is to use eclipse's <em>update manager</em>
 	(<a href="http://help.eclipse.org/help31/topic/org.eclipse.platform.doc.user/tasks/tasks-34.htm">learn more</a>)
 	and the update site at the address below.</p>
 
-	<p><kbd>http://download.gna.org/eclox/update</kbd></p>
+	<p><a href="http://download.gna.org/eclox/update"><kbd>http://download.gna.org/eclox/update</kbd></a></p>
 
 	<h3>Binary Package</h3>
-	
-	<p><strong>Note:</strong> since eclox 0.5.4 packages contain a feature.</p>
 
-	<p><a href="http://download.gna.org/eclox/packages/eclox_0.5.4.zip">
-	Download eclox 0.5.4 binary package</a>.</p>
-	
-	<p>Uninstall or disable any existing eclox version
-	(<a href="http://help.eclipse.org/help32/topic/org.eclipse.platform.doc.user/tasks/tasks-35.htm">learn more</a>)
-	and leave all eclipse instances.
-	Extract the package content in eclipse installation folder (or alternatively in your personnal plugin and feature repository).
-	Finally (re-)start eclipse and you are done.</p>
+	<ol>	
+		<li>Uninstall or disable any existing eclox version
+		(<a href="http://help.eclipse.org/help32/topic/org.eclipse.platform.doc.user/tasks/tasks-35.htm">learn more</a>)
+		and leave all eclipse instances.</li>
+		
+		<li><a href="http://download.gna.org/eclox/packages/eclox_0.5.4.zip">
+		Download eclox 0.5.4 binary package</a> (for all plateformes).</li>
+			
+		<li>Extract the package content in eclipse installation folder (or alternatively in your personnal plugin and feature repository).</li>
+		
+		<li>Finally (re-)start eclipse and you are done.</li>
+	</ol>
 
 	<p>You can still <a href="http://download.gna.org/eclox/packages/old">get older eclox releases</a> for
 	previous eclipse versions.</p>
 
-	<h3>Sources</h3>
-
-	<p>Sources of the software can be retrieved from the CVS repository. See following command
-	sample for details about how to connect to the repository.</p>
-
-	<p><kbd>cvs -d :pserver:anonymous@cvs.gna.org:/cvs/eclox co eclox</kbd></p>
 
 
-	<h2 id="documentation-support">Documentation&nbsp;&amp;&nbsp;Support</h2>
-
-	<h3>Documentation</h3>
-
-	<p>The available documentation is currently a simple <a href="http://download.gna.org/eclox/MANUAL">manual file</a>.</p>
+	<h2 id="getting-involved">Getting&nbsp;Involved</h2>
 
 	<h3>Bugs</h3>
 
@@ -129,6 +121,15 @@
 	<p>For discussion about eclox, subscribe to the <a href="https://mail.gna.org/listinfo/eclox-users">user mailing list</a>
 	or browse the <a href="https://mail.gna.org/public/eclox-users/">online archives</a>.
 	For announces about eclox, subscribe to the <a href="https://mail.gna.org/listinfo/eclox-news">news mailing list</a>.</p>
+
+	<h3>Source Code</h3>
+
+	<p>The <a href="https://gna.org/projects/eclox">project page</a> holds informations about developments.
+	Sources of the software can be retrieved from the CVS repository. See following command
+	sample for details about how to connect to the repository.</p>
+
+	<p><kbd>cvs -d :pserver:anonymous@cvs.gna.org:/cvs/eclox co eclox</kbd></p>
+
 
 
 	<div id="footer">
