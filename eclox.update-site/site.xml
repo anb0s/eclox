@@ -3,9 +3,6 @@
    <description url="http://download.gna.org/eclox/update">
       Eclox Update Site
    </description>
-   <feature url="features/org.gna.eclox_0.4.4.jar" id="org.gna.eclox" version="0.4.4">
-      <category name="Eclox"/>
-   </feature>
    <feature url="features/org.gna.eclox_0.5.0.jar" id="org.gna.eclox" version="0.5.0">
       <category name="Eclox"/>
    </feature>
@@ -19,6 +16,9 @@
       <category name="Eclox"/>
    </feature>
    <feature url="features/org.gna.eclox_0.5.4.jar" id="org.gna.eclox" version="0.5.4">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox_0.5.5.jar" id="org.gna.eclox" version="0.5.5">
       <category name="Eclox"/>
    </feature>
    <category-def name="Eclox" label="Eclox">
