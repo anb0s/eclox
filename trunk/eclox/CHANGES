@@ -1,4 +1,4 @@
-* eclox-0.5.5 (inprogress) *
+* eclox-0.5.5 (13-dec-2006) *
 
 	Fix bug #7545 : "Save all editors before building" settings isn't preserved
 	correctly across Eclipse restarts. A bad string equality test was used
