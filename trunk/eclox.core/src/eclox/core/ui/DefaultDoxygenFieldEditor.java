@@ -26,6 +26,9 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -37,6 +40,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import eclox.core.IPreferences;
 import eclox.core.doxygen.Doxygen;
+import eclox.core.doxygen.LocalDoxygen;
 
 /**
  * @author Guillaume Brocker
@@ -67,6 +71,11 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * the valid state of the field editor
 	 */
 	private boolean valid = true;
+	
+	/**
+	 * the preference change listener
+	 */
+	private MyPrefercenceChangeListener preferenceChangeListener;
 	
 	
 	/**
@@ -106,6 +115,32 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 			
 			// Refreshes the field validity.
 			refreshValidState();
+		}
+		
+	}
+	
+	
+	/**
+	 * Implements a listener of the preference store that will trigger updates
+	 * of the version information for local doxygen.
+	 */
+	private class MyPrefercenceChangeListener implements IPropertyChangeListener {
+
+		/**
+		 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+		 */
+		public void propertyChange( PropertyChangeEvent event ) {
+			if( event.getProperty().equals(IPreferences.DOXYGEN_COMMAND) ) {
+				TableItem[]	items	= table.getItems();
+				for( int i = 0; i < items.length; ++i ) {
+					Doxygen	dox = (Doxygen) items[i].getData();
+					if (dox instanceof LocalDoxygen) {
+						final String	version = dox.getVersion();
+						
+						items[i].setText( VERSION_COLUMN_INDEX, (version != null) ? version : "unknown" );
+					}
+				}
+			}
 		}
 		
 	}
@@ -286,6 +321,19 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 */
 	public boolean isValid() {
 		return valid;
+	}
+
+
+	public void setPreferenceStore(IPreferenceStore store) {
+		if( store != null ) {
+			preferenceChangeListener = new MyPrefercenceChangeListener();
+			store.addPropertyChangeListener( preferenceChangeListener );
+		}
+		else {
+			getPreferenceStore().removePropertyChangeListener( preferenceChangeListener );
+			preferenceChangeListener = null;
+		}
+		super.setPreferenceStore(store);
 	}
 	
 }

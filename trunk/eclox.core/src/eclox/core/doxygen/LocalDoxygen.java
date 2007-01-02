@@ -21,6 +21,8 @@
 
 package eclox.core.doxygen;
 
+import java.io.File;
+
 import eclox.core.IPreferences;
 import eclox.core.Plugin;
 
@@ -37,16 +39,59 @@ public final class LocalDoxygen extends Doxygen {
 	 */
 	private final static String DEFAULT_COMMAND = "doxygen";
 	
+	/**
+	 * a string containing the location where doxygen should available
+	 * 
+	 * This can be either a path to a directory or the full path to the 
+	 * doxygen binary executable file. When null, the IPreferences.DOXYGEN_COMMAND
+	 * will be used.
+	 */
+	private String location;
+	
+	
+	/**
+	 * Builds a local doxygen wrapper that uses the user configured location
+	 * to search for available doxygen.
+	 */
+	public LocalDoxygen() {
+		location = null;
+	}
+	
+	
+	/**
+	 * Builds a local doxygen wrapper that uses the given path to search for doxygen.
+	 */
+	public LocalDoxygen( String location ) {
+		this.location = new String( location );
+	}
+	
 	
 	/**
 	 * @see eclox.core.doxygen.Doxygen#getCommand()
 	 */
 	public String getCommand() {
-		String command = Plugin.getDefault().getPluginPreferences().getString( IPreferences.DOXYGEN_COMMAND );
+		// Retrieves the real location where doxygen may be.
+		File	realLocation;		
 		
-		return command.length() != 0 ? command : DEFAULT_COMMAND;
-		
-		// TODO support directory of file path in command.
+		if( location == null ) {
+			final String preference = Plugin.getDefault().getPluginPreferences().getString( IPreferences.DOXYGEN_COMMAND );
+			
+			realLocation = new File( preference );
+		}
+		else {
+			realLocation = new File( this.location );
+		}
+
+		// Builds the path.
+		if( realLocation.getPath().length() == 0 ) {
+			return DEFAULT_COMMAND;
+		}
+		else if( realLocation.isFile() == true ) {
+			return realLocation.getPath();
+		}
+		else {
+			return realLocation.getPath() + File.separator + DEFAULT_COMMAND; 
+		}
 	}
 	
 	
