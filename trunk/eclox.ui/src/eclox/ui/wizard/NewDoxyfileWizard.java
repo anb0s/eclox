@@ -73,7 +73,7 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 				result = false;	
 			}
 			else {
-				Doxygen.generate( doxyfile );
+				Doxygen.getDefault().generate( doxyfile );
 				result = true;
 			}	
 		}

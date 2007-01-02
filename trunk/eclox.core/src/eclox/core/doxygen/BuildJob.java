@@ -389,7 +389,7 @@ public class BuildJob extends Job {
 	protected IStatus run( IProgressMonitor monitor ) {
 		try
 		{
-			Process	buildProcess = Doxygen.build( this.doxyfile );
+			Process	buildProcess = Doxygen.getDefault().build( this.doxyfile );
 			
 			monitor.beginTask( this.doxyfile.getFullPath().toString(), 4 );
 			

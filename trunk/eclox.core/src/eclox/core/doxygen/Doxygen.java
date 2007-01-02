@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2004 Guillaume Brocker
+ * Copyright (C) 2003-2006 Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -24,6 +24,9 @@ package eclox.core.doxygen;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,33 +37,74 @@ import org.eclipse.core.runtime.IPath;
 import eclox.core.IPreferences;
 import eclox.core.Plugin;
 
-
 /**
- * Implement the doxygen frontend.
+ * Implements the abstract doxygen frontend. Sub-classes provides concret
+ * doxygen access.
  * 
  * @author gbrocker
  */
-public final class Doxygen {
+public abstract class Doxygen {
 	
 	/**
-	 * a string containing defining the default doxygen command to use
+	 * a collection containing all available doxygen wrapper instances
 	 */
-	public final static String DEFAULT_DOXYGEN_COMMAND = "doxygen";
+	private static Collection doxygens = new Vector(); 
 	
 	
 	/**
-	 * Retrieves the version string of the configured doxygen
+	 * Retrieves a doxygen instance for the given identifier
 	 * 
-	 * @param	path	a string containing the command path to use or null to use the configured doxygen
+	 * @param	identifier	a string containing an identifier
+	 * 
+	 * @return	the found doxygen instance or null if one has been found
+	 */
+	public static Doxygen get( final String identifier ) {
+		Collection	doxygens	= getAll();
+		Iterator	i			= doxygens.iterator();
+		Doxygen		result		= null;
+		
+		while( i.hasNext() == true && result == null ) {
+			Doxygen	doxygen = (Doxygen) i.next();
+			if( doxygen.getIdentifier().equals(identifier) == true ) {
+				result = doxygen;
+			}
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * Retrieves the default doxygen instance to use.
+	 */
+	public static Doxygen getDefault() {
+		final String identifier	= Plugin.getDefault().getPluginPreferences().getString( IPreferences.DEFAULT_DOXYGEN );
+
+		return get( identifier );
+	}
+	
+	
+	/**
+	 * Retrieves the collection of all available doxygen wrappers.
+	 */
+	public static Collection getAll() {
+		if( doxygens.isEmpty() == true ) {
+			doxygens.add( new LocalDoxygen() );
+			doxygens.add( new BundledDoxygen() );
+		}		
+		return doxygens;
+	}
+	
+	/**
+	 * Retrieves the version string of wrapped doxygen.
 	 * 
 	 * @return	a string containing the doxygen version string
 	 */
-	public static String getVersion( String path ) throws RuntimeException {
+	public String getVersion() {
 		try {
 			// Builds the command.
 			String[]	command = new String[2];
 			
-			command[0] = path != null ? path : getCommand();
+			command[0] = getCommand();
 			command[1] = "--help";
 			
 			// Runs the command and retrieves the version string.
@@ -83,7 +127,8 @@ public final class Doxygen {
 			}
 		}
 		catch( Throwable t ) {
-			throw new RuntimeException( t.getMessage(), t );
+			Plugin.log( t );
+			return null;
 		}
 	}
 	
@@ -94,7 +139,7 @@ public final class Doxygen {
 	 * 
 	 * @return	The process that run the build.
 	 */
-	public static Process build( IFile file ) throws RuntimeException {
+	public Process build( IFile file ) throws RuntimeException {
 		try {
 			String[]	command = new String[2];
 			
@@ -119,7 +164,7 @@ public final class Doxygen {
 	 * 
 	 * @param	file	the configuration file to generate.
 	 */	
-	public static void generate( IFile file ) throws RuntimeException, IOException, InterruptedException, CoreException {
+	public void generate( IFile file ) throws RuntimeException, IOException, InterruptedException, CoreException {
 		Process		process;
 		String[]	command = new String[3];
 		
@@ -147,6 +192,31 @@ public final class Doxygen {
 	
 	
 	/**
+	 * Retrieves the string containing the command line to the doxygen binary.
+	 * Sub-classes must implement this method.
+	 * 
+	 * @return	a string containing the path to the doxygen binary file
+	 */
+	public abstract String getCommand();
+	
+	
+	/**
+	 * Retrieves the description string of the doxygen wrapper instance.
+	 * 
+	 * @return	a string containing the description of the dowygen wrapper
+	 */
+	public abstract String getDescription();
+	
+	
+	/**
+	 * Retrieves the identifier of the doxygen wrapper.
+	 * 
+	 * @return	a string containing the doxygen wrapper identifier
+	 */
+	public abstract String getIdentifier();
+	
+	
+	/**
 	 * Retrieve the diretory of the specified file.
 	 * 
 	 * @param	file	The file for which the directory must be retrieved.
@@ -156,18 +226,5 @@ public final class Doxygen {
 	private static IPath getDir( IFile file ) {
 		return file.getLocation().makeAbsolute().removeLastSegments( 1 );
 	}
-	
-	
-	/**
-	 * Retrieves the doxygen command to use.
-	 * 
-	 * @return	a string containing the configured doxygen command
-	 */
-	private static String getCommand()
-	{
-		String command = Plugin.getDefault().getPluginPreferences().getString( IPreferences.DOXYGEN_COMMAND );
 		
-		return command.length() != 0 ? command : DEFAULT_DOXYGEN_COMMAND;
-	}
-	
 }

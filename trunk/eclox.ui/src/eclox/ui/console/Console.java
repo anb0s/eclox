@@ -126,7 +126,7 @@ public class Console extends AbstractConsole {
 			ConsolePlugin.getStandardDisplay().syncExec(
 					new Runnable() {
 						public void run() {
-							append( "\nDoxygen has finished!\n" );
+							append( "\nBuild finished!\n" );
 							updateActionStates();		
 						}
 					}
