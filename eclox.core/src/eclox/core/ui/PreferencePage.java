@@ -22,10 +22,11 @@
 package eclox.core.ui;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -33,7 +34,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 import eclox.core.IPreferences;
 import eclox.core.Plugin;
-import eclox.core.doxygen.Doxygen;
 
 /**
  * Implements the preferences for the core eclox plugin.
@@ -41,66 +41,6 @@ import eclox.core.doxygen.Doxygen;
  * @author gbrocker
  */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-
-	/**
-	 * Implements a file field editor for the doxygen command path that will validate
-	 * the doxygen path.
-	 *
-	 *	@author	Guillaume Brocker
-	 */
-	private class DoxygenPathEditor extends FileFieldEditor
-	{
-		public Label	messageLabel; ///< a label control used to show additionnal messages.
-		
-		/**
-		 * Contructor
-		 * 
-		 * @param parent	the parent control
-		 */
-		public DoxygenPathEditor( Composite parent ) {
-			super( IPreferences.DOXYGEN_COMMAND, "Path:", true, parent );
-			
-			setValidateStrategy( VALIDATE_ON_KEY_STROKE );
-		}
-		
-		/**
-		 * Refreshes the valid state of the editor.
-		 */
-		protected boolean checkState() {
-			try {
-				// Resets the message label.
-				if( messageLabel != null )
-				{
-					messageLabel.setText( new String() );
-				}
-				
-				// Calls default validity check.
-				if( super.checkState() == false ) {
-					return false;
-				}
-				
-				// Retrieves the edited doxygen path
-				String	path = getStringValue();
-				if( path.length() == 0 ) {
-					path = Doxygen.DEFAULT_DOXYGEN_COMMAND;
-				}
-				
-				// Retrieves the doxygen version.
-				String version = Doxygen.getVersion( path );
-				clearErrorMessage();
-				if( messageLabel != null )
-				{
-					messageLabel.setText( "Detected Doxygen " + version );
-				}
-				return true;
-			}
-			catch( Throwable t ) {
-				showErrorMessage( "Doxygen was not found at the given path." );
-				return false;
-			}
-		}
-		
-	}
 	
 	public PreferencePage()
 	{
@@ -114,18 +54,49 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
 	protected void createFieldEditors()
 	{
-		// Create the doxygen path editor.
-		DoxygenPathEditor	doxygenPath = new DoxygenPathEditor( getFieldEditorParent() );
-		doxygenPath.setPreferenceStore( getPreferenceStore() );
-		addField(doxygenPath);
+		// Creates all control instances.
+		Label						doxygenLabel		= new Label( getFieldEditorParent(), SWT.WRAP );
+		DefaultDoxygenFieldEditor	doxygen				= new DefaultDoxygenFieldEditor( getFieldEditorParent() );
+		Label						localDoxygenLabel	= new Label( getFieldEditorParent(), 0 );
+		Label						localDoxygenText	= new Label( getFieldEditorParent(), SWT.WRAP );
+		DirectoryFieldEditor		location			= new DirectoryFieldEditor( IPreferences.DOXYGEN_COMMAND, "Location: ", getFieldEditorParent() );
 		
-		// Assignes the message label to the editor.
-		Label		messageLabel = new Label( getFieldEditorParent(), 0 );
-		GridData	gridData = new GridData();
 		
-		gridData.horizontalSpan = 3;
-		messageLabel.setLayoutData( gridData );
-		doxygenPath.messageLabel = messageLabel;
+		// Configures field editors.
+		doxygen.setPreferenceStore( getPreferenceStore() );
+		location.setPreferenceStore( getPreferenceStore() );
+		
+		addField( doxygen );
+		addField( location );
+		
+		
+		// Configures the default doxygen label.
+		GridData	doxygenLabelData = new GridData();
+		
+		doxygenLabelData.horizontalSpan = 3;
+		doxygenLabelData.horizontalAlignment = SWT.FILL;
+		doxygenLabel.setText( "Choose among available doxygen versions, the one you would like to use." );
+		doxygenLabel.setLayoutData( doxygenLabelData );
+		
+		
+		// Configures the local doxygen label.
+		GridData	localDoxygenLabelData = new GridData();
+		
+		localDoxygenLabelData.horizontalSpan = 3;
+		localDoxygenLabelData.verticalIndent = 20;
+		localDoxygenLabelData.horizontalAlignment = SWT.FILL;
+		localDoxygenLabel.setFont( JFaceResources.getBannerFont() );
+		localDoxygenLabel.setText( "Local Doxygen:" );
+		localDoxygenLabel.setLayoutData( localDoxygenLabelData );
+		
+		
+		// Configures the local doxygen text.
+		GridData	localDoxygenTextData = new GridData();
+		
+		localDoxygenTextData.horizontalSpan = 3;
+		localDoxygenTextData.horizontalAlignment = SWT.FILL;
+		localDoxygenText.setText( "Specify the location on your local system of the binary executable of doxygen to use. Leave the field blank to search the path for any available doxygen." );
+		localDoxygenText.setLayoutData( localDoxygenTextData );
 	}
-
+	
 }

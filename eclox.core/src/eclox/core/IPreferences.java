@@ -29,6 +29,11 @@ package eclox.core;
 public interface IPreferences {
 
 	/**
+	 * Constant definition for the doxygen wrapper to use.
+	 */
+	public static final String DEFAULT_DOXYGEN = "doxygen.default";
+	
+	/**
 	 * Constant name for the doxygen binary's path.
 	 */
 	public static final String DOXYGEN_COMMAND = "doxygen.command";

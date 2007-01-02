@@ -19,30 +19,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.core;
+package eclox.core.doxygen;
 
-import org.eclipse.core.runtime.Preferences;
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+public final class BundledDoxygen extends Doxygen {
 
-import eclox.core.Plugin;
-import eclox.core.doxygen.LocalDoxygen;
+	public String getCommand() {
+		return null;
+	}
 
+	public String getDescription() {
+		return new String("Bundled");
+	}
 
-/**
- * Implements the prefenrence initializer for the plugin.
- * 
- * @author gbrocker
- */
-public class PreferencesInitializer extends AbstractPreferenceInitializer {
-
-	/**
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
-	public void initializeDefaultPreferences() {
-		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
-		
-		preferences.setDefault( IPreferences.DEFAULT_DOXYGEN, new LocalDoxygen().getIdentifier() );
-		preferences.setDefault( IPreferences.DOXYGEN_COMMAND, "" );
+	public String getIdentifier() {
+		return this.getClass().getName();
 	}
 
 }
