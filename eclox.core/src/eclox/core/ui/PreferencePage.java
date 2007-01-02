@@ -22,9 +22,7 @@
 package eclox.core.ui;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Label;
@@ -32,7 +30,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
-import eclox.core.IPreferences;
 import eclox.core.Plugin;
 
 /**
@@ -57,15 +54,11 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		// Creates all control instances.
 		Label						doxygenLabel		= new Label( getFieldEditorParent(), SWT.WRAP );
 		DefaultDoxygenFieldEditor	doxygen				= new DefaultDoxygenFieldEditor( getFieldEditorParent() );
-		Label						localDoxygenLabel	= new Label( getFieldEditorParent(), 0 );
-		Label						localDoxygenText	= new Label( getFieldEditorParent(), SWT.WRAP );
-		DirectoryFieldEditor		location			= new DirectoryFieldEditor( IPreferences.DOXYGEN_COMMAND, "Location: ", getFieldEditorParent() );
+		Label						locationText		= new Label( getFieldEditorParent(), SWT.WRAP );
+		DoxygenLocationFieldEditor	location			= new DoxygenLocationFieldEditor( getFieldEditorParent() );
 		
 		
 		// Configures field editors.
-		doxygen.setPreferenceStore( getPreferenceStore() );
-		location.setPreferenceStore( getPreferenceStore() );
-		
 		addField( doxygen );
 		addField( location );
 		
@@ -79,24 +72,14 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		doxygenLabel.setLayoutData( doxygenLabelData );
 		
 		
-		// Configures the local doxygen label.
-		GridData	localDoxygenLabelData = new GridData();
+		// Configures the local doxygen location tex label..
+		GridData	locationTextData = new GridData();
 		
-		localDoxygenLabelData.horizontalSpan = 3;
-		localDoxygenLabelData.verticalIndent = 20;
-		localDoxygenLabelData.horizontalAlignment = SWT.FILL;
-		localDoxygenLabel.setFont( JFaceResources.getBannerFont() );
-		localDoxygenLabel.setText( "Local Doxygen:" );
-		localDoxygenLabel.setLayoutData( localDoxygenLabelData );
-		
-		
-		// Configures the local doxygen text.
-		GridData	localDoxygenTextData = new GridData();
-		
-		localDoxygenTextData.horizontalSpan = 3;
-		localDoxygenTextData.horizontalAlignment = SWT.FILL;
-		localDoxygenText.setText( "Specify the location on your local system of the binary executable of doxygen to use. Leave the field blank to search the path for any available doxygen." );
-		localDoxygenText.setLayoutData( localDoxygenTextData );
+		locationTextData.horizontalSpan = 3;
+		locationTextData.horizontalAlignment = SWT.FILL;
+		locationTextData.verticalIndent = 20;
+		locationText.setText( "Specify here the location on your local system for a binary executable of doxygen to use. Leave the field blank to search the path for doxygen." );
+		locationText.setLayoutData( locationTextData );
 	}
 	
 }
