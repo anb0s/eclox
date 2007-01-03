@@ -23,7 +23,6 @@ package eclox.core.doxygen;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashSet;
@@ -110,10 +109,7 @@ public class BuildJob extends Job {
 					// Processes a new process output line.
 					newLine = reader.readLine();
 					if( newLine != null ) {
-						// Appends a line ending to the new line.
 						newLine = newLine.concat( "\n" );
-						
-						// Updates the log.
 						log.append( newLine );
 						fireLogUpdated( newLine );
 					}
@@ -364,8 +360,9 @@ public class BuildJob extends Job {
 		return log.toString();
 	}
 	
+	
 	/**
-	 * Overrides.
+	 * @see org.eclipse.core.runtime.jobs.Job#belongsTo(java.lang.Object)
 	 */
 	public boolean belongsTo(Object family) {
 		if( family == FAMILY )
@@ -378,46 +375,75 @@ public class BuildJob extends Job {
 		}
 	}
 
+
 	/**
-	 * Run the job.
-	 * 
-	 * @param	monitor	The progress monitor to use to report work progression
-	 * 					and handle cancelation requests.
-	 * 
-	 * @return	The job status.
+	 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	protected IStatus run( IProgressMonitor monitor ) {
 		try
 		{
-			Process	buildProcess = Doxygen.getDefault().build( this.doxyfile );
-			
+			// Initializes the progress monitor.
 			monitor.beginTask( this.doxyfile.getFullPath().toString(), 4 );
 			
+			
+			// Clears log and markers.
 			clearLog();
 			clearMarkers();
 			monitor.worked( 1 );
 			
-			feedLog( buildProcess, monitor );
+			
+			// Creates the doxygen build process and log feeders. 
+			Process	buildProcess	= Doxygen.getDefault().build( this.doxyfile );
+			Thread	inputLogFeeder	= new Thread( new MyLogFeeder(buildProcess.getInputStream()) );
+			Thread	errorLogFeeder	= new Thread( new MyLogFeeder(buildProcess.getErrorStream()) );
+			
+			
+			// Wait either for the feeders to terminate or the user to cancel the job.
+			inputLogFeeder.start();
+			errorLogFeeder.start();
+			for(;;)	{
+				// Tests of the log feeders have terminated.
+				if( inputLogFeeder.isAlive() == false && errorLogFeeder.isAlive() == false ) {
+					break;
+				}
+				
+				// Tests if the jobs is supposed to terminate.
+				if( monitor.isCanceled() == true ) {
+					buildProcess.destroy();
+					break;
+				}
+				
+				// Allows other threads to run.
+				Thread.yield();
+			}
 			monitor.worked( 2 );
 			
+			
+			// Builds error and warning markers
 			createMarkers( monitor );
 			monitor.worked( 3 );
 			
+			
+			// Ensure that doxygen process has finished and job finalization.
 			buildProcess.waitFor();
 			monitor.worked( 4 );
 			monitor.done();
 			
+			
+			// Job's done.
 			return Status.OK_STATUS;
 		}
-		catch( Throwable throwable )
+		catch( Throwable t )
 		{
 			return new Status(
 					Status.ERROR,
 					Plugin.getDefault().getBundle().getSymbolicName(),
-					0, "Unexpected error. " + throwable.toString(),
-					throwable );
+					0, 
+					t.getMessage(),
+					t );
 		}
 	}
+	
 	
 	/**
 	 * Creates resource markers while finding warning and errors in the 
@@ -454,39 +480,6 @@ public class BuildJob extends Job {
 		}
 	}
 		
-	/**
-	 * Monitors the given process output and appends that to the managed log.
-	 * 
-	 * @param	process	the process to monitor
-	 * @param	monitor	the progress monitor used to watch for cancel requests.
-	 */
-	private void feedLog( Process process, IProgressMonitor monitor ) throws IOException
-	{
-		// Creates threads to get doxygen outputs
-		Thread	inputLogFeeder = new Thread( new MyLogFeeder(process.getInputStream()) );
-		Thread	errorLogFeeder = new Thread( new MyLogFeeder(process.getErrorStream()) );
-		
-		inputLogFeeder.start();
-		errorLogFeeder.start();
-		
-		// Wait either for the feeders to terminate or the user to cancel the job.
-		for(;;)	{
-			// Tests of the log feeders have terminated.
-			if( inputLogFeeder.isAlive() == false && errorLogFeeder.isAlive() == false ) {
-				break;
-			}
-			
-			// Tests if the jobs is supposed to terminate.
-			if( monitor.isCanceled() == true ) {
-				process.destroy();
-				break;
-			}
-			
-			// Allows other threads to run.
-			Thread.yield();
-		}
-	}
-	
 	/**
 	 * Notifies observers that the log has been cleared.
 	 */
