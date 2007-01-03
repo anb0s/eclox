@@ -155,7 +155,7 @@ public abstract class Doxygen {
 			return Runtime.getRuntime().exec( command, null, getDir(file).toFile() );
 		}
 		catch(Throwable throwable) {
-			throw new RuntimeException("Unable to launch Doxygen. Please check your path environment variable or edit the preferences.", throwable);
+			throw new RuntimeException("Unable to launch Doxygen. Please, check preferences.", throwable);
 		}
 	}
 	
