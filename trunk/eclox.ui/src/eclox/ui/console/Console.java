@@ -21,6 +21,7 @@
 
 package eclox.ui.console;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -122,12 +123,20 @@ public class Console extends AbstractConsole {
 		public void awake(IJobChangeEvent event) {
 		}
 
-		public void done(IJobChangeEvent event) {
+		public void done(final IJobChangeEvent event) {
 			ConsolePlugin.getStandardDisplay().syncExec(
 					new Runnable() {
 						public void run() {
-							append( "\nBuild finished!\n" );
-							updateActionStates();		
+							updateActionStates();
+							
+							IStatus	status = event.getResult();
+							if( status.isOK() ) {
+								append( "Build finished!" );
+							}
+							else {
+								append( "Build aborted! " );
+								append( status.getMessage() );
+							}
 						}
 					}
 				);
