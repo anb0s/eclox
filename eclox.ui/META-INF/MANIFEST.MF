@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eclox Ui
+Bundle-Name: Eclox User Interface
 Bundle-SymbolicName: org.gna.eclox.ui; singleton:=true
 Bundle-Version: 0.5.5
 Bundle-Activator: eclox.ui.Plugin
