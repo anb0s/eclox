@@ -335,5 +335,14 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		}
 		super.setPreferenceStore(store);
 	}
+
+
+	/**
+	 * @see org.eclipse.jface.preference.FieldEditor#setFocus()
+	 */
+	public void setFocus() {
+		table.setFocus();
+		super.setFocus();
+	}
 	
 }
