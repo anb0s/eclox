@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 
 import eclox.core.IPreferences;
-import eclox.core.doxygen.LocalDoxygen;
+import eclox.core.doxygen.CustomDoxygen;
 
 /**
  * Implements an specialized field editor that provides a status information
@@ -49,7 +49,7 @@ public class DoxygenLocationFieldEditor extends DirectoryFieldEditor {
 	 */
 	protected boolean doCheckState() {
 		boolean			result	= super.doCheckState();
-		LocalDoxygen	doxygen	= new LocalDoxygen( getStringValue() );
+		CustomDoxygen	doxygen	= new CustomDoxygen( getStringValue() );
 		final String	version = doxygen.getVersion();
 			
 		if( version != null ) {

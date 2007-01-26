@@ -32,7 +32,9 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -40,7 +42,7 @@ import org.eclipse.swt.widgets.TableItem;
 
 import eclox.core.IPreferences;
 import eclox.core.doxygen.Doxygen;
-import eclox.core.doxygen.LocalDoxygen;
+import eclox.core.doxygen.CustomDoxygen;
 
 /**
  * @author Guillaume Brocker
@@ -66,6 +68,26 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * the table control showing available doxygen wrappers
 	 */
 	private Table table;
+	
+	/**
+	 * the composite containing all buttons
+	 */
+	private Composite buttons;
+	
+	/**
+	 * the button that triggers the addition of a custom doxygen
+	 */
+	private Button add;
+	
+	/**
+	 * the button that triggers the edition of a custom doxygen
+	 */
+	private Button edit;
+	
+	/**
+	 * the button that triggers the removal of a custom doxygen
+	 */
+	private Button remove;
 	
 	/**
 	 * the valid state of the field editor
@@ -134,7 +156,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 				TableItem[]	items	= table.getItems();
 				for( int i = 0; i < items.length; ++i ) {
 					Doxygen	dox = (Doxygen) items[i].getData();
-					if (dox instanceof LocalDoxygen) {
+					if (dox instanceof CustomDoxygen) {
 						final String	version = dox.getVersion();
 						
 						items[i].setText( VERSION_COLUMN_INDEX, (version != null) ? version : "unknown" );
@@ -186,9 +208,11 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		// Pre-condition
 		assert( table != null );
 		
-		GridData	tableData = (GridData) table.getLayoutData();
+		GridData	tableData	= (GridData) table.getLayoutData();
+		GridData	buttonsData	= (GridData) buttons.getLayoutData();
 		
-		tableData.horizontalSpan = numColumns;
+		tableData.horizontalSpan = numColumns - 1;
+		buttonsData.horizontalSpan = 1;
 	}
 
 	
@@ -200,10 +224,10 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		assert( table == null );
 		
 		// Creates the combo controls containing all available doxygen wrappers.
-		GridData	tableData	= new GridData( GridData.FILL_HORIZONTAL );
+		GridData	tableData = new GridData( GridData.FILL_BOTH );
 		
 		table = new Table( parent, SWT.SINGLE|SWT.CHECK|SWT.BORDER );
-		tableData.horizontalSpan = numColumns;
+		tableData.horizontalSpan = numColumns - 1;
 		table.setLayoutData( tableData );
 		table.addSelectionListener( new MySelectionListener() );
 		
@@ -213,6 +237,28 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		versionColumn.setText( "Version" );
 		descriptionColumn.setText( "Description" );
 		table.setHeaderVisible( true );
+		
+		
+		// Creates the composite containing all buttons and located on the right side of the table.
+		GridData	buttonsData		= new GridData( GridData.END );
+		FillLayout	buttonsLayout	= new FillLayout( SWT.VERTICAL );
+		
+		buttons = new Composite( parent, SWT.NO_BACKGROUND );
+		buttonsData.horizontalSpan = 1;
+		buttonsData.horizontalAlignment = SWT.FILL;
+		buttonsLayout.marginHeight = 2;
+		buttons.setLayout( new FillLayout(SWT.VERTICAL) );
+		buttons.setLayoutData( buttonsData );
+		
+		
+		// Creates the button controlling custom doyxgen wrappers.
+		add		= new Button( buttons, SWT.PUSH );
+		edit	= new Button( buttons, SWT.PUSH );
+		remove	= new Button( buttons, SWT.PUSH );
+		
+		add.setText( "Add..." );
+		edit.setText( "Edit..." );
+		remove.setText( "Remove" );
 	}
 
 	
@@ -312,7 +358,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#getNumberOfControls()
 	 */
 	public int getNumberOfControls() {
-		return 1;
+		return 2;
 	}
 
 
@@ -341,8 +387,8 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#setFocus()
 	 */
 	public void setFocus() {
-		table.setFocus();
 		super.setFocus();
+		table.setFocus();		
 	}
 	
 }
