@@ -27,12 +27,12 @@ import eclox.core.IPreferences;
 import eclox.core.Plugin;
 
 /**
- * Implements a concret doxygen interpreted that will wrap a locally installed
+ * Implements a custom doxygen interpreter that will wrap a locally installed
  * version of doxygen.
  * 
  * @author Guillaume Brocker
  */
-public final class LocalDoxygen extends Doxygen {
+public final class CustomDoxygen extends Doxygen {
 
 	/**
 	 * a string containing defining the default doxygen command to use
@@ -53,7 +53,7 @@ public final class LocalDoxygen extends Doxygen {
 	 * Builds a local doxygen wrapper that uses the user configured location
 	 * to search for available doxygen.
 	 */
-	public LocalDoxygen() {
+	public CustomDoxygen() {
 		location = null;
 	}
 	
@@ -61,7 +61,7 @@ public final class LocalDoxygen extends Doxygen {
 	/**
 	 * Builds a local doxygen wrapper that uses the given path to search for doxygen.
 	 */
-	public LocalDoxygen( String location ) {
+	public CustomDoxygen( String location ) {
 		this.location = new String( location );
 	}
 	

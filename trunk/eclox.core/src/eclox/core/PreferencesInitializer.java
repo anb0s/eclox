@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.Preferences;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 
 import eclox.core.Plugin;
-import eclox.core.doxygen.LocalDoxygen;
+import eclox.core.doxygen.CustomDoxygen;
 
 
 /**
@@ -41,7 +41,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
 		
-		preferences.setDefault( IPreferences.DEFAULT_DOXYGEN, new LocalDoxygen().getIdentifier() );
+		preferences.setDefault( IPreferences.DEFAULT_DOXYGEN, new CustomDoxygen().getIdentifier() );
 		preferences.setDefault( IPreferences.DOXYGEN_COMMAND, "" );
 	}
 

@@ -87,10 +87,10 @@ public abstract class Doxygen {
 	 * Retrieves the collection of all available doxygen wrappers.
 	 */
 	public static Collection getAll() {
-		if( doxygens.isEmpty() == true ) {
-			doxygens.add( new LocalDoxygen() );
-			doxygens.add( new BundledDoxygen() );
-		}		
+//		if( doxygens.isEmpty() == true ) {
+//			doxygens.add( new CustomDoxygen() );
+//			doxygens.add( new BundledDoxygen() );
+//		}		
 		return doxygens;
 	}
 	
