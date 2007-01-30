@@ -246,9 +246,10 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		buttons = new Composite( parent, SWT.NO_BACKGROUND );
 		buttonsData.horizontalSpan = 1;
 		buttonsData.horizontalAlignment = SWT.FILL;
-		buttonsLayout.marginHeight = 2;
-		buttons.setLayout( new FillLayout(SWT.VERTICAL) );
 		buttons.setLayoutData( buttonsData );
+		buttonsLayout.spacing = 5;
+		buttons.setLayout( buttonsLayout );
+		
 		
 		
 		// Creates the button controlling custom doyxgen wrappers.
