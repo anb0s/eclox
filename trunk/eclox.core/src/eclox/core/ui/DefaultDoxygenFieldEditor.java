@@ -119,24 +119,18 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 		 */
 		public void widgetSelected(SelectionEvent e) {
-			TableItem	item	= (TableItem) e.item;
-			
-			if( item.getChecked() == true ) {
-				TableItem[]	checked	= getCheckedItems();
-				
-				// Updates chekced items so that only one is chekced at the same time.
-				for( int i = 0; i < checked.length; ++i ) {
-					if( checked[i] != item ) {
-						checked[i].setChecked( false );
-					}
-				}
-				
-				// Fires some notifications.
-				fireValueChanged( VALUE, null, null );
+			if (e.item instanceof TableItem ) {
+				onItemSelected( (TableItem) e.item );
 			}
-			
-			// Refreshes the field validity.
-			refreshValidState();
+			else if (e.item == add ) {
+				onAddSelected();
+			}
+			else if(e.item == edit) {
+				
+			}
+			else if(e.item == remove) {
+				
+			}
 		}
 		
 	}
@@ -198,6 +192,37 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 			}
 		}
 		return (TableItem[]) checked.toArray( new TableItem[0] );
+	}
+	
+	
+	/**
+	 * Process the click on the add button.
+	 */
+	private void onAddSelected() {
+		
+	}
+	
+	
+	/**
+	 * Process the selection of the given table item.
+	 */
+	private void onItemSelected( TableItem item ) {
+		if( item.getChecked() == true ) {
+			TableItem[]	checked	= getCheckedItems();
+			
+			// Updates chekced items so that only one is chekced at the same time.
+			for( int i = 0; i < checked.length; ++i ) {
+				if( checked[i] != item ) {
+					checked[i].setChecked( false );
+				}
+			}
+			
+			// Fires some notifications.
+			fireValueChanged( VALUE, null, null );
+		}
+		
+		// Refreshes the field validity.
+		refreshValidState();
 	}
 	
 
