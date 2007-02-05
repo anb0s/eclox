@@ -21,65 +21,30 @@
 
 package eclox.core.doxygen;
 
-import java.io.File;
-
 /**
- * Implements a custom doxygen interpreter that will wrap a locally installed
- * version of doxygen.
+ * Implements the doxygen wrapper that use the eventual doxygen program reachable
+ * in the default path.
  * 
- * @author Guillaume Brocker
+ * @author gbrocker
  */
-public final class CustomDoxygen extends Doxygen {
+public class DefaultDoxygen extends Doxygen {
 
-	/**
-	 * a string containing the location where doxygen should available
-	 * 
-	 * This can be either a path to a directory or the full path to the 
-	 * doxygen binary executable file.
-	 */
-	private String location;
-	
-	
-	/**
-	 * Builds a local doxygen wrapper that uses the given path to search for doxygen.
-	 */
-	public CustomDoxygen( String location ) {
-		this.location = new String( location );
-		
-		assert( location != null );
-	}
-	
-	
 	/**
 	 * @see eclox.core.doxygen.Doxygen#getCommand()
 	 */
 	public String getCommand() {
-		// Retrieves the real location where doxygen may be.
-		File	realLocation = new File( this.location );
-		
-		// Builds the path.
-		if( realLocation.isFile() == true ) {
-			return realLocation.getPath();
-		}
-		else {
-			return realLocation.getPath() + File.separator + COMMAND_NAME; 
-		}
+		return COMMAND_NAME;
 	}
-	
-	
+
 	/**
 	 * @see eclox.core.doxygen.Doxygen#getDescription()
 	 */
 	public String getDescription() {
-		return new String("Custom");
+		return "Default";
 	}
-	
-	
-	/**
-	 * @see eclox.core.doxygen.Doxygen#getIdentifier()
-	 */
+
 	public String getIdentifier() {
-		return this.getClass().getName();
+		return getClass().toString();
 	}
 
 }

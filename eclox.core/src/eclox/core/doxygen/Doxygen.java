@@ -50,6 +50,24 @@ public abstract class Doxygen {
 	 */
 	private static Collection doxygens = new Vector(); 
 	
+	/**
+	 * a string containing defining the default doxygen command to use
+	 */
+	protected final static String COMMAND_NAME = "doxygen";
+		
+	
+	/**
+	 * Adds a new doxygen wrapper to the collection of available wrappers.
+	 * 
+	 * The given wrapper to add must not have the same identifier as a wrapper already
+	 * in the collection. 
+	 */
+	public static void add( Doxygen doxygen ) {
+		// Pre-condition.
+		assert( get(doxygen.getIdentifier()) == null );
+		
+		doxygens.add( doxygen );
+	}
 	
 	/**
 	 * Retrieves a doxygen instance for the given identifier

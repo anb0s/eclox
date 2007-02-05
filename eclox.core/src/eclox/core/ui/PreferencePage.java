@@ -52,15 +52,12 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 	protected void createFieldEditors()
 	{
 		// Creates all control instances.
-		Label						doxygenLabel		= new Label( getFieldEditorParent(), SWT.WRAP );
-		DefaultDoxygenFieldEditor	doxygen				= new DefaultDoxygenFieldEditor( getFieldEditorParent() );
-		Label						locationText		= new Label( getFieldEditorParent(), SWT.WRAP );
-		DoxygenLocationFieldEditor	location			= new DoxygenLocationFieldEditor( getFieldEditorParent() );
+		Label						doxygenLabel	= new Label( getFieldEditorParent(), SWT.WRAP );
+		DefaultDoxygenFieldEditor	doxygen			= new DefaultDoxygenFieldEditor( getFieldEditorParent() );
 		
 		
 		// Configures field editors.
 		addField( doxygen );
-		addField( location );
 		
 		
 		// Configures the default doxygen label.
@@ -70,16 +67,6 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 		doxygenLabelData.horizontalAlignment = SWT.FILL;
 		doxygenLabel.setText( "Choose among available doxygen versions, the one you would like to use." );
 		doxygenLabel.setLayoutData( doxygenLabelData );
-		
-		
-		// Configures the local doxygen location tex label..
-		GridData	locationTextData = new GridData();
-		
-		locationTextData.horizontalSpan = 3;
-		locationTextData.horizontalAlignment = SWT.FILL;
-		locationTextData.verticalIndent = 20;
-		locationText.setText( "Specify here the location on your local system for a binary executable of doxygen to use. Leave the field blank to search the path for doxygen." );
-		locationText.setLayoutData( locationTextData );
 	}
 	
 }
