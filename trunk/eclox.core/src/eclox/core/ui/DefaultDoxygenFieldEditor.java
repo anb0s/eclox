@@ -26,9 +26,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.preference.FieldEditor;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -36,13 +33,14 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 
 import eclox.core.IPreferences;
-import eclox.core.doxygen.Doxygen;
 import eclox.core.doxygen.CustomDoxygen;
+import eclox.core.doxygen.Doxygen;
 
 /**
  * @author Guillaume Brocker
@@ -94,12 +92,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 */
 	private boolean valid = true;
 	
-	/**
-	 * the preference change listener
-	 */
-	private MyPrefercenceChangeListener preferenceChangeListener;
-	
-	
+
 	/**
 	 * Implements a selection listener for the owned table control.
 	 * 
@@ -130,32 +123,6 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 			}
 			else if(e.item == remove) {
 				
-			}
-		}
-		
-	}
-	
-	
-	/**
-	 * Implements a listener of the preference store that will trigger updates
-	 * of the version information for local doxygen.
-	 */
-	private class MyPrefercenceChangeListener implements IPropertyChangeListener {
-
-		/**
-		 * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-		 */
-		public void propertyChange( PropertyChangeEvent event ) {
-			if( event.getProperty().equals(IPreferences.DOXYGEN_COMMAND) ) {
-				TableItem[]	items	= table.getItems();
-				for( int i = 0; i < items.length; ++i ) {
-					Doxygen	dox = (Doxygen) items[i].getData();
-					if (dox instanceof CustomDoxygen) {
-						final String	version = dox.getVersion();
-						
-						items[i].setText( VERSION_COLUMN_INDEX, (version != null) ? version : "unknown" );
-					}
-				}
 			}
 		}
 		
@@ -199,7 +166,14 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * Process the click on the add button.
 	 */
 	private void onAddSelected() {
+		DirectoryDialog dialog		= new DirectoryDialog( getPage().getShell() );
+		String			directory	= null;
 		
+		dialog.setMessage( "Select a location containing doxygen" );
+		directory = dialog.open();
+		if( directory != null ) {
+			Doxygen.add( new CustomDoxygen(directory) );
+		}
 	}
 	
 	
@@ -393,19 +367,6 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 */
 	public boolean isValid() {
 		return valid;
-	}
-
-
-	public void setPreferenceStore(IPreferenceStore store) {
-		if( store != null ) {
-			preferenceChangeListener = new MyPrefercenceChangeListener();
-			store.addPropertyChangeListener( preferenceChangeListener );
-		}
-		else {
-			getPreferenceStore().removePropertyChangeListener( preferenceChangeListener );
-			preferenceChangeListener = null;
-		}
-		super.setPreferenceStore(store);
 	}
 
 
