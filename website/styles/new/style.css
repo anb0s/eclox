@@ -26,7 +26,7 @@ h1, h2, h3
 {
 	font-family: sans-serif;
 	font-weight: bold;
-	color: rgb(85,85,95);
+	color: rgb(80,80,90);
 	margin-top: 2.5em;
 }
 
@@ -178,6 +178,21 @@ kbd
 {
 	margin-left: 3em;
 	float: right;
+}
+
+
+/** The change log element **/
+#change-log
+{
+	background-color: rgb(245,245,255);
+
+	border-style: dotted;
+	border-width: 1px;
+	border-color: rgb(210,210,255);
+	
+	font-size: 50%;
+
+	width: 100%;
 }
 
 
