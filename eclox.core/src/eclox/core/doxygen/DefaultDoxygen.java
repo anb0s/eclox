@@ -60,7 +60,7 @@ public class DefaultDoxygen extends Doxygen {
 	}
 
 	public String getIdentifier() {
-		return getClass().toString();
+		return getClass().getName();
 	}
 
 }
