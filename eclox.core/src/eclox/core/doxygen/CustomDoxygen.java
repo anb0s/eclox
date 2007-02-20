@@ -40,6 +40,26 @@ public final class CustomDoxygen extends Doxygen {
 	private String location;
 	
 	
+	
+	/**
+	 * Builds a custom doxygen instance from the given identifier
+	 * 
+	 * @param	identifier	a custom doxygen wrapper identifier
+	 * 
+	 * @return	a new custom doxygen wrapper instance or null on error
+	 */
+	public static CustomDoxygen createFromIdentifier( final String identifier ) {
+		CustomDoxygen	doxygen = null;
+		
+		if( identifier.startsWith( CustomDoxygen.class.getName() ) ) {
+			final String	location = identifier.substring( identifier.indexOf(' ') + 1 );
+			
+			doxygen = new CustomDoxygen( location );
+		}
+		return doxygen;
+	}
+	
+	
 	/**
 	 * Builds a local doxygen wrapper that uses the given path to search for doxygen.
 	 */
@@ -47,6 +67,7 @@ public final class CustomDoxygen extends Doxygen {
 		this.location = new String( location );
 		
 		assert( location != null );
+		assert( location.length() != 0 );
 	}
 	
 	
@@ -71,7 +92,7 @@ public final class CustomDoxygen extends Doxygen {
 	 * @see eclox.core.doxygen.Doxygen#getDescription()
 	 */
 	public String getDescription() {
-		return new String("Custom");
+		return "Using location: '" + getLocation() + "'";
 	}
 	
 	
@@ -79,7 +100,22 @@ public final class CustomDoxygen extends Doxygen {
 	 * @see eclox.core.doxygen.Doxygen#getIdentifier()
 	 */
 	public String getIdentifier() {
-		return this.getClass().getName();
+		return this.getClass().getName() + " " + location;
+	}
+	
+	
+	/**
+	 * Retrieves the location of the custom doxygen.
+	 */
+	public String getLocation() {
+		return new String(this.location);
 	}
 
+	
+	/**
+	 * Updates the location of the custom doxygen.
+	 */
+	public void setLocation( String location ) {
+		this.location = new String(location);
+	}
 }

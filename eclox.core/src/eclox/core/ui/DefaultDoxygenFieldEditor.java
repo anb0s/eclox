@@ -21,8 +21,6 @@
 
 package eclox.core.ui;
 
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.preference.FieldEditor;
@@ -37,10 +35,14 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.internal.presentations.UpdatingActionContributionItem;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import eclox.core.IPreferences;
+import eclox.core.Plugin;
+import eclox.core.doxygen.BundledDoxygen;
 import eclox.core.doxygen.CustomDoxygen;
+import eclox.core.doxygen.DefaultDoxygen;
 import eclox.core.doxygen.Doxygen;
 
 /**
@@ -54,9 +56,14 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	private final int VERSION_COLUMN_INDEX = 0;
 	
 	/**
+	 * defines the type column index
+	 */
+	private final int TYPE_COLUMN_INDEX = 1;
+	
+	/**
 	 * defines the description column index
 	 */
-	private final int DESCRIPTION_COLUMN_INDEX = 1;
+	private final int DESCRIPTION_COLUMN_INDEX = 2;
 	
 	/**
 	 * the table control showing available doxygen wrappers
@@ -121,30 +128,58 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * Adds a new table item for the given doxygen instance
 	 */
 	private void addItem( Doxygen doxygen ) {
-		// Item data preparation.
-		final String	description = doxygen.getDescription();
-		final String	version		= doxygen.getVersion();
-		
-
-		// Item creation.
 		TableItem	item = new TableItem( table, 0 );
 		
-		item.setText( VERSION_COLUMN_INDEX, version == null ? "unknown" : version );
-		item.setText( DESCRIPTION_COLUMN_INDEX, description );
 		item.setData( doxygen );
+		updateItem( item );
 	}
 	
 	
 	/**
-	 * Checkes the table item representing the given doxygen instance.
+	 * Retrieves the type of the given doxygen wrapper instance
 	 */
-	private void checkItem( Doxygen doxygen ) {
+	private static String getDoxygenType( final Doxygen doxygen ) {
+		if		( doxygen instanceof DefaultDoxygen	)	return "Default";
+		else if	( doxygen instanceof CustomDoxygen	)	return "Custom";
+		else if	( doxygen instanceof BundledDoxygen	)	return "Bundled";
+		else											return "Uknown";
+	}
+	
+	
+	/**
+	 * Updates the given table item.
+	 */
+	private void updateItem( TableItem item ) {
+		// Item data preparation.
+		final Doxygen	doxygen		= (Doxygen) item.getData();
+		final String	type		= getDoxygenType( doxygen );
+		final String	version		= doxygen.getVersion();
+		final String	description = doxygen.getDescription();
+		
+		// Updates the item properties.
+		item.setImage( (version == null) ? PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_WARN_TSK) : null );
+		item.setText( VERSION_COLUMN_INDEX, (version == null) ? "unknown" : version );
+		item.setText( TYPE_COLUMN_INDEX, type );
+		item.setText( DESCRIPTION_COLUMN_INDEX, description );
+		
+		// Updates the table layout.
+		table.getColumn( VERSION_COLUMN_INDEX ).pack();
+		table.getColumn( TYPE_COLUMN_INDEX ).pack();
+		table.getColumn( DESCRIPTION_COLUMN_INDEX ).pack();
+		table.layout();
+	}
+	
+	
+	/**
+	 * Checkes the table item representing the given doxygen identifier.
+	 */
+	private void checkItem( final String identifier ) {
 		TableItem[]	items = table.getItems();
 		
 		for( int i = 0; i < items.length; ++i ) {
 			Doxygen	current = (Doxygen) items[i].getData();
 			
-			items[i].setChecked( current.getIdentifier().equalsIgnoreCase( doxygen.getIdentifier() ) ); 
+			items[i].setChecked( current.getIdentifier().equalsIgnoreCase( identifier ) ); 
 		}
 	}
 	
@@ -178,7 +213,8 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		DirectoryDialog dialog		= new DirectoryDialog( getPage().getShell() );
 		String			directory	= null;
 		
-		dialog.setMessage( "Select a location containing doxygen" );
+		dialog.setMessage( "Select a location containing doxygen." );
+		dialog.setText( "Add Custom Doxygen" );
 		directory = dialog.open();
 		
 		// Creates the new wrapper.
@@ -192,7 +228,35 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * Process the click on the edit button
 	 */
 	private void onEditSelected() {
+		// Pre-condition
+		assert( table != null );
 		
+		
+		// Retrieves the checked items
+		TableItem[]	selected = table.getSelection();
+		
+		
+		// Retrieves the doxygen wrapper associated to the selected item
+		assert( selected.length == 1 );
+		Doxygen	doxygen = (Doxygen) selected[0].getData();
+		
+		
+		// Asks the user to select a location containing a doxygen binary.
+		assert( doxygen instanceof CustomDoxygen );
+		CustomDoxygen	customDoxygen	= (CustomDoxygen) doxygen;	
+		DirectoryDialog dialog			= new DirectoryDialog( getPage().getShell() );
+		String			directory		= null;
+		
+		dialog.setMessage( "Select a new location containing doxygen." );
+		dialog.setText( "Edit Custom Doxygen" );
+		dialog.setFilterPath( customDoxygen.getLocation() );
+		directory = dialog.open();
+		
+		// Creates the new wrapper.
+		if( directory != null ) {
+			customDoxygen.setLocation( directory );
+			updateItem( selected[0] );
+		}
 	}
 	
 	
@@ -264,15 +328,17 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		// Creates the combo controls containing all available doxygen wrappers.
 		GridData	tableData = new GridData( GridData.FILL_BOTH );
 		
-		table = new Table( parent, SWT.SINGLE|SWT.CHECK|SWT.BORDER );
+		table = new Table( parent, SWT.SINGLE|SWT.CHECK|SWT.BORDER|SWT.FULL_SELECTION );
 		tableData.horizontalSpan = numColumns - 1;
 		table.setLayoutData( tableData );
 		table.addSelectionListener( new MySelectionListener() );
 		
 		TableColumn	versionColumn		= new TableColumn( table, SWT.LEFT, VERSION_COLUMN_INDEX );
+		TableColumn	typeColumn			= new TableColumn( table, SWT.LEFT, TYPE_COLUMN_INDEX );
 		TableColumn	descriptionColumn	= new TableColumn( table, SWT.LEFT, DESCRIPTION_COLUMN_INDEX );
 		
 		versionColumn.setText( "Version" );
+		typeColumn.setText( "Type" );
 		descriptionColumn.setText( "Description" );
 		table.setHeaderVisible( true );
 		
@@ -310,22 +376,30 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoad()
 	 */
 	protected void doLoad() {
-		// Pre-condition
-		assert( table != null );
-
-		// Fills the table with all available doxygen wrappers.
-		Collection doxygens = Doxygen.getAll();
-
-		Iterator	i = doxygens.iterator();
-		while( i.hasNext() ) {
-			addItem( (Doxygen) i.next() );
+		// Adds default doxygen instance.
+		addItem( new DefaultDoxygen() );
+		
+		
+		// Adds custom doxygens.
+		final String	raw			= getPreferenceStore().getString( IPreferences.CUSTOM_DOXYGENS );
+		final String[]	splitted	= raw.split( "\n");
+		for( int i = 0; i < splitted.length; ++i ) {
+			CustomDoxygen	doxygen = CustomDoxygen.createFromIdentifier( splitted[i] );
+			
+			if( doxygen != null ) {
+				addItem( doxygen );
+			}
+			else {
+				Plugin.getDefault().logError( splitted[i] + ": invalid custom doxygen identifier found." );
+			}
 		}
-		table.getColumn( VERSION_COLUMN_INDEX ).pack();
-		table.getColumn( DESCRIPTION_COLUMN_INDEX ).pack();
-		table.layout();
+		
+		
+		// TODO Add support fir bundled doxyens.
+		
 
-		// Select the default one.
-//		checkItem( Doxygen.getDefault() );		
+		// Select the default doxygen wrapper
+		checkItem( getPreferenceStore().getString( IPreferences.DEFAULT_DOXYGEN ) );		
 	}
 
 	
@@ -333,9 +407,11 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
 	 */
 	protected void doLoadDefault() {
-//		Doxygen	doxygen = Doxygen.get( getPreferenceStore().getDefaultString(getPreferenceName()) );
-		
-//		checkItem( doxygen );
+		// Adds default doxygen instance.
+		addItem( new DefaultDoxygen() );
+
+		// Select the default doxygen wrapper
+		checkItem( getPreferenceStore().getDefaultString( IPreferences.DEFAULT_DOXYGEN ) );		
 	}
 
 	
@@ -343,13 +419,35 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#doStore()
 	 */
 	protected void doStore() {
-		TableItem[]	checked = getCheckedItems();
+		// Pre-condition
+		assert( table != null );
 		
+		
+		// Saves all custom doxygen wrappers.
+		TableItem[]	items		= table.getItems();
+		String		serialized	= new String();
+		for( int i = 0; i < items.length; ++i ) {
+			Object	itemData = items[i].getData();
+			
+			if( itemData instanceof CustomDoxygen ) {
+				CustomDoxygen	doxygen = (CustomDoxygen) itemData;
+				
+				serialized = serialized.concat( doxygen.getIdentifier() );
+				serialized = serialized.concat( "\n" );
+			}
+		}
+		getPreferenceStore().setValue( IPreferences.CUSTOM_DOXYGENS, serialized );
+		
+		
+		// Saves the checked item.
+		TableItem[]	checked			= getCheckedItems();
+		String		defaultDoxygen	= new String();
 		if( checked.length == 1 ) {
 			Doxygen	doxygen = (Doxygen) checked[0].getData();
 			
-			getPreferenceStore().setValue( getPreferenceName(), doxygen.getIdentifier() );
+			defaultDoxygen = doxygen.getIdentifier();
 		}
+		getPreferenceStore().setValue( IPreferences.DEFAULT_DOXYGEN, defaultDoxygen );
 	}
 	
 	

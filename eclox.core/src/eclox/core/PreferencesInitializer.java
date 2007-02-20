@@ -42,6 +42,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
 		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
 		
 		preferences.setDefault( IPreferences.DEFAULT_DOXYGEN, new DefaultDoxygen().getIdentifier() );
+		preferences.setDefault( IPreferences.CUSTOM_DOXYGENS, "" );
 	}
 
 }

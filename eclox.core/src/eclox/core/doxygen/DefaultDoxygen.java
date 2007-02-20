@@ -28,6 +28,22 @@ package eclox.core.doxygen;
  * @author gbrocker
  */
 public class DefaultDoxygen extends Doxygen {
+	
+	/**
+	 * Creates a new default doxygen instance from the given identifier.
+	 * 
+	 * @param	identifier	a string containing an identifier
+	 * 
+	 * @return	a new default doxygen instance or null when creation failed
+	 */
+	public static DefaultDoxygen createFromIdentifier( final String identifier ) {
+		if( DefaultDoxygen.class.getName().equalsIgnoreCase( identifier ) ) {
+			return new DefaultDoxygen();
+		}
+		else {
+			return null;
+		}
+	}
 
 	/**
 	 * @see eclox.core.doxygen.Doxygen#getCommand()
@@ -40,7 +56,7 @@ public class DefaultDoxygen extends Doxygen {
 	 * @see eclox.core.doxygen.Doxygen#getDescription()
 	 */
 	public String getDescription() {
-		return "Default";
+		return new String();
 	}
 
 	public String getIdentifier() {
