@@ -23,6 +23,10 @@ package eclox.core.doxygen;
 
 public final class BundledDoxygen extends Doxygen {
 
+	public static BundledDoxygen createFromIdentifier(String identifier) {
+		return null;
+	}
+
 	public String getCommand() {
 		return null;
 	}

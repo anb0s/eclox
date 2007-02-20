@@ -29,8 +29,13 @@ package eclox.core;
 public interface IPreferences {
 
 	/**
-	 * Constant definition for the doxygen wrapper to use.
+	 * Constant definition for the default doxygen wrapper to use.
 	 */
 	public static final String DEFAULT_DOXYGEN = "doxygen.default";
+	
+	/**
+	 * Constant definition for the user defined doxygen wrappers.
+	 */
+	public static final String CUSTOM_DOXYGENS = "doxygen.customs";
 	
 }

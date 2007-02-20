@@ -24,8 +24,6 @@ package eclox.core.doxygen;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collection;
-import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,20 +52,31 @@ public abstract class Doxygen {
 	 * Retrieves the default doxygen instance to use.
 	 */
 	public static Doxygen getDefault() {
-		// TODO new doxygen management
-			return null;
-	}
-	
-	
-	/**
-	 * Retrieves the collection of all available doxygen wrappers.
-	 */
-	public static Collection getAll() {
-		Collection	doxygens = new Vector();
+		final String	identifier	= Plugin.getDefault().getPluginPreferences().getString( IPreferences.DEFAULT_DOXYGEN );
+		Doxygen			doxygen		= null;
 		
-		doxygens.add( new DefaultDoxygen() );		
-		return doxygens; 
+		// Try the creation of a default doxygen instance.
+		doxygen = DefaultDoxygen.createFromIdentifier(identifier);
+		if( doxygen != null ) {
+			return doxygen;
+		}
+
+		// Try the creation of a custom doxygen instance.
+		doxygen = CustomDoxygen.createFromIdentifier(identifier);
+		if( doxygen != null ) {
+			return doxygen;
+		}
+		
+		// Try the creation of a bundled doxygen instance.
+		doxygen = BundledDoxygen.createFromIdentifier(identifier);
+		if( doxygen != null ) {
+			return doxygen;
+		}
+		
+		// No doxygen could be created.
+		return null;	
 	}
+	
 	
 	/**
 	 * Retrieves the version string of wrapped doxygen.
