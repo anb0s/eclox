@@ -1,273 +1,221 @@
-* eclox-0.5.5 (13-dec-2006) *
-
-	Fix bug #7545 : "Save all editors before building" settings isn't preserved
-	correctly across Eclipse restarts. A bad string equality test was used
-	("==" instead of "equals").
-
-	Add sr #1296 : Marking finish of doxygen. A message is printed once
-	the build job has finished.
-	
-	Fix bug #7342 : Setting IGNORE_PREFIX is handled wrong. Changed 
-	boolean for text list.
+eclox-0.5.5 (13-dec-2006)
+ * Fix bug #7545 : "Save all editors before building" settings isn't
+   preserved correctly across Eclipse restarts. A bad string equality
+   test was used ("==" instead of "equals").
+ * Add sr #1296 : Marking finish of doxygen. A message is printed once
+   the build job has finished.
+ * Fix bug #7342 : Setting IGNORE_PREFIX is handled wrong. Changed 
+   boolean for text list.
 	
 
-* eclox-0.5.4 (05-sep-2006) *
-
-	Fix bug #6740 : jar declared in classpath is missing.
-	
-	Fix bug #6795 : unable to edit doxygen preferences.
+eclox-0.5.4 (05-sep-2006)
+ * Fix bug #6740 : jar declared in classpath is missing.
+ * Fix bug #6795 : unable to edit doxygen preferences.
 	
 
-* eclox-0.5.3 (20-aug-2006) *
-
-	Fix bug #6265 concerning "enabled section" setting.
-	
-	Fix bug #6109 concerning missing radio buttons when editing a
-	boolean setting.
-	
-	Fix editor icon black background problem.
+eclox-0.5.3 (20-aug-2006)
+ * Fix bug #6265 concerning "enabled section" setting.
+ * Fix bug #6109 concerning missing radio buttons when editing a
+   boolean setting.
+ * Fix editor icon black background problem.
 	
 
-* eclox-0.5.2 (24-may-2006) *
-
-	Fix two bugs (#5980 and #5982) concerning the setting configuration file.
-	
-	Fix two bugs (#5979 and #5981) on java VMs 1.4.2 since the released
-	plugins where targeted for java 1.5.
-	
-	
-* eclox-0.5.1 (20-may-2006) *
-
-	Fix a bug in the directory browser dialog that caused the initial path
-	to be invalid in some conditions.
-
-	Added build log analysis. So now problem reported by doxygen are
-	converted to markers on files. This will help to find and fix
-	mistakes in documentation blocks.
-
-	Fix the build options so the feature's about.ini is included. So now
-	the feature description is available from ecllipse's about box.
-	
-	Removed deprecated icons from the branding plugin.
+eclox-0.5.2 (24-may-2006)
+ * Fix two bugs (#5980 and #5982) concerning the setting configuration
+   file.
+ * Fix two bugs (#5979 and #5981) on java VMs 1.4.2 since the released
+   plugins where targeted for java 1.5.
 	
 	
-* eclox-0.5.0 (16-may-2006) *
-	
-	Fix bug #5700. "Generate Tag File" was not using the right editor
-	(was "boolean" and should have been "file").
-	
-	Fix bug #5927 : strip From Path option is incorrect. Also fixes
-	bad type for STRIP_FROM_INC_PATH.
-	
-	Fix wrong type for setting EXPAND_AS_DEFINED.
-	
-	Refactored the code so that the core doxygen API is splitted from
-	the ui implementation. And a branding plugin has been added.
-	
-	The documentation building API has been deeply refactored. This 
-	brings improved output logging (now based on the eclipse's console
-	API) and control over build jobs.
-	
-	Fix bug #5719 : double quote escapes in setting values.
-	Now it is possible for settings to support escaped quotes in their value
-	when splitting. The ui part is now able to handle double quotes (un)escapes
-	transparently and automatically. The user now interacts with the unescaped
-	string version. When the edited string returns back to the doxyfile, it is
-	automatically escaped. A preference allows the user to deactivate this
-	bahviour (default is on).
-	
-	Some icons have been updated (doxyfile, clear custom filter field and
-	doxygen build action).
-	
-	Now an editor automatically closes when its related doxyfile gets deleted
-	from the workspace.
-	
-	In the list editor, the focus management has been improved (after item
-	removal for example).
+eclox-0.5.1 (20-may-2006)
+ * Fix a bug in the directory browser dialog that caused the initial path
+   to be invalid in some conditions.
+ * Added build log analysis. So now problem reported by doxygen are
+   converted to markers on files. This will help to find and fix
+   mistakes in documentation blocks.
+ * Fix the build options so the feature's about.ini is included. So now
+   the feature description is available from ecllipse's about box.
+ * Removed deprecated icons from the branding plugin.
 	
 	
-* eclox-0.4.4 (08-mar-2006) *
-
-	In the editor, double-clicking a setting brings the user directly to the
-	edition controls.
+eclox-0.5.0 (16-may-2006)
+ * Fix bug #5700. "Generate Tag File" was not using the right editor
+   (was "boolean" and should have been "file").
+ * Fix bug #5927 : strip From Path option is incorrect. Also fixes
+   bad type for STRIP_FROM_INC_PATH.
+ * Fix wrong type for setting EXPAND_AS_DEFINED.
+ * Refactored the code so that the core doxygen API is splitted from
+   the ui implementation. And a branding plugin has been added.
+ * The documentation building API has been deeply refactored. This 
+   brings improved output logging (now based on the eclipse's console
+   API) and control over build jobs.
+ * Fix bug #5719 : double quote escapes in setting values.
+   Now it is possible for settings to support escaped quotes in their
+   value when splitting. The ui part is now able to handle double 
+   quotes (un)escapes transparently and automatically. The user now 
+   interacts with the unescaped string version. When the edited string 
+   returns back to the doxyfile, it is automatically escaped. 
+   A preference allows the user to deactivate this bahviour (default 
+   is on).
+ * Some icons have been updated (doxyfile, clear custom filter field and
+   doxygen build action).
+ * Now an editor automatically closes when its related doxyfile gets 
+   deleted from the workspace.
+ * In the list editor, the focus management has been improved (after item
+   removal for example).
 	
-	In the editor, the custom filter has been implemented. Additionnaly,
-	filter settings are remebered when switching from one to another.
 	
-	In the editor, setting that have been edited are now marked until the
-	doxyfile is saved.
-	
-	In the editor, a "modified" filter has been added allowing to see only
-	modified settings. Enhanced the setting property API to provide
-	better notifications. Also enhanced the editor page refresh when switching
-	from one filter to another.
-	
-	In the editor, added support for directory path editor. Updated the editor
-	type for following settings: HTML_OUTPUT, LATEX_OUTPUT, RTF_OUTPUT,
-	MAN_OUTPUT, XML_OUTPUT and OUTPUT_DIRECTORY.
-
-	In the editor, added support for file path editor. Updated the editor
-	type for following settings: INPUT_FILTER, HTML_HEADER, HTML_FOOTER, 
-	HTML_STYLESHEET, CHM_FILE, HCC_LOCATION, LATEX_HEADER, XML_SCHEMA, 
-	XML_DTD, PERL_PATH, DOT_PATH, FILE_VERSION_FILTER, WARN_LOGFILE.
-	
-	In the editor, added support for list, directory list, and file/directory
-	list editors. Updated the setting definitions of ALIASES, FILE_PATTERNS,
-	EXCLUDE_PATTERNS, EXAMPLE_PATTERNS,	INCLUDE_FILE_PATTERNS, PREDEFINED,
-	INPUT, EXCLUDE, EXAMPLE_PATH, IMAGE_PATH to use these editors.
-	
-	Updated the default editor icon.
-	
-	In the editor, fixed bogus setting dirty status that was not cleaned when
-	closing a non-saved editor and opening a new editor instance again.
+eclox-0.4.4 (08-mar-2006)
+ * In the editor, double-clicking a setting brings the user directly to
+   the edition controls.
+ * In the editor, the custom filter has been implemented. Additionnaly,
+   filter settings are remebered when switching from one to another.
+ * In the editor, setting that have been edited are now marked until the
+   doxyfile is saved.
+ * In the editor, a "modified" filter has been added allowing to see only
+   modified settings. Enhanced the setting property API to provide
+   better notifications. Also enhanced the editor page refresh when
+   switching from one filter to another.
+ * In the editor, added support for directory path editor. Updated the
+   editor type for following settings: HTML_OUTPUT, LATEX_OUTPUT, 
+   RTF_OUTPUT, MAN_OUTPUT, XML_OUTPUT and OUTPUT_DIRECTORY.
+ * In the editor, added support for file path editor. Updated the editor
+   type for following settings: INPUT_FILTER, HTML_HEADER, HTML_FOOTER, 
+   HTML_STYLESHEET, CHM_FILE, HCC_LOCATION, LATEX_HEADER, XML_SCHEMA, 
+   XML_DTD, PERL_PATH, DOT_PATH, FILE_VERSION_FILTER, WARN_LOGFILE.
+ * In the editor, added support for list, directory list, and 
+   file/directory list editors. Updated the setting definitions of 
+   ALIASES, FILE_PATTERNS, EXCLUDE_PATTERNS, EXAMPLE_PATTERNS,	
+   INCLUDE_FILE_PATTERNS, PREDEFINED, INPUT, EXCLUDE, EXAMPLE_PATH, 
+   IMAGE_PATH to use these editors.
+ * Updated the default editor icon.
+ * In the editor, fixed bogus setting dirty status that was not cleaned 
+   when closing a non-saved editor and opening a new editor instance 
+   again.
 	
 
-* eclox-0.4.3 (13-dec-2005) *
-	Added a boolean setting editor.
-	
-	Added AUTHORS, CHANGES, COPYING, MANUAL, README and TODO files to all eclox
-	projects (features and plug-ins).
-	
-	Added a link to the doxygen's manual to eclipse help system.
-	
-	Fixed a bug in the doxyfile choose dialog.
+eclox-0.4.3 (13-dec-2005)
+ * Added a boolean setting editor.
+ * Added AUTHORS, CHANGES, COPYING, MANUAL, README and TODO files to all 
+   eclox projects (features and plug-ins).
+ * Added a link to the doxygen's manual to eclipse help system.
+ * Fixed a bug in the doxyfile choose dialog.
 	
 
-* eclox-0.4.1 (14-nov-2005) *
-	This plugin has now a little brother contributing help to the eclipse's
-	help system.
-	
-	In the doxyfile editor, setting values are now shown directly in the setting
-	list.
-	
-	The parser now supports of @INCLUDE and @INCLUDE_PATH directives in
-	doxyfiles (bug #2868).
-	
-	The parser follows more accuratly doxygen's parsing method (reassigning
-	a value to setting will override the previous assignment).
+eclox-0.4.1 (14-nov-2005)
+ * This plugin has now a little brother contributing help to the eclipse's
+   help system.
+ * In the doxyfile editor, setting values are now shown directly in the 
+   setting list.
+ * The parser now supports of @INCLUDE and @INCLUDE_PATH directives in
+   doxyfiles (bug #2868).
+ * The parser follows more accuratly doxygen's parsing method (reassigning
+   a value to setting will override the previous assignment).
 
-* eclox-0.4 (5-nov-2005) *
-	Deep refactoring of the doxyfile content representation.
-	
-	Recreation of the doxyfile editor using new ui APIs provided since
-	eclipse 3.0.
-	
-	Fixes bug #866 and support request #471.
 
-* eclox-0.3.4 (8-oct-2004) *
-	Bug fixed, the plugin crashed at startup.
+eclox-0.4 (5-nov-2005) 
+ * Deep refactoring of the doxyfile content representation.
+ * Recreation of the doxyfile editor using new ui APIs provided since
+   eclipse 3.0.
+ * Fixes bug #866 and support request #471.
+
+
+eclox-0.3.4 (8-oct-2004)
+ * Bug fixed, the plugin crashed at startup.
     
-* eclox-0.3.3 (6-oct-2004) *
-	Automatic saving of all editors before buiding is now implemented and
-	can be configured in the preferences.
-	
-	The build history state is now persistent.
-	
-	When opening the toolbar build action dropdown menu, "Choose Doxyfile"
-	appears even when no previous build has been done.
 
-	Bug #815 fixed. The doxyfile parser now supports any possible line
-    ending (CR, LF and CRLF).
+eclox-0.3.3 (6-oct-2004)
+ * Automatic saving of all editors before buiding is now implemented and
+   can be configured in the preferences.
+ * The build history state is now persistent.
+ * When opening the toolbar build action dropdown menu, "Choose Doxyfile"
+   appears even when no previous build has been done.
+ * Bug #815 fixed. The doxyfile parser now supports any possible line
+   ending (CR, LF and CRLF).
     
-* eclox-0.3.2 (06-sep-2004) *
-	Bug fixed. Loading doxyfile crashed on tags without values.
 
-	Bug fixed. Saving doxyfile crashed on tags having no description bloc.
+eclox-0.3.2 (06-sep-2004)
+ * Bug fixed. Loading doxyfile crashed on tags without values.
+ * Bug fixed. Saving doxyfile crashed on tags having no description bloc.
+ * Improvement of error reports while loading doxyfiles.
 
-	Improvement of error reports while loading doxyfiles.
 
-* eclox-0.3.1 (28-jun-2004) *
-	Fixed invalid build launched from the toolbar build button when the last
-	doxyfile has been deleted.
-
-	Fixed unexpected exception when deleting a doxyfile resource while an editor
-	was open on it.
-
-	Fixed a null pointer exception when launching a build from the history
-	on a resource that has been removed.
-
-	Improvement of the properties of the doxyfile element selected in the
-	outline view.
-
-	Fixed build history which was always empty since the use of workbanch
-	jobs for build processes.
-
-	Added properties for doxyfile elements in the default workbench
-	property view.
-
-	Improved build error reporting tanks to the new jobs return status.
-
-	bug fixed: the doxyfile editor has been restored.
-
-	Integration to Eclipse M9 api and removed the compatibility mode.
-
-	Support of the new eclipse Job API added.
-
-	Improvement of the message reporting rate in the build output log.
+eclox-0.3.1 (28-jun-2004)
+ * Fixed invalid build launched from the toolbar build button when the 
+   last doxyfile has been deleted.
+ * Fixed unexpected exception when deleting a doxyfile resource while an 
+   editor was open on it.
+ * Fixed a null pointer exception when launching a build from the history
+   on a resource that has been removed.
+ * Improvement of the properties of the doxyfile element selected in the
+   outline view.
+ * Fixed build history which was always empty since the use of workbench
+   jobs for build processes.
+ * Added properties for doxyfile elements in the default workbench
+   property view.
+ * Improved build error reporting tanks to the new jobs return status.
+ * Bug fixed: the doxyfile editor has been restored.
+ * Integration to Eclipse M9 api and removed the compatibility mode.
+ * Support of the new eclipse Job API added.
+ * Improvement of the message reporting rate in the build output log.
     
-* eclox-0.3.0 (15-jun-2004) *
-	Integration to Eclipse M8.
 
-* eclox-0.2.2 (14-jun-2004) *
-	bug #413 fixed, doxygen and eclipse freeze.
+eclox-0.3.0 (15-jun-2004)
+ * Integration to Eclipse M8.
 
-	bug #410 fixed, when launching a new build, show an error when a build
-	is already in progress.
 
-* eclox-0.2.1 (04-jun-2004) *
-	Manual updated.
+eclox-0.2.2 (14-jun-2004)
+ * bug #413 fixed, doxygen and eclipse freeze.
+ * bug #410 fixed, when launching a new build, show an error when a build
+   is already in progress.
 
-	The build toolbar action use the current selection to determine the
-	doxyfile to build (current doxyfile editor, last built doxyfile, doxyfile
-	selection in the resource explorer, ...).
 
-	The build toolbar action can now prompt the build history.
+eclox-0.2.1 (04-jun-2004)
+ * Manual updated.
+ * The build toolbar action use the current selection to determine the
+   doxyfile to build (current doxyfile editor, last built doxyfile, 
+   doxyfile selection in the resource explorer, ...).
+ * The build toolbar action can now prompt the build history.
+ * The contextual "build" menu action on doxyfiles has been restored.
+ * Added the build history (with length preference).
+ * Various clean-up (plugin preference class moved, icons moved to a
+   dedicated folder, copyright date updated.)
 
-	The contextual "build" menu action on doxyfiles has been restored.
 
-	Added the build history (with length preference).
-
-	Various clean-up (plugin preference class moved, icons moved to a
-	dedicated folder, copyright date updated.)
-
-* eclox-0.2.0 (03-jun-2004) *
-	Creation of a new toolbar build button which asks the user for the
-	doxyfile to build.
-
-	One more improvement of the tag edition.
+eclox-0.2.0 (03-jun-2004)
+ * Creation of a new toolbar build button which asks the user for the
+   doxyfile to build.
+ * One more improvement of the tag edition.
     
-* eclox-0.1.3 (03-may-2004) *
-	The tag edition has been improved. While editing a tag, hitting ESC
-	cancels the current edition, at the opposite, hitting ENTER validates
-	the current edition.
 
-	The doxygen creation wizard has been fixed to support pathes with and
-	without spaces under *nix.
+eclox-0.1.3 (03-may-2004)
+ * The tag edition has been improved. While editing a tag, hitting ESC
+   cancels the current edition, at the opposite, hitting ENTER validates
+   the current edition.
+ * The doxygen creation wizard has been fixed to support pathes with and
+   without spaces under *nix.
+ * The default doxygen command string match the exact *nix syntax, since
+   those OS are case-sensitive.
+ * In the doxyfile editor, the tag name column adjusts to the longest 
+   name.
+ * Hints of the selected tag reactivated.
+ * Deactivated the boolean field of the editor since the behaviour was not
+   very handy.
 
-	The default doxygen command string match the exact *nix syntax, since
-	those OS are case-sensitive.
 
-	In the doxyfile editor, the tag name column adjusts to the longest name.
+eclox-0.1.2 (23-feb-2004)
+ * A brand new doxfile loader supporting files generated by various
+   tools (like DoxWizard). Fixes bugs #241 and #245.
+ * Creation of the change log file (this file).
 
-	Hints of the selected tag reactivated.
 
-	Deactivated the boolean field of the editor since the behaviour was not
-	very handy.
+eclox-0.1.1
+ * Margins arround the editor controls has been removed. Spacing between
+   these controls has been decreased to 1 pixel. Look's nicer. 
+ * Now, filenames that are recognized by the plugin contain either the
+   "doxyfile" string as base name or as extension.
 
-* eclox-0.1.2 (23-feb-2004) *
-	A brand new doxfile loader supporting files generated by various
-	tools (like DoxWizard). Fixes bugs #241 and #245.
 
-	Creation of the change log file (this file).
-
-* eclox-0.1.1 *
-	Margins arround the editor controls has been removed. Spacing between
-	these controls has been decreased to 1 pixel. Look's nicer. 
-
-	Now, filenames that are recognized by the plugin contain either the
-	"doxyfile" string as base name or as extension.
-
-* eclox-0.1.0 *
-	Code name set to 'bombarde'.
-
-	First available version.
+eclox-0.1.0
+ * Code name set to 'bombarde'.
+ * First available version!
