@@ -37,6 +37,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.internal.presentations.UpdatingActionContributionItem;
 
 import eclox.core.IPreferences;
 import eclox.core.doxygen.CustomDoxygen;
@@ -56,11 +57,6 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * defines the description column index
 	 */
 	private final int DESCRIPTION_COLUMN_INDEX = 1;
-	
-	/**
-	 * the collection of available doxygen wrappers
-	 */
-	private Collection doxygens = Doxygen.getAll();
 	
 	/**
 	 * the table control showing available doxygen wrappers
@@ -112,20 +108,30 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
 		 */
 		public void widgetSelected(SelectionEvent e) {
-			if (e.item instanceof TableItem ) {
-				onItemSelected( (TableItem) e.item );
-			}
-			else if (e.item == add ) {
-				onAddSelected();
-			}
-			else if(e.item == edit) {
-				
-			}
-			else if(e.item == remove) {
-				
-			}
+			if		(e.item instanceof TableItem )	onItemSelected( (TableItem) e.item );
+			else if	(e.getSource() == add )			onAddSelected();
+			else if	(e.getSource() == edit)			onEditSelected();
+			else if (e.getSource() == remove)		onRemoveSelected();		
 		}
 		
+	}
+	
+	
+	/**
+	 * Adds a new table item for the given doxygen instance
+	 */
+	private void addItem( Doxygen doxygen ) {
+		// Item data preparation.
+		final String	description = doxygen.getDescription();
+		final String	version		= doxygen.getVersion();
+		
+
+		// Item creation.
+		TableItem	item = new TableItem( table, 0 );
+		
+		item.setText( VERSION_COLUMN_INDEX, version == null ? "unknown" : version );
+		item.setText( DESCRIPTION_COLUMN_INDEX, description );
+		item.setData( doxygen );
 	}
 	
 	
@@ -136,7 +142,9 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		TableItem[]	items = table.getItems();
 		
 		for( int i = 0; i < items.length; ++i ) {
-			items[i].setChecked( items[i].getData() == doxygen ); 
+			Doxygen	current = (Doxygen) items[i].getData();
+			
+			items[i].setChecked( current.getIdentifier().equalsIgnoreCase( doxygen.getIdentifier() ) ); 
 		}
 	}
 	
@@ -166,14 +174,37 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * Process the click on the add button.
 	 */
 	private void onAddSelected() {
+		// Asks the user to select a location containing a doxygen binary.
 		DirectoryDialog dialog		= new DirectoryDialog( getPage().getShell() );
 		String			directory	= null;
 		
 		dialog.setMessage( "Select a location containing doxygen" );
 		directory = dialog.open();
+		
+		// Creates the new wrapper.
 		if( directory != null ) {
-			Doxygen.add( new CustomDoxygen(directory) );
+			addItem( new CustomDoxygen( directory ) );
 		}
+	}
+	
+	
+	/**
+	 * Process the click on the edit button
+	 */
+	private void onEditSelected() {
+		
+	}
+	
+	
+	/**
+	 * Process the click on the remove button
+	 */
+	private void onRemoveSelected() {
+		// Pre-condition
+		assert( table != null );
+		
+		table.remove( table.getSelectionIndex() );
+		refreshValidState();
 	}
 	
 	
@@ -194,6 +225,14 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 			// Fires some notifications.
 			fireValueChanged( VALUE, null, null );
 		}
+		
+		
+		// Updates button states
+		final boolean	enable = item.getData() instanceof CustomDoxygen;
+		
+		edit.setEnabled( enable );
+		remove.setEnabled( enable );
+		
 		
 		// Refreshes the field validity.
 		refreshValidState();
@@ -257,8 +296,13 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		remove	= new Button( buttons, SWT.PUSH );
 		
 		add.setText( "Add..." );
+		add.addSelectionListener( new MySelectionListener() );
 		edit.setText( "Edit..." );
+		edit.addSelectionListener( new MySelectionListener() );
+		edit.setEnabled( false );
 		remove.setText( "Remove" );
+		remove.addSelectionListener( new MySelectionListener() );
+		remove.setEnabled( false );		
 	}
 
 	
@@ -266,9 +310,22 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoad()
 	 */
 	protected void doLoad() {
-		Doxygen	doxygen = Doxygen.get( getPreferenceStore().getString(getPreferenceName()) );
-		
-		checkItem( doxygen );		
+		// Pre-condition
+		assert( table != null );
+
+		// Fills the table with all available doxygen wrappers.
+		Collection doxygens = Doxygen.getAll();
+
+		Iterator	i = doxygens.iterator();
+		while( i.hasNext() ) {
+			addItem( (Doxygen) i.next() );
+		}
+		table.getColumn( VERSION_COLUMN_INDEX ).pack();
+		table.getColumn( DESCRIPTION_COLUMN_INDEX ).pack();
+		table.layout();
+
+		// Select the default one.
+//		checkItem( Doxygen.getDefault() );		
 	}
 
 	
@@ -276,9 +333,9 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#doLoadDefault()
 	 */
 	protected void doLoadDefault() {
-		Doxygen	doxygen = Doxygen.get( getPreferenceStore().getDefaultString(getPreferenceName()) );
+//		Doxygen	doxygen = Doxygen.get( getPreferenceStore().getDefaultString(getPreferenceName()) );
 		
-		checkItem( doxygen );
+//		checkItem( doxygen );
 	}
 
 	
@@ -325,32 +382,6 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 */
 	public DefaultDoxygenFieldEditor( Composite parent ) {
 		super( IPreferences.DEFAULT_DOXYGEN, "Doxygen:", parent );
-
-		// Pre-condition
-		assert( table != null );
-
-		// Fills the table with all available doxygen wrappers.
-		Iterator	i = doxygens.iterator();
-		while( i.hasNext() ) {
-			// Item data preparation.
-			Doxygen	doxygen		= (Doxygen) i.next();
-			String	description = doxygen.getDescription();
-			String	version		= doxygen.getVersion();
-			
-			if( version == null ) {
-				version = "unknown";
-			}
-			
-			// Item creation.
-			TableItem	item = new TableItem( table, 0 );
-			
-			item.setText( VERSION_COLUMN_INDEX, version );
-			item.setText( DESCRIPTION_COLUMN_INDEX, description );
-			item.setData( doxygen );
-		}
-		table.getColumn( VERSION_COLUMN_INDEX ).pack();
-		table.getColumn( DESCRIPTION_COLUMN_INDEX ).pack();
-		table.layout();
 	}
 
 	

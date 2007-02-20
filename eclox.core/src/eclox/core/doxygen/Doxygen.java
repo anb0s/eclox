@@ -25,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,58 +45,17 @@ import eclox.core.Plugin;
 public abstract class Doxygen {
 	
 	/**
-	 * a collection containing all available doxygen wrapper instances
-	 */
-	private static Collection doxygens = new Vector(); 
-	
-	/**
 	 * a string containing defining the default doxygen command to use
 	 */
 	protected final static String COMMAND_NAME = "doxygen";
 		
 	
 	/**
-	 * Adds a new doxygen wrapper to the collection of available wrappers.
-	 * 
-	 * The given wrapper to add must not have the same identifier as a wrapper already
-	 * in the collection. 
-	 */
-	public static void add( Doxygen doxygen ) {
-		// Pre-condition.
-		assert( get(doxygen.getIdentifier()) == null );
-		
-		doxygens.add( doxygen );
-	}
-	
-	/**
-	 * Retrieves a doxygen instance for the given identifier
-	 * 
-	 * @param	identifier	a string containing an identifier
-	 * 
-	 * @return	the found doxygen instance or null if one has been found
-	 */
-	public static Doxygen get( final String identifier ) {
-		Collection	doxygens	= getAll();
-		Iterator	i			= doxygens.iterator();
-		Doxygen		result		= null;
-		
-		while( i.hasNext() == true && result == null ) {
-			Doxygen	doxygen = (Doxygen) i.next();
-			if( doxygen.getIdentifier().equals(identifier) == true ) {
-				result = doxygen;
-			}
-		}
-		return result;
-	}
-	
-	
-	/**
 	 * Retrieves the default doxygen instance to use.
 	 */
 	public static Doxygen getDefault() {
-		final String identifier	= Plugin.getDefault().getPluginPreferences().getString( IPreferences.DEFAULT_DOXYGEN );
-
-		return get( identifier );
+		// TODO new doxygen management
+			return null;
 	}
 	
 	
@@ -105,11 +63,10 @@ public abstract class Doxygen {
 	 * Retrieves the collection of all available doxygen wrappers.
 	 */
 	public static Collection getAll() {
-//		if( doxygens.isEmpty() == true ) {
-//			doxygens.add( new CustomDoxygen() );
-//			doxygens.add( new BundledDoxygen() );
-//		}		
-		return doxygens;
+		Collection	doxygens = new Vector();
+		
+		doxygens.add( new DefaultDoxygen() );		
+		return doxygens; 
 	}
 	
 	/**
