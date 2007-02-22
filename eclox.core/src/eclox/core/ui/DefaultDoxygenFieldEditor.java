@@ -347,7 +347,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		GridData	buttonsData		= new GridData( GridData.END );
 		FillLayout	buttonsLayout	= new FillLayout( SWT.VERTICAL );
 		
-		buttons = new Composite( parent, SWT.NO_BACKGROUND );
+		buttons = new Composite( parent, SWT.NO_FOCUS );
 		buttonsData.horizontalSpan = 1;
 		buttonsData.horizontalAlignment = SWT.FILL;
 		buttons.setLayoutData( buttonsData );
