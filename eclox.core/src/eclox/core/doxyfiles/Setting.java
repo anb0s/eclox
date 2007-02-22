@@ -30,10 +30,6 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.core.runtime.Path;
-
-//import eclox.core.Plugin;
-//import eclox.core.Services;
 import eclox.core.Plugin;
 import eclox.core.doxyfiles.Chunk;
 
@@ -103,8 +99,8 @@ public class Setting extends Chunk {
         // Ensures that properties have been loaded.
         if( defaultProperties == null ) {
             try {
-                InputStream propertiesInput = Plugin.getDefault().openStream( new Path("misc/setting-properties.txt") );
-             
+                InputStream propertiesInput = Plugin.class.getResourceAsStream("/misc/setting-properties.txt");             
+                
                 defaultProperties = new Properties();
                 defaultProperties.load( propertiesInput );
             }

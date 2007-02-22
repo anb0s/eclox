@@ -398,7 +398,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		}
 		
 		
-		// TODO Add support fir bundled doxyens.
+		// TODO Add support for bundled doxyens.
 		
 
 		// Select the default doxygen wrapper
