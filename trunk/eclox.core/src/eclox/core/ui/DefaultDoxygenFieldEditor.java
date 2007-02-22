@@ -286,6 +286,9 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 				}
 			}
 			
+			// Selects the item that has been checked.
+			table.setSelection( item );
+			
 			// Fires some notifications.
 			fireValueChanged( VALUE, null, null );
 		}
