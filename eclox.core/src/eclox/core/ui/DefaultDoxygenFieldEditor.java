@@ -287,7 +287,10 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 			}
 			
 			// Selects the item that has been checked.
-			table.setSelection( item );
+			table.setSelection( table.indexOf(item) );
+			
+			// TODO only supported in eclipse 3.2
+			// table.setSelection( item );
 			
 			// Fires some notifications.
 			fireValueChanged( VALUE, null, null );
