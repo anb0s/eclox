@@ -21,6 +21,8 @@
 
 package eclox.core.ui;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.jface.preference.FieldEditor;
@@ -401,7 +403,12 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		}
 		
 		
-		// TODO Add support for bundled doxyens.
+		// Adds bundled doxygens.
+		Collection	bundled = BundledDoxygen.getAll();
+		Iterator	i		= bundled.iterator();
+		while( i.hasNext() ) {
+			addItem( (Doxygen) i.next() );
+		}
 		
 
 		// Select the default doxygen wrapper
