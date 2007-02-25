@@ -21,22 +21,88 @@
 
 package eclox.core.doxygen;
 
-public final class BundledDoxygen extends Doxygen {
+import java.net.URL;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Vector;
 
-	public static BundledDoxygen createFromIdentifier(String identifier) {
-		return null;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+
+import eclox.core.Plugin;
+
+public final class BundledDoxygen extends Doxygen {
+	
+	private URL	location;
+	
+	public static Collection getAll() {
+		Collection			doxygens	= new Vector();
+		IExtensionRegistry	registry	= Platform.getExtensionRegistry();
+		IExtensionPoint		point		= registry.getExtensionPoint("org.gna.eclox.core.doxygen");
+		IExtension[]		extensions	= point.getExtensions();
+		
+		for (int i = 0; i < extensions.length; i++) {
+			IExtension				extension	= extensions[i];
+			IConfigurationElement[] elements	= extension.getConfigurationElements();
+			
+			for (int j = 0; j < elements.length; j++) {
+				Path	path	= new Path( elements[j].getAttribute("path") );
+				URL		url		= Plugin.getDefault().find( path );
+				
+				if( url != null ) {
+					doxygens.add( new BundledDoxygen(url) );
+				}
+				else {
+					Plugin.getDefault().logError( path.toString() + ": not a valid doxygen path." );
+				}
+			}
+		}
+		return doxygens;		
+	}
+	
+	public static BundledDoxygen createFromIdentifier( final String identifier ) {
+		BundledDoxygen	doxygen = null;
+		
+		if( identifier.startsWith( BundledDoxygen.class.getName() ) ) {
+			final String	location =  identifier.substring( identifier.indexOf(' ') + 1 );
+			
+			try {
+				doxygen = new BundledDoxygen( new URL(location) );
+			}
+			catch( Throwable t ) {
+				Plugin.log( t );
+				doxygen = null;
+			}
+		}
+		return doxygen;
 	}
 
 	public String getCommand() {
-		return null;
+		try {
+			return Platform.resolve( location ).getPath();
+		}
+		catch( Throwable t ) {
+			Plugin.log(t);
+			return null;
+		}
 	}
 
 	public String getDescription() {
-		return new String("Bundled");
+		return new String();
 	}
 
 	public String getIdentifier() {
-		return this.getClass().getName();
+		return this.getClass().getName() + " " + location;
+	}
+	
+	private BundledDoxygen( URL location ) {
+		this.location = location;
+
+		assert( location != null );
 	}
 
 }
