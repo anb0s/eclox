@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<fragment>
+   <extension
+         point="org.gna.eclox.core.doxygen">
+      <doxygen path="bin/linux/x86/1.5.0/doxygen"/>
+      <doxygen path="bin/linux/x86/1.4.7/doxygen"/>
+   </extension>
+
+</fragment>
