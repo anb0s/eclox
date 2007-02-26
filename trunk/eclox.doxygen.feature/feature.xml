@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.gna.eclox.doxygen"
-      label="doxygen binaries for eclox"
-      version="1.0.0"
+      label="doxygen binaries"
+      version="1.5.0"
       provider-name="Guillaume Brocker"
       plugin="org.gna.eclox">
 
@@ -43,7 +43,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
          id="org.gna.eclox.core.doxygen"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="1.5.0"
          fragment="true"/>
 
 </feature>
