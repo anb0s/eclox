@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="eclox.doxygen.feature"
+      id="org.gna.eclox.doxygen"
       label="doxygen binaries for eclox"
       version="1.0.0"
       provider-name="Guillaume Brocker"

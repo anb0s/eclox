@@ -21,9 +21,20 @@
    <feature url="features/org.gna.eclox_0.5.5.jar" id="org.gna.eclox" version="0.5.5">
       <category name="Eclox"/>
    </feature>
+   <feature url="features/org.gna.eclox_0.6.0.jar" id="org.gna.eclox" version="0.6.0">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox.doxygen_1.0.0.jar" id="org.gna.eclox.doxygen" version="1.0.0">
+      <category name="Doxygen"/>
+   </feature>
    <category-def name="Eclox" label="Eclox">
       <description>
          Eclox is a frontend for doxygen.
+      </description>
+   </category-def>
+   <category-def name="Doxygen" label="Doxygen">
+      <description>
+         Packaged doxygen bianries for eclox.
       </description>
    </category-def>
 </site>
