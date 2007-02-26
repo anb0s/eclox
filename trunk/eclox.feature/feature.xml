@@ -8,6 +8,8 @@
 
    <description url="http://home.gna.org/eclox">
       Eclox provides the Doxygen documentation system for Eclipse.
+
+This feature provides a documentation builder and a graphical editor for doxygen.
    </description>
 
    <copyright url="http://home.gna.org/eclox">
