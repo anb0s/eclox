@@ -3,10 +3,10 @@
 <schema targetNamespace="org.gna.eclox.core">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.gna.eclox.core" id="doxygen" name="Doxygen Wrappers"/>
+         <meta.schema plugin="org.gna.eclox.core" id="doxygen" name="Bundled Doxygen Binaries"/>
       </appInfo>
       <documentation>
-         [Enter description of this extension point.]
+         Allows third-party components to provide doxygen binaries.
       </documentation>
    </annotation>
 
@@ -43,13 +43,49 @@
    </element>
 
    <element name="doxygen">
+      <annotation>
+         <appInfo>
+            <meta.element labelAttribute="path"/>
+         </appInfo>
+         <documentation>
+            Declares a bundled doxygen binary.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="path" type="string" use="required">
             <annotation>
                <documentation>
-                  
+                  Specifies the plugin (or fragment) relative path to the provided doxygen binary.
                </documentation>
             </annotation>
+         </attribute>
+         <attribute name="arch" use="required">
+            <annotation>
+               <documentation>
+                  Specifies the targeted hardware architecture.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="x86">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
+         <attribute name="sys" use="required">
+            <annotation>
+               <documentation>
+                  Specifies the target operating system.
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="linux">
+                  </enumeration>
+                  <enumeration value="win32">
+                  </enumeration>
+               </restriction>
+            </simpleType>
          </attribute>
       </complexType>
    </element>
