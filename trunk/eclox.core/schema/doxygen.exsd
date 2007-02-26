@@ -72,7 +72,7 @@
                </restriction>
             </simpleType>
          </attribute>
-         <attribute name="sys" use="required">
+         <attribute name="os" use="required">
             <annotation>
                <documentation>
                   Specifies the target operating system.

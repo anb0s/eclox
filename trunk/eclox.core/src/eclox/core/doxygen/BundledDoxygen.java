@@ -23,7 +23,6 @@ package eclox.core.doxygen;
 
 import java.net.URL;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -39,6 +38,11 @@ public final class BundledDoxygen extends Doxygen {
 	
 	private URL	location;
 	
+	/**
+	 * Retrieves all available bundled doxygen binaries.
+	 * 
+	 * @return	a collection with all collected bundled doxygen wrappers
+	 */
 	public static Collection getAll() {
 		Collection			doxygens	= new Vector();
 		IExtensionRegistry	registry	= Platform.getExtensionRegistry();
@@ -50,10 +54,12 @@ public final class BundledDoxygen extends Doxygen {
 			IConfigurationElement[] elements	= extension.getConfigurationElements();
 			
 			for (int j = 0; j < elements.length; j++) {
-				Path	path	= new Path( elements[j].getAttribute("path") );
-				URL		url		= Plugin.getDefault().find( path );
+				final Path		path	= new Path( elements[j].getAttribute("path") );
+				final String	arch	= elements[j].getAttribute("arch");
+				final String	os		= elements[j].getAttribute("os");
+				URL				url		= Plugin.getDefault().find( path );
 				
-				if( url != null ) {
+				if( url != null && Platform.getOS().equals(os) && Platform.getOSArch().equals(arch) ) {
 					doxygens.add( new BundledDoxygen(url) );
 				}
 				else {
@@ -64,6 +70,13 @@ public final class BundledDoxygen extends Doxygen {
 		return doxygens;		
 	}
 	
+	/**
+	 * Creates a bundled doxygen instance from the given identifier
+	 * 
+	 * @param	identifier	a string containing an identifier
+	 * 
+	 * @return	a new bundled doxygen wrapper
+	 */
 	public static BundledDoxygen createFromIdentifier( final String identifier ) {
 		BundledDoxygen	doxygen = null;
 		
@@ -81,6 +94,9 @@ public final class BundledDoxygen extends Doxygen {
 		return doxygen;
 	}
 
+	/**
+	 * @see eclox.core.doxygen.Doxygen#getCommand()
+	 */
 	public String getCommand() {
 		try {
 			return Platform.resolve( location ).getPath();
@@ -91,14 +107,25 @@ public final class BundledDoxygen extends Doxygen {
 		}
 	}
 
+	/**
+	 * @see eclox.core.doxygen.Doxygen#getDescription()
+	 */
 	public String getDescription() {
 		return new String();
 	}
 
+	/**
+	 * @see eclox.core.doxygen.Doxygen#getIdentifier()
+	 */
 	public String getIdentifier() {
 		return this.getClass().getName() + " " + location;
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param	location	an url giving the location a doxygen binary
+	 */
 	private BundledDoxygen( URL location ) {
 		this.location = location;
 
