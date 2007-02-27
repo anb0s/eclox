@@ -1,4 +1,8 @@
 eclox-0.6.0
+ * Fix bug #8593 : Editor hangs up when entering "custom" filter.
+   The "text" property of a setting was missing and thus a null
+   pointer was received while filtering the setting view. This null
+   pointer was not well handled.
  * Fix bug #7276 : Problems with adding HTML-formatted aliases. 
    Double-quotes and backslashes should be escapd well by now.
  * Add support for packaged doxygen binaries. Currently, only x86 windows
