@@ -1,4 +1,6 @@
 eclox-0.6.0
+ * Fix bug #7276 : Problems with adding HTML-formatted aliases. 
+   Double-quotes and backslashes should be escapd well by now.
  * Add support for packaged doxygen binaries. Currently, only x86 windows
    and x86 linux are supported.
  * Add new feature allowing a user to specify one or more doxygen binary

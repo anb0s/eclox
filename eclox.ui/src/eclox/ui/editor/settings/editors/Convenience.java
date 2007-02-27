@@ -309,7 +309,7 @@ public final class Convenience {
 	public static String replace( String string, String search, String replace ) {
 		StringBuffer	buffer = new StringBuffer( string );
 		
-		for( int i = buffer.lastIndexOf(search); i != -1; i = buffer.indexOf(search, i+replace.length()) ) {
+		for( int i = buffer.indexOf(search); i != -1; i = buffer.indexOf(search, i+replace.length()) ) {
 			buffer = buffer.replace( i, i + search.length(), replace );
 		}
 		return buffer.toString();
