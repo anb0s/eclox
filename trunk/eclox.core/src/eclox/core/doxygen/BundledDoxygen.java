@@ -54,16 +54,19 @@ public final class BundledDoxygen extends Doxygen {
 			IConfigurationElement[] elements	= extension.getConfigurationElements();
 			
 			for (int j = 0; j < elements.length; j++) {
-				final Path		path	= new Path( elements[j].getAttribute("path") );
 				final String	arch	= elements[j].getAttribute("arch");
 				final String	os		= elements[j].getAttribute("os");
-				URL				url		= Plugin.getDefault().find( path );
 				
-				if( url != null && Platform.getOS().equals(os) && Platform.getOSArch().equals(arch) ) {
-					doxygens.add( new BundledDoxygen(url) );
-				}
-				else {
-					Plugin.getDefault().logError( path.toString() + ": not a valid doxygen path." );
+				if( Platform.getOS().equals(os) && Platform.getOSArch().equals(arch) ) {
+					final Path		path	= new Path( elements[j].getAttribute("path") );
+					URL				url		= Plugin.getDefault().find( path );
+					
+					if( url != null ) {
+						doxygens.add( new BundledDoxygen(url) );
+					}
+					else {
+						Plugin.getDefault().logError( path.toString() + ": not a valid doxygen path." );
+					}					
 				}
 			}
 		}
