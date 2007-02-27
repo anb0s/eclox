@@ -132,26 +132,27 @@ public class Custom implements IFilter {
      */
     private class MyViewerFiler extends ViewerFilter {
 
-    		/**
+    	/**
          * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
          */
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-        		// Pre-condition
-        		assert element instanceof Setting;
-        		
-        		// Tests if the current setting matches the query string.
-        		if( filterText != null ) {
-	        		Setting	setting = (Setting) element;
-	        		String	settingText = setting.getProperty(Setting.TEXT);
-	        		
-	        		return settingText.toLowerCase().indexOf( filterText.toLowerCase() ) != -1;
-        		}
-        		else {
-        			return true;
-        		}
-		}
-    	
-    };
+			// Pre-condition
+			assert element instanceof Setting;
+			
+			// Tests if the current setting matches the query string.
+			if( filterText != null ) {
+				Setting			setting		= (Setting) element;
+				final String	settingText	= setting.getProperty(Setting.TEXT);
+				
+				return	( settingText != null ) &&
+						( settingText.toLowerCase().indexOf(filterText.toLowerCase()) != -1 );
+			}
+			else {
+				return true;
+			}
+        }
+        
+	};
 
     /**
      * Implements a combo modification listener that will trigger
@@ -163,7 +164,7 @@ public class Custom implements IFilter {
 			// Pre-condition
 			assert combo != null;
 			
-			filterText = combo.getText();
+			filterText = new String( combo.getText() );
 			combo.getDisplay().timerExec( 450, new MyRunnable(filterText) );
 		}
     	
@@ -243,17 +244,17 @@ public class Custom implements IFilter {
      */
     public void createViewerFilters(StructuredViewer viewer) {
         // Pre-condition
-    		assert viewer == null;
-    		assert viewerFilter == null;
-    		
-    		// Installes the viewer filter.
-    		this.viewer = viewer;
-    		this.viewerFilter = new MyViewerFiler();
-    		this.viewer.addFilter( this.viewerFilter );
-    		
-    		// Post-condition
-    		assert this.viewer != null;
-    		assert this.viewerFilter != null;
+    	assert viewer == null;
+    	assert viewerFilter == null;
+    	
+    	// Installes the viewer filter.
+    	this.viewer = viewer;
+    	this.viewerFilter = new MyViewerFiler();
+    	this.viewer.addFilter( this.viewerFilter );
+    	
+    	// Post-condition
+    	assert this.viewer != null;
+    	assert this.viewerFilter != null;
     }
 
     /**
@@ -284,17 +285,17 @@ public class Custom implements IFilter {
      */
     public void disposeViewerFilers(StructuredViewer viewer) {
         // Pre-condition
-    		assert this.viewer != null;
-		assert viewerFilter != null;
-		
-		// Uninstalles the viewer filter.
-		viewer.removeFilter( this.viewerFilter );
-		this.viewerFilter = null;
-		this.viewer = null;
-		
-		// Post-condition
-		assert this.viewer == null;
-		assert this.viewerFilter == null;
+    	assert this.viewer != null;
+    	assert viewerFilter != null;
+
+    	// Uninstalles the viewer filter.
+    	viewer.removeFilter( this.viewerFilter );
+    	this.viewerFilter = null;
+    	this.viewer = null;
+
+    	// Post-condition
+    	assert this.viewer == null;
+    	assert this.viewerFilter == null;
     }
 
     /**
