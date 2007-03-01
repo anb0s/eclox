@@ -139,7 +139,7 @@ public abstract class Doxygen {
 			return Runtime.getRuntime().exec( command, null, getDir(file).toFile() );
 		}
 		catch(Throwable throwable) {
-			throw new RuntimeException("Unable to launch Doxygen. Please, check preferences.", throwable);
+			throw new RuntimeException("Unable to launch doxygen.", throwable);
 		}
 	}
 	

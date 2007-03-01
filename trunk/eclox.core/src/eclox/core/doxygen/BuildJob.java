@@ -57,6 +57,11 @@ import eclox.core.Plugin;
 public class BuildJob extends Job {
 	
 	/**
+	 * Defines the doxygen not found error code
+	 */
+	public static final int ERROR_DOXYGEN_NOT_FOUND = 1;
+	
+	/**
 	 * Defines the pattern used to match doxygen warnings and errors
 	 */
 	private static final Pattern problemPattern = Pattern.compile("^(.+?):\\s*(\\d+)\\s*:\\s*(.+?)\\s*:\\s*(.*$(\\s+^  .*$)*)", Pattern.MULTILINE);
@@ -433,8 +438,15 @@ public class BuildJob extends Job {
 			// Job's done.
 			return Status.OK_STATUS;
 		}
-		catch( Throwable t )
-		{
+		catch( RuntimeException e ) {
+			return new Status(
+					Status.WARNING,
+					Plugin.getDefault().getBundle().getSymbolicName(),
+					ERROR_DOXYGEN_NOT_FOUND, 
+					e.getMessage(),
+					e );			
+		}
+		catch( Throwable t ) {
 			return new Status(
 					Status.ERROR,
 					Plugin.getDefault().getBundle().getSymbolicName(),

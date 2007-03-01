@@ -50,7 +50,7 @@ public class Console extends AbstractConsole {
 	 */
 	private class MyBuildJobListener implements IBuildJobListener
 	{
-		/* (non-Javadoc)
+		/**
 		 * @see eclox.core.doxygen.IBuildJobListener#buildJobLogCleared(eclox.core.doxygen.BuildJob)
 		 */
 		public void buildJobLogCleared(BuildJob job) {
@@ -65,23 +65,21 @@ public class Console extends AbstractConsole {
 				);
 		}
 
-		/* (non-Javadoc)
+		/**
 		 * @see eclox.core.doxygen.IBuildJobListener#buildJobLogUpdated(eclox.core.doxygen.BuildJob, java.lang.String)
 		 */
 		public void buildJobLogUpdated(BuildJob job, String output) {
 			final String	text = new String( output );
 			ConsolePlugin.getStandardDisplay().asyncExec(
-					new Runnable()
-					{
-						public void run()
-						{
+					new Runnable() {
+						public void run() {
 							append( text );		
 						}
 					}
 				);
 		}
 
-		/* (non-Javadoc)
+		/**
 		 * @see eclox.core.doxygen.IBuildJobListener#buildJobRemoved(eclox.core.doxygen.BuildJob)
 		 */
 		public void buildJobRemoved(BuildJob job) {
@@ -120,8 +118,7 @@ public class Console extends AbstractConsole {
 				);
 		}
 
-		public void awake(IJobChangeEvent event) {
-		}
+		public void awake(IJobChangeEvent event) {}
 
 		public void done(final IJobChangeEvent event) {
 			ConsolePlugin.getStandardDisplay().syncExec(
@@ -142,14 +139,11 @@ public class Console extends AbstractConsole {
 				);
 		}
 
-		public void running(IJobChangeEvent event) {
-		}
+		public void running(IJobChangeEvent event) {}
 
-		public void scheduled(IJobChangeEvent event) {
-		}
+		public void scheduled(IJobChangeEvent event) {}
 
-		public void sleeping(IJobChangeEvent event) {
-		}		
+		public void sleeping(IJobChangeEvent event) {}		
 				
 	}
 	
