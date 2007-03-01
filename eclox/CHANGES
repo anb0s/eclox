@@ -1,4 +1,8 @@
 eclox-0.6.0
+ * Fix bug #8599 : 	Frozen doxyfile editor when clicking twice on a 
+   filter buttonWhen updating the user interface controls, 
+   redraw was disabled to avoid flickering. Redraw was not 
+   reactivated if the selected filter was not changing.
  * Fix bug #8593 : Editor hangs up when entering "custom" filter.
    The "text" property of a setting was missing and thus a null
    pointer was received while filtering the setting view. This null

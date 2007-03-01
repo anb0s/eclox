@@ -499,17 +499,17 @@ public class MasterPart extends SectionPart {
 			
         // Updates the filter button's state.
         Control[]   controls = filterButtons.getChildren();
-        int         i;
-        for( i = 0; i < controls.length; ++i ) {
-            Control control = controls[i];
-            Button  button = (Button) control;
+        for( int i = 0; i < controls.length; ++i ) {
+            Control control	= controls[i];
+            Button  button	= (Button) control;
             
             button.setSelection( control.getData() == filter );
         }
 
         // If there is a new filter to activate, do the activation job.
         if( filter != activeFilter ) {
-    	        // Deactivates the previous filter.
+
+   	        // Deactivates the previous filter.
 	        if( activeFilter != null ) {
 	            activeFilter.disposeViewerFilers( tableViewer );
 	            activeFilter.disposeControls();
@@ -537,7 +537,9 @@ public class MasterPart extends SectionPart {
 	        
 	        // Reactivates section widget.
 	        section.layout( true, true );
-	        section.setRedraw( true );
         }
+        
+        // Reactivates the redrawing.
+        section.setRedraw( true );
     }
 }
