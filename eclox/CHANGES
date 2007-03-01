@@ -1,4 +1,4 @@
-eclox-0.6.0
+eclox-0.6.0 (1-mar-2007)
  * Add setting properties for REFERENCES_LINK_SOURCE.
  * Fix bug #8599 : 	Frozen doxyfile editor when clicking twice on a 
    filter buttonWhen updating the user interface controls, 

@@ -4,7 +4,9 @@
       label="doxygen binaries"
       version="1.5.0"
       provider-name="Guillaume Brocker"
-      plugin="org.gna.eclox">
+      plugin="org.gna.eclox"
+      os="linux,win32"
+      arch="x86">
 
    <description url="http://home.gna.org/eclox">
       Eclox provides the Doxygen documentation system for Eclipse.
