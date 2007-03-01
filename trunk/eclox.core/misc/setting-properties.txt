@@ -408,6 +408,11 @@ REFERENCES_RELATION.group = Source Browsing
 REFERENCES_RELATION.type = boolean
 REFERENCES_RELATION.note = If the REFERENCES_RELATION tag is set to YES (the default) then for each documented function all documented entities called/used by that function will be listed.
 
+REFERENCES_LINK_SOURCE.text = Reference Link Source
+REFERENCES_LINK_SOURCE.group = Source Browsing
+REFERENCES_LINK_SOURCE.type = boolean
+REFERENCES_LINK_SOURCE.note = If the REFERENCES_LINK_SOURCE tag is set to YES (the default) and SOURCE_BROWSER tag is set to YES, then the hyperlinks from functions in REFERENCES_RELATION and REFERENCED_BY_RELATION lists will link to the source code.  Otherwise they will link to the documentstion.
+
 USE_HTAGS.text = Use htags
 USE_HTAGS.group = Source Browsing
 USE_HTAGS.type = boolean
