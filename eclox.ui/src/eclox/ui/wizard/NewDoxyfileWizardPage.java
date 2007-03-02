@@ -21,8 +21,12 @@
  
 package eclox.ui.wizard;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+
+import eclox.ui.Images;
+import eclox.ui.Plugin;
 
 /**
  * @author gbrocker
@@ -31,6 +35,14 @@ import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
  * Window - Preferences - Java - Code Generation - Code and Comments
  */
 public class NewDoxyfileWizardPage extends WizardNewFileCreationPage {
+	
+	/**
+	 * Retrieves the initial file name for the given path
+	 */
+	private static String getInitialFileName( IResource resource ) {
+		return (resource != null) ? (resource.getProject().getName() + ".doxyfile") : ("");
+	}
+	
 	/**
 	 * Constructor.
 	 * 
@@ -40,5 +52,15 @@ public class NewDoxyfileWizardPage extends WizardNewFileCreationPage {
 		super("page", selection);
 		setTitle("Doxygen Configuration");
 		setDescription("Creates a new Doxygen configuration file.");
+		setFileName( getInitialFileName((IResource) selection.getFirstElement()) );
+		setImageDescriptor( Plugin.getImageDescriptor(Images.DOXYFILE_WIZARD));		
 	}
+
+	/**
+	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#getNewFileLabel()
+	 */
+	protected String getNewFileLabel() {
+		return "Doxyfile &name:";
+	}
+	
 }
