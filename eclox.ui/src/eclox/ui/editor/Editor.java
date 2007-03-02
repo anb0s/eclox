@@ -74,9 +74,8 @@ public class Editor extends FormEditor implements ISettingValueListener {
      */
     protected void addPages() {
         try {
-            // TODO reactivate
-            //this.addPage(new OverviewPage(this));
-            this.addPage( new SettingsPage(this) );
+            addPage(new eclox.ui.editor.basic.Page(this));
+            addPage(new eclox.ui.editor.advanced.Page(this));
             // TODO reactivate
             //this.addPage(new SourcePage(this));
         }

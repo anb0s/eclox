@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    
  */
 
-package eclox.ui.editor.settings;
+package eclox.ui.editor.advanced;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -59,11 +59,11 @@ import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ISettingPropertyListener;
 import eclox.core.doxyfiles.Setting;
 import eclox.ui.editor.Editor;
-import eclox.ui.editor.settings.filters.All;
-import eclox.ui.editor.settings.filters.ByGroup;
-import eclox.ui.editor.settings.filters.Custom;
-import eclox.ui.editor.settings.filters.IFilter;
-import eclox.ui.editor.settings.filters.Modified;
+import eclox.ui.editor.advanced.filters.All;
+import eclox.ui.editor.advanced.filters.ByGroup;
+import eclox.ui.editor.advanced.filters.Custom;
+import eclox.ui.editor.advanced.filters.IFilter;
+import eclox.ui.editor.advanced.filters.Modified;
 
 /**
  * Implements the master part's user interface.

@@ -19,10 +19,12 @@ along with eclox; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 */
 
-package eclox.ui.editor;
+package eclox.ui.editor.basic;
 
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
+
+import eclox.ui.editor.Editor;
 
 
 /**
@@ -30,25 +32,25 @@ import org.eclipse.ui.forms.editor.FormPage;
  * 
  * @author gbrocker
  */
-public class OverviewPage extends FormPage {
+public class Page extends FormPage {
 	
     /**
      * The page identifier.
      */
-    public static final String ID = "overview";
+    public static final String ID = "basic";
     
     /**
 	 * Constructor.
 	 */
-	public OverviewPage(Editor editor) {
-		super(editor, OverviewPage.ID, "Overview");
+	public Page(Editor editor) {
+		super(editor, Page.ID, "Basic");
 	}
 	
 	/**
 	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
-		managedForm.getForm().setText("Overview");
+		managedForm.getForm().setText(this.getTitle());
 		super.createFormContent(managedForm);
 	}
 }

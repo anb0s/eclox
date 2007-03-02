@@ -19,12 +19,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.ui.editor;
+package eclox.ui.editor.advanced;
 
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 
-import eclox.ui.editor.settings.Block;
+import eclox.ui.editor.Editor;
 
 
 
@@ -33,12 +33,12 @@ import eclox.ui.editor.settings.Block;
  * 
  * @author gbrocker
  */
-public class SettingsPage extends FormPage {
+public class Page extends FormPage {
 
     /**
      * The page identifier.
      */
-    public static final String ID = "setting";
+    public static final String ID = "advanced";
     
     /**
      * The editor.
@@ -57,8 +57,8 @@ public class SettingsPage extends FormPage {
      * 
      * @author gbrocker
      */
-    public SettingsPage(Editor editor) {
-        super(editor, SettingsPage.ID, "Settings");
+    public Page(Editor editor) {
+        super(editor, Page.ID, "Advanced");
         this.editor = editor;
     }
     
