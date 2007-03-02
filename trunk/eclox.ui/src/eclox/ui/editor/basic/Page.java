@@ -21,8 +21,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 package eclox.ui.editor.basic;
 
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
+import org.eclipse.ui.forms.widgets.FormText;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.ui.editor.Editor;
 
@@ -46,11 +52,41 @@ public class Page extends FormPage {
 		super(editor, Page.ID, "Basic");
 	}
 	
+	
+	
+	public void createPartControl(Composite parent) {
+		super.createPartControl(parent);
+	}
+
+
+
 	/**
 	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
 	 */
 	protected void createFormContent(IManagedForm managedForm) {
+		FormToolkit	toolkit = managedForm.getToolkit();
+		Composite	parent	= managedForm.getForm().getBody();
+		
 		managedForm.getForm().setText(this.getTitle());
+		
+		Section	projectSection	= toolkit.createSection( parent, Section.TITLE_BAR );
+		Section	modeSection		= toolkit.createSection( parent, Section.TITLE_BAR );
+		Section	outputSection	= toolkit.createSection( parent, Section.TITLE_BAR );
+		Section	diagramsSection	= toolkit.createSection( parent, Section.TITLE_BAR );
+		
+		projectSection.setText("Project");
+		modeSection.setText("Mode");
+		outputSection.setText("Output");
+		diagramsSection.setText("Diagrams");
+		
+		Composite	projectContent	 = toolkit.createComposite(projectSection);
+		
+		projectSection.setClient(projectContent);
+		toolkit.createLabel(projectContent, "Provide some documentation about the project you are documenting.", SWT.WRAP);
+		projectContent.setLayout( new FillLayout() );
+		
+		parent.setLayout( new FillLayout(SWT.VERTICAL) );
+		
 		super.createFormContent(managedForm);
 	}
 }
