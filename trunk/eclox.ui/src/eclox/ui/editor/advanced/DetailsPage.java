@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.ui.editor.settings;
+package eclox.ui.editor.advanced;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -36,8 +36,8 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import eclox.core.doxyfiles.Setting;
 import eclox.ui.Plugin;
-import eclox.ui.editor.settings.editors.EditorClassRegister;
-import eclox.ui.editor.settings.editors.IEditor;
+import eclox.ui.editor.advanced.editors.EditorClassRegister;
+import eclox.ui.editor.advanced.editors.IEditor;
 
 
 /**

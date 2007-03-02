@@ -19,7 +19,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    
  */
 
-package eclox.ui.editor.settings.filters;
+package eclox.ui.editor.advanced.filters;
 
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.swt.widgets.Composite;
@@ -36,32 +36,32 @@ import eclox.core.doxyfiles.Doxyfile;
 public class All implements IFilter {
 
 	/**
-	 * @see eclox.ui.editor.settings.filters.IFilter#setDoxyfile(eclox.doxyfiles.Doxyfile)
+	 * @see eclox.ui.editor.advanced.filters.IFilter#setDoxyfile(eclox.doxyfiles.Doxyfile)
 	 */
 	public void setDoxyfile(Doxyfile doxyfile) {}
 
 	/**
-     * @see eclox.ui.editor.settings.filters.IFilter#createControls(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
+     * @see eclox.ui.editor.advanced.filters.IFilter#createControls(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
      */
     public void createControls(IManagedForm managedForm, Composite parent) {}
 
     /**
-     * @see eclox.ui.editor.settings.filters.IFilter#createViewerFilters(org.eclipse.jface.viewers.StructuredViewer)
+     * @see eclox.ui.editor.advanced.filters.IFilter#createViewerFilters(org.eclipse.jface.viewers.StructuredViewer)
      */
     public void createViewerFilters(StructuredViewer viewer) {}
 
    /**
-     * @see eclox.ui.editor.settings.filters.IFilter#disposeControls()
+     * @see eclox.ui.editor.advanced.filters.IFilter#disposeControls()
      */
     public void disposeControls() {}
 
     /**
-     * @see eclox.ui.editor.settings.filters.IFilter#disposeViewerFilers(org.eclipse.jface.viewers.StructuredViewer)
+     * @see eclox.ui.editor.advanced.filters.IFilter#disposeViewerFilers(org.eclipse.jface.viewers.StructuredViewer)
      */
     public void disposeViewerFilers(StructuredViewer viewer) {}
 
     /**
-     * @see eclox.ui.editor.settings.filters.IFilter#getName()
+     * @see eclox.ui.editor.advanced.filters.IFilter#getName()
      */
     public String getName() {
         return "All";
