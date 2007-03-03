@@ -21,19 +21,26 @@
 
 package eclox.ui.editor.advanced;
 
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.Setting;
 import eclox.ui.Plugin;
 import eclox.ui.editor.advanced.editors.EditorClassRegister;
@@ -78,15 +85,19 @@ public class DetailsPage implements IDetailsPage {
     protected IManagedForm managedForm;
     
     /**
-     * The label displaying the note text.
+     * the control displaying the setting's note text
      */
-    private Label noteLabel;
+    private FormText noteLabel;
+    
+    private FontRegistry fontRegistry;
 
     /**
      * @see org.eclipse.ui.forms.IDetailsPage#createContents(org.eclipse.swt.widgets.Composite)
      */
     public void createContents(Composite parent) {
         FormToolkit toolkit = this.managedForm.getToolkit();
+        
+        fontRegistry = new FontRegistry(parent.getDisplay());
         
         // Initializes the parent control.
         parent.setLayout(new FillLayout());
@@ -110,8 +121,10 @@ public class DetailsPage implements IDetailsPage {
         this.editorContainer.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
                 
         // Creates controls displaying the setting note.
-        this.noteLabel = this.managedForm.getToolkit().createLabel( sectionContent, "", org.eclipse.swt.SWT.WRAP);
+        this.noteLabel = this.managedForm.getToolkit().createFormText( sectionContent, false );
         this.noteLabel.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
+        this.noteLabel.setFont( "em", fontRegistry.getItalic("") );
+        
     }
     
     /**
@@ -238,10 +251,43 @@ public class DetailsPage implements IDetailsPage {
      * @param	setting	a setting instance to use to refresh the UI controls.
      */
     private void selectNote(Setting setting) {
+    	// Retrieves the setting's note text.
         String text = setting.getProperty( Setting.NOTE );
+        
+        // If there is none, build a default one.
         if(text == null) {
-        	text = new String("Not available.");
+        	text = "Not available.";
         }
-        this.noteLabel.setText(text);
+        // Else do some parsing and replacements for layout and style. 
+        else {
+        	Doxyfile	doxyfile = setting.getOwner();
+        	
+        	text = text.startsWith("<p>") ? text : "<p>"+text+"</p>";
+        	Matcher			matcher = Pattern.compile("([A-Z_]{2,})").matcher(text);
+        	StringBuffer	buffer = new StringBuffer();
+        	while( matcher.find() ) {
+        		String	match = matcher.group(1);
+        		
+        		if( match.equals("YES") || match.equals("NO") ) {
+        			matcher.appendReplacement( buffer, "<span font=\"em\">"+match+"</span>");
+        		}
+        		else {
+        			Setting	matchSetting	= doxyfile.getSetting(match);
+        			String	settingText			= matchSetting.getProperty(Setting.TEXT);
+        			
+        			if( matchSetting == setting ) {
+        				matcher.appendReplacement( buffer, "<b>"+settingText+"</b>");
+        			}
+        			else {
+        				matcher.appendReplacement( buffer, "<a>"+settingText+"</a>");
+        			}
+        		}
+        	}
+        	matcher.appendTail( buffer );
+        	text = buffer.toString();
+        }
+        
+        // Finally, assignes the text to the user interface control.
+        this.noteLabel.setText("<form>"+text+"</form>", true, false);
     }
 }
