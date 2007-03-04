@@ -112,7 +112,7 @@ TAB_SIZE.note = The TAB_SIZE tag can be used to set the number of spaces in a ta
 ALIASES.text = Aliases
 ALIASES.group = Project
 ALIASES.type = text list
-ALIASES.note = This tag can be used to specify a number of aliases that acts as commands in the documentation. An alias has the form "name=value". For example adding "sideeffect=\par Side Effects:\n" will allow you to put the command \sideeffect (or @sideeffect) in the documentation, which will result in a user-defined paragraph with heading "Side Effects:". You can put \n's in the value part of an alias to insert newlines.
+ALIASES.note = <p>This tag can be used to specify a number of aliases that acts as commands in the documentation. An alias has the form "name=value".</p><p>For example adding "sideeffect=\par Side Effects:\n" will allow you to put the command \sideeffect (or @sideeffect) in the documentation, which will result in a user-defined paragraph with heading "Side Effects:". You can put \n's in the value part of an alias to insert newlines.</p>
 
 OPTIMIZE_OUTPUT_FOR_C.text = Optimize Ouput for C
 OPTIMIZE_OUTPUT_FOR_C.group = Project
@@ -226,7 +226,7 @@ SORT_BRIEF_DOCS.note = If the SORT_BRIEF_DOCS tag is set to YES then doxygen wil
 SORT_BY_SCOPE_NAME.text = Sort by Scope Name
 SORT_BY_SCOPE_NAME.group = Build
 SORT_BY_SCOPE_NAME.type = boolean
-SORT_BY_SCOPE_NAME.note = If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by fully-qualified names, including namespaces. If set to NO (the default), the class list will be sorted only by class name, not including the namespace part. Note: This option is not very useful if HIDE_SCOPE_NAMES is set to YES. Note: This option applies only to the class list, not to the alphabetical list.
+SORT_BY_SCOPE_NAME.note = <p>If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by fully-qualified names, including namespaces. If set to NO (the default), the class list will be sorted only by class name, not including the namespace part.</p><p>Note: This option is not very useful if HIDE_SCOPE_NAMES is set to YES.</p><p>Note: This option applies only to the class list, not to the alphabetical list.</p>
 
 GENERATE_TODOLIST.text = Generate Todo List
 GENERATE_TODOLIST.group = Build
@@ -367,12 +367,12 @@ IMAGE_PATH.note = The IMAGE_PATH tag can be used to specify one or more files or
 INPUT_FILTER.text = Input Filter
 INPUT_FILTER.group = Inputs
 INPUT_FILTER.type = file
-INPUT_FILTER.note = The INPUT_FILTER tag can be used to specify a program that doxygen should invoke to filter for each input file. Doxygen will invoke the filter program by executing (via popen()) the command <filter> <input-file>, where <filter> is the value of the INPUT_FILTER tag, and <input-file> is the name of an input file. Doxygen will then use the output that the filter program writes to standard output.  If FILTER_PATTERNS is specified, this tag will be ignored.
+INPUT_FILTER.note = <p>The INPUT_FILTER tag can be used to specify a program that doxygen should invoke to filter for each input file.</p><p>Doxygen will invoke the filter program by executing (via popen()) the command &lt;filter&gt; &lt;input-file&gt;, where &lt;filter&gt; is the value of the INPUT_FILTER tag, and &lt;input-file&gt; is the name of an input file. Doxygen will then use the output that the filter program writes to standard output.</p><p>If FILTER_PATTERNS is specified, this tag will be ignored.</p>
 
 FILTER_PATTERNS.text = Filter Patterns
 FILTER_PATTERNS.group = Inputs
 FILTER_PATTERNS.type = text list
-FILTER_PATTERNS.note = The FILTER_PATTERNS tag can be used to specify filters on a per file pattern basis.  Doxygen will compare the file name with each pattern and apply the filter if there is a match.  The filters are a list of the form: pattern=filter (like *.cpp=my_cpp_filter). See INPUT_FILTER for further info on how filters are used. If FILTER_PATTERNS is empty, INPUT_FILTER is applied to all files.
+FILTER_PATTERNS.note = <p>The FILTER_PATTERNS tag can be used to specify filters on a per file pattern basis. Doxygen will compare the file name with each pattern and apply the filter if there is a match.</p><p>The filters are a list of the form: pattern=filter (like *.cpp=my_cpp_filter). See INPUT_FILTER for further info on how filters are used.</p><p>If FILTER_PATTERNS is empty, INPUT_FILTER is applied to all files.</p>
 
 FILTER_SOURCE_FILES.text = Filter Source Files
 FILTER_SOURCE_FILES.group = Inputs
@@ -386,7 +386,7 @@ FILTER_SOURCE_FILES.note = If the FILTER_SOURCE_FILES tag is set to YES, the inp
 SOURCE_BROWSER.text = Source Browser
 SOURCE_BROWSER.group = Source Browsing
 SOURCE_BROWSER.type = boolean
-SOURCE_BROWSER.note = If the SOURCE_BROWSER tag is set to YES then a list of source files will be generated. Documented entities will be cross-referenced with these sources. Note: To get rid of all source code in the generated output, make sure also VERBATIM_HEADERS is set to NO.
+SOURCE_BROWSER.note = <p>If the SOURCE_BROWSER tag is set to YES then a list of source files will be generated. Documented entities will be cross-referenced with these sources.</p><p>Note: To get rid of all source code in the generated output, make sure also VERBATIM_HEADERS is set to NO.</p>
 
 INLINE_SOURCES.text = Inline Sources
 INLINE_SOURCES.group = Source Browsing
@@ -416,7 +416,7 @@ REFERENCES_LINK_SOURCE.note = If the REFERENCES_LINK_SOURCE tag is set to YES (t
 USE_HTAGS.text = Use htags
 USE_HTAGS.group = Source Browsing
 USE_HTAGS.type = boolean
-USE_HTAGS.note = If the USE_HTAGS tag is set to YES then the references to source code will point to the HTML generated by the htags(1) tool instead of doxygen built-in source browser. The htags tool is part of GNU's global source tagging system (see http://www.gnu.org/software/global/global.html). You will need version 4.8.6 or higher.
+USE_HTAGS.note = <p>If the USE_HTAGS tag is set to YES then the references to source code will point to the HTML generated by the htags(1) tool instead of doxygen built-in source browser.</p><p>The htags tool is part of GNU's global source tagging system (see http://www.gnu.org/software/global/global.html). You will need version 4.8.6 or higher.</p>
 
 VERBATIM_HEADERS.text = Verbatim Headers
 VERBATIM_HEADERS.group = Source Browsing
@@ -472,7 +472,7 @@ HTML_FOOTER.note = The HTML_FOOTER tag can be used to specify a personal HTML fo
 HTML_STYLESHEET.text = HTML Stylesheet
 HTML_STYLESHEET.group = HTML Output
 HTML_STYLESHEET.type = file
-HTML_STYLESHEET.note = The HTML_STYLESHEET tag can be used to specify a user-defined cascading style sheet that is used by each HTML page. It can be used to fine-tune the look of the HTML output. If the tag is left blank doxygen will generate a default style sheet. Note that doxygen will try to copy the style sheet file to the HTML output directory, so don't put your own stylesheet in the HTML output directory as well, or it will be erased!
+HTML_STYLESHEET.note = <p>The HTML_STYLESHEET tag can be used to specify a user-defined cascading style sheet that is used by each HTML page. It can be used to fine-tune the look of the HTML output. If the tag is left blank doxygen will generate a default style sheet.</p><p>Note that doxygen will try to copy the style sheet file to the HTML output directory, so don't put your own stylesheet in the HTML output directory as well, or it will be erased!</p>
 
 HTML_ALIGN_MEMBERS.text = HTML Align Members
 HTML_ALIGN_MEMBERS.group = HTML Output
@@ -521,7 +521,7 @@ ENUM_VALUES_PER_LINE.note = This tag can be used to set the number of enum value
 GENERATE_TREEVIEW.text = Generate Tree View
 GENERATE_TREEVIEW.group = HTML Output
 GENERATE_TREEVIEW.type = boolean
-GENERATE_TREEVIEW.note = If the GENERATE_TREEVIEW tag is set to YES, a side panel will begenerated containing a tree-like index structure (just like the one that is generated for HTML Help). For this to work a browser that supports JavaScript, DHTML, CSS and frames is required (for instance Mozilla 1.0+, Netscape 6.0+, Internet explorer 5.0+, or Konqueror). Windows users are probably better off using the HTML help feature.
+GENERATE_TREEVIEW.note = <p>If the GENERATE_TREEVIEW tag is set to YES, a side panel will begenerated containing a tree-like index structure (just like the one that is generated for HTML Help).</p><p>For this to work a browser that supports JavaScript, DHTML, CSS and frames is required (for instance Mozilla 1.0+, Netscape 6.0+, Internet explorer 5.0+, or Konqueror). Windows users are probably better off using the HTML help feature.</p>
 
 TREEVIEW_WIDTH.text = Tree View Width
 TREEVIEW_WIDTH.group = HTML Output
@@ -609,7 +609,7 @@ COMPACT_RTF.note = If the COMPACT_RTF tag is set to YES Doxygen generates more c
 RTF_HYPERLINKS.text = RTF Hyperlinks
 RTF_HYPERLINKS.group = RTF Output
 RTF_HYPERLINKS.type = boolean
-RTF_HYPERLINKS.note = If the RTF_HYPERLINKS tag is set to YES, the RTF that is generated will contain hyperlink fields. The RTF file will contain links (just like the HTML output) instead of page references. This makes the output suitable for online browsing using WORD or other programs which support those fields. Note: wordpad (write) and others do not support links.
+RTF_HYPERLINKS.note = <p>If the RTF_HYPERLINKS tag is set to YES, the RTF that is generated will contain hyperlink fields. The RTF file will contain links (just like the HTML output) instead of page references. This makes the output suitable for online browsing using WORD or other programs which support those fields.</p><p>Note: wordpad (write) and others do not support links.</p>
 
 RTF_STYLESHEET_FILE.text = RTF Stylesheet File
 RTF_STYLESHEET_FILE.group = RTF Output
@@ -797,7 +797,7 @@ HIDE_UNDOC_RELATIONS.note = If set to YES, the inheritance and collaboration gra
 HAVE_DOT.text = Have DOT
 HAVE_DOT.group = dot Tool
 HAVE_DOT.type = boolean
-HAVE_DOT.note = If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is available from the path. This tool is part of Graphviz, a graph visualization toolkit from AT&T and Lucent Bell Labs. The other options in this section have no effect if this option is set to NO (the default)
+HAVE_DOT.note = If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is available from the path. This tool is part of Graphviz, a graph visualization toolkit from AT&amp;T and Lucent Bell Labs. The other options in this section have no effect if this option is set to NO (the default)
 
 CLASS_GRAPH.text = Class Graph
 CLASS_GRAPH.group = dot Tool
