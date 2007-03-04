@@ -21,14 +21,13 @@
 
 package eclox.ui.editor.advanced;
 
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.resource.FontRegistry;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -36,6 +35,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -54,6 +55,11 @@ import eclox.ui.editor.advanced.editors.IEditor;
  */
 public class DetailsPage implements IDetailsPage {
     
+	/**
+	 * Symbolic name for emphasis font.
+	 */
+	private static final String EMPHASIS = "em";
+	
     /**
      * The static setting editor class register.
      */
@@ -89,7 +95,51 @@ public class DetailsPage implements IDetailsPage {
      */
     private FormText noteLabel;
     
+    /**
+     * the font registry used for note text formatting.
+     */
     private FontRegistry fontRegistry;
+    
+    /**
+     * Defines the listeners that will managed activation of hyper-links in the
+     * setting's note.
+     */
+    private class MyHyperlinkListener implements IHyperlinkListener {
+
+    	private DetailsPage owner;
+    	
+    	/**
+    	 * Constructor
+    	 * 
+    	 * @param owner	the owner of the instance
+    	 */
+    	MyHyperlinkListener( DetailsPage owner ) {
+    		this.owner = owner;
+    	}
+    	
+		/**
+		 * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)
+		 */
+		public void linkActivated(HyperlinkEvent e) {
+			Doxyfile	doxyfile	= (Doxyfile) managedForm.getInput();
+			Setting		setting		= doxyfile.getSetting( e.getHref().toString() ); 
+			
+			if( setting != null ) {
+				managedForm.fireSelectionChanged( owner, new StructuredSelection(setting)  );
+			}
+		}
+
+		/**
+		 * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkEntered(org.eclipse.ui.forms.events.HyperlinkEvent)
+		 */
+		public void linkEntered(HyperlinkEvent e) {}
+
+		/**
+		 * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkExited(org.eclipse.ui.forms.events.HyperlinkEvent)
+		 */
+		public void linkExited(HyperlinkEvent e) {}
+    	
+    }
 
     /**
      * @see org.eclipse.ui.forms.IDetailsPage#createContents(org.eclipse.swt.widgets.Composite)
@@ -123,7 +173,8 @@ public class DetailsPage implements IDetailsPage {
         // Creates controls displaying the setting note.
         this.noteLabel = this.managedForm.getToolkit().createFormText( sectionContent, false );
         this.noteLabel.setLayoutData( new GridData(GridData.FILL_HORIZONTAL) );
-        this.noteLabel.setFont( "em", fontRegistry.getItalic("") );
+        this.noteLabel.setFont( EMPHASIS, fontRegistry.getItalic("") );
+        this.noteLabel.addHyperlinkListener( new MyHyperlinkListener(this) );
         
     }
     
@@ -131,9 +182,9 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#commit(boolean)
      */
     public void commit(boolean onSave) {
-	    	if( editor != null ) {
-	    		editor.commit();
-	    	}
+	    if( editor != null ) {
+	    	editor.commit();
+	    }
     }
     
     /**
@@ -152,7 +203,7 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#isDirty()
      */
     public boolean isDirty() {
-    		return editor != null ? editor.isDirty() : false;
+    	return editor != null ? editor.isDirty() : false;
     }
     
     /**
@@ -171,8 +222,8 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#setFocus()
      */
     public void setFocus() {
-    		// Pre-condition
-    		assert this.editor != null;
+    	// Pre-condition
+    	assert this.editor != null;
     		
         this.editor.setFocus();
 	}
@@ -188,20 +239,20 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IFormPart part, ISelection selection) {
+    	// Pre-condition
+    	assert (selection instanceof IStructuredSelection);
+    	
 		// Retreieves the node that is provided by the selection.
-		Setting setting = null;
-		if(selection instanceof IStructuredSelection) {
-		    IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-		    Object object = structuredSelection.getFirstElement();
-		    if(object instanceof Setting) {
-		        setting = (Setting) object;
-		    } 
-		}
-        
-        // Updates the form controls.
-        this.selectNote(setting);
-        this.selectEditor(setting);
-        this.sectionContent.layout( true, true );
+    	if( part != this ) {
+	    	IStructuredSelection	stSelection	= (IStructuredSelection) selection;
+	        Object					object		= stSelection.getFirstElement();
+		    Setting					setting		= (object instanceof Setting) ? (Setting) object : null;
+	        
+	        // Updates the form controls.
+	        this.selectNote(setting);
+	        this.selectEditor(setting);
+	        this.sectionContent.layout( true, true );
+    	}
     }
     
     /**
@@ -209,7 +260,7 @@ public class DetailsPage implements IDetailsPage {
      */
     private void disposeEditor() {
         if(editor != null) {
-        		editor.dispose();
+        	editor.dispose();
             editor = null;
         }
     }
@@ -220,8 +271,7 @@ public class DetailsPage implements IDetailsPage {
      * @param	input	the setting that is the new input
      */
     private void selectEditor(Setting input) {
-        try
-        {
+        try {
 	        // Retrieves the editor class for the input.
 	        Class editorClass = editorClassRegister.find(input);
 	        
@@ -263,23 +313,32 @@ public class DetailsPage implements IDetailsPage {
         	Doxyfile	doxyfile = setting.getOwner();
         	
         	text = text.startsWith("<p>") ? text : "<p>"+text+"</p>";
-        	Matcher			matcher = Pattern.compile("([A-Z_]{2,})").matcher(text);
+        	Matcher			matcher = Pattern.compile("([A-Z_]{2,}|Note:|@[a-z]+)").matcher(text);
         	StringBuffer	buffer = new StringBuffer();
         	while( matcher.find() ) {
         		String	match = matcher.group(1);
         		
         		if( match.equals("YES") || match.equals("NO") ) {
-        			matcher.appendReplacement( buffer, "<span font=\"em\">"+match+"</span>");
+        			matcher.appendReplacement( buffer, "<span font=\""+EMPHASIS+"\">"+match+"</span>");
+        		}
+        		else if( match.equals("Note:") ) {
+        			matcher.appendReplacement( buffer, "<b>"+match+"</b>");
+        		}
+        		else if( match.startsWith("@") ) {
+        			matcher.appendReplacement( buffer, "<span font=\""+EMPHASIS+"\">"+match+"</span>");
         		}
         		else {
         			Setting	matchSetting	= doxyfile.getSetting(match);
-        			String	settingText			= matchSetting.getProperty(Setting.TEXT);
         			
-        			if( matchSetting == setting ) {
-        				matcher.appendReplacement( buffer, "<b>"+settingText+"</b>");
-        			}
-        			else {
-        				matcher.appendReplacement( buffer, "<a>"+settingText+"</a>");
+        			if( matchSetting != null ) {
+	        			String	settingText		= matchSetting.getProperty(Setting.TEXT);
+	        			
+	        			if( matchSetting == setting ) {
+	        				matcher.appendReplacement( buffer, "<span font=\""+EMPHASIS+"\">"+settingText+"</span>");
+	        			}
+	        			else {
+	        				matcher.appendReplacement( buffer, "<a href=\""+matchSetting.getIdentifier()+"\">"+settingText+"</a>");
+	        			}
         			}
         		}
         	}
