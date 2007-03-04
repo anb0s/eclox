@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -51,6 +52,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.IPartSelectionListener;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -70,7 +72,7 @@ import eclox.ui.editor.advanced.filters.Modified;
  * 
  * @author gbrocker
  */
-public class MasterPart extends SectionPart {
+public class MasterPart extends SectionPart implements IPartSelectionListener {
 
 	/**
 	 * the text column index
@@ -140,25 +142,10 @@ public class MasterPart extends SectionPart {
     private class MyDoubleClickListener implements IDoubleClickListener {
         
         /**
-         * brief    the managed form to use for the detail part activation
-         */
-        IManagedForm managedForm;
-        
-        /**
-         * Constructor
-         * 
-         * @param   managedForm the managed form to use for the detail part activation    
-         */
-        MyDoubleClickListener( IManagedForm managedForm ) {
-            this.managedForm = managedForm;
-        }
-
-        /**
          * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
          */
         public void doubleClick(DoubleClickEvent event) {
-            // Pre-condition
-            assert managedForm != null;
+        	IManagedForm	managedForm = getManagedForm();
             
             // Searchs for the details part in the managed form and set the focus on it.
             IFormPart   parts[] = managedForm.getParts();
@@ -250,7 +237,7 @@ public class MasterPart extends SectionPart {
 		}
 
     }
-
+	
     /**
      * Implements a tree viewer selection listener that forwards selection changes to 
      * a managed form.
@@ -352,13 +339,23 @@ public class MasterPart extends SectionPart {
         
         // Installs several listeners.
         tableViewer.addSelectionChangedListener( new MySelectionForwarder(this, form) );
-        tableViewer.addDoubleClickListener( new MyDoubleClickListener(form) );
+        tableViewer.addDoubleClickListener( new MyDoubleClickListener() );
         
         // Default job done by super class.
         super.initialize(form);
     }
 
-    /**
+	/**
+	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
+	 */
+	public void selectionChanged(IFormPart part, ISelection selection) {
+		if( part != this ) {
+			activateFilter( defaultFilter );
+			tableViewer.setSelection( selection, true );
+		}			
+	}
+
+	/**
      * @see org.eclipse.ui.forms.AbstractFormPart#setFormInput(java.lang.Object)
      */
     public boolean setFormInput( Object input ) {
@@ -379,7 +376,7 @@ public class MasterPart extends SectionPart {
         
         return super.setFormInput( input );        
     }
-
+    
     /**
      * Creates all buttons for setting filters.
      * 
