@@ -313,7 +313,7 @@ public class DetailsPage implements IDetailsPage {
         	Doxyfile	doxyfile = setting.getOwner();
         	
         	text = text.startsWith("<p>") ? text : "<p>"+text+"</p>";
-        	Matcher			matcher = Pattern.compile("([A-Z_]{2,}|Note:|@[a-z]+)").matcher(text);
+        	Matcher			matcher = Pattern.compile("([A-Z_]{2,}|Warning:|Note:|@[a-z]+)").matcher(text);
         	StringBuffer	buffer = new StringBuffer();
         	while( matcher.find() ) {
         		String	match = matcher.group(1);
@@ -321,7 +321,7 @@ public class DetailsPage implements IDetailsPage {
         		if( match.equals("YES") || match.equals("NO") ) {
         			matcher.appendReplacement( buffer, "<span font=\""+EMPHASIS+"\">"+match+"</span>");
         		}
-        		else if( match.equals("Note:") ) {
+        		else if( match.equals("Note:") || match.equals("Warning:") ) {
         			matcher.appendReplacement( buffer, "<b>"+match+"</b>");
         		}
         		else if( match.startsWith("@") ) {
