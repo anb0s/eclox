@@ -92,22 +92,25 @@ public abstract class Doxygen {
 			command[1] = "--help";
 			
 			// Runs the command and retrieves the version string.
-			Process				doxygen = Runtime.getRuntime().exec( command );
-			InputStreamReader	reader = new InputStreamReader( doxygen.getInputStream() );
-			char[]				buffer = new char[512];
-			int					count;
-			
-			count = reader.read( buffer );
+			Process				doxygen	= Runtime.getRuntime().exec( command );
+			BufferedReader		input	= new BufferedReader( new InputStreamReader(doxygen.getInputStream()) );
+			BufferedReader		error	= new BufferedReader( new InputStreamReader(doxygen.getErrorStream()) );
 			
 			// Matches the doxygen welcome message.
 			Pattern	pattern	= Pattern.compile( "^doxygen\\s+version\\s+([\\d\\.]+).*", Pattern.CASE_INSENSITIVE|Pattern.DOTALL );
-			Matcher	matcher	= pattern.matcher( new String(buffer, 0, count) );
+			Matcher	matcher	= pattern.matcher( input.readLine() );
 			
 			if( matcher.matches() ) {
 				return matcher.group( 1 ); 
 			}
 			else {
-				throw new RuntimeException( "The given path does not point to doxygen." );
+				String	errorMessage = new String();
+				String	line;
+				while( (line = error.readLine()) != null ) {
+					errorMessage = errorMessage.concat(line);
+				}
+				
+				throw new RuntimeException( "Unable to get doxygen version. " + errorMessage );
 			}
 		}
 		catch( Throwable t ) {
