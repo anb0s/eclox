@@ -23,6 +23,8 @@ package eclox.ui.editor.basic;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -75,17 +77,26 @@ public class Page extends FormPage {
 		Section	diagramsSection	= toolkit.createSection( parent, Section.TITLE_BAR );
 		
 		projectSection.setText("Project");
+		projectSection.setLayoutData( new GridData(GridData.FILL_BOTH) );
 		modeSection.setText("Mode");
+		modeSection.setLayoutData( new GridData(GridData.FILL_BOTH) );
 		outputSection.setText("Output");
+		outputSection.setLayoutData( new GridData(GridData.FILL_BOTH) );
 		diagramsSection.setText("Diagrams");
+		diagramsSection.setLayoutData( new GridData(GridData.FILL_BOTH) );
 		
 		Composite	projectContent	 = toolkit.createComposite(projectSection);
 		
 		projectSection.setClient(projectContent);
 		toolkit.createLabel(projectContent, "Provide some documentation about the project you are documenting.", SWT.WRAP);
-		projectContent.setLayout( new FillLayout() );
+		projectContent.setLayout( new FillLayout(SWT.VERTICAL) );
 		
-		parent.setLayout( new FillLayout(SWT.VERTICAL) );
+		GridLayout	layout = new GridLayout(2, true);
+		parent.setLayout(layout);
+		layout.horizontalSpacing = 10;
+		layout.verticalSpacing = 10;
+		layout.marginWidth = 10;
+		layout.marginHeight = 10;
 		
 		super.createFormContent(managedForm);
 	}
