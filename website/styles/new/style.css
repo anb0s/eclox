@@ -89,6 +89,18 @@ kbd
 	font-weight: normal;
 }
 
+#title h1 a
+{
+	text-decoration: none;
+	color: rgb(255,255,255);
+}
+
+#title h1 a:hover
+{
+	text-decoration: underline;
+}
+
+
 #contents
 {
 	margin: 0;
@@ -159,17 +171,34 @@ kbd
 }
 
 
-/** get-eclox announce**/
-#get-eclox
+#get-eclox /** get-eclox announce**/
 {
 	background-image: url(package.png);
 }
 
 
-/** postcard announce **/
-#postcard
+#poll /** poll announce**/
+{
+	background-image: url(idea.png);
+}
+
+
+#postcard /** postcard announce **/
 {
 	background-image: url(mail.png);
+}
+
+
+/** Poll frames **/
+iframe.poll
+{
+	border: 1px;
+	border-style: solid;
+	border-color: rgb(200,200,210);
+	padding: 2px;
+	width: 100%;
+	height: 13.5em;
+	overflow: hidden;
 }
 
 
