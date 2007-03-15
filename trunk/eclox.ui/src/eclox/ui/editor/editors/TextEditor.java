@@ -17,7 +17,7 @@
 // along with eclox; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.advanced.editors;
+package eclox.ui.editor.editors;
 
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,7 +35,7 @@ import eclox.core.doxyfiles.Setting;
  * 
  * @author gbrocker
  */
-public class TextEditor implements IEditor {
+public class TextEditor extends SettingEditor {
     
 	/**
 	 * Defines a modify listener class.
@@ -50,18 +50,13 @@ public class TextEditor implements IEditor {
 		public void modifyText(ModifyEvent e) {
 			if(sleeping == false) {
 				hasChanged = true;
-				input.setValue( text.getText() );
+				getInput().setValue( text.getText() );
 			}
 		}
 		
 	};
 	
     /**
-     * The current editor input
-     */
-	protected Setting input;
-	
-	/**
      * The text widget.
      */
     protected Text text;
@@ -78,23 +73,23 @@ public class TextEditor implements IEditor {
     
     
     public void commit() {
-		input.setValue( text.getText() );
+		getInput().setValue( text.getText() );
 		hasChanged = false;
 	}
     
     public void createContent( Composite parent, FormToolkit formToolkit ) {
-    		// Activates border painting.
-    		formToolkit.paintBordersFor( parent );
+    	// Activates border painting.
+    	formToolkit.paintBordersFor( parent );
 
-    		// Prepere the parent's layout.
-    		FormLayout	layout = new FormLayout();
-    		layout.marginWidth = 1;
-    		layout.marginHeight = 3;
-    		layout.spacing = 5;
-    		parent.setLayout( layout );
+    	// Prepere the parent's layout.
+    	FormLayout	layout = new FormLayout();
+    	layout.marginWidth = 1;
+    	layout.marginHeight = 3;
+    	layout.spacing = 5;
+    	parent.setLayout( layout );
     		
         // Creates the text widget.
-    		FormData		formData = new FormData();
+    	FormData		formData = new FormData();
         text = formToolkit.createText(parent, new String());
         formData.top = new FormAttachment( 0, 0 );
         formData.right = new FormAttachment( 100, 0 );
@@ -121,7 +116,8 @@ public class TextEditor implements IEditor {
     }
 
 	public void setInput(Setting input) {
-		this.input = input;
+		super.setInput(input);
+		
 		textModifyListener.sleeping = true;
 		text.setText(input.getValue());
 		textModifyListener.sleeping = false;

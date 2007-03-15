@@ -1,5 +1,5 @@
 // eclox : Doxygen plugin for Eclipse.
-// Copyright (C) 2003-2005 Guillaume Brocker
+// Copyright (C) 2003-2007 Guillaume Brocker
 //
 // This file is part of eclox.
 //
@@ -17,7 +17,7 @@
 // along with eclox; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.advanced.editors;
+package eclox.ui.editor.editors;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -25,7 +25,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import eclox.core.doxyfiles.Setting;
 
 /**
- * Defines the interface for settings editors.
+ * Defines the interface of doxyfile editors.
  * 
  * @author gbrocker
  */
@@ -61,7 +61,7 @@ public interface IEditor {
 	 */
 	void setFocus();
 	   
-		/**
+	/**
 	 * Sets the editor input
 	 * 
 	 * @param	input	a setting that is the new editor input

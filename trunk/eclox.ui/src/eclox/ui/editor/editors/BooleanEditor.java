@@ -17,7 +17,7 @@
 //along with eclox; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.advanced.editors;
+package eclox.ui.editor.editors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -34,7 +34,7 @@ import eclox.core.doxyfiles.Setting;
  * 
  * @author gbrocker
  */
-public class BooleanEditor implements IEditor {
+public class BooleanEditor extends SettingEditor {
 	
 	/**
      * @brief   the yes button
@@ -55,11 +55,6 @@ public class BooleanEditor implements IEditor {
      * @brief   a boolean telling if the editor is dirty or not
      */
     private boolean isDirty = false;
-    
-    /**
-     * @brief   the setting being the editor's input
-     */
-    private Setting input;
     
     /**
      * @brief   Implements a selection listener that will be attached to each button.
@@ -90,16 +85,15 @@ public class BooleanEditor implements IEditor {
         assert yesButton != null;
         assert noButton != null;
         assert defaultButton != null;
-        assert input != null;
         
         if( yesButton.getSelection() == true ) {
-            input.setValue( "YES" );
+            getInput().setValue( "YES" );
         }
         else if( noButton.getSelection() == true ) {
-            input.setValue( "NO" );            
+        	getInput().setValue( "NO" );            
         }
         else if( defaultButton.getSelection() == true ) {
-            input.setValue( "" );
+        	getInput().setValue( "" );
         }
         else {
             assert false; // What's going on ?
@@ -177,18 +171,16 @@ public class BooleanEditor implements IEditor {
         assert noButton != null;
         assert defaultButton != null;
         
+        super.setInput(input);
+        
         // Initializes local references
         this.isDirty = false;
-        this.input = input;
         
         // Initializes buttons.
         String  value = input.getValue();
         
-        yesButton.setSelection(     value.compareToIgnoreCase("YES") == 0 );
-        noButton.setSelection(      value.compareToIgnoreCase("NO") == 0 );
-        defaultButton.setSelection( value.length() == 0 );
-        
-        // Post-condition
-        assert input != null;
+        yesButton.setSelection		( value.compareToIgnoreCase("YES") == 0 );
+        noButton.setSelection		( value.compareToIgnoreCase("NO") == 0 );
+        defaultButton.setSelection	( value.length() == 0 );
     }
 }

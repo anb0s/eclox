@@ -44,8 +44,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.Setting;
 import eclox.ui.Plugin;
-import eclox.ui.editor.advanced.editors.EditorClassRegister;
-import eclox.ui.editor.advanced.editors.IEditor;
+import eclox.ui.editor.editors.IEditor;
 
 
 /**

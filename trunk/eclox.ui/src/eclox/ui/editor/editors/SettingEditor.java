@@ -1,5 +1,5 @@
 // eclox : Doxygen plugin for Eclipse.
-// Copyright (C) 2003-2006 Guillaume Brocker
+// Copyright (C) 2003-2007 Guillaume Brocker
 //
 // This file is part of eclox.
 //
@@ -17,22 +17,36 @@
 // along with eclox; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.advanced.editors;
-
-import org.eclipse.swt.widgets.Shell;
+package eclox.ui.editor.editors;
 
 import eclox.core.doxyfiles.Setting;
 
-/**
- * Implements a list editor that handle value compounds as direcoty paths.
- * 
- * @author gbrocker
- */
-public class DirectoryListEditor extends ListEditor {
+public abstract class SettingEditor implements IEditor {
 
-
-	protected String editValueCompound( Shell parent, Setting setting, String compound ) {
-		return Convenience.browserForPath( parent, setting.getOwner(), compound, Convenience.BROWSE_FILESYSTEM_DIRECTORY );
+	/**
+	 * The current input of the editor
+	 */
+	private Setting	input;
+	
+	/**
+	 * Retrieves the editor input.
+	 * 
+	 * @return	the current input of the editor
+	 */
+	public Setting getInput() {
+		return input;
+	}
+	
+	/**
+	 * Sets the editor input.
+	 * 
+	 * @param	input	the new input of the editor
+	 */
+	public void setInput(Setting input) {
+		// Pre-condition
+		assert input != null;
+		
+		this.input = input;
 	}
 
 }
