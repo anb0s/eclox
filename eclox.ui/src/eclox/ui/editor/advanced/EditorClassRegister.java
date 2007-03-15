@@ -17,12 +17,19 @@
 //along with eclox; if not, write to the Free Software
 //Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.advanced.editors;
+package eclox.ui.editor.advanced;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import eclox.core.doxyfiles.Setting;
+import eclox.ui.editor.editors.BooleanEditor;
+import eclox.ui.editor.editors.DirectoryEditor;
+import eclox.ui.editor.editors.DirectoryListEditor;
+import eclox.ui.editor.editors.FileEditor;
+import eclox.ui.editor.editors.PathListEditor;
+import eclox.ui.editor.editors.TextEditor;
+import eclox.ui.editor.editors.TextListEditor;
 
 /**
  * An instance of this class registers all setting editor classes by setting type. 
@@ -42,8 +49,8 @@ public class EditorClassRegister {
     public EditorClassRegister() {
     		register.put( "file",			FileEditor.class );
     		register.put( "directory",		DirectoryEditor.class );
-		register.put( "text",			TextEditor.class );
-    		register.put( "boolean",			BooleanEditor.class );
+    		register.put( "text",			TextEditor.class );
+    		register.put( "boolean",		BooleanEditor.class );
     		register.put( "text list",		TextListEditor.class );
     		register.put( "directory list",	DirectoryListEditor.class );
     		register.put( "path list",		PathListEditor.class );

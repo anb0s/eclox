@@ -17,7 +17,7 @@
 // along with eclox; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.advanced.editors;
+package eclox.ui.editor.editors;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +56,7 @@ import eclox.core.doxyfiles.Setting;
  * 
  * @author gbrocker
  */
-public abstract class ListEditor implements IEditor, ISettingValueListener {
+public abstract class ListEditor extends SettingEditor implements ISettingValueListener {
 	
 	/**
 	 * Implements the table viewer content provider.
@@ -65,7 +65,7 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 
 		public Object[] getElements(Object inputElement) {
 			// Pre-condition
-			assert inputElement == setting;
+			assert inputElement == getInput();
 			
 			// Allocates an array containing the indices of value compounds.
 			Integer[]	indices = new Integer[valueCompounds.size()];
@@ -157,11 +157,6 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 	}
 	
 	/**
-	 * the setting being edited
-	 */
-	private Setting		setting;
-	
-	/**
 	 * the collection of the setting's value compounds.
 	 */
 	private Vector		valueCompounds;
@@ -193,11 +188,9 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 
 	public void commit() {
 		// Pre-condition
-		assert listViewer != null;
-		assert setting != null;
 		assert valueCompounds != null;
 		
-		setting.setValue( valueCompounds );
+		getInput().setValue( valueCompounds );
 	}
 
 	public void createContent(Composite parent, FormToolkit formToolkit) {
@@ -277,16 +270,14 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 
 	public void dispose() {
 		// Pre-condition
-		assert setting		!= null;
 		assert listViewer	!= null;
-		assert addButton		!= null;
+		assert addButton	!= null;
 		assert removeButton	!= null;
 		assert upButton		!= null;
 		assert downButton	!= null;
 		
 		// Detaches us from the setting observers and unreferences the setting.
-		setting.removeSettingListener( this );
-		setting = null;
+		getInput().removeSettingListener( this );
 		
 		listViewer.getControl().dispose();
 		listViewer = null;
@@ -300,9 +291,8 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 		downButton = null;
 		
 		// Post-condition
-		assert setting		== null;
 		assert listViewer	== null;
-		assert addButton		== null;
+		assert addButton	== null;
 		assert removeButton	== null;
 		assert upButton		== null;
 		assert downButton	== null;
@@ -319,16 +309,13 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 	public void setInput(Setting input) {
 		// Pre-condition
 		assert listViewer != null;
-		assert setting == null;
+		
+		super.setInput(input);
 		
 		// References the setting and attaches us as a setting value listener.
-		setting = input;
-		setting.addSettingListener( this );
+		input.addSettingListener( this );
 		refreshValueCompounds();
 		updateButtons();
-		
-		// Post-condition
-		assert setting != null;		
 	}
 
 	public boolean isDirty() {
@@ -359,13 +346,12 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 	 */
 	private void refreshValueCompounds() {
 		// Pre-condition
-		assert setting != null;
 		assert listViewer != null;
 		
 		// Retrieves the compounds of the setting value and assignes the input to the managed viewer.
 		valueCompounds = new Vector();
-		setting.getSplittedValue( valueCompounds );
-		listViewer.setInput( setting );
+		getInput().getSplittedValue( valueCompounds );
+		listViewer.setInput( getInput() );
 		
 		// Post-condition
 		assert valueCompounds != null;
@@ -380,7 +366,7 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 		assert valueCompounds != null;
 		
 		// Edits a new value.
-		String	newCompound = editValueCompound( listViewer.getControl().getShell(), setting, "new value" );
+		String	newCompound = editValueCompound( listViewer.getControl().getShell(), getInput(), "new value" );
 		
 		// Inserts the new compound if it has been validated.
 		if( newCompound != null )
@@ -408,7 +394,7 @@ public abstract class ListEditor implements IEditor, ISettingValueListener {
 		
 		// Retrieves the value compound to edit and the edited value.
 		String	originalCompound = valueCompounds.get( index.intValue() ).toString();
-		String	editedCompound = editValueCompound( listViewer.getControl().getShell(), setting, originalCompound );
+		String	editedCompound = editValueCompound( listViewer.getControl().getShell(), getInput(), originalCompound );
 		
 		// Processes the edited compound.
 		if( editedCompound != null ) {			

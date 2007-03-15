@@ -17,7 +17,7 @@
 // along with eclox; if not, write to the Free Software
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
 
-package eclox.ui.editor.advanced.editors;
+package eclox.ui.editor.editors;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -28,7 +28,15 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-public class FileEditor extends TextEditor {
+
+/**
+ * Implements a setting editor that allows to browse for directories 
+ * either in the workspace or in the file system.
+ * 
+ * @author gbrocker
+ */
+public class DirectoryEditor extends TextEditor {
+	
 	/**
 	 * the push button for browsing the file system
 	 */
@@ -75,7 +83,7 @@ public class FileEditor extends TextEditor {
 	}
 
 	/**
-	 * @see eclox.ui.editor.advanced.editors.TextEditor#dispose()
+	 * @see eclox.ui.editor.editors.TextEditor#dispose()
 	 */
 	public void dispose() {
 		// Local cleaning.
@@ -89,14 +97,11 @@ public class FileEditor extends TextEditor {
 	 * Browses the file system for a path and updates the managed text field.
 	 */
 	private void browseFileSystem() {
-		// Pre-condition
-		assert input != null;
-
 		String	result;
-		result = Convenience.browseFileSystemForFile( text.getShell(), input.getOwner(), input.getValue() );
+		result = Convenience.browseFileSystemForDirectory( text.getShell(), getInput().getOwner(), getInput().getValue() );
 		if( result!= null ) {
 			super.text.setText( result );
 		}
 	}
-
+	
 }
