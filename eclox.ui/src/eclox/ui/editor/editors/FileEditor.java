@@ -19,11 +19,9 @@
 
 package eclox.ui.editor.editors;
 
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -64,14 +62,12 @@ public class FileEditor extends TextEditor {
 		super.createContent(parent, formToolkit);
 		
 		// Create controls and their associated layout data.
-		FormData				formData;
 		SelectionListener	selectionListener = new MySelectionListener();
+		GridLayout			layout				= (GridLayout) parent.getLayout();
+		
+		layout.numColumns = 2;
 		
 		browseFileSystemButton = formToolkit.createButton( parent, "Browse...", 0 );
-		formData = new FormData();
-		formData.top = new FormAttachment( super.text, 0, SWT.BOTTOM );
-		formData.left = new FormAttachment( 0, 0 );
-		browseFileSystemButton.setLayoutData( formData );
 		browseFileSystemButton.addSelectionListener( selectionListener );
 	}
 
