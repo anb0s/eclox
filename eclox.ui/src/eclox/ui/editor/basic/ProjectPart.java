@@ -19,28 +19,26 @@
 
 package eclox.ui.editor.basic;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.Section;
 
-public class ProjectPart extends SectionPart {
+import eclox.ui.editor.editors.DirectoryEditor;
+import eclox.ui.editor.editors.DirectoryListEditor;
+import eclox.ui.editor.editors.TextEditor;
+
+public class ProjectPart extends Part {
 
 	ProjectPart( Composite parent, FormToolkit toolkit ) {
-		super( parent, toolkit, Section.TITLE_BAR );
+		super( parent, toolkit, "Project" );
 		
-		Section		section	= getSection();
-		Composite	content	= toolkit.createComposite(section);
-		
-		section.setText("Project");
-		section.setClient(content);
-		
-		toolkit.createLabel(content, "Provide some documentation about the project you are documenting.", SWT.WRAP);
-
-		content.setLayout( new FillLayout(SWT.VERTICAL) );
-		
-				
+		addLabel("Provide some documentation about the project you are documenting.");
+		addEditor("Project Name:", new TextEditor());
+		addEditor("Project Version or Identifer:", new TextEditor());
+		addSperator();
+		addLabel("Specify the directories to scan for source coce.");
+		addEditor(new DirectoryListEditor());
+		addSperator();
+		addLabel("Specify the directory where doxygen should put the generated documentation.");
+		addEditor(new DirectoryEditor());
 	}
 }
