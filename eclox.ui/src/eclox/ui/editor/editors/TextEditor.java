@@ -82,11 +82,13 @@ public class TextEditor extends SettingEditor {
 
     	// Prepere the parent's layout.
     	GridLayout	layout = new GridLayout();
-    	layout.marginTop = 0;
-    	layout.marginLeft = 0;
-    	layout.marginBottom = 0;
-    	layout.marginRight = 0;
-    	layout.horizontalSpacing = 5;
+    	layout.marginTop			= 0;
+    	layout.marginLeft			= 0;
+    	layout.marginBottom			= 0;
+    	layout.marginRight			= 0;
+    	layout.marginHeight			= 2;
+    	layout.marginWidth			= 1;
+    	layout.horizontalSpacing	= 5;
     	parent.setLayout( layout );
     		
         // Creates the text widget.
