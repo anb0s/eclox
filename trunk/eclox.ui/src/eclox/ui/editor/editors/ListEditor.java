@@ -199,7 +199,7 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		
 		// Installs the layout.
 		FormLayout	layout = new FormLayout();
-		layout.spacing = 4;
+		layout.spacing = 2;
 		parent.setLayout( layout );
 		
 		// Creates the list viewer and installs it in the layout.
@@ -220,32 +220,32 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		
 		// Creates various buttons and installs them in the layout.
 		addButton		= formToolkit.createButton( parent, "Add",    0 );
-		removeButton		= formToolkit.createButton( parent, "Remove", 0 );
-		upButton			= formToolkit.createButton( parent, "Up",     0 );
+		removeButton	= formToolkit.createButton( parent, "Remove", 0 );
+		upButton		= formToolkit.createButton( parent, "Up",     0 );
 		downButton		= formToolkit.createButton( parent, "Down",   0 );
 		
 		formData = new FormData();
 		formData.top = new FormAttachment( 0, 0 );
 		formData.right = new FormAttachment( 100, 0 );
-		formData.left = new FormAttachment( listViewer.getControl(), 0, SWT.RIGHT );
+		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		addButton.setLayoutData( formData );
 		
 		formData = new FormData();
 		formData.top = new FormAttachment( addButton, 0, SWT.BOTTOM );
 		formData.right = new FormAttachment( 100, 0 );
-		formData.left = new FormAttachment( listViewer.getControl(), 0, SWT.RIGHT );
+		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		removeButton.setLayoutData( formData );
 		
 		formData = new FormData();
 		formData.top = new FormAttachment( removeButton, 6, SWT.BOTTOM );
 		formData.right = new FormAttachment( 100, 0 );
-		formData.left = new FormAttachment( listViewer.getControl(), 0, SWT.RIGHT );
+		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		upButton.setLayoutData( formData );
 		
 		formData = new FormData();
 		formData.top = new FormAttachment( upButton, 0, SWT.BOTTOM );
 		formData.right = new FormAttachment( 100, 0 );
-		formData.left = new FormAttachment( listViewer.getControl(), 0, SWT.RIGHT );
+		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		downButton.setLayoutData( formData );
 		
 		// Assignes a selection listener to the managed buttons.

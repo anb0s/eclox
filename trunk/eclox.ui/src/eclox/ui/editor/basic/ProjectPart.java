@@ -32,8 +32,8 @@ public class ProjectPart extends Part {
 		super( parent, toolkit, "Project" );
 		
 		addLabel("Provide some documentation about the project you are documenting.");
-		addEditor("Project Name:", new TextEditor());
-		addEditor("Project Version or Identifer:", new TextEditor());
+		addEditor("Name:", new TextEditor());
+		addEditor("Version or Identifier:", new TextEditor());
 		addSperator();
 		addLabel("Specify the directories to scan for source coce.");
 		addEditor(new DirectoryListEditor());

@@ -20,11 +20,9 @@
 package eclox.ui.editor.basic;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -40,14 +38,14 @@ public class Part extends SectionPart {
 	Composite content;
 	
 	/**
-	 * The latest control being added to the part
-	 */
-	Control latestControl;
-	
-	/**
 	 * The toolkit used for control creation 
 	 */
 	FormToolkit toolkit;
+	
+	/**
+	 * The accumulation of separation spaces
+	 */
+	int spacer = 0;
 
 	/**
 	 * Contructor
@@ -61,11 +59,18 @@ public class Part extends SectionPart {
 		
 		// Initializes the section and its client component.
 		Section		section	= getSection();
-		FormLayout	layout = new FormLayout();
+		GridLayout	layout = new GridLayout();
 		
 		toolkit = tk;
 		content	= toolkit.createComposite(section);
-		layout.spacing = 1;
+		layout.numColumns		= 2;
+		layout.marginTop		= 0;
+		layout.marginRight		= 0;
+		layout.marginBottom		= 0;
+		layout.marginLeft		= 0;
+		layout.marginHeight		= 0;
+		layout.marginWidth		= 0;
+		layout.verticalSpacing	= 2;
 		content.setLayout( layout );
 		section.setText(title);
 		section.setClient(content);
@@ -77,10 +82,13 @@ public class Part extends SectionPart {
 	 * @param	text	the text of the label
 	 */
 	protected void addLabel( String text ) {
-		Label		label = toolkit.createLabel(content, text, SWT.WRAP);
+		Label		label	= toolkit.createLabel(content, text, SWT.WRAP);
+		GridData	data	= new GridData(SWT.FILL, SWT.FILL, true, false);
 		
-		label.setLayoutData(getFillFormData());
-		latestControl = label;
+		data.horizontalSpan = 2;
+		data.verticalIndent = spacer;
+		label.setLayoutData(data);
+		spacer = 0;		
 	}
 	
 	/**
@@ -92,15 +100,15 @@ public class Part extends SectionPart {
 	protected void addEditor( String text, IEditor editor ) {
 		Label		label			= toolkit.createLabel(content, text);
 		Composite	container		= toolkit.createComposite(content);
-		FormData	labelData		= getFillFormData();
-		FormData	containerData	= getFillFormData();
+		GridData	labelData		= new GridData(SWT.FILL, SWT.CENTER, false, false); 
+		GridData	containerData	= new GridData(SWT.FILL, SWT.FILL, true, false);
 		
-		labelData.right = null;
-		containerData.left = new FormAttachment(label, 5);
+		labelData.verticalIndent = spacer;
+		containerData.verticalIndent = spacer;
 		label.setLayoutData(labelData);
 		container.setLayoutData(containerData);
 		editor.createContent(container, toolkit);
-		latestControl = container;
+		spacer = 0;
 	}
 	
 	/**
@@ -109,33 +117,21 @@ public class Part extends SectionPart {
 	 * @param	editor	an editor instance
 	 */
 	protected void addEditor( IEditor editor ) {
-		Composite	container = toolkit.createComposite(content);
+		Composite	container	= toolkit.createComposite(content);
+		GridData	data		= new GridData(SWT.FILL, SWT.FILL, true, false);
 		
+		data.verticalIndent = spacer;
+		data.horizontalSpan = 2;
 		editor.createContent(container, toolkit);
-		container.setLayoutData(getFillFormData());
-		latestControl = container;
+		container.setLayoutData(data);
+		spacer = 0;
 	}
 	
 	/**
 	 * Adds a new separator to the part
 	 */
 	protected void addSperator() {
-		Control		separator	= toolkit.createSeparator(content, 0);
-		FormData	data		= getFillFormData();
-		
-		data.height = 4;
-		separator.setLayoutData(data);
-		latestControl = separator;
+		spacer += 8;
 	}
-	
-	private FormData getFillFormData() {
-		FormData	data = new FormData();
-		
-		data.top = latestControl != null ? new FormAttachment(latestControl, 0, SWT.BOTTOM) : new FormAttachment(0, 0);
-		data.left = new FormAttachment(0, 0);
-		data.right = new FormAttachment(100, 0);
 
-		return data;
-	}
-	
 }
