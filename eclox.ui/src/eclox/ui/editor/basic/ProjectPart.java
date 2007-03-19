@@ -22,23 +22,62 @@ package eclox.ui.editor.basic;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import eclox.core.doxyfiles.Doxyfile;
 import eclox.ui.editor.editors.DirectoryEditor;
 import eclox.ui.editor.editors.DirectoryListEditor;
 import eclox.ui.editor.editors.TextEditor;
 
+/**
+ * Implements the part that will provide editior for the project settings.
+ * 
+ * @author gbrocker
+ */
 public class ProjectPart extends Part {
 
-	ProjectPart( Composite parent, FormToolkit toolkit ) {
-		super( parent, toolkit, "Project" );
+	/**
+	 * the project name setting editor
+	 */
+	private TextEditor nameEditor = new TextEditor();
+	
+	/**
+	 * the project version or identifier editor
+	 */
+	private TextEditor versionEditor = new TextEditor();
+	
+	/**
+	 * the project input editor
+	 */
+	private DirectoryListEditor inputEditor = new DirectoryListEditor();
+	
+	/**
+	 * the project output editor
+	 */
+	private DirectoryEditor outputEditor = new DirectoryEditor();
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param	parent		the parent composite of the part content
+	 * @param	toolkit		the toolkit to use for control creations
+	 * @param	doxyfile	the doxyfile being edited
+	 */
+	ProjectPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
+		super( parent, toolkit, "Project", doxyfile );
 		
 		addLabel("Provide some documentation about the project you are documenting.");
-		addEditor("Name:", new TextEditor());
-		addEditor("Version or Identifier:", new TextEditor());
+		addEditor("Name:", nameEditor);
+		addEditor("Version or Identifier:", versionEditor);
 		addSperator();
 		addLabel("Specify the directories to scan for source coce.");
-		addEditor(new DirectoryListEditor());
+		addEditor(inputEditor);
 		addSperator();
 		addLabel("Specify the directory where doxygen should put the generated documentation.");
-		addEditor(new DirectoryEditor());
+		addEditor(outputEditor);
+
+		nameEditor.setInput(doxyfile.getSetting("PROJECT_NAME"));
+		versionEditor.setInput(doxyfile.getSetting("PROJECT_NUMBER"));
+		inputEditor.setInput(doxyfile.getSetting("INPUT"));
+		outputEditor.setInput(doxyfile.getSetting("INPUT"));
 	}
+	
 }

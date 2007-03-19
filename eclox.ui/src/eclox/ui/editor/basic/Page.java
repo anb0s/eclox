@@ -26,6 +26,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import eclox.core.doxyfiles.Doxyfile;
 import eclox.ui.editor.Editor;
 
 
@@ -42,19 +43,19 @@ public class Page extends FormPage {
     public static final String ID = "basic";
     
     /**
+     * the doxyfile being edited
+     */
+    private Doxyfile doxyfile;
+    
+    /**
 	 * Constructor.
 	 */
 	public Page(Editor editor) {
 		super(editor, Page.ID, "Basic");
+		
+		doxyfile = editor.getDoxyfile();
 	}
 	
-	
-	
-	public void createPartControl(Composite parent) {
-		super.createPartControl(parent);
-	}
-
-
 
 	/**
 	 * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
@@ -65,10 +66,15 @@ public class Page extends FormPage {
 		
 		managedForm.getForm().setText(this.getTitle());
 
-		ProjectPart		projectPart		= new ProjectPart( parent, toolkit );
-		ModePart		modePart		= new ModePart( parent, toolkit );
-		OutputPart		outputPart		= new OutputPart( parent, toolkit );
-		DiagramsPart	diagramsPart	= new DiagramsPart( parent, toolkit );
+		ProjectPart		projectPart		= new ProjectPart( parent, toolkit, doxyfile );
+		ModePart		modePart		= new ModePart( parent, toolkit, doxyfile );
+		OutputPart		outputPart		= new OutputPart( parent, toolkit, doxyfile );
+		DiagramsPart	diagramsPart	= new DiagramsPart( parent, toolkit, doxyfile );
+		
+		managedForm.addPart(projectPart);
+		managedForm.addPart(modePart);
+		managedForm.addPart(outputPart);
+		managedForm.addPart(diagramsPart);
 		
 		projectPart.getSection().setLayoutData( new GridData(GridData.FILL_BOTH) );
 		modePart.getSection().setLayoutData( new GridData(GridData.FILL_BOTH) );
