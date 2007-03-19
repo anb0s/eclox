@@ -20,6 +20,7 @@
 package eclox.ui.editor.editors;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -63,15 +64,9 @@ public abstract class ListEditor extends SettingEditor {
 	private class MyContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(Object inputElement) {
-			// Pre-condition
-			assert inputElement == getInput();
+			Vector	compounds = (Vector) inputElement;
 			
-			// Allocates an array containing the indices of value compounds.
-			Integer[]	indices = new Integer[valueCompounds.size()];
-			for( int i = 0; i < indices.length; ++i ) {
-				indices[i] = new Integer(i);
-			}
-			return indices;
+			return compounds.toArray();
 		}
 
 		public void dispose() {}
@@ -86,15 +81,7 @@ public abstract class ListEditor extends SettingEditor {
 	private class MyLabelProvider extends LabelProvider {
 		
 		public String getText(Object element) {
-			// Pre-condition
-			assert element instanceof Integer;
-			assert valueCompounds != null;
-			
-			// Retrieves the value comound index.
-			Integer	index = (Integer) element;
-			
-			// Retrieves the value text.
-			return (String) valueCompounds.get( index.intValue() );
+			return new String( (String)element );
 		}
 		
 	}
@@ -158,33 +145,33 @@ public abstract class ListEditor extends SettingEditor {
 	/**
 	 * the collection of the setting's value compounds.
 	 */
-	private Vector		valueCompounds;
+	private Vector valueCompounds;
 	
 	/**
 	 * the table viewer used to edit the managed setting
 	 */
-	private ListViewer	listViewer;
+	private ListViewer listViewer;
 	
 	/**
 	 * the button allowing to trigger a new value addition
 	 */
-	private Button		addButton;
+	private Button addButton;
 	
 	/**
 	 * the button allowing to trigger the deletion of selected values 
 	 */
-	private Button		removeButton;
+	private Button removeButton;
 	
 	/**
 	 * the button allowing to move the selected values up
 	 */
-	private Button		upButton;
+	private Button upButton;
 	
 	/**
 	 * the button allowing to move the selected values down
 	 */
-	private Button		downButton;
-
+	private Button downButton;
+	
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#commit()
 	 */
@@ -307,25 +294,37 @@ public abstract class ListEditor extends SettingEditor {
 		listViewer.getControl().setFocus();
 
 	}
-
-	public void setInput(Setting input) {
+	
+	public void refresh() {
 		// Pre-condition
 		assert listViewer != null;
 		
-		super.setInput(input);
-		
 		valueCompounds = new Vector();
-		input.getSplittedValue( valueCompounds );
-		listViewer.setInput(input);
-			
+		getInput().getSplittedValue( valueCompounds );
+		listViewer.setInput(valueCompounds);
+		
 		updateButtons();
 		
 		// Post-condition
 		assert valueCompounds != null;
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#isDirty()
+	 */
 	public boolean isDirty() {
 		return false;
+	}
+	
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#isStale()
+	 */
+	public boolean isStale() {
+		Collection	values = new Vector();
+		
+		getInput().getSplittedValue(values);
+		
+		return valueCompounds.equals(values) == false;
 	}
 	
 	/**

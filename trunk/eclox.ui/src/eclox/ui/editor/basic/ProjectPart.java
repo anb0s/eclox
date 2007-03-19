@@ -77,7 +77,7 @@ public class ProjectPart extends Part {
 		nameEditor.setInput(doxyfile.getSetting("PROJECT_NAME"));
 		versionEditor.setInput(doxyfile.getSetting("PROJECT_NUMBER"));
 		inputEditor.setInput(doxyfile.getSetting("INPUT"));
-		outputEditor.setInput(doxyfile.getSetting("INPUT"));
+		outputEditor.setInput(doxyfile.getSetting("OUTPUT_DIRECTORY"));
 	}
 	
 }

@@ -27,14 +27,22 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import eclox.core.doxyfiles.Setting;
-
 /**
  * Implements an setting editor for boolean values
  * 
  * @author gbrocker
  */
 public class BooleanEditor extends SettingEditor {
+	
+	/**
+	 * the yes selection value
+	 */
+	private static String YES = "YES";
+	
+	/**
+	 * the yes selection value
+	 */
+	private static String NO = "NO";
 	
 	/**
      * @brief   the yes button
@@ -81,23 +89,7 @@ public class BooleanEditor extends SettingEditor {
     
 	
     public void commit() {
-        // Pre-condition
-        assert yesButton != null;
-        assert noButton != null;
-        assert defaultButton != null;
-        
-        if( yesButton.getSelection() == true ) {
-            getInput().setValue( "YES" );
-        }
-        else if( noButton.getSelection() == true ) {
-        	getInput().setValue( "NO" );            
-        }
-        else if( defaultButton.getSelection() == true ) {
-        	getInput().setValue( "" );
-        }
-        else {
-            assert false; // What's going on ?
-        }        
+    	getInput().setValue(getSelection());
         isDirty = false;
 	}
 
@@ -119,10 +111,16 @@ public class BooleanEditor extends SettingEditor {
 		defaultButton.addSelectionListener( new MySelectionListener() );
     }
     
+    /**
+     * @see eclox.ui.editor.editors.IEditor#fillVertically()
+     */
     public boolean fillVertically() {
 		return false;
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#dispose()
+	 */
 	public void dispose() {
 		// Pre-condition
 		assert yesButton != null;
@@ -139,10 +137,41 @@ public class BooleanEditor extends SettingEditor {
 		defaultButton = null;
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#isDirty()
+	 */
 	public boolean isDirty() {
 		return isDirty;
 	}
+	
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#isStale()
+	 */
+	public boolean isStale() {
+		return getSelection().equalsIgnoreCase(getInput().getValue()) == false;
+	}
+	
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#refresh()
+	 */
+	public void refresh() {
+        // Pre-condition
+        assert yesButton != null;
+        assert noButton != null;
+        assert defaultButton != null;
+        
+        this.isDirty = false;
+        
+        String  value = getInput().getValue();
+        
+        yesButton.setSelection		( value.compareToIgnoreCase(YES) == 0 );
+        noButton.setSelection		( value.compareToIgnoreCase(NO) == 0 );
+        defaultButton.setSelection	( value.length() == 0 );
+	}
     
+    /**
+     * @see eclox.ui.editor.editors.IEditor#setFocus()
+     */
     public void setFocus() {
         // Pre-condition
         assert yesButton != null;
@@ -165,22 +194,29 @@ public class BooleanEditor extends SettingEditor {
         selectedButton.setFocus();
     }
 
-	public void setInput(Setting input) {
+	/**
+	 * Retrieves the selected value from the ui controls
+	 * 
+	 * @return	a string containing the selected value
+	 */
+	private String getSelection() {
         // Pre-condition
         assert yesButton != null;
         assert noButton != null;
         assert defaultButton != null;
         
-        super.setInput(input);
-        
-        // Initializes local references
-        this.isDirty = false;
-        
-        // Initializes buttons.
-        String  value = input.getValue();
-        
-        yesButton.setSelection		( value.compareToIgnoreCase("YES") == 0 );
-        noButton.setSelection		( value.compareToIgnoreCase("NO") == 0 );
-        defaultButton.setSelection	( value.length() == 0 );
-    }
+        if( yesButton.getSelection() == true ) {
+            return new String(YES);
+        }
+        else if( noButton.getSelection() == true ) {
+        	return new String(NO);            
+        }
+        else if( defaultButton.getSelection() == true ) {
+        	return new String();
+        }
+        else {
+            assert false; // What's going on ?
+            return new String();
+        }
+	}
 }
