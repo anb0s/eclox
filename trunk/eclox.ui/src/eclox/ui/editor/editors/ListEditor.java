@@ -47,7 +47,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import eclox.core.doxyfiles.ISettingValueListener;
 import eclox.core.doxyfiles.Setting;
 
 /**
@@ -56,7 +55,7 @@ import eclox.core.doxyfiles.Setting;
  * 
  * @author gbrocker
  */
-public abstract class ListEditor extends SettingEditor implements ISettingValueListener {
+public abstract class ListEditor extends SettingEditor {
 	
 	/**
 	 * Implements the table viewer content provider.
@@ -186,6 +185,9 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 	 */
 	private Button		downButton;
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#commit()
+	 */
 	public void commit() {
 		// Pre-condition
 		assert valueCompounds != null;
@@ -193,6 +195,9 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		getInput().setValue( valueCompounds );
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+	 */
 	public void createContent(Composite parent, FormToolkit formToolkit) {
 		// Pre-condition
 		assert listViewer == null;
@@ -276,9 +281,6 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		assert upButton		!= null;
 		assert downButton	!= null;
 		
-		// Detaches us from the setting observers and unreferences the setting.
-		getInput().removeSettingListener( this );
-		
 		listViewer.getControl().dispose();
 		listViewer = null;
 		addButton.dispose();
@@ -312,18 +314,18 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		
 		super.setInput(input);
 		
-		// References the setting and attaches us as a setting value listener.
-		input.addSettingListener( this );
-		refreshValueCompounds();
+		valueCompounds = new Vector();
+		input.getSplittedValue( valueCompounds );
+		listViewer.setInput(input);
+			
 		updateButtons();
+		
+		// Post-condition
+		assert valueCompounds != null;
 	}
 
 	public boolean isDirty() {
 		return false;
-	}
-	
-	public void settingValueChanged(Setting setting) {
-		refreshValueCompounds();
 	}
 	
 	/**
@@ -342,22 +344,6 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 	abstract protected String editValueCompound( Shell parent, Setting setting, String compound );
 	
 	/**
-	 * Refreshes the value compounds and the associated viewer.
-	 */
-	private void refreshValueCompounds() {
-		// Pre-condition
-		assert listViewer != null;
-		
-		// Retrieves the compounds of the setting value and assignes the input to the managed viewer.
-		valueCompounds = new Vector();
-		getInput().getSplittedValue( valueCompounds );
-		listViewer.setInput( getInput() );
-		
-		// Post-condition
-		assert valueCompounds != null;
-	}
-	
-	/**
 	 * Adds a new value compound.
 	 */
 	private void addValueCompound() {
@@ -373,6 +359,7 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		{
 			valueCompounds.add( newCompound );
 			commit();
+			listViewer.refresh();
 			listViewer.setSelection( new StructuredSelection(new Integer(valueCompounds.size() -1)) );
 		}
 	}
@@ -405,6 +392,7 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 			// Commit changes and erstores the selection.
 			listViewer.getControl().setRedraw( false );
 			commit();
+			listViewer.refresh();
 			listViewer.setSelection( selection );
 			listViewer.getControl().setRedraw( true );
 			
@@ -448,6 +436,7 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		// Commits changes and reselected moved objects.
 		listViewer.getControl().setRedraw( false );
 		commit();
+		listViewer.refresh();
 		listViewer.setSelection( new StructuredSelection(selectedItems) );
 		listViewer.getControl().setRedraw( true );
 	}
@@ -485,6 +474,7 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		// Commits changes and reselected moved objects.
 		listViewer.getControl().setRedraw( false );
 		commit();
+		listViewer.refresh();
 		listViewer.setSelection( new StructuredSelection(selectedItems) );
 		listViewer.getControl().setRedraw( true );
 	}
@@ -517,6 +507,7 @@ public abstract class ListEditor extends SettingEditor implements ISettingValueL
 		
 		// Commits changes.
 		commit();
+		listViewer.refresh();
 		
 		// Updates the selection of the list viewer with the
 		List	newSelectedItems = new ArrayList();
