@@ -84,6 +84,11 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	 */
 	private final static int VALUE_COLUMN = 1;
 	
+	/**
+	 * the doxyfile being edited
+	 */
+	private Doxyfile doxyfile;
+	
     /**
      * the active filter
      */
@@ -301,11 +306,14 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
     /**
      * Constructor
      * 
-     * @param   parent  a composite that is the parent of all part controls
-     * @param   toolkit a toolkit used to create the part controls.
+     * @param   parent		a composite that is the parent of all part controls
+     * @param   toolkit		a toolkit used to create the part controls.
+     * @param	doxyfile	a doxyfile to edit
      */
-    public MasterPart( Composite parent, FormToolkit toolkit ) {
+    public MasterPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
         super( parent, toolkit, Section.TITLE_BAR|Section.COMPACT );
+        
+        this.doxyfile = doxyfile;
         
         // Initializes the managed section.
         Section section = getSection();
@@ -328,6 +336,9 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         addFilter( toolkit, new ByGroup() );
         addFilter( toolkit, new Custom() );
         addFilter( toolkit, new Modified() );
+        
+        // Activates the default filter.
+        activateFilter( defaultFilter );
     }
     
     /**
@@ -355,28 +366,6 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		}			
 	}
 
-	/**
-     * @see org.eclipse.ui.forms.AbstractFormPart#setFormInput(java.lang.Object)
-     */
-    public boolean setFormInput( Object input ) {
-        // Pre-condition
-        assert tableViewer != null;
-        
-        // Assignes the form input to the manager list viewer.
-        tableViewer.setInput( input );
-        
-        // Updates the column widths.
-        Table		table = tableViewer.getTable();
-        TableColumn	columns[] = table.getColumns();
-        columns[ TEXT_COLUMN ].pack();
-        columns[ VALUE_COLUMN ].pack();
-
-        // Activates the default filter.
-        activateFilter( defaultFilter );
-        
-        return super.setFormInput( input );        
-    }
-    
     /**
      * Creates all buttons for setting filters.
      * 
@@ -409,9 +398,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
     }
     
     /**
-     * Creates controls subordinated to the filter buttons
-     * 
-     * 
+     * Creates controls subordinated to the filter buttons.
      */
     private void createSubControls( FormToolkit toolkit, Composite parent ) {
         // Pre-condition
@@ -465,6 +452,13 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         tableViewer = new TableViewer( table );
         tableViewer.setContentProvider( new MyContentProvider() );
         tableViewer.setLabelProvider( new MyLabelProvider() );
+        tableViewer.setInput( doxyfile );
+        
+        // Updates the column widths.
+        TableColumn	columns[] = table.getColumns();
+        columns[ TEXT_COLUMN ].pack();
+        columns[ VALUE_COLUMN ].pack();
+
         
         // Post-condition
         assert filterControls != null;
@@ -516,7 +510,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	        
 	        // Activates the new filter.
 	        activeFilter = filter;
-	        activeFilter.setDoxyfile( (Doxyfile) getManagedForm().getInput() );
+	        activeFilter.setDoxyfile( doxyfile );
 	        activeFilter.createControls( getManagedForm(), filterControls );
 	        activeFilter.createViewerFilters( tableViewer );
 	        
