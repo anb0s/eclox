@@ -57,6 +57,26 @@ public interface IEditor {
 	void dispose();
 	
 	/**
+	 * Tells if the editor is dirty.
+	 * 
+	 * @return	true or false
+	 */
+	public boolean isDirty();
+	
+	/**
+	 * Tells if the editor is stale, after the underlying setting has changed.
+	 * 
+	 * @return	true or false
+	 */
+	public boolean isStale();
+	
+	/**
+	 * Refreshes the editor if is stale. The editor is expected to updates
+	 * its state using the data of the underlying model.
+	 */
+	public void refresh();
+    
+	/**
 	 * Makes the editor installs the focus on the right widget.
 	 */
 	void setFocus();
@@ -68,11 +88,5 @@ public interface IEditor {
 	 */
 	void setInput(Setting input);
 	    
-	/**
-	 * Tells if the editor is dirty.
-	 * 
-	 * @return	true or false
-	 */
-	public boolean isDirty();
-    
+	
 }

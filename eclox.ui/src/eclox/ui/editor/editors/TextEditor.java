@@ -108,6 +108,15 @@ public class TextEditor extends SettingEditor {
 	public boolean isDirty() {
 		return hasChanged;
 	}
+	
+	public boolean isStale() {
+		return text.getText().equals( getInput().getValue() ) == false;
+	}
+	
+	public void refresh() {
+		text.setText( getInput().getValue() );
+		hasChanged = false;
+	}
     
     public void setFocus() {
     	text.selectAll();

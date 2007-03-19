@@ -209,13 +209,17 @@ public class DetailsPage implements IDetailsPage {
      * @see org.eclipse.ui.forms.IFormPart#isStale()
      */
     public boolean isStale() {
-        return false;
+    	return editor != null ? editor.isStale() : false;
     }
     
     /**
      * @see org.eclipse.ui.forms.IFormPart#refresh()
      */
-    public void refresh() {}
+    public void refresh() {
+    	if( editor != null ) {
+    		editor.refresh();
+    	}
+    }
     
     /**
      * @see org.eclipse.ui.forms.IFormPart#setFocus()
@@ -288,6 +292,7 @@ public class DetailsPage implements IDetailsPage {
 	        
 	        // Assigns the input to the editor.
 	        editor.setInput(input);
+	        editor.refresh();
         }
         catch(Throwable throwable) {
             Plugin.showError(throwable);
