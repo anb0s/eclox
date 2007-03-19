@@ -22,20 +22,18 @@ package eclox.ui.editor.basic;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
-public class OutputPart extends SectionPart {
+import eclox.core.doxyfiles.Doxyfile;
 
-	OutputPart( Composite parent, FormToolkit toolkit ) {
-		super( parent, toolkit, Section.TITLE_BAR );
+public class OutputPart extends Part {
+
+	OutputPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
+		super( parent, toolkit, "Output", doxyfile );
 		
 		Section		section	= getSection();
 		Composite	content	= toolkit.createComposite(section);
-		
-		section.setText("Output");
-		section.setClient(content);
 		
 		toolkit.createLabel(content, "Provide some documentation about the project you are documenting.", SWT.WRAP);
 

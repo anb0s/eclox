@@ -28,6 +28,7 @@ import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
+import eclox.core.doxyfiles.Doxyfile;
 import eclox.ui.editor.editors.IEditor;
 
 public class Part extends SectionPart {
@@ -35,27 +36,35 @@ public class Part extends SectionPart {
 	/**
 	 * The content of the section control
 	 */
-	Composite content;
+	private Composite content;
 	
 	/**
 	 * The toolkit used for control creation 
 	 */
-	FormToolkit toolkit;
+	private FormToolkit toolkit;
 	
 	/**
 	 * The accumulation of separation spaces
 	 */
-	int spacer = 0;
+	private int spacer = 0;
 
+	/**
+	 * the doxyfile being edited
+	 */
+	protected Doxyfile doxyfile;
+	
 	/**
 	 * Contructor
 	 * 
-	 * @param	parent	the parent control
-	 * @param	tk		the toolit used to create controls
-	 * @param	title	the title of the part
+	 * @param	parent		the parent control
+	 * @param	tk			the toolit used to create controls
+	 * @param	title		the title of the part
+	 * @param	doxyfile	the doxyfile being edited
 	 */
-	public Part(Composite parent, FormToolkit tk, String title) {
+	public Part(Composite parent, FormToolkit tk, String title, Doxyfile doxyfile) {
 		super( parent, tk, Section.TITLE_BAR );
+		
+		this.doxyfile = doxyfile;
 		
 		// Initializes the section and its client component.
 		Section		section	= getSection();
