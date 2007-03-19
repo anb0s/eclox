@@ -26,6 +26,7 @@ import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
 
+import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.Setting;
 
 /**
@@ -34,15 +35,24 @@ import eclox.core.doxyfiles.Setting;
 public class Block extends MasterDetailsBlock {
     
     /**
-     * the managed master part
+     * the doxyfile to edit
      */
-    MasterPart masterPart;
+    private Doxyfile doxyfile;
+    
+    /**
+     * Constructor
+     * 
+     * @param	doxyfile	the doxyfile to edit
+     */
+    Block( Doxyfile doxyfile ) {
+    	this.doxyfile = doxyfile;
+    }
         
     /**
      * @see org.eclipse.ui.forms.MasterDetailsBlock#createMasterPart(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
      */
     protected void createMasterPart(IManagedForm managedForm, Composite parent) {
-        managedForm.addPart( new MasterPart(parent, managedForm.getToolkit()) );
+        managedForm.addPart( new MasterPart(parent, managedForm.getToolkit(), doxyfile) );
     }
 
     /**

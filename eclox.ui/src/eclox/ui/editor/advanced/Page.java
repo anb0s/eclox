@@ -41,14 +41,9 @@ public class Page extends FormPage {
     public static final String ID = "advanced";
     
     /**
-     * The editor.
-     */
-    private Editor editor;
-    
-    /**
      * The master/detail block.
      */
-    private Block block = new Block();
+    private Block block;
     
     /**
      * Constructor.
@@ -59,7 +54,7 @@ public class Page extends FormPage {
      */
     public Page(Editor editor) {
         super(editor, Page.ID, "Advanced");
-        this.editor = editor;
+        block = new Block( editor.getDoxyfile() );
     }
     
     /**
@@ -68,6 +63,5 @@ public class Page extends FormPage {
     protected void createFormContent(IManagedForm managedForm) {
         managedForm.getForm().setText(this.getTitle());
         this.block.createContent(managedForm);
-        managedForm.setInput(this.editor.getDoxyfile());
     }
 }
