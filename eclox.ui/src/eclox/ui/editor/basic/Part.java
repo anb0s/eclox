@@ -19,6 +19,10 @@
 
 package eclox.ui.editor.basic;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Vector;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -31,7 +35,18 @@ import org.eclipse.ui.forms.widgets.Section;
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.ui.editor.editors.IEditor;
 
+/**
+ * Implements a specialized part that provide convenient features
+ * to build user interfaces and manage editor life-cycles.
+ * 
+ * @author gbrocker
+ */
 public class Part extends SectionPart {
+	
+	/**
+	 * The managed collection of editors
+	 */
+	private Collection editors = new Vector();
 	
 	/**
 	 * The content of the section control
@@ -103,10 +118,13 @@ public class Part extends SectionPart {
 	/**
 	 * Adds the given editor instance to the part, with the given label.
 	 * 
+	 * The editor life-cycle will get managed by the part.
+	 * 
 	 * @param	text	a string containing a label text
 	 * @param	editor	an editor instance
 	 */
 	protected void addEditor( String text, IEditor editor ) {
+		// Creates the controls
 		Label		label			= toolkit.createLabel(content, text);
 		Composite	container		= toolkit.createComposite(content);
 		GridData	labelData		= new GridData(SWT.FILL, SWT.CENTER, false, false); 
@@ -118,14 +136,20 @@ public class Part extends SectionPart {
 		container.setLayoutData(containerData);
 		editor.createContent(container, toolkit);
 		spacer = 0;
+		
+		// Registers the editor
+		editors.add(editor);
 	}
 	
 	/**
 	 * Adds the given editor instance to the part
 	 * 
+	 * The editor life-cycle will get managed by the part.
+	 * 
 	 * @param	editor	an editor instance
 	 */
 	protected void addEditor( IEditor editor ) {
+		// Create the controls
 		Composite	container	= toolkit.createComposite(content);
 		GridData	data		= new GridData(SWT.FILL, SWT.FILL, true, false);
 		
@@ -134,6 +158,9 @@ public class Part extends SectionPart {
 		editor.createContent(container, toolkit);
 		container.setLayoutData(data);
 		spacer = 0;
+		
+		// Registers the editor
+		editors.add(editor);
 	}
 	
 	/**
@@ -142,5 +169,67 @@ public class Part extends SectionPart {
 	protected void addSperator() {
 		spacer += 8;
 	}
+
+	/**
+	 * @see org.eclipse.ui.forms.AbstractFormPart#isDirty()
+	 */
+	public boolean isDirty() {
+		boolean		dirty	= super.isDirty();
+		Iterator	i		= editors.iterator();
+		
+		while( i.hasNext() && !dirty ) {
+			IEditor	editor = (IEditor) i.next();
+			
+			dirty = editor.isDirty();
+		}		
+		return dirty;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.AbstractFormPart#isStale()
+	 */
+	public boolean isStale() {
+		boolean		stale	= super.isStale();
+		Iterator	i		= editors.iterator();
+		
+		while( i.hasNext() && !stale ) {
+			IEditor	editor = (IEditor) i.next();
+			
+			stale = editor.isStale();
+		}		
+		return stale;
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+	 */
+	public void refresh() {
+		super.refresh();
+		
+		Iterator	i = editors.iterator();
+		while( i.hasNext() ) {
+			IEditor	editor = (IEditor) i.next();
+			
+			editor.refresh();
+		}
+	}
+
+	/**
+	 * @see org.eclipse.ui.forms.AbstractFormPart#commit(boolean)
+	 */
+	public void commit(boolean onSave) {
+		super.commit(onSave);
+		
+		Iterator	i = editors.iterator();
+		while( i.hasNext() ) {
+			IEditor	editor = (IEditor) i.next();
+			
+			if( editor.isDirty() ) {
+				editor.commit();
+			}
+		}
+	}
+	
+	
 
 }
