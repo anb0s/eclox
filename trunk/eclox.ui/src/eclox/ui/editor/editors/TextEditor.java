@@ -114,8 +114,10 @@ public class TextEditor extends SettingEditor {
 	}
 	
 	public void refresh() {
+		textModifyListener.sleeping = true;
 		text.setText( getInput().getValue() );
 		hasChanged = false;
+		textModifyListener.sleeping = false;
 	}
     
     public void setFocus() {

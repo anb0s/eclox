@@ -19,11 +19,9 @@
 
 package eclox.ui.editor.editors;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.IOpenListener;
@@ -45,7 +43,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import eclox.core.doxyfiles.Setting;
@@ -103,24 +100,20 @@ public abstract class ListEditor extends SettingEditor {
 	private class MyButtonSelectionListener implements SelectionListener {
 
 		public void widgetDefaultSelected(SelectionEvent e) {
-			handleButtonClick( e.widget );
+			widgetSelected( e );
 		}
 
 		public void widgetSelected(SelectionEvent e) {
-			handleButtonClick( e.widget );
-		}
-		
-		private void handleButtonClick( Widget widget ) {
-			if( widget == addButton ) {
+			if( e.widget == addButton ) {
 				addValueCompound();
 			}
-			else if( widget == removeButton ) {
+			else if( e.widget == removeButton ) {
 				removeValueCompounds();
 			}
-			else if( widget == upButton ) {
+			else if( e.widget == upButton ) {
 				moveValueCompoundsUp();
 			}
-			else if( widget == downButton ) {
+			else if( e.widget == downButton ) {
 				moveValueCompoundsDown();
 			}
 			else {
@@ -375,24 +368,20 @@ public abstract class ListEditor extends SettingEditor {
 		
 		
 		// Retrieves and handles the selection.
-		IStructuredSelection		selection = (IStructuredSelection) listViewer.getSelection();
-		Integer					index = (Integer) selection.getFirstElement();
-		
-		// Retrieves the value compound to edit and the edited value.
-		String	originalCompound = valueCompounds.get( index.intValue() ).toString();
-		String	editedCompound = editValueCompound( listViewer.getControl().getShell(), getInput(), originalCompound );
+		IStructuredSelection	selection	= (IStructuredSelection) listViewer.getSelection();
+		String					original	= (String) selection.getFirstElement();
+		String					edited		= editValueCompound( listViewer.getControl().getShell(), getInput(), original );
 		
 		// Processes the edited compound.
-		if( editedCompound != null ) {			
+		if( edited != null ) {			
 			// Updates the setting.
-			valueCompounds.remove( index.intValue() );
-			valueCompounds.add( index.intValue(), editedCompound );
+			valueCompounds.set( valueCompounds.indexOf(original), edited );
 			
 			// Commit changes and erstores the selection.
 			listViewer.getControl().setRedraw( false );
 			commit();
 			listViewer.refresh();
-			listViewer.setSelection( selection );
+			listViewer.setSelection( new StructuredSelection(edited) );
 			listViewer.getControl().setRedraw( true );
 			
 			// Job's done.
@@ -412,31 +401,33 @@ public abstract class ListEditor extends SettingEditor {
 		assert valueCompounds != null;
 		
 		// Retrieves the current selection and skip if it is empty.
-		IStructuredSelection		selection = (IStructuredSelection) listViewer.getSelection();
+		IStructuredSelection	selection = (IStructuredSelection) listViewer.getSelection();
 		if( selection.isEmpty() == true ) {
 			return;
 		}
 		
 		// Retrieves the list of the selected items.
-		List			selectedItems = selection.toList();
-		Collections.sort( selectedItems );
-		
-		// Moves each item up.
-		Iterator		i = selectedItems.iterator();
-		while( i.hasNext() ) {
-			Integer	currentItem = (Integer) i.next();
-			int		index = currentItem.intValue();
-			if( index > 0 && Collections.binarySearch(selectedItems, new Integer(index -1)) < 0 ) {
-				Collections.swap( valueCompounds, index, index -1 );
-				Collections.replaceAll( selectedItems, currentItem, new Integer( index -1) );
-			}			
+		Vector		selected	= new Vector(selection.toList());
+		Iterator	i			= valueCompounds.iterator();
+		while( i.hasNext() == true && selected.isEmpty() == false ) {
+			Object	current = i.next();
+			
+			if( current.equals(selected.get(0)) ) {
+				int index = valueCompounds.indexOf(current);
+				if( index > 0 ) {
+					Collections.swap(valueCompounds, index, index-1);
+				}
+				else {
+					break;
+				}
+				selected.remove(0);
+			}
 		}
-		
+
 		// Commits changes and reselected moved objects.
 		listViewer.getControl().setRedraw( false );
 		commit();
 		listViewer.refresh();
-		listViewer.setSelection( new StructuredSelection(selectedItems) );
 		listViewer.getControl().setRedraw( true );
 	}
 
@@ -455,26 +446,34 @@ public abstract class ListEditor extends SettingEditor {
 		}
 		
 		// Retrieves the list of the selected items.
-		List			selectedItems = selection.toList();
-		Collections.sort( selectedItems );
-		Collections.reverse( selectedItems );
+		Vector		selected = new Vector(selection.toList());
 		
-		// Moves each item up.
-		Iterator		i = selectedItems.iterator();
-		while( i.hasNext() ) {
-			Integer	currentItem = (Integer) i.next();
-			int		index = currentItem.intValue();
-			if( index < valueCompounds.size() - 1 && Collections.binarySearch(selectedItems, new Integer(index+1)) < 0 ) {
-				Collections.swap( valueCompounds, index, index + 1 );
-				Collections.replaceAll( selectedItems, currentItem, new Integer( index + 1) );
-			}			
+		Collections.reverse( selected );
+		Collections.reverse(valueCompounds);
+		
+		// Retrieves the list of the selected items.
+		Iterator	i			= valueCompounds.iterator();
+		while( i.hasNext() == true && selected.isEmpty() == false ) {
+			Object	current = i.next();
+			
+			if( current.equals(selected.get(0)) ) {
+				int index = valueCompounds.indexOf(current);
+				if( index > 0 ) {
+					Collections.swap(valueCompounds, index, index-1);
+				}
+				else {
+					break;
+				}
+				selected.remove(0);
+			}
 		}
+		
+		Collections.reverse(valueCompounds);
 		
 		// Commits changes and reselected moved objects.
 		listViewer.getControl().setRedraw( false );
 		commit();
 		listViewer.refresh();
-		listViewer.setSelection( new StructuredSelection(selectedItems) );
 		listViewer.getControl().setRedraw( true );
 	}
 	
@@ -492,26 +491,12 @@ public abstract class ListEditor extends SettingEditor {
 			return;
 		}
 		
-		// Retrieves the selected item list.
-		List		selectedItems = selection.toList();
-		Collections.sort( selectedItems );
-		Collections.reverse( selectedItems );
-		
-		// Walks through the selected items and remove the corresponding value compounds.
-		Iterator		i = selectedItems.iterator();
-		while( i.hasNext() ) {
-			Integer	current = (Integer) i.next();
-			valueCompounds.remove( current.intValue() );
-		}
+		// Removes selected items from the value compounds.
+		valueCompounds.removeAll( selection.toList() );
 		
 		// Commits changes.
 		commit();
 		listViewer.refresh();
-		
-		// Updates the selection of the list viewer with the
-		List	newSelectedItems = new ArrayList();
-		newSelectedItems.add( selectedItems.get(selectedItems.size() - 1) );
-		listViewer.setSelection( new StructuredSelection(newSelectedItems), true );
 	}
 
 	/**
