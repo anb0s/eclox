@@ -28,6 +28,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
@@ -133,6 +134,7 @@ public class Part extends SectionPart {
 		labelData.verticalIndent = spacer;
 		containerData.verticalIndent = spacer;
 		label.setLayoutData(labelData);
+		label.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
 		container.setLayoutData(containerData);
 		editor.createContent(container, toolkit);
 		spacer = 0;

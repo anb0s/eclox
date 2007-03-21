@@ -317,7 +317,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         
         // Initializes the managed section.
         Section section = getSection();
-        section.setText("All Settings");
+        section.setText("Settings");
         section.marginHeight = 5;
         section.marginWidth = 10;
         toolkit.paintBordersFor( section );

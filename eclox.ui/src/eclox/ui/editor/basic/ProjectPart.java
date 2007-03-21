@@ -74,7 +74,7 @@ public class ProjectPart extends Part {
 		addEditor("Name:", nameEditor);
 		addEditor("Version or Identifier:", versionEditor);
 		addSperator();
-		addLabel("Specify the directories to scan for source coce.");
+		addLabel("Specify the directories to scan for source code.");
 		addEditor(inputEditor);
 		addEditor(recursiveEditor);
 		addSperator();
