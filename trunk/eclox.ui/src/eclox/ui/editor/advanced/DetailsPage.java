@@ -44,7 +44,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.Setting;
 import eclox.ui.Plugin;
-import eclox.ui.editor.editors.IEditor;
+import eclox.ui.editor.editors.SettingEditor;
 
 
 /**
@@ -67,7 +67,7 @@ public class DetailsPage implements IDetailsPage {
     /**
      * The setting editor instance.
      */
-    private IEditor editor;
+    private SettingEditor editor;
 
     /**
      * The section that contains all our controls.
@@ -120,7 +120,10 @@ public class DetailsPage implements IDetailsPage {
 		 * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)
 		 */
 		public void linkActivated(HyperlinkEvent e) {
-			Doxyfile	doxyfile	= (Doxyfile) managedForm.getInput();
+			// Pre-condition
+			assert editor != null;
+			
+			Doxyfile	doxyfile	= editor.getInput().getOwner();
 			Setting		setting		= doxyfile.getSetting( e.getHref().toString() ); 
 			
 			if( setting != null ) {
@@ -155,7 +158,6 @@ public class DetailsPage implements IDetailsPage {
         this.section = toolkit.createSection(parent, Section.TITLE_BAR);
         this.section.marginHeight = 5;
         this.section.marginWidth = 10;
-        this.section.setText("Setting Details");
         
         // Createst the section content and its layout
         this.sectionContent = toolkit.createComposite(section);
@@ -254,7 +256,8 @@ public class DetailsPage implements IDetailsPage {
 	        // Updates the form controls.
 	        this.selectNote(setting);
 	        this.selectEditor(setting);
-	        this.sectionContent.layout( true, true );
+	        this.section.setText( setting.getProperty(Setting.TEXT) );
+	        this.section.layout(true, true);
     	}
     }
     
@@ -285,7 +288,7 @@ public class DetailsPage implements IDetailsPage {
 	        
 	        // Perhaps, we should create a new editor instance.
 	        if(editor == null) {
-		        editor = (IEditor) editorClass.newInstance();
+		        editor = (SettingEditor) editorClass.newInstance();
 		        editor.createContent(editorContainer, managedForm.getToolkit());
 		        editorContainer.setLayoutData( new GridData(editor.fillVertically() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL) );
 	        }
