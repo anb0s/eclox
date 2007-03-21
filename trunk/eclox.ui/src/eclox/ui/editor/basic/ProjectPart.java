@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import eclox.core.doxyfiles.Doxyfile;
+import eclox.ui.editor.editors.CheckBoxEditor;
 import eclox.ui.editor.editors.DirectoryEditor;
 import eclox.ui.editor.editors.DirectoryListEditor;
 import eclox.ui.editor.editors.TextEditor;
@@ -50,6 +51,11 @@ public class ProjectPart extends Part {
 	private DirectoryListEditor inputEditor = new DirectoryListEditor();
 	
 	/**
+	 * the recursvie scan editor
+	 */
+	private CheckBoxEditor recursiveEditor = new CheckBoxEditor("Scan recursively");
+	
+	/**
 	 * the project output editor
 	 */
 	private DirectoryEditor outputEditor = new DirectoryEditor();
@@ -70,14 +76,16 @@ public class ProjectPart extends Part {
 		addSperator();
 		addLabel("Specify the directories to scan for source coce.");
 		addEditor(inputEditor);
+		addEditor(recursiveEditor);
 		addSperator();
 		addLabel("Specify the directory where doxygen should put the generated documentation.");
 		addEditor(outputEditor);
 
-		nameEditor.setInput(doxyfile.getSetting("PROJECT_NAME"));
-		versionEditor.setInput(doxyfile.getSetting("PROJECT_NUMBER"));
-		inputEditor.setInput(doxyfile.getSetting("INPUT"));
-		outputEditor.setInput(doxyfile.getSetting("OUTPUT_DIRECTORY"));
+		nameEditor     .setInput( doxyfile.getSetting("PROJECT_NAME")		);
+		versionEditor  .setInput( doxyfile.getSetting("PROJECT_NUMBER")		);
+		inputEditor    .setInput( doxyfile.getSetting("INPUT")				);
+		outputEditor   .setInput( doxyfile.getSetting("OUTPUT_DIRECTORY")	);
+		recursiveEditor.setInput( doxyfile.getSetting("RECURSIVE")			);
 	}
 	
 }
