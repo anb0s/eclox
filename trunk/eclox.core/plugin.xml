@@ -36,5 +36,18 @@
       <attribute name="severity"/>
       <attribute name="location"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            class="eclox.core.ui.DoxyfileDecorator"
+            id="eclox.core.decorator"
+            label="Doxygen Build Indicator"
+            lightweight="true"
+            state="true">
+         <description>
+            Shows when doxygen is building a given doxyfile.
+         </description>
+      </decorator>
+   </extension>
 
 </plugin>

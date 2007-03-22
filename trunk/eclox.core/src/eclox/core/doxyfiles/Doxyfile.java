@@ -67,6 +67,17 @@ public class Doxyfile {
     private Map groups = new LinkedHashMap();
     
     /**
+     * Tells if the given object is a doxyfile
+     * 
+     * @param	object	an object to test
+     * 
+     * @return	true or false
+     */
+    public static boolean isDoxyfile(Object object) {
+    	return (object instanceof IResource) && isDoxyfile((IResource) object); 
+    }
+    
+    /**
 	 * Tells if the specified resource is a doxyfile.
 	 * 
 	 * @param	resource	the resource to test
