@@ -39,6 +39,7 @@
    <extension
          point="org.eclipse.ui.decorators">
       <decorator
+            adaptable="false"
             class="eclox.core.ui.DoxyfileDecorator"
             id="eclox.core.decorator"
             label="Doxygen Build Indicator"
@@ -47,6 +48,9 @@
          <description>
             Shows when doxygen is building a given doxyfile.
          </description>
+         <enablement>
+            <objectClass name="org.eclipse.core.resources.IFile"/>
+         </enablement>
       </decorator>
    </extension>
 
