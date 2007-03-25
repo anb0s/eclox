@@ -22,8 +22,6 @@ package eclox.ui.editor.editors;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import eclox.core.doxyfiles.Setting;
-
 /**
  * Defines the interface of doxyfile editors.
  * 
@@ -80,13 +78,5 @@ public interface IEditor {
 	 * Makes the editor installs the focus on the right widget.
 	 */
 	void setFocus();
-	   
-	/**
-	 * Sets the editor input
-	 * 
-	 * @param	input	a setting that is the new editor input
-	 */
-	void setInput(Setting input);
-	    
 	
 }
