@@ -151,12 +151,25 @@ public class Part extends SectionPart {
 	 * @param	editor	an editor instance
 	 */
 	protected void addEditor( IEditor editor ) {
+		addEditor( editor, 0 );
+	}
+	
+	/**
+	 * Adds the given editor instance to the part
+	 * 
+	 * The editor life-cycle will get managed by the part.
+	 * 
+	 * @param	editor	an editor instance
+	 * @param	indent	an extra margin that will be added to the left side of the editor's cell
+	 */
+	protected void addEditor( IEditor editor, int indent ) {
 		// Create the controls
 		Composite	container	= toolkit.createComposite(content);
 		GridData	data		= new GridData(SWT.FILL, SWT.FILL, true, false);
 		
 		data.verticalIndent = spacer;
 		data.horizontalSpan = 2;
+		data.horizontalIndent = indent;
 		editor.createContent(container, toolkit);
 		container.setLayoutData(data);
 		spacer = 0;
