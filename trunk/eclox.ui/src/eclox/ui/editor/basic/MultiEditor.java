@@ -90,7 +90,7 @@ public abstract class MultiEditor implements IEditor {
 				setting.setValue(selection ? YES : NO);
 			}
 
-			i = selectedSettings.iterator();
+			i = deselectedSettings.iterator();
 			while( i.hasNext() ) {
 				Setting	setting = (Setting) i.next();
 				
