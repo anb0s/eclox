@@ -479,7 +479,7 @@ HTML_ALIGN_MEMBERS.group = HTML Output
 HTML_ALIGN_MEMBERS.type = boolean
 HTML_ALIGN_MEMBERS.note = If the HTML_ALIGN_MEMBERS tag is set to YES, the members of classes, files or namespaces will be aligned in HTML using tables. If set to NO a bullet list will be used.
 
-GENERATE_HTMLHELP.text = Generate HTMLhelp
+GENERATE_HTMLHELP.text = Generate HTML Help
 GENERATE_HTMLHELP.group = HTML Output
 GENERATE_HTMLHELP.type = boolean
 GENERATE_HTMLHELP.note = If the GENERATE_HTMLHELP tag is set to YES, additional index files will be generated that can be used as input for tools like the Microsoft HTML help workshop to generate a compressed HTML help file (.chm) of the generated HTML documentation.
