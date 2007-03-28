@@ -1,5 +1,5 @@
 // eclox : Doxygen plugin for Eclipse.
-// Copyright (C) 2003-2006 Guillaume Brocker
+// Copyright (C) 2003-2007 Guillaume Brocker
 //
 // This file is part of eclox.
 //
@@ -280,6 +280,27 @@ public abstract class ListEditor extends SettingEditor {
 		assert downButton	== null;
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean enabled) {
+		// Pre-condition
+		assert listViewer	!= null;
+		assert addButton	!= null;
+		assert removeButton	!= null;
+		assert upButton		!= null;
+		assert downButton	!= null;	
+		
+		listViewer.getControl().setEnabled(enabled);
+		addButton.setEnabled(enabled);
+		removeButton.setEnabled(enabled);
+		upButton.setEnabled(enabled);
+		downButton.setEnabled(enabled);		
+	}
+
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#setFocus()
+	 */
 	public void setFocus() {
 		// Pre-condition
 		assert listViewer != null;
@@ -288,6 +309,9 @@ public abstract class ListEditor extends SettingEditor {
 
 	}
 	
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#refresh()
+	 */
 	public void refresh() {
 		// Pre-condition
 		assert listViewer != null;

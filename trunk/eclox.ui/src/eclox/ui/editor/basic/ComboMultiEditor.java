@@ -23,80 +23,79 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
- * Implements a specialized multi editor that is represented by a check box and
- * provides only two states: SELECTED and DESELECTED. 
- *  
+ * Implements a multi editor that presents choices in a combo box.
+ * 
  * @author Guillaume Brocker
  */
-public class CheckMultiEditor extends MultiEditor {
+public class ComboMultiEditor extends MultiEditor {
 	
 	/**
-	 * the selected state name constant
-	 */
-	public static final String SELECTED = "Selected";
-	
-	/**
-	 * the deselected state name constant
-	 */
-	public static final String DESELECTED = "Deselected";
-	
-	/**
-	 * Defines the selection listener for the check box button
+	 * Implements a selection listener that will handle selection changes in the combo control.
 	 */
 	private class MySelectionListener implements SelectionListener {
 
+		/**
+		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
 		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);			
+			widgetSelected(e);
 		}
 
+		/**
+		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
 		public void widgetSelected(SelectionEvent e) {
-			Button	button = (Button) e.widget;
-			selectState( button.getSelection() ? SELECTED : DESELECTED );
+			selectState( combo.getItem(combo.getSelectionIndex()) );
 			commit();
 		}
 		
 	}
-	
 	/**
-	 * a string containing the text to use for the check box button
+	 * the combo control that is the representation of the editor
 	 */
-	private String	text;
-	
-	/**
-	 * the check box button that represents the editor
-	 */
-	private Button	button;
+	Combo combo;
 	
 	/**
 	 * Constructor
 	 * 
-	 * @param text	a string containing the text that will be used for the check box control
+	 * @param	states	an array of string representing all posible states
 	 */
-	public CheckMultiEditor( String text ) {
-		super( new String[] {SELECTED, DESELECTED} );
-		this.text = text;
-		
+	ComboMultiEditor( String [] states ) {
+		super( states );
 	}
-	
+
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
 	 */
 	public void createContent(Composite parent, FormToolkit formToolkit) {
-		button = formToolkit.createButton(parent, text, SWT.CHECK);
-		button.addSelectionListener( new MySelectionListener() );
-		parent.setLayout(new FillLayout(SWT.VERTICAL));
+		// Pre-condition
+		assert combo != null;
+		
+		// Creates the combo control.
+		combo = new Combo(parent, SWT.DROP_DOWN|SWT.READ_ONLY);
+		combo.addSelectionListener( new MySelectionListener() );
+		formToolkit.adapt(combo, true, true);
+		
+		// Fills the combo with the state names.
+		for( int i = 0; i != states.length; ++i ) {
+			combo.add( states[i].getName() );
+		}
+		combo.setVisibleItemCount(states.length);
+		
+		// Installs a layout in the parent composite
+		parent.setLayout(new FillLayout());
 	}
 
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#dispose()
 	 */
 	public void dispose() {
-		button = null;
+		combo = null;
 	}
 
 	/**
@@ -105,20 +104,24 @@ public class CheckMultiEditor extends MultiEditor {
 	public boolean fillVertically() {
 		return false;
 	}
-
+	
 	/**
 	 * @see eclox.ui.editor.basic.MultiEditor#refresh()
 	 */
 	public void refresh() {
 		// Pre-condition
-		assert button != null;
+		assert combo != null;
 		
-		// Refreshes the states.
 		super.refresh();
 		
-		// Refreshes the check box
+		// Selectes the string corresponding to the current selection
 		State	selection = getSelection();
-		button.setSelection( selection != null && selection.getName().equals(SELECTED) );
+		if( selection != null ) {
+			combo.select( combo.indexOf(selection.getName()) );
+		}
+		else {
+			combo.deselectAll();
+		}
 	}
 
 	/**
@@ -126,9 +129,9 @@ public class CheckMultiEditor extends MultiEditor {
 	 */
 	public void setEnabled(boolean enabled) {
 		// Pre-condition
-		assert button != null;
+		assert combo != null;
 		
-		button.setEnabled(enabled);
+		combo.setEnabled(enabled);
 	}
 
 	/**
@@ -136,9 +139,9 @@ public class CheckMultiEditor extends MultiEditor {
 	 */
 	public void setFocus() {
 		// Pre-condition
-		assert button != null;
+		assert combo != null;
 		
-		button.setFocus();
+		combo.setFocus();
 	}
 
 }

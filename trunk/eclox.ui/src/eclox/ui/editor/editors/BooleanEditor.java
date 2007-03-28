@@ -1,5 +1,5 @@
 //eclox : Doxygen plugin for Eclipse.
-//Copyright (C) 2003-2005 Guillaume Brocker
+//Copyright (C) 2003-2007 Guillaume Brocker
 //
 //This file is part of eclox.
 //
@@ -170,6 +170,20 @@ public class BooleanEditor extends SettingEditor {
 	}
     
     /**
+     * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+        // Pre-condition
+        assert yesButton != null;
+        assert noButton != null;
+        assert defaultButton != null;
+
+        yesButton.setEnabled(enabled);
+        noButton.setEnabled(enabled);
+        defaultButton.setEnabled(enabled);
+	}
+
+	/**
      * @see eclox.ui.editor.editors.IEditor#setFocus()
      */
     public void setFocus() {

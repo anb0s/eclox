@@ -125,6 +125,19 @@ public class Part extends SectionPart {
 	 * @param	editor	an editor instance
 	 */
 	protected void addEditor( String text, IEditor editor ) {
+		addEditor( text, editor, 0 );
+	}
+	
+	/**
+	 * Adds the given editor instance to the part, with the given label.
+	 * 
+	 * The editor life-cycle will get managed by the part.
+	 * 
+	 * @param	text	a string containing a label text
+	 * @param	editor	an editor instance
+	 * @param	indent	an extra margin that will be added to the left side of the editor's cell
+	 */
+	protected void addEditor( String text, IEditor editor, int indent ) {
 		// Creates the controls
 		Label		label			= toolkit.createLabel(content, text);
 		Composite	container		= toolkit.createComposite(content);
@@ -132,6 +145,7 @@ public class Part extends SectionPart {
 		GridData	containerData	= new GridData(SWT.FILL, SWT.FILL, true, false);
 		
 		labelData.verticalIndent = spacer;
+		labelData.horizontalIndent = indent;
 		containerData.verticalIndent = spacer;
 		label.setLayoutData(labelData);
 		label.setForeground(toolkit.getColors().getColor(FormColors.TITLE));

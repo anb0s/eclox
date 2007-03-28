@@ -86,15 +86,15 @@ public class OutputPart extends Part {
 	CheckBoxEditor rtf = new CheckBoxEditor("Rich Text Format");
 	CheckBoxEditor xml = new CheckBoxEditor("XML");				
 
-	OutputPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
+	public OutputPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
 		super( parent, toolkit, "Output Formats", doxyfile );
 		
 		addEditor( html );
-		addEditor( htmlFlavour, 10 );
-		addEditor( htmlSearchEngine, 10 );
+		addEditor( htmlFlavour, 16 );
+		addEditor( htmlSearchEngine, 16 );
 		
 		addEditor( latex );
-		addEditor( latexFlavour );
+		addEditor( latexFlavour, 16 );
 		
 		addEditor( man );
 		addEditor( rtf );

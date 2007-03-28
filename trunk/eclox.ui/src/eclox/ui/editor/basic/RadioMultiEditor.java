@@ -108,6 +108,18 @@ public class RadioMultiEditor extends MultiEditor {
 	}
 
 	/**
+	 * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean enabled) {
+		// Pre-condition
+		assert buttons != null;
+		
+		for( int i = 0; i != buttons.length; ++i ) {
+			buttons[i].setEnabled(enabled);
+		}
+	}
+
+	/**
 	 * @see eclox.ui.editor.editors.IEditor#setFocus()
 	 */
 	public void setFocus() {

@@ -52,6 +52,17 @@ public abstract class MultiEditor implements IEditor {
 			this.name = name;
 		}
 		
+		void addSettingToSelect( Setting setting ) {
+			selectedSettings.add( setting );
+			deselectedSettings.remove( setting );
+		}
+		
+		void addSettingToDeselect( Setting setting ) {
+			if( selectedSettings.contains(setting) == false ) {
+				deselectedSettings.add( setting );
+			}
+		}
+		
 		String getName() {
 			return name;
 		}
@@ -80,21 +91,21 @@ public abstract class MultiEditor implements IEditor {
 			return wanted;
 		}
 		
-		void setSelection( boolean selection ) {
+		void commit() {
 			Iterator i;
 			
 			i = selectedSettings.iterator();
 			while( i.hasNext() ) {
 				Setting	setting = (Setting) i.next();
 				
-				setting.setValue(selection ? YES : NO);
+				setting.setValue(YES);
 			}
 
 			i = deselectedSettings.iterator();
 			while( i.hasNext() ) {
 				Setting	setting = (Setting) i.next();
 				
-				setting.setValue(selection ? NO : YES);
+				setting.setValue(NO);
 			}
 		}
 		
@@ -139,10 +150,10 @@ public abstract class MultiEditor implements IEditor {
 		
 		for( int i = 0; i != states.length; ++i ) {
 			if( states[i].name.equals(state) ) {
-				states[i].selectedSettings.add(setting);
+				states[i].addSettingToSelect(setting);
 			}
 			else {
-				states[i].deselectedSettings.add(setting);
+				states[i].addSettingToDeselect(setting);
 			}
 		}
 	}	
@@ -151,9 +162,9 @@ public abstract class MultiEditor implements IEditor {
 	 * @see eclox.ui.editor.editors.IEditor#commit()
 	 */
 	public void commit() {
-		// Commits all states.
-		for( int i = 0; i != states.length; ++i ) {
-			states[i].setSelection( states[i] == selection );
+		// Commits the selected state.
+		if( selection != null ) {
+			selection.commit();
 		}
 		dirty = false;
 	}
