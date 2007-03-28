@@ -49,7 +49,8 @@ public class TextEditor extends SettingEditor {
 		public void modifyText(ModifyEvent e) {
 			if(sleeping == false) {
 				hasChanged = true;
-				getInput().setValue( text.getText() );
+				fireEditorDirtyChanged();
+				commit();
 			}
 		}
 		
@@ -77,6 +78,7 @@ public class TextEditor extends SettingEditor {
     public void commit() {
 		getInput().setValue( text.getText() );
 		hasChanged = false;
+		fireEditorDirtyChanged();
 	}
     
     /**
@@ -139,6 +141,7 @@ public class TextEditor extends SettingEditor {
 		text.setText( getInput().getValue() );
 		hasChanged = false;
 		textModifyListener.sleeping = false;
+		fireEditorRefreshed();
 	}
     
     /**

@@ -48,6 +48,7 @@ public class CheckBoxEditor extends SettingEditor {
 
 		public void widgetSelected(SelectionEvent e) {
 			dirty = true;
+			fireEditorDirtyChanged();
 			commit();
 		}
 		
@@ -96,6 +97,7 @@ public class CheckBoxEditor extends SettingEditor {
 		
 		getInput().setValue( getSelection() );
 		dirty = false;
+		fireEditorDirtyChanged();
 	}
 
 	/**
@@ -132,6 +134,18 @@ public class CheckBoxEditor extends SettingEditor {
 	}
 
 	/**
+	 * Retrieves the current value of the editor.
+	 * 
+	 * @return	the current value of the editor
+	 */
+	public boolean getValue() {
+		// Pre-condition
+		assert button != null;
+		
+		return button.getSelection();
+	}
+
+	/**
 	 * @see eclox.ui.editor.editors.IEditor#isDirty()
 	 */
 	public boolean isDirty() {
@@ -159,6 +173,8 @@ public class CheckBoxEditor extends SettingEditor {
 		
 		// Updates the button state.
 		button.setSelection( getInput().getValue().equalsIgnoreCase(YES) );
+		
+		fireEditorRefreshed();
 	}
 
 	/**

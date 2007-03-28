@@ -30,6 +30,16 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public interface IEditor {
     
 	/**
+	 * Adds the given listener to the collectgion of listener who will be notified
+	 * when the editor gets changed.
+	 * 
+	 * @param listener	the listener to register
+	 * 
+	 * @see removeListener
+	 */
+	void addListener( IEditorListener listener );
+	
+	/**
 	 * Commits any changes made in the editor.
 	 */
 	public void commit();
@@ -73,6 +83,15 @@ public interface IEditor {
 	 * its state using the data of the underlying model.
 	 */
 	public void refresh();
+	
+	/**
+	 * Removes the given listener from the collection of registered listeners.
+	 * 
+	 * @param	listener	the listener to un-register
+	 * 
+	 * @see		addListener
+	 */
+	public void removeListener( IEditorListener listener );
     
 	/**
 	 * Enables or disables the receiver.
