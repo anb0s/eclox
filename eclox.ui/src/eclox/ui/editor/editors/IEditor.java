@@ -75,6 +75,13 @@ public interface IEditor {
 	public void refresh();
     
 	/**
+	 * Enables or disables the receiver.
+	 * 
+	 * @param enabled	the new enabled state
+	 */
+	void setEnabled(boolean enabled);
+	
+	/**
 	 * Makes the editor installs the focus on the right widget.
 	 */
 	void setFocus();

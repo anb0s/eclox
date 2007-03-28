@@ -162,6 +162,16 @@ public class CheckBoxEditor extends SettingEditor {
 	}
 
 	/**
+	 * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean enabled) {
+		// Pre-condition
+		assert button != null;
+		
+		button.setEnabled(enabled);
+	}
+
+	/**
 	 * @see eclox.ui.editor.editors.IEditor#setFocus()
 	 */
 	public void setFocus() {
