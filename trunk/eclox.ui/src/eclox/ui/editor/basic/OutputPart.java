@@ -24,9 +24,49 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.ui.editor.editors.CheckBoxEditor;
+import eclox.ui.editor.editors.IEditor;
+import eclox.ui.editor.editors.IEditorListener;
 
 public class OutputPart extends Part {
 
+	/**
+	 * Implements an editor listener that will update
+	 * enabled states of some editors according to the value
+	 * of some other editors.
+	 */
+	private class MyEditorListener implements IEditorListener {
+		
+		/**
+		 * @see eclox.ui.editor.editors.IEditorListener#editorDirtyChanged(eclox.ui.editor.editors.IEditor)
+		 */
+		public void editorDirtyChanged(IEditor editor) {
+			updateEditors(editor);			
+		}
+
+		/**
+		 * @see eclox.ui.editor.editors.IEditorListener#editorRefreshed(eclox.ui.editor.editors.IEditor)
+		 */
+		public void editorRefreshed(IEditor editor) {
+			updateEditors(editor);
+		}
+		
+		/**
+		 * Updates some editor enabled state according to the given editor.
+		 * 
+		 * @param editor	the editor that changed
+		 */
+		private void updateEditors(IEditor editor) {
+			if( editor == html ) {
+				htmlFlavour.setEnabled( ((CheckBoxEditor)editor).getValue() );
+				htmlSearchEngine.setEnabled( ((CheckBoxEditor)editor).getValue() );
+			}
+			else if( editor == latex ) {
+				latexFlavour.setEnabled( ((CheckBoxEditor)editor).getValue() );
+			}
+		}
+		
+	}
+	
 	/**
 	 * html flavour state
 	 */
@@ -100,6 +140,7 @@ public class OutputPart extends Part {
 		addEditor( rtf );
 		addEditor( xml );
 		
+		html.addListener(new MyEditorListener());
 		html.setInput( doxyfile.getSetting("GENERATE_HTML") );
 		
 		htmlFlavour.addSetting(FRAME_HTML, doxyfile.getSetting("GENERATE_TREEVIEW") );
@@ -107,6 +148,7 @@ public class OutputPart extends Part {
 		
 		htmlSearchEngine.setInput( doxyfile.getSetting("SEARCHENGINE") );
 		
+		latex.addListener(new MyEditorListener());
 		latex.setInput( doxyfile.getSetting("GENERATE_LATEX") );
 		
 		latexFlavour.addSetting(LATEX_HYPEDLINKED_PDF, doxyfile.getSetting("PDF_HYPERLINKS") );

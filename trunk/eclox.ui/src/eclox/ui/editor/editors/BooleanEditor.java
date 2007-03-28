@@ -74,6 +74,7 @@ public class BooleanEditor extends SettingEditor {
          */
         public void widgetDefaultSelected(SelectionEvent e) {
             isDirty = true;
+            fireEditorDirtyChanged();
             commit();
         }
 
@@ -82,6 +83,7 @@ public class BooleanEditor extends SettingEditor {
          */
         public void widgetSelected(SelectionEvent e) {
             isDirty = true;
+            fireEditorDirtyChanged();
             commit();
         }
         
@@ -91,6 +93,7 @@ public class BooleanEditor extends SettingEditor {
     public void commit() {
     	getInput().setValue(getSelection());
         isDirty = false;
+        fireEditorDirtyChanged();
 	}
 
 	public void createContent(Composite parent, FormToolkit formToolkit) {
@@ -136,7 +139,7 @@ public class BooleanEditor extends SettingEditor {
 		noButton = null;
 		defaultButton = null;
 	}
-
+	
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#isDirty()
 	 */
@@ -167,6 +170,8 @@ public class BooleanEditor extends SettingEditor {
         yesButton.setSelection		( value.compareToIgnoreCase(YES) == 0 );
         noButton.setSelection		( value.compareToIgnoreCase(NO) == 0 );
         defaultButton.setSelection	( value.length() == 0 );
+        
+        fireEditorRefreshed();
 	}
     
     /**

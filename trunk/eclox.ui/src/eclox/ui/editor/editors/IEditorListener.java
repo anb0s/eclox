@@ -19,34 +19,26 @@
 
 package eclox.ui.editor.editors;
 
-import eclox.core.doxyfiles.Setting;
-
-public abstract class SettingEditor extends AbstractEditor {
+/**
+ * Defines the interface for objects that want to receive notification
+ * about changes of an editor.
+ * 
+ * @author Guillaume Brocker
+ */
+public interface IEditorListener {
 
 	/**
-	 * The current input of the editor
+	 * Notifies the receiver that the given editor's dirty state changed.
+	 * 
+	 * @param editor the editor that changed
 	 */
-	private Setting	input;
+	void editorDirtyChanged( IEditor editor );
 	
 	/**
-	 * Retrieves the editor input.
+	 * Notifies the receiver that the given editor has been refreshed
 	 * 
-	 * @return	the current input of the editor
+	 * @param editor the editor that has been refresh
 	 */
-	public Setting getInput() {
-		return input;
-	}
-	
-	/**
-	 * Sets the editor input.
-	 * 
-	 * @param	input	the new input of the editor
-	 */
-	public void setInput(Setting input) {
-		// Pre-condition
-		assert input != null;
-		
-		this.input = input;
-	}
+	void editorRefreshed( IEditor editor );
 
 }

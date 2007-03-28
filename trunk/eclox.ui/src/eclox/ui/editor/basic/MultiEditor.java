@@ -24,14 +24,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 import eclox.core.doxyfiles.Setting;
-import eclox.ui.editor.editors.IEditor;
+import eclox.ui.editor.editors.AbstractEditor;
 
 /**
  * Base implementation of for multi editors.
  * 
  * @author Guillaume Brocker
  */
-public abstract class MultiEditor implements IEditor {
+public abstract class MultiEditor extends AbstractEditor {
 	
 	/**
 	 * symbolic constant value for yes
@@ -167,6 +167,7 @@ public abstract class MultiEditor implements IEditor {
 			selection.commit();
 		}
 		dirty = false;
+		fireEditorDirtyChanged();
 	}
 	
 	/**
@@ -198,6 +199,7 @@ public abstract class MultiEditor implements IEditor {
 				break;
 			}
 		}
+		fireEditorRefreshed();
 	}
 	
 	/**
@@ -238,6 +240,7 @@ public abstract class MultiEditor implements IEditor {
 		if( candidate != null ) {
 			selection = candidate;
 			dirty = true;
+			fireEditorDirtyChanged();
 		}
 	}
 
