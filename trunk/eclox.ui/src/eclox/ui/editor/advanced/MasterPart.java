@@ -341,7 +341,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         activateFilter( defaultFilter );
     }
     
-    /**
+	/**
      * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
      */
     public void initialize(IManagedForm form) {
@@ -357,6 +357,15 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
     }
 
 	/**
+	 * @see org.eclipse.ui.forms.AbstractFormPart#isStale()
+	 */
+	public boolean isStale() {
+		// We always answer yes because it is currently not trivial
+		// to know if the data model has changed since last refresh.
+		return true;
+	}
+
+	/**
 	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IFormPart part, ISelection selection) {
@@ -364,6 +373,14 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 			activateFilter( defaultFilter );
 			tableViewer.setSelection( selection, true );
 		}			
+	}
+	
+    /**
+     * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+     */
+    public void refresh() {
+		tableViewer.refresh();
+		super.refresh();
 	}
 
     /**
