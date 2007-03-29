@@ -83,10 +83,10 @@ public class Page extends FormPage {
 		
 		GridLayout	layout = new GridLayout(2, true);
 		parent.setLayout(layout);
-		layout.horizontalSpacing = 10;
-		layout.verticalSpacing = 0;
-		layout.marginWidth = 10;
-		layout.marginHeight = 10;
+		layout.horizontalSpacing = 20;
+		layout.verticalSpacing = 10;
+		layout.marginWidth = 16;
+		layout.marginHeight = 16;
 
 		super.createFormContent(managedForm);
 	}
