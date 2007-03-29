@@ -101,7 +101,7 @@ public class RadioMultiEditor extends MultiEditor {
 		super.refresh();
 		
 		// Refreshes managed buttons
-		State	selection = getSelection();
+		State	selection = getSelectionAsState();
 		for( int i = 0; i != buttons.length; ++i ) {
 			buttons[i].setSelection( selection != null && selection.getName().equals(buttons[i].getText()) );
 		}

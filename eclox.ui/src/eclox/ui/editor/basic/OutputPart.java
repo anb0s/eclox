@@ -39,23 +39,7 @@ public class OutputPart extends Part {
 		/**
 		 * @see eclox.ui.editor.editors.IEditorListener#editorDirtyChanged(eclox.ui.editor.editors.IEditor)
 		 */
-		public void editorDirtyChanged(IEditor editor) {
-			updateEditors(editor);			
-		}
-
-		/**
-		 * @see eclox.ui.editor.editors.IEditorListener#editorRefreshed(eclox.ui.editor.editors.IEditor)
-		 */
-		public void editorRefreshed(IEditor editor) {
-			updateEditors(editor);
-		}
-		
-		/**
-		 * Updates some editor enabled state according to the given editor.
-		 * 
-		 * @param editor	the editor that changed
-		 */
-		private void updateEditors(IEditor editor) {
+		public void editorChanged(IEditor editor) {
 			if( editor == html ) {
 				htmlFlavour.setEnabled( ((CheckBoxEditor)editor).getValue() );
 				htmlSearchEngine.setEnabled( ((CheckBoxEditor)editor).getValue() );

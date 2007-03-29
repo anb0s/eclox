@@ -48,7 +48,7 @@ public class CheckBoxEditor extends SettingEditor {
 
 		public void widgetSelected(SelectionEvent e) {
 			dirty = true;
-			fireEditorDirtyChanged();
+			fireEditorChanged();
 			commit();
 		}
 		
@@ -97,7 +97,7 @@ public class CheckBoxEditor extends SettingEditor {
 		
 		getInput().setValue( getSelection() );
 		dirty = false;
-		fireEditorDirtyChanged();
+		fireEditorChanged();
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class CheckBoxEditor extends SettingEditor {
 		// Updates the button state.
 		button.setSelection( getInput().getValue().equalsIgnoreCase(YES) );
 		
-		fireEditorRefreshed();
+		fireEditorChanged();
 	}
 
 	/**

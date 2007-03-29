@@ -53,24 +53,12 @@ public abstract class AbstractEditor implements IEditor {
 	/**
 	 * Notifies registered listeners that the dirty state of the editor changed.
 	 */
-	protected void fireEditorDirtyChanged() {
+	protected void fireEditorChanged() {
 		Iterator	i = listeners.iterator();
 		while( i.hasNext() ) {
 			IEditorListener	listener = (IEditorListener) i.next();
 			
-			listener.editorDirtyChanged(this);
-		}
-	}
-
-	/**
-	 * Notifies registered listeners that the editor has been refreshed.
-	 */
-	protected void fireEditorRefreshed() {
-		Iterator	i = listeners.iterator();
-		while( i.hasNext() ) {
-			IEditorListener	listener = (IEditorListener) i.next();
-			
-			listener.editorRefreshed(this);
+			listener.editorChanged(this);
 		}
 	}
 

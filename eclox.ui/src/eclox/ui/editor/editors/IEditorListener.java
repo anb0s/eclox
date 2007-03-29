@@ -28,17 +28,10 @@ package eclox.ui.editor.editors;
 public interface IEditorListener {
 
 	/**
-	 * Notifies the receiver that the given editor's dirty state changed.
+	 * Notifies the receiver that the given editor's state changed.
 	 * 
 	 * @param editor the editor that changed
 	 */
-	void editorDirtyChanged( IEditor editor );
+	void editorChanged( IEditor editor );
 	
-	/**
-	 * Notifies the receiver that the given editor has been refreshed
-	 * 
-	 * @param editor the editor that has been refresh
-	 */
-	void editorRefreshed( IEditor editor );
-
 }

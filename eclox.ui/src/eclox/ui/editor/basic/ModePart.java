@@ -41,25 +41,25 @@ public class ModePart extends Part {
 	 */
 	private static final String ENTITIES_ALL = "all entities";
 	
-//	/**
-//	 * state for the optimized langage editor
-//	 */
-//	private static final String CXX = "C++";
-//	
-//	/**
-//	 * state for the optimized langage editor
-//	 */
-//	private static final String JAVA = "Java";
-//	
-//	/**
-//	 * state for the optimized langage editor
-//	 */
-//	private static final String C = "C";
-//	
-//	/**
-//	 * state for the optimized langage editor
-//	 */
-//	private static final String C_SHARP = "C#";
+	/**
+	 * state for the optimized langage editor
+	 */
+	private static final String CXX = "C++";
+	
+	/**
+	 * state for the optimized langage editor
+	 */
+	private static final String JAVA = "Java";
+	
+	/**
+	 * state for the optimized langage editor
+	 */
+	private static final String C = "C";
+	
+	/**
+	 * state for the optimized langage editor
+	 */
+	private static final String C_SHARP = "C#";
 	
 	/**
 	 * the editor used to configure entities whose documentation will be extracted
@@ -71,10 +71,10 @@ public class ModePart extends Part {
 	 */
 	private CheckMultiEditor crossReferenced = new CheckMultiEditor( "Include cross-referenced source code in the output" );
 	
-//	/**
-//	 * the editor used to selected the optimized ouput langage
-//	 */
-//	private RadioMultiEditor optimizedLangage = new RadioMultiEditor( new String[] {CXX, JAVA, C, C_SHARP} );
+	/**
+	 * the editor used to selected the optimized ouput langage
+	 */
+	private RadioMultiEditor optimizedLangage = new RadioMultiEditor( new String[] {CXX, JAVA, C, C_SHARP} );
 
 	/**
 	 * Constructor
@@ -90,9 +90,9 @@ public class ModePart extends Part {
 		addLabel("Select the desired extraction mode:");
 		addEditor(entities);
 		addEditor(crossReferenced);
-//		addSperator();
-//		addLabel("Optimize results for:");
-//		addEditor( optimizedLangage );
+		addSperator();
+		addLabel("Optimize results for:");
+		addEditor( optimizedLangage );
 		
 		// Initialies the editors.
 		entities.addSetting(ENTITIES_DOCUMENTED, doxyfile.getSetting("HIDE_UNDOC_MEMBERS") );
@@ -106,9 +106,9 @@ public class ModePart extends Part {
 		crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("REFERENCES_RELATION") );
 		crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("VERBATIM_HEADERS") );
 		
-//		optimizedLangage.addSetting(JAVA, doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA"));
-//		optimizedLangage.addSetting(C, doxyfile.getSetting("OPTIMIZE_OUTPUT_FOR_C"));
-//		optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA"));
-//		optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("EXTRACT_STATIC"));
+		optimizedLangage.addSetting(JAVA, doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA"));
+		optimizedLangage.addSetting(C, doxyfile.getSetting("OPTIMIZE_OUTPUT_FOR_C"));
+		optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA"));
+		optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("EXTRACT_STATIC"));
 	}
 }

@@ -117,7 +117,7 @@ public class CheckMultiEditor extends MultiEditor {
 		super.refresh();
 		
 		// Refreshes the check box
-		State	selection = getSelection();
+		State	selection = getSelectionAsState();
 		button.setSelection( selection != null && selection.getName().equals(SELECTED) );
 	}
 
