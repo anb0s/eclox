@@ -1,13 +1,16 @@
-eclox-0.6.1
+eclox-0.6.1 (1-apr-2007)
  * task #3126 : Enhance the doxyfile creation wizard. Initialize the 
    new doxyfile name with the enclosing eclipse project.
  * task #4863 : Enhance the note for settings in the advanced editor 
    page. Now layout and formatting are done in setting notes.
    Their are also hyperlinks to related settings, allowing a faster
    navigation.
+ * task #4938 : Add resource decoration on doxyfiles being built.
+ * task #4840 : Enhance the doxyfile editor with a new "overview" page.
  * Fixes bug #5983 : TAGFILES note missing. Since the enhancement of
    the setting note presentation, the note of this setting could be
    added.
+ * Fixes bug #8809 : Wrong text for the GENERATE_HTMLHELP tag.
 
 eclox-0.6.0 (1-mar-2007)
  * Add setting properties for REFERENCES_LINK_SOURCE.
