@@ -74,7 +74,7 @@ public class BooleanEditor extends SettingEditor {
          */
         public void widgetDefaultSelected(SelectionEvent e) {
             isDirty = true;
-            fireEditorDirtyChanged();
+            fireEditorChanged();
             commit();
         }
 
@@ -83,7 +83,7 @@ public class BooleanEditor extends SettingEditor {
          */
         public void widgetSelected(SelectionEvent e) {
             isDirty = true;
-            fireEditorDirtyChanged();
+            fireEditorChanged();
             commit();
         }
         
@@ -93,7 +93,7 @@ public class BooleanEditor extends SettingEditor {
     public void commit() {
     	getInput().setValue(getSelection());
         isDirty = false;
-        fireEditorDirtyChanged();
+        fireEditorChanged();
 	}
 
 	public void createContent(Composite parent, FormToolkit formToolkit) {
@@ -171,7 +171,7 @@ public class BooleanEditor extends SettingEditor {
         noButton.setSelection		( value.compareToIgnoreCase(NO) == 0 );
         defaultButton.setSelection	( value.length() == 0 );
         
-        fireEditorRefreshed();
+        fireEditorChanged();
 	}
     
     /**

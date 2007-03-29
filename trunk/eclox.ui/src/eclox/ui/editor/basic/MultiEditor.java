@@ -167,7 +167,16 @@ public abstract class MultiEditor extends AbstractEditor {
 			selection.commit();
 		}
 		dirty = false;
-		fireEditorDirtyChanged();
+		fireEditorChanged();
+	}
+	
+	/**
+	 * Retrieves the selected state of the editor
+	 * 
+	 * @return	a string representing the selected state, or null if none
+	 */
+	public String getSelection() {
+		return (selection != null) ? selection.getName() : null;
 	}
 	
 	/**
@@ -177,9 +186,20 @@ public abstract class MultiEditor extends AbstractEditor {
 		return dirty;
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#isStale()
+	 */
 	public boolean isStale() {
-		// TODO Auto-generated method stub
-		return false;
+		// Looks for the state that wants the selection.
+		State	wantedSelection = null;
+		for( int i = 0; i != states.length; ++i ) {
+			if( states[i].wantsSelection() ) {
+				wantedSelection = states[i];
+				break;
+			}
+		}
+		
+		return wantedSelection != selection;
 	}
 
 	/**
@@ -199,7 +219,7 @@ public abstract class MultiEditor extends AbstractEditor {
 				break;
 			}
 		}
-		fireEditorRefreshed();
+		fireEditorChanged();
 	}
 	
 	/**
@@ -207,7 +227,7 @@ public abstract class MultiEditor extends AbstractEditor {
 	 * 
 	 * @return	a state or null when none
 	 */
-	protected State getSelection() {
+	protected State getSelectionAsState() {
 		return selection;
 	}
 	
@@ -240,7 +260,7 @@ public abstract class MultiEditor extends AbstractEditor {
 		if( candidate != null ) {
 			selection = candidate;
 			dirty = true;
-			fireEditorDirtyChanged();
+			fireEditorChanged();
 		}
 	}
 

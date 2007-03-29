@@ -115,7 +115,7 @@ public class ComboMultiEditor extends MultiEditor {
 		super.refresh();
 		
 		// Selectes the string corresponding to the current selection
-		State	selection = getSelection();
+		State	selection = getSelectionAsState();
 		if( selection != null ) {
 			combo.select( combo.indexOf(selection.getName()) );
 		}

@@ -67,24 +67,24 @@ public class Page extends FormPage {
 		managedForm.getForm().setText(this.getTitle());
 
 		ProjectPart		projectPart		= new ProjectPart( parent, toolkit, doxyfile );
-		ModePart		modePart		= new ModePart( parent, toolkit, doxyfile );
 		OutputPart		outputPart		= new OutputPart( parent, toolkit, doxyfile );
+		ModePart		modePart		= new ModePart( parent, toolkit, doxyfile );
 		DiagramsPart	diagramsPart	= new DiagramsPart( parent, toolkit, doxyfile );
 		
 		managedForm.addPart(projectPart);
-		managedForm.addPart(modePart);
 		managedForm.addPart(outputPart);
+		managedForm.addPart(modePart);
 		managedForm.addPart(diagramsPart);
 		
 		projectPart.getSection().setLayoutData( new GridData(GridData.FILL_BOTH) );
-		modePart.getSection().setLayoutData( new GridData(GridData.FILL_BOTH) );
 		outputPart.getSection().setLayoutData( new GridData(GridData.FILL_BOTH) );
+		modePart.getSection().setLayoutData( new GridData(GridData.FILL_BOTH) );
 		diagramsPart.getSection().setLayoutData( new GridData(GridData.FILL_BOTH) );
 		
 		GridLayout	layout = new GridLayout(2, true);
 		parent.setLayout(layout);
 		layout.horizontalSpacing = 10;
-		layout.verticalSpacing = 10;
+		layout.verticalSpacing = 0;
 		layout.marginWidth = 10;
 		layout.marginHeight = 10;
 

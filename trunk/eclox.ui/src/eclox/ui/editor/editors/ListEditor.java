@@ -173,7 +173,7 @@ public abstract class ListEditor extends SettingEditor {
 		assert valueCompounds != null;
 		
 		getInput().setValue( valueCompounds );
-		fireEditorDirtyChanged();
+		fireEditorChanged();
 	}
 
 	/**
@@ -322,7 +322,7 @@ public abstract class ListEditor extends SettingEditor {
 		listViewer.setInput(valueCompounds);
 		
 		updateButtons();
-		fireEditorRefreshed();
+		fireEditorChanged();
 		
 		// Post-condition
 		assert valueCompounds != null;
@@ -376,7 +376,7 @@ public abstract class ListEditor extends SettingEditor {
 		if( newCompound != null )
 		{
 			valueCompounds.add( newCompound );
-			fireEditorDirtyChanged();
+			fireEditorChanged();
 			commit();
 			listViewer.refresh();
 			listViewer.setSelection( new StructuredSelection(new Integer(valueCompounds.size() -1)) );
@@ -403,7 +403,7 @@ public abstract class ListEditor extends SettingEditor {
 		if( edited != null ) {			
 			// Updates the setting.
 			valueCompounds.set( valueCompounds.indexOf(original), edited );
-			fireEditorDirtyChanged();
+			fireEditorChanged();
 			
 			// Commit changes and erstores the selection.
 			listViewer.getControl().setRedraw( false );
@@ -451,7 +451,7 @@ public abstract class ListEditor extends SettingEditor {
 				selected.remove(0);
 			}
 		}
-		fireEditorDirtyChanged();
+		fireEditorChanged();
 
 		// Commits changes and reselected moved objects.
 		listViewer.getControl().setRedraw( false );
@@ -498,7 +498,7 @@ public abstract class ListEditor extends SettingEditor {
 		}
 		
 		Collections.reverse(valueCompounds);
-		fireEditorDirtyChanged();
+		fireEditorChanged();
 		
 		// Commits changes and reselected moved objects.
 		listViewer.getControl().setRedraw( false );
@@ -523,7 +523,7 @@ public abstract class ListEditor extends SettingEditor {
 		
 		// Removes selected items from the value compounds.
 		valueCompounds.removeAll( selection.toList() );
-		fireEditorDirtyChanged();
+		fireEditorChanged();
 		
 		// Commits changes.
 		commit();
