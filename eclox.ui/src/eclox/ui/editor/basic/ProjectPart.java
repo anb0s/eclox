@@ -70,15 +70,14 @@ public class ProjectPart extends Part {
 	ProjectPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
 		super( parent, toolkit, "Project", doxyfile );
 		
-		addLabel("Provide some documentation about the project.");
 		addEditor("Name:", nameEditor);
 		addEditor("Version or Identifier:", versionEditor);
 		addSperator();
-		addLabel("Specify the directories to scan for source code.");
+		addLabel("Specify the directories to scan for source code:");
 		addEditor(inputEditor);
 		addEditor(recursiveEditor);
 		addSperator();
-		addLabel("Specify the directory where to put the generated documentation.");
+		addLabel("Specify the directory where to put the generated documentation:");
 		addEditor(outputEditor);
 
 		nameEditor     .setInput( doxyfile.getSetting("PROJECT_NAME")		);

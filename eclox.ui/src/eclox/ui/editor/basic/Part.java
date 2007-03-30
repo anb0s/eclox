@@ -78,7 +78,7 @@ public class Part extends SectionPart {
 	 * @param	doxyfile	the doxyfile being edited
 	 */
 	public Part(Composite parent, FormToolkit tk, String title, Doxyfile doxyfile) {
-		super( parent, tk, Section.TITLE_BAR );
+		super( parent, tk, Section.TITLE_BAR/*|Section.EXPANDED|Section.TWISTIE*/ );
 		
 		this.doxyfile = doxyfile;
 		
@@ -146,7 +146,9 @@ public class Part extends SectionPart {
 		
 		labelData.verticalIndent = spacer;
 		labelData.horizontalIndent = indent;
+		labelData.grabExcessVerticalSpace = editor.grabVerticalSpace();
 		containerData.verticalIndent = spacer;
+		containerData.grabExcessVerticalSpace = editor.grabVerticalSpace();
 		label.setLayoutData(labelData);
 		label.setForeground(toolkit.getColors().getColor(FormColors.TITLE));
 		container.setLayoutData(containerData);
@@ -184,6 +186,7 @@ public class Part extends SectionPart {
 		data.verticalIndent = spacer;
 		data.horizontalSpan = 2;
 		data.horizontalIndent = indent;
+		data.grabExcessVerticalSpace = editor.grabVerticalSpace();
 		editor.createContent(container, toolkit);
 		container.setLayoutData(data);
 		spacer = 0;

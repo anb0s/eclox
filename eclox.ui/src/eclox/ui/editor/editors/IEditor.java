@@ -53,11 +53,11 @@ public interface IEditor {
 	void createContent(Composite parent, FormToolkit formToolkit);
 	
 	/**
-	 * Asks the editor if it wants to vertically fill the available space.
+	 * Asks the editor if it wants to grow vertically to grad all available space.
 	 * 
-	 * @return	a boolean telling if the editor wants to fill the available vertical space
+	 * @return	a boolean telling if the editor wants to grab the available vertical space
 	 */
-	boolean fillVertically();
+	boolean grabVerticalSpace();
 	
 	/**
 	 * Asks the editor to dispose its controls.

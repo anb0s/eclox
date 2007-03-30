@@ -254,7 +254,7 @@ public abstract class ListEditor extends SettingEditor {
 		assert listViewer != null;
 	}
 
-	public boolean fillVertically() {
+	public boolean grabVerticalSpace() {
 		return true;
 	}
 

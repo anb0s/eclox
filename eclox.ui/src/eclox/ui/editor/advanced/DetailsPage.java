@@ -290,7 +290,7 @@ public class DetailsPage implements IDetailsPage {
 	        if(editor == null) {
 		        editor = (SettingEditor) editorClass.newInstance();
 		        editor.createContent(editorContainer, managedForm.getToolkit());
-		        editorContainer.setLayoutData( new GridData(editor.fillVertically() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL) );
+		        editorContainer.setLayoutData( new GridData(editor.grabVerticalSpace() ? GridData.FILL_BOTH : GridData.FILL_HORIZONTAL) );
 	        }
 	        
 	        // Assigns the input to the editor.
