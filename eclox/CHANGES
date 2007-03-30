@@ -11,6 +11,7 @@ eclox-0.6.1 (1-apr-2007)
    the setting note presentation, the note of this setting could be
    added.
  * Fixes bug #8809 : Wrong text for the GENERATE_HTMLHELP tag.
+ * Fixes bug #8819 : In advanced editor page, selection change not shown.
 
 eclox-0.6.0 (1-mar-2007)
  * Add setting properties for REFERENCES_LINK_SOURCE.
