@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Eclox
+Bundle-Name: Eclox Branding Information
 Bundle-SymbolicName: org.gna.eclox; singleton:=true
-Bundle-Version: 0.6.0
+Bundle-Version: 0.6.1
 Bundle-Vendor: Guillaume Brocker
 Bundle-Localization: plugin
