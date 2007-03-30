@@ -106,9 +106,9 @@ public class TextEditor extends SettingEditor {
     }
     
     /**
-     * @see eclox.ui.editor.editors.IEditor#fillVertically()
+     * @see eclox.ui.editor.editors.IEditor#grabVerticalSpace()
      */
-    public boolean fillVertically() {
+    public boolean grabVerticalSpace() {
 		return false;
 	}
 
