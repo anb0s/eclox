@@ -530,6 +530,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	        activeFilter.setDoxyfile( doxyfile );
 	        activeFilter.createControls( getManagedForm(), filterControls );
 	        activeFilter.createViewerFilters( tableViewer );
+	        tableViewer.refresh();
 	        
 	        // Adapts the size of the filter control container & relayout the section content.
 	        Object      tableLayoutData = tableViewer.getTable().getLayoutData();
