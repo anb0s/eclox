@@ -73,12 +73,11 @@ public class ProjectPart extends Part {
 		addEditor("Name:", nameEditor);
 		addEditor("Version or Identifier:", versionEditor);
 		addSperator();
-		addLabel("Specify the directories to scan for source code:");
+		addLabel("Input directories:");
 		addEditor(inputEditor);
 		addEditor(recursiveEditor);
 		addSperator();
-		addLabel("Specify the directory where to put the generated documentation:");
-		addEditor(outputEditor);
+		addEditor("Output Directory:", outputEditor);
 
 		nameEditor     .setInput( doxyfile.getSetting("PROJECT_NAME")		);
 		versionEditor  .setInput( doxyfile.getSetting("PROJECT_NUMBER")		);
