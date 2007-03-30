@@ -183,6 +183,9 @@ public abstract class ListEditor extends SettingEditor {
 		// Pre-condition
 		assert listViewer == null;
 		
+		// Activates border painting.
+		formToolkit.paintBordersFor( parent );
+		
 		// Installs the layout.
 		FormLayout	layout = new FormLayout();
 		layout.spacing = 2;
@@ -191,14 +194,15 @@ public abstract class ListEditor extends SettingEditor {
 		// Creates the list viewer and installs it in the layout.
 		FormData		formData;
 		
-		listViewer = new ListViewer( parent );
+		listViewer = new ListViewer( parent, 0 );
 		formData = new FormData();
-		formData.top = new FormAttachment( 0, 0 );
-		formData.right = new FormAttachment( 85, 0 );
-		formData.bottom = new FormAttachment( 100, 0 );
-		formData.left = new FormAttachment( 0, 0 );
+		formData.top = new FormAttachment( 0, 2 );
+		formData.right = new FormAttachment( 85, -1 );
+		formData.bottom = new FormAttachment( 100, -2 );
+		formData.left = new FormAttachment( 0, 1 );
 		listViewer.getControl().setLayoutData( formData );
-		
+		listViewer.getControl().setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+
 		// Initializes the list viewer.
 		listViewer.setContentProvider( new MyContentProvider() );
 		listViewer.setLabelProvider( new MyLabelProvider() );
