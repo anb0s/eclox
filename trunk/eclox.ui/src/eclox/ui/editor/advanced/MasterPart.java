@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2003-2007 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -24,12 +24,15 @@ package eclox.ui.editor.advanced;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Stack;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
@@ -49,6 +52,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -71,50 +76,12 @@ import eclox.ui.editor.advanced.filters.Modified;
  * Implements the master part's user interface.
  * 
  * @author gbrocker
+ * 
+ * TODO Add support for history action drop down menu.
  */
 public class MasterPart extends SectionPart implements IPartSelectionListener {
 
 	/**
-	 * the text column index
-	 */
-	private final static int TEXT_COLUMN = 0;
-	
-	/**
-	 * the value column index
-	 */
-	private final static int VALUE_COLUMN = 1;
-	
-	/**
-	 * the doxyfile being edited
-	 */
-	private Doxyfile doxyfile;
-	
-    /**
-     * the active filter
-     */
-    private IFilter activeFilter;
-    
-    /**
-     * the default filter
-     */
-    private IFilter defaultFilter = new All();
-    
-    /**
-     * the parent composite for filter buttons
-     */
-    private Composite filterButtons;
-    
-    /**
-     * the parent composite for filter controls
-     */
-    private Composite filterControls;
-        
-    /**
-     * the list viewer
-     */
-    private TableViewer tableViewer;
-    
-    /**
      * Implements the master content provider.
      */
     private class MyContentProvider implements IStructuredContentProvider {
@@ -125,20 +92,20 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         public void dispose() {}
 
         /**
-         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
-         */
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
-
-        /**
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
         public Object[] getElements(Object inputElement) {
             Doxyfile    doxyfile = (Doxyfile) inputElement;
             return doxyfile.getSettings();
         }
+
+        /**
+         * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+         */
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
     }
-    
-    /**
+	
+	/**
      * Implements the mouse listener attached to the table.
      * 
      * This listener will search for a DetailsPart in the managed form given
@@ -164,7 +131,32 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         }
         
     }
+	
+	/**
+     * Implements a filter button listener
+     */
+    private class MyFilterButtonListener implements SelectionListener {
 
+        /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            Object  data   = e.widget.getData(); 
+            IFilter filter = (IFilter) data;
+           	activateFilter( filter );
+        }
+
+        /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetSelected(SelectionEvent e) {
+            Object  data   = e.widget.getData(); 
+            IFilter filter = (IFilter) data;
+            activateFilter( filter );
+        }
+        
+    }
+	
     /**
      * Implements the label provider.
      */
@@ -175,18 +167,23 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		 */
 		private Set settings = new HashSet();
 		
-		public void settingPropertyChanged(Setting setting, String property) {
-			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
-				fireLabelProviderChanged( new LabelProviderChangedEvent(this, setting) );
+		/**
+		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
+		 */
+		public void dispose() {
+			// Walks through all settings and unregisters from the listeners
+			Iterator	i = settings.iterator();
+			while( i.hasNext() == true ) {
+				Object	object = i.next();
+				Setting	setting = (Setting) object;
+				
+				setting.removeSettingListener( this );
 			}
+			settings.clear();
+			
+			super.dispose();
 		}
 		
-		public void settingPropertyRemoved(Setting setting, String property) {
-			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
-				fireLabelProviderChanged( new LabelProviderChangedEvent(this, setting) );
-			}
-		}
-
 		/**
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
 		 */
@@ -224,84 +221,219 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
             return columnText;
 		}
 
-		/**
-		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-		 */
-		public void dispose() {
-			// Walks through all settings and unregisters from the listeners
-			Iterator	i = settings.iterator();
-			while( i.hasNext() == true ) {
-				Object	object = i.next();
-				Setting	setting = (Setting) object;
-				
-				setting.removeSettingListener( this );
+		public void settingPropertyChanged(Setting setting, String property) {
+			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
+				fireLabelProviderChanged( new LabelProviderChangedEvent(this, setting) );
 			}
-			settings.clear();
-			
-			super.dispose();
+		}
+
+		public void settingPropertyRemoved(Setting setting, String property) {
+			if( property.equals( Editor.PROP_SETTING_DIRTY ) ) {
+				fireLabelProviderChanged( new LabelProviderChangedEvent(this, setting) );
+			}
 		}
 
     }
-	
+    
     /**
-     * Implements a tree viewer selection listener that forwards selection changes to 
-     * a managed form.
+     * Implements a tree viewer selection listener.
      */
-    private class MySelectionForwarder implements ISelectionChangedListener {
+    private class MySelectionListener implements ISelectionChangedListener {
 
-        /**
-         * The form part that is the source of the selection change notifications.
-         */
-        private IFormPart formPart;
-        
-        /**
-         * The managed form to forward the selection changes to.
-         */
-        private IManagedForm managedForm;
-        
-        /**
-         * Constructor.
-         * 
-         * @param   managedForm a managed form instance that will received forwarded seletion changes
-         */
-        public MySelectionForwarder(IFormPart formPart, IManagedForm managedForm) {
-            this.formPart = formPart;
-            this.managedForm = managedForm;
-        }
-        
+    	public boolean sleeping = false;
+    	
         /**
          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
          */
         public void selectionChanged(SelectionChangedEvent event) {
-            this.managedForm.fireSelectionChanged(this.formPart, event.getSelection());
+        	if( sleeping == false ) {
+	        	ISelection selection = event.getSelection();
+	        	
+	        	if( selection.isEmpty() == false ) {
+	        		goneTo(selection);
+	        		refreshHistoryActions();
+	        	}
+	        	fireSelectionChanged(selection);
+        	}
         }
 
     }
+    
+    /**
+     * Implements an action that will trigger the navigation in the selection history. This class
+     * is used to contribute to the form's action bar manager.
+     */
+    private class MyHistoryAction extends Action {
+    	
+    	/**
+    	 * the collection representing the history to browse
+    	 */
+    	private Stack history;
+    	
+    	/**
+    	 * the menu creator
+    	 */
+//    	private MyHistoryActionMenuCreator menuCreator;
+    	
+    	/**
+    	 * Constructor
+    	 * 
+    	 * @param history	the collection representing the history to browse
+    	 */
+    	public MyHistoryAction(Stack history) {
+//    		super(new String(), IAction.AS_DROP_DOWN_MENU);
+    		this.history = history;
+//    		this.menuCreator = new MyHistoryActionMenuCreator(history);
+    		
+//    		setMenuCreator(menuCreator);
+    	}
+
+		/**
+		 * @see org.eclipse.jface.action.Action#run()
+		 */
+		public void run() {
+			navigateHistory(this);
+		}
+		
+		/**
+		 * @see org.eclipse.jface.action.Action#runWithEvent(org.eclipse.swt.widgets.Event)
+		 */
+//		public void runWithEvent(Event event) {
+//		}
+		
+		/**
+		 * Refreshes the state of the action according to the navigation direction and the history state 
+		 */
+		public void refresh() {
+			// Updates the action to go back in the history.
+			if( history.isEmpty() == false ) {
+				IStructuredSelection	selection	= (IStructuredSelection) history.peek();
+				Setting					setting		= (Setting) selection.getFirstElement();
+				
+				setEnabled(true);
+				setText("Go to " + setting.getProperty(Setting.TEXT));
+			}
+			else {
+				setEnabled(false);
+				setText(new String());
+			}
+		}
+    	
+    }
+    
+    /**
+     * Implements the menu creator for history actions
+     */
+//    private class MyHistoryActionMenuCreator implements IMenuCreator {
+//    	
+//    	Menu menu;
+//    	Vector history;
+//    	
+//    	public MyHistoryActionMenuCreator(Vector history) {
+//    		this.history = history;
+//    	}
+//
+//		public void dispose() {
+//			// Pre-condition
+//			assert menu != null;
+//			
+//			menu.dispose();
+//		}
+//
+//		public Menu getMenu(Control parent) {
+//			menu = new Menu(parent);
+//			refresh(menu);
+//			return menu;
+//		}
+//
+//		public Menu getMenu(Menu parent) {
+//			menu = new Menu(parent);
+//			refresh(menu);
+//			return menu;
+//		}
+//		
+//		public void refresh(Menu menu) {
+//			ListIterator	i = history.listIterator(history.size());
+//			while(i.hasPrevious()) {
+//				IStructuredSelection	selection = (IStructuredSelection) i.previous();
+//				Setting					setting = (Setting) selection.getFirstElement();
+//				MenuItem				menuItem = new MenuItem(menu, 0);
+//				
+//				menuItem.setText(setting.getProperty(Setting.TEXT));
+//			}
+//		}
+//    	
+//    }
+    
+    /**
+	 * the text column index
+	 */
+	private final static int TEXT_COLUMN = 0;
+    
+    /**
+	 * the value column index
+	 */
+	private final static int VALUE_COLUMN = 1;
+        
+    /**
+	 * the doxyfile being edited
+	 */
+	private Doxyfile doxyfile;
+    
+    /**
+     * the active filter
+     */
+    private IFilter activeFilter; 
+    
+    /**
+     * the default filter
+     */
+    private IFilter defaultFilter = new All();
+    
+    /**
+     * the parent composite for filter buttons
+     */
+    private Composite filterButtons;
+    
+    /**
+     * the parent composite for filter controls
+     */
+    private Composite filterControls;
 
     /**
-     * Implements a filter button listener
+     * the list viewer
      */
-    private class MyFilterButtonListener implements SelectionListener {
+    private TableViewer tableViewer;
+    
+    /**
+     * the table viewer selection listener
+     */
+    private MySelectionListener tableViewerSelectionListener;
+	
+    /**
+     * the collection of selections preceeding the current selection
+     */
+    private Stack backSelections = new Stack();
 
-        /**
-         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-         */
-        public void widgetDefaultSelected(SelectionEvent e) {
-            Object  data   = e.widget.getData(); 
-            IFilter filter = (IFilter) data;
-           	activateFilter( filter );
-        }
-
-        /**
-         * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-         */
-        public void widgetSelected(SelectionEvent e) {
-            Object  data   = e.widget.getData(); 
-            IFilter filter = (IFilter) data;
-            activateFilter( filter );
-        }
-        
-    }
+    /**
+     * the collection of selections following the current selection 
+     */
+    private Stack forwardSelections = new Stack();
+    
+    /**
+     * the current selection
+     */
+    private ISelection currentSelection;
+    
+    /**
+     * the go backward history action
+     */
+    private MyHistoryAction goBack = new MyHistoryAction(backSelections);
+    
+    /**
+     * the go foreward history action
+     */
+    private MyHistoryAction goForward = new MyHistoryAction(forwardSelections);
     
     /**
      * Constructor
@@ -342,48 +474,76 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
     }
     
 	/**
-     * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
+     * Activates the specified filter.
+     * 
+     * @param   filter  a filter that must be activated
      */
-    public void initialize(IManagedForm form) {
-        // Pre-condition
-        assert tableViewer != null;
+	private void activateFilter( IFilter filter ) {
+		Section	section = getSection();
+		
+		// Freezes the section widget.
+		section.setRedraw( false );
+			
+        // Updates the filter button's state.
+        Control[]   controls = filterButtons.getChildren();
+        for( int i = 0; i < controls.length; ++i ) {
+            Control control	= controls[i];
+            Button  button	= (Button) control;
+            
+            button.setSelection( control.getData() == filter );
+        }
+
+        // If there is a new filter to activate, do the activation job.
+        if( filter != activeFilter ) {
+
+   	        // Deactivates the previous filter.
+	        if( activeFilter != null ) {
+	            activeFilter.disposeViewerFilers( tableViewer );
+	            activeFilter.disposeControls();
+	            activeFilter.setDoxyfile( null );
+	            activeFilter = null;
+	        }
+	        
+	        // Activates the new filter.
+	        activeFilter = filter;
+	        activeFilter.setDoxyfile( doxyfile );
+	        activeFilter.createControls( getManagedForm(), filterControls );
+	        activeFilter.createViewerFilters( tableViewer );
+	        tableViewer.refresh();
+	        
+	        // Adapts the size of the filter control container & relayout the section content.
+	        Object      tableLayoutData = tableViewer.getTable().getLayoutData();
+	        FormData    tableFormData = (FormData) tableLayoutData;
+	        if( filterControls.getChildren().length == 0 ) {
+	        		filterControls.setVisible( false );
+	        		tableFormData.top = new FormAttachment( 0, 0 );
+	        }
+	        else {
+	        		filterControls.setVisible( true );
+	        		tableFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
+	        }
+	        
+	        // Reactivates section widget.
+	        section.layout( true, true );
+        }
         
-        // Installs several listeners.
-        tableViewer.addSelectionChangedListener( new MySelectionForwarder(this, form) );
-        tableViewer.addDoubleClickListener( new MyDoubleClickListener() );
-        
-        // Default job done by super class.
-        super.initialize(form);
+        // Reactivates the redrawing.
+        section.setRedraw( true );
     }
 
 	/**
-	 * @see org.eclipse.ui.forms.AbstractFormPart#isStale()
-	 */
-	public boolean isStale() {
-		// We always answer yes because it is currently not trivial
-		// to know if the data model has changed since last refresh.
-		return true;
-	}
+     * Adds a new filter to the master part.
+     * 
+     * @param   toolkit a toolkit to use for the widget creation
+     * @param   filter  a new filter to add
+     */
+    private void addFilter( FormToolkit toolkit, IFilter filter ) {
+        Button 	button = toolkit.createButton( filterButtons, filter.getName(), SWT.FLAT|SWT.TOGGLE);
+        button.setData( filter );
+        button.addSelectionListener( new MyFilterButtonListener() );
+    }
 
 	/**
-	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IFormPart part, ISelection selection) {
-		if( part != this ) {
-			activateFilter( defaultFilter );
-			tableViewer.setSelection( selection, true );
-		}			
-	}
-	
-    /**
-     * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
-     */
-    public void refresh() {
-		tableViewer.refresh();
-		super.refresh();
-	}
-
-    /**
      * Creates all buttons for setting filters.
      * 
      * @param   toolkit the form tool to use for the control creation
@@ -413,8 +573,8 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         // Post-condition
         assert filterButtons != null;
     }
-    
-    /**
+
+	/**
      * Creates controls subordinated to the filter buttons.
      */
     private void createSubControls( FormToolkit toolkit, Composite parent ) {
@@ -481,74 +641,156 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         assert filterControls != null;
         assert tableViewer != null;
     }
-    
+	
     /**
-     * Adds a new filter to the master part.
-     * 
-     * @param   toolkit a toolkit to use for the widget creation
-     * @param   filter  a new filter to add
-     */
-    private void addFilter( FormToolkit toolkit, IFilter filter ) {
-        Button 	button = toolkit.createButton( filterButtons, filter.getName(), SWT.FLAT|SWT.TOGGLE);
-        button.setData( filter );
-        button.addSelectionListener( new MyFilterButtonListener() );
-    }
-    
-    /**
-     * Activates the specified filter.
-     * 
-     * @param   filter  a filter that must be activated
-     */
-	private void activateFilter( IFilter filter ) {
-		Section	section = getSection();
+	 * Notifies the form that the selection changed.
+	 * 
+	 * @param	selection	the new selection
+	 */
+	private void fireSelectionChanged( ISelection selection ) {
+		getManagedForm().fireSelectionChanged(this, selection);
+	}
+	
+	/**
+	 * Steps back in the selection history.
+	 * 
+	 * @return	the new current selection
+	 */
+	private ISelection goBack() {
+		// Pre-condition
+		assert backSelections.empty() == false;
 		
-		// Freezes the section widget.
-		section.setRedraw( false );
+		// Saves the current selection into the foreward selection stack.
+		if( currentSelection != null ) {
+			forwardSelections.push(currentSelection);
+		}
+		
+		// Restores the previous selection.
+		tableViewerSelectionListener.sleeping = true;
+		
+		currentSelection = (ISelection) backSelections.pop();
+		activateFilter( defaultFilter );
+		tableViewer.setSelection( currentSelection, true );
+		fireSelectionChanged(currentSelection);
+		
+		tableViewerSelectionListener.sleeping = false;
+		
+		// Job's done.
+		return currentSelection;
+	}
+
+	/**
+	 * Steps forward in the selectio history
+	 */
+	private ISelection goForward() {
+		// Pre-condition
+		assert forwardSelections.empty() == false;
+
+		// Saves the current selection into the backward selection stack.
+		if( currentSelection != null ) {
+			backSelections.push(currentSelection);
+		}
+		
+		// Restores the previous selection
+		tableViewerSelectionListener.sleeping = true;
+		
+		currentSelection = (ISelection) forwardSelections.pop();
+		activateFilter( defaultFilter );
+		tableViewer.setSelection( currentSelection, true );
+		fireSelectionChanged(currentSelection);
+		
+		tableViewerSelectionListener.sleeping = false;
+				
+		// Job's done.
+		return currentSelection;
+	}
+	
+	/**
+	 * Notifies that the selection has changed and the hitory must be updated
+	 * 
+	 * @param selection	the new selection
+	 */
+	private void goneTo( ISelection selection ) {
+		if( currentSelection == null || selection.equals(currentSelection) == false ) {
+			// Saves the current selection in the backward stack.
+			if( currentSelection != null ) {
+				backSelections.push(currentSelection);
+			}
 			
-        // Updates the filter button's state.
-        Control[]   controls = filterButtons.getChildren();
-        for( int i = 0; i < controls.length; ++i ) {
-            Control control	= controls[i];
-            Button  button	= (Button) control;
-            
-            button.setSelection( control.getData() == filter );
-        }
+			// Clears the foreward selection stack.
+			forwardSelections.clear();
+			
+			// Installs the current selection.
+			currentSelection = selection;
+		}
+	}
+    
+    /**
+     * Update the selection actions according to the history state
+     */
+	private void refreshHistoryActions() {
+		goBack.refresh();
+		goForward.refresh();
+	}
 
-        // If there is a new filter to activate, do the activation job.
-        if( filter != activeFilter ) {
-
-   	        // Deactivates the previous filter.
-	        if( activeFilter != null ) {
-	            activeFilter.disposeViewerFilers( tableViewer );
-	            activeFilter.disposeControls();
-	            activeFilter.setDoxyfile( null );
-	            activeFilter = null;
-	        }
-	        
-	        // Activates the new filter.
-	        activeFilter = filter;
-	        activeFilter.setDoxyfile( doxyfile );
-	        activeFilter.createControls( getManagedForm(), filterControls );
-	        activeFilter.createViewerFilters( tableViewer );
-	        tableViewer.refresh();
-	        
-	        // Adapts the size of the filter control container & relayout the section content.
-	        Object      tableLayoutData = tableViewer.getTable().getLayoutData();
-	        FormData    tableFormData = (FormData) tableLayoutData;
-	        if( filterControls.getChildren().length == 0 ) {
-	        		filterControls.setVisible( false );
-	        		tableFormData.top = new FormAttachment( 0, 0 );
-	        }
-	        else {
-	        		filterControls.setVisible( true );
-	        		tableFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
-	        }
-	        
-	        // Reactivates section widget.
-	        section.layout( true, true );
-        }
+    /**
+     * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
+     */
+    public void initialize(IManagedForm form) {
+        // Pre-condition
+        assert tableViewer != null;
         
-        // Reactivates the redrawing.
-        section.setRedraw( true );
+        // Installs several listeners.
+        tableViewerSelectionListener = new MySelectionListener();
+        
+        tableViewer.addPostSelectionChangedListener( tableViewerSelectionListener );
+        tableViewer.addDoubleClickListener( new MyDoubleClickListener() );
+        
+        // Installs the actions
+        goBack.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
+        goForward.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
+        form.getForm().getToolBarManager().add(goBack);
+        form.getForm().getToolBarManager().add(goForward);
+        refreshHistoryActions();
+        
+        // Default job done by super class.
+        super.initialize(form);
     }
+    
+    /**
+	 * @see org.eclipse.ui.forms.AbstractFormPart#isStale()
+	 */
+	public boolean isStale() {
+		// We always answer yes because it is currently not trivial
+		// to know if the data model has changed since last refresh.
+		return true;
+	}
+	
+	private void navigateHistory(MyHistoryAction action) {
+		ISelection selection = (action == goBack) ? goBack() : goForward();
+		
+		refreshHistoryActions();
+		fireSelectionChanged(selection);
+	}
+    
+    /**
+     * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
+     */
+    public void refresh() {
+		tableViewer.refresh();
+		super.refresh();
+	}
+    
+    /**
+	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
+	 */
+	public void selectionChanged(IFormPart part, ISelection selection) {
+		if( part != this ) {
+			activateFilter( defaultFilter );
+			tableViewer.setSelection( selection, true );
+			goneTo(selection);
+			refreshHistoryActions();
+		}
+	}
+	
 }
