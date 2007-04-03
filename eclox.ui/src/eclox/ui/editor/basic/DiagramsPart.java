@@ -46,7 +46,8 @@ public class DiagramsPart extends Part {
 			// Pre-condition
 			assert editor == diagrams;
 			
-			final boolean	enabled	= diagrams.getSelection().equals(DIAGRAM_DOT_TOOL); 
+			final String	selection = diagrams.getSelection();
+			final boolean	enabled	= selection != null && selection.equals(DIAGRAM_DOT_TOOL); 
 			
 			classGraph.setEnabled(enabled);
 			collaborationGraph.setEnabled(enabled);
