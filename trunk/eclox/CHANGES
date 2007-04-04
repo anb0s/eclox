@@ -1,3 +1,9 @@
+eclox-0.6.2 (4-apr-2007)
+ * Implements task #4978 : Add navigation history in the advanced editor
+   page.
+ * Fixes bug #8844 : Doxyfile Editor does not work with Version 0.6.1
+   on Eclipse 3.2.2.
+ 
 eclox-0.6.1 (1-apr-2007)
  * task #3126 : Enhance the doxyfile creation wizard. Initialize the 
    new doxyfile name with the enclosing eclipse project.
