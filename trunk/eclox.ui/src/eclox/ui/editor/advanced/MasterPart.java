@@ -1,23 +1,21 @@
-/*
- * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2007 Guillaume Brocker
- * 
- * This file is part of eclox.
- * 
- * eclox is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
- * 
- * eclox is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with eclox; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    
- */
+// eclox : Doxygen plugin for Eclipse.
+// Copyright (C) 2003-2007 Guillaume Brocker
+// 
+// This file is part of eclox.
+// 
+// eclox is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// any later version.
+// 
+// eclox is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with eclox; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    
 
 package eclox.ui.editor.advanced;
 
@@ -26,13 +24,11 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
@@ -251,76 +247,15 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	        	
 	        	if( selection.isEmpty() == false ) {
 	        		goneTo(selection);
-	        		refreshHistoryActions();
+	        		goBack.refresh();
+	        		goForward.refresh();
 	        	}
 	        	fireSelectionChanged(selection);
         	}
         }
 
     }
-    
-    /**
-     * Implements an action that will trigger the navigation in the selection history. This class
-     * is used to contribute to the form's action bar manager.
-     */
-    private class MyHistoryAction extends Action {
-    	
-    	/**
-    	 * the collection representing the history to browse
-    	 */
-    	private Stack history;
-    	
-    	/**
-    	 * the menu creator
-    	 */
-//    	private MyHistoryActionMenuCreator menuCreator;
-    	
-    	/**
-    	 * Constructor
-    	 * 
-    	 * @param history	the collection representing the history to browse
-    	 */
-    	public MyHistoryAction(Stack history) {
-//    		super(new String(), IAction.AS_DROP_DOWN_MENU);
-    		this.history = history;
-//    		this.menuCreator = new MyHistoryActionMenuCreator(history);
-    		
-//    		setMenuCreator(menuCreator);
-    	}
-
-		/**
-		 * @see org.eclipse.jface.action.Action#run()
-		 */
-		public void run() {
-			navigateHistory(this);
-		}
-		
-		/**
-		 * @see org.eclipse.jface.action.Action#runWithEvent(org.eclipse.swt.widgets.Event)
-		 */
-//		public void runWithEvent(Event event) {
-//		}
-		
-		/**
-		 * Refreshes the state of the action according to the navigation direction and the history state 
-		 */
-		public void refresh() {
-			// Updates the action to go back in the history.
-			if( history.isEmpty() == false ) {
-				IStructuredSelection	selection	= (IStructuredSelection) history.peek();
-				Setting					setting		= (Setting) selection.getFirstElement();
-				
-				setEnabled(true);
-				setText("Go to " + setting.getProperty(Setting.TEXT));
-			}
-			else {
-				setEnabled(false);
-				setText(new String());
-			}
-		}
-    	
-    }
-    
+        
     /**
      * Implements the menu creator for history actions
      */
@@ -428,12 +363,12 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
     /**
      * the go backward history action
      */
-    private MyHistoryAction goBack = new MyHistoryAction(backSelections);
+    private HistoryAction goBack = new HistoryAction(HistoryAction.BACK, this);
     
     /**
      * the go foreward history action
      */
-    private MyHistoryAction goForward = new MyHistoryAction(forwardSelections);
+    private HistoryAction goForward = new HistoryAction(HistoryAction.FORWARD, this);
     
     /**
      * Constructor
@@ -652,11 +587,27 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	}
 	
 	/**
-	 * Steps back in the selection history.
+	 * Retrieves the back selection history.
 	 * 
-	 * @return	the new current selection
+	 * @return	a stack representing the back selection history
 	 */
-	private ISelection goBack() {
+	public Stack getBackSelections() {
+		return backSelections;
+	}
+	
+	/**
+	 * Retrieves the forward selection history.
+	 * 
+	 * @return	a stack representing the forward selection history
+	 */
+	public Stack getForwardSelections() {
+		return forwardSelections;
+	}
+	
+	/**
+	 * Steps back in the selection history.
+	 */
+	public void goBack() {
 		// Pre-condition
 		assert backSelections.empty() == false;
 		
@@ -674,15 +625,19 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		fireSelectionChanged(currentSelection);
 		
 		tableViewerSelectionListener.sleeping = false;
+
+		// Refreshes the history actions.
+		goBack.refresh();
+		goForward.refresh();
 		
-		// Job's done.
-		return currentSelection;
+		// Notifies about the selection change.
+		fireSelectionChanged(currentSelection);
 	}
 
 	/**
 	 * Steps forward in the selectio history
 	 */
-	private ISelection goForward() {
+	public void goForward() {
 		// Pre-condition
 		assert forwardSelections.empty() == false;
 
@@ -701,8 +656,12 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		
 		tableViewerSelectionListener.sleeping = false;
 				
-		// Job's done.
-		return currentSelection;
+		// Refreshes the history actions.
+		goBack.refresh();
+		goForward.refresh();
+
+		// Notifies about the selection change.
+		fireSelectionChanged(currentSelection);
 	}
 	
 	/**
@@ -726,14 +685,6 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	}
     
     /**
-     * Update the selection actions according to the history state
-     */
-	private void refreshHistoryActions() {
-		goBack.refresh();
-		goForward.refresh();
-	}
-
-    /**
      * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
      */
     public void initialize(IManagedForm form) {
@@ -751,7 +702,8 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         goForward.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
         form.getForm().getToolBarManager().add(goBack);
         form.getForm().getToolBarManager().add(goForward);
-        refreshHistoryActions();
+		goBack.refresh();
+		goForward.refresh();
         
         // Default job done by super class.
         super.initialize(form);
@@ -766,13 +718,6 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		return true;
 	}
 	
-	private void navigateHistory(MyHistoryAction action) {
-		ISelection selection = (action == goBack) ? goBack() : goForward();
-		
-		refreshHistoryActions();
-		fireSelectionChanged(selection);
-	}
-    
     /**
      * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
      */
@@ -789,7 +734,8 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 			activateFilter( defaultFilter );
 			tableViewer.setSelection( selection, true );
 			goneTo(selection);
-			refreshHistoryActions();
+			goBack.refresh();
+			goForward.refresh();
 		}
 	}
 	
