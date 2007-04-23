@@ -1,3 +1,9 @@
+eclox-0.6.3 (24-apr-2007)
+ * Fixes bug #8976 : Eclipse 3.2.2 (M20070212-1330) Can not create
+   Doxyfile. The selection was expected to have the IResource interface.
+   Now, when no IResource interface is found for the current selection,
+   eclox tries to find an adapter to get it.
+   
 eclox-0.6.2 (4-apr-2007)
  * Implements task #4978 : Add navigation history in the advanced editor
    page.
