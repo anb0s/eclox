@@ -128,10 +128,10 @@ public class Console extends AbstractConsole {
 							
 							IStatus	status = event.getResult();
 							if( status.isOK() ) {
-								append( "Build finished!" );
+								append( "*** Build finished!" );
 							}
 							else {
-								append( "Build aborted! " );
+								append( "*** Build aborted! " );
 								append( status.getMessage() );
 							}
 						}
