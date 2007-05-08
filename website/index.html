@@ -4,7 +4,7 @@
 
 <head>
 	<title>Eclox</title>
-	<link rel="stylesheet" type="text/css" href="styles/space/style.css" title="new" >
+	<link rel="stylesheet" type="text/css" href="styles/space/style.css" >
 	<link rel="contents" href="#contents" >
 	<meta name="description" content="Eclox Project official homepage" >
 	<meta name="keywords" content="eclipse doxygen plugin plug-in" >
@@ -18,13 +18,11 @@
 			<li><a href="#overview">overview</a></li>
 			<li><a href="#download">download</a></li>
 			<li><a href="#getting-involved">getting&nbsp;involved</a></li>
-			<li id="rate"><a href="http://www.eclipseplugincentral.com/Web_Links-index-req-ratelink-lid-76.html">Rate&nbsp;eclox@Eclipse&nbsp;Plugin&nbsp;Central</a></li>
 		</ul>
 	</div>
 
 
 	<h2 id="overview">Overview</h2>
-	<p><a id="screenshot" href="images/editor.png"><img src="images/editor-thumb.png" alt="screenshot of the doxyfile editor"/></a></p>
 	
 	<p>Eclox is a simple <a href="http://www.doxygen.org">doxygen</a> frontend
 	plug-in for <a href="http://www.eclipse.org">eclipse</a>. It aims to provide
@@ -43,6 +41,11 @@
 				<li>doxygen outputs logging and</li>
 				<li>packaged doxygen binaries (for windows and linux).</li>
 			</ul>
+		</div>
+		<div class="two-columns">
+			<h3 class="enlighted" id="screenshots">Screenshots</h3>
+			<a href="images/editor-basic.png"><img src="images/editor-basic-thumb.png" alt="Screenshot of the doxyfile editor"/></a>
+			<a href="images/editor-advanced.png"><img src="images/editor-advanced-thumb.png" alt="Screenshot of the doxyfile editor"/></a>
 		</div>
 	</div>
 
@@ -65,9 +68,9 @@
 		<div class="two-columns">
 			<h3 class="enlighted" id="packages">Packages</h3>
 			<ul>	
-				<li><a href="http://download.gna.org/eclox/CHANGES">change log</a></li>
-				<li><a href="http://download.gna.org/eclox/packages/eclox_0.6.3.zip">eclox_0.6.3.zip</a> (for all platformes)</li>
-				<li><a href="http://download.gna.org/eclox/packages/eclox.doxygen_1.5.0.zip">eclox.doxygen_1.5.0.zip</a> (for windows and linux)</li>
+				<li class="enlighted" id="changes"><a href="http://download.gna.org/eclox/CHANGES">change log</a></li>
+				<li class="enlighted" id="package-eclox"><a href="http://download.gna.org/eclox/packages/eclox_0.6.3.zip">eclox_0.6.3.zip</a> (for all platformes)</li>
+				<li class="enlighted" id="package-doxygen"><a href="http://download.gna.org/eclox/packages/eclox.doxygen_1.5.0.zip">eclox.doxygen_1.5.0.zip</a> (for windows and linux)</li>
 			</ul>
 			<p>You can still <a href="http://download.gna.org/eclox/packages/old">get older eclox releases</a> for
 			previous eclipse versions.</p>
@@ -75,33 +78,54 @@
 	</div>	
 	
 	<h2 id="getting-involved">Getting&nbsp;Involved</h2>
-	<p>The <a href="https://gna.org/projects/eclox">project page</a>
-	(hosted by <em><a href="http://gna.org">Gna!</a></em>)
-	holds detailed informations about developments.</p>
 	
 	<div class="columns">
 		<div class="two-columns">
-		
-			<h3 class="enlighted" id="bugs-support">Bug Tracking &amp; Support Requests</h3>
-			<p>There are two online pages available for
-			<a href="https://gna.org/bugs/?group=eclox">bug reports</a>
-			and <a href="https://gna.org/support/?func=additem&group=eclox">support requests</a>.</p>
-			<p>Submiters should not forget to supply a valid email address in order to receive updates.</p>
+
+			<h3 class="enlighted" id="rate">Rate</h3>
+			<p>You can rate eclox at <a href="http://www.eclipseplugincentral.com/Web_Links-index-req-viewlink-cid-92.html">Eclipse Plugin Central</a> :</p>
+			<form method="post" action="http://www.eclipseplugincentral.com/Web_Links.html">
+				<select name="rating">
+					<option selected>--</option>
+					<option>10</option>
+					<option>9</option>
+					<option>8</option>
+					<option>7</option>
+					<option>6</option>
+					<option>5</option>
+					<option>4</option>
+					<option>3</option>
+					<option>2</option>
+					<option>1</option>
+				</select>
+				<input type="hidden" name="ratinglid" value="76">
+				<input type="hidden" name="ratinguser" value="outside">
+				<input type="hidden" name="req" value="addrating">
+				<input type="submit" value="Vote!">
+			</form>
 
 			<h3 class="enlighted" id="mailing-lists">Mailing Lists</h3>
 			<p>For discussion about eclox, subscribe to the <a href="https://mail.gna.org/listinfo/eclox-users">user mailing list</a>
 			or browse the <a href="https://mail.gna.org/public/eclox-users/">online archives</a>.
 			For announces about eclox, subscribe to the <a href="https://mail.gna.org/listinfo/eclox-news">news mailing list</a>.</p>
+
+			<h3 class="enlighted" id="bugs-support">Bug Tracking &amp; Support Requests</h3>
+			<p>There are two online pages available for
+			<a href="https://gna.org/bugs/?group=eclox">bug reports</a>
+			and <a href="https://gna.org/support/?group=eclox">support requests</a>.</p>
+			<p>Submiters should not forget to supply a valid email address in order to receive updates.</p>
 			
 		</div>
 
 		<div class="two-columns">
 
-			<h3 class="enlighted" id="cvs">Revision Control</h3>
-			<p>Sources of the software can be retrieved from the CVS repository. See following command
-			sample for details about how to connect to the repository.</p>
-
-			<p><kbd>cvs -d :pserver:anonymous@cvs.gna.org:/cvs/eclox co eclox</kbd></p>
+			<h3 class="enlighted" id="cvs">Project Details &amp; Revision Control</h3>
+			<p>The <a href="https://gna.org/projects/eclox">project page</a>
+			(hosted by <em><a href="http://gna.org">Gna!</a></em>)
+			holds detailed informations about developments.</p>
+			<p>Source code of the software can be retrieved from the CVS repository.
+			The following command lets you retrieve the complete sources :</p>
+			<p><kbd>cvs -d :pserver:anonymous@cvs.gna.org:/cvs/eclox co eclox eclox.core eclox.core.doxygen eclox.ui eclox.help</kbd></p>
 			
 		</div>
 	</div>

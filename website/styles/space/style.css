@@ -1,15 +1,15 @@
 body
 {
 	margin: 0;
-	padding-left: 4em;
-	padding-right: 4em;
+	padding-left: 5em;
+	padding-right: 5em;
 	background-color: rgb(255,255,255);
 }
 
 #header
 {
-	margin-left: -4em;
-	margin-right: -4em;
+	margin-left: -5em;
+	margin-right: -5em;
 }
 
 #title
@@ -77,7 +77,7 @@ h2
 	border-width: 0 0 1px 0;
 	border-color: rgb(170,170,255);
 
-	margin-top: 2.5em;
+	margin-top: 3em;
 	margin-left: -1em;
 	margin-right: -1em;
 	
@@ -94,46 +94,68 @@ h3.enlighted
 
 h3#features
 {
-	background-image: url("star.png");
+	background-image: url("24/star.png");
+}
+	
+h3#screenshots
+{
+	background-image: url("24/screenshots.png");
 }
 	
 h3#update-site
 {
-	background-image: url("update.png");
+	background-image: url("24/update.png");
 }
 
 h3#packages
 {
-	background-image: url("package.png");
+	background-image: url("24/packages.png");
+}
+
+h3#rate
+{
+	background-image: url("24/favorite.png");
 }
 
 h3#bugs-support
 {
-	background-image: url("information.png");
+	background-image: url("24/information.png");
 }
 
 h3#mailing-lists
 {
-	background-image: url("mail.png");
+	background-image: url("24/mail.png");
 }
 
 h3#cvs
 {
-	background-image: url("development.png");
+	background-image: url("24/development.png");
 }
 
-p
+li.enlighted
 {
+	background-repeat: no-repeat;
+	background-position: left center;
+	list-style-type: none;
+	margin-left: -20px;
+	padding-left: 20px;
 }
 
-ul
+li#changes
 {
+	background-image: url("16/text.png");
 }
 
-a
+li#package-eclox
 {
-	
+	background-image: url("16/package.png");
 }
+
+li#package-doxygen
+{
+	background-image: url("16/package.png");
+}
+
 
 
 div.columns
@@ -150,8 +172,8 @@ div.columns p,ul
 div.two-columns
 {
 	float: left;
-	width: 43%;
-	padding: 0 1.5em 1.5em 2.5em;
+	width: 40%;
+	margin: 0 4% 1em 2em;
 }
 
 img
