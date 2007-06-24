@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eclox.core.doxyfiles.Setting;
+import eclox.ui.Plugin;
 import eclox.ui.editor.editors.BooleanEditor;
 import eclox.ui.editor.editors.DirectoryEditor;
 import eclox.ui.editor.editors.DirectoryListEditor;
@@ -70,6 +71,7 @@ public class EditorClassRegister {
         
         // Little fallback if no matching editor class was found.
         if(result == null) {
+        	Plugin.log(setting.getIdentifier() + ": missing or wrong TYPE property.");
             result = TextEditor.class;
         }
         

@@ -201,7 +201,7 @@ public class CheckBoxEditor extends SettingEditor {
 	/**
 	 * Retrieves the current value selected in the user interface button.
 	 * 
-	 * @retrun	a string containing the selected value
+	 * @return	a string containing the selected value
 	 */
 	private String getSelection() {
 		// Pre-condition

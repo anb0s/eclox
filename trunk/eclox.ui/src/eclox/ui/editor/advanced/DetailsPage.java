@@ -26,8 +26,6 @@ import java.util.regex.Pattern;
 
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -54,49 +52,34 @@ import eclox.ui.editor.editors.SettingEditor;
  */
 public class DetailsPage implements IDetailsPage {
     
-	/**
-	 * Symbolic name for emphasis font.
-	 */
+	/** symbolic name for emphasis font */
 	private static final String EMPHASIS = "em";
 	
-    /**
-     * The static setting editor class register.
-     */
+    /** the static setting editor class register */
     private static EditorClassRegister editorClassRegister = new EditorClassRegister();
     
-    /**
-     * The setting editor instance.
-     */
+    /** the setting editor instance */
     private SettingEditor editor;
 
-    /**
-     * The section that contains all our controls.
-     */
+    /** the section that contains all our controls */
     private Section section;
     
-    /**
-     * The editor content container widget
-     */
+    /** he editor content container widget */
     private Composite editorContainer;
     
-    /**
-     * The control containing all controls of the section.
-     */
+    /** the control containing all controls of the section */
     private Composite sectionContent;
     
-    /**
-     * The managed form the page is attached to.
-     */
+    /** the managed form the page is attached to */
     protected IManagedForm managedForm;
     
-    /**
-     * the control displaying the setting's note text
-     */
+    /** the current selection */
+    private NavigableSelection selection = new NavigableSelection();
+    
+    /** the control displaying the setting's note text */
     private FormText noteLabel;
     
-    /**
-     * the font registry used for note text formatting.
-     */
+    /** the font registry used for note text formatting */
     private FontRegistry fontRegistry;
     
     /**
@@ -127,7 +110,7 @@ public class DetailsPage implements IDetailsPage {
 			Setting		setting		= doxyfile.getSetting( e.getHref().toString() ); 
 			
 			if( setting != null ) {
-				managedForm.fireSelectionChanged( owner, new StructuredSelection(setting)  );
+				managedForm.fireSelectionChanged( owner, new NavigableSelection(selection, setting) );
 			}
 		}
 
@@ -243,20 +226,27 @@ public class DetailsPage implements IDetailsPage {
     /**
      * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
      */
-    public void selectionChanged(IFormPart part, ISelection selection) {
+    public void selectionChanged(IFormPart part, ISelection newSelection) {
     	// Pre-condition
-    	assert (selection instanceof IStructuredSelection);
+    	assert (newSelection instanceof NavigableSelection);
     	
 		// Retreieves the node that is provided by the selection.
     	if( part != this ) {
-	    	IStructuredSelection	stSelection	= (IStructuredSelection) selection;
-	        Object					object		= stSelection.getFirstElement();
-		    Setting					setting		= (object instanceof Setting) ? (Setting) object : null;
+    		selection = (NavigableSelection) newSelection;
+	    	Object	object	= selection.getFirstElement();
+		    Setting	setting	= (object instanceof Setting) ? (Setting) object : null;
+		    String	text	= setting.getProperty(Setting.TEXT);
+		    
+		    // Checks that the setting has a text property.
+		    if( text == null ) {
+		    	Plugin.log(setting.getIdentifier() + ": missing TEXT property.");
+		    	text = new String(setting.getIdentifier());
+		    }
 	        
 	        // Updates the form controls.
 	        this.selectNote(setting);
 	        this.selectEditor(setting);
-	        this.section.setText( setting.getProperty(Setting.TEXT) );
+	        this.section.setText( text );
 	        this.section.layout(true, true);
     	}
     }
