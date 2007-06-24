@@ -67,7 +67,7 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
 
 		RadioGroupFieldEditor autoSave = new RadioGroupFieldEditor(
 			IPreferences.AUTO_SAVE,
-			"Save all editors before building",
+			"Save all modified files before building",
 			1,
 			new String[][] {
 				{IPreferences.AUTO_SAVE_NEVER, IPreferences.AUTO_SAVE_NEVER},

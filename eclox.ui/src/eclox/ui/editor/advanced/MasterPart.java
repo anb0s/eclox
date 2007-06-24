@@ -22,7 +22,6 @@ package eclox.ui.editor.advanced;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Stack;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -33,6 +32,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.LabelProviderChangedEvent;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -72,8 +72,6 @@ import eclox.ui.editor.advanced.filters.Modified;
  * Implements the master part's user interface.
  * 
  * @author gbrocker
- * 
- * TODO Add support for history action drop down menu.
  */
 public class MasterPart extends SectionPart implements IPartSelectionListener {
 
@@ -234,23 +232,19 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
     /**
      * Implements a tree viewer selection listener.
      */
-    private class MySelectionListener implements ISelectionChangedListener {
+    private class MyTableSelectionListener implements ISelectionChangedListener {
 
-    	public boolean sleeping = false;
-    	
-        /**
+    	/**
          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
          */
         public void selectionChanged(SelectionChangedEvent event) {
-        	if( sleeping == false ) {
-	        	ISelection selection = event.getSelection();
-	        	
-	        	if( selection.isEmpty() == false ) {
-	        		goneTo(selection);
-	        		goBack.refresh();
-	        		goForward.refresh();
-	        	}
-	        	fireSelectionChanged(selection);
+        	ISelection selection = event.getSelection();        	
+        	if( selection.isEmpty() == false ) {
+        		assert selection instanceof StructuredSelection;
+
+        		// Updates the selection
+        		StructuredSelection structuredSelection = (StructuredSelection) selection;
+        		setSelection( new NavigableSelection(currentSelection, structuredSelection.getFirstElement()), false );
         	}
         }
 
@@ -300,75 +294,41 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 //    	
 //    }
     
-    /**
-	 * the text column index
-	 */
+    /** the text column index */
 	private final static int TEXT_COLUMN = 0;
     
-    /**
-	 * the value column index
-	 */
+    /** the value column index */
 	private final static int VALUE_COLUMN = 1;
         
-    /**
-	 * the doxyfile being edited
-	 */
+    /** the doxyfile being edited */
 	private Doxyfile doxyfile;
     
-    /**
-     * the active filter
-     */
+    /** the active filter */
     private IFilter activeFilter; 
     
-    /**
-     * the default filter
-     */
+    /** the default filter */
     private IFilter defaultFilter = new All();
     
-    /**
-     * the parent composite for filter buttons
-     */
+    /** the parent composite for filter buttons */
     private Composite filterButtons;
     
-    /**
-     * the parent composite for filter controls
-     */
+    /** the parent composite for filter controls */
     private Composite filterControls;
 
-    /**
-     * the list viewer
-     */
+    /** the list viewer */
     private TableViewer tableViewer;
     
-    /**
-     * the table viewer selection listener
-     */
-    private MySelectionListener tableViewerSelectionListener;
+    /** the table viewer selection listener */
+    private MyTableSelectionListener tableViewerSelectionListener;
 	
-    /**
-     * the collection of selections preceeding the current selection
-     */
-    private Stack backSelections = new Stack();
-
-    /**
-     * the collection of selections following the current selection 
-     */
-    private Stack forwardSelections = new Stack();
-    
-    /**
-     * the current selection
-     */
-    private ISelection currentSelection;
-    
-    /**
-     * the go backward history action
-     */
+    /** the go backward history action */
     private HistoryAction goBack = new HistoryAction(HistoryAction.BACK, this);
     
-    /**
-     * the go foreward history action
-     */
+    /** the go foreward history action */
     private HistoryAction goForward = new HistoryAction(HistoryAction.FORWARD, this);
+    
+    /** the current selection */
+    private NavigableSelection currentSelection = new NavigableSelection(); 
     
     /**
      * Constructor
@@ -578,113 +538,6 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
     }
 	
     /**
-	 * Notifies the form that the selection changed.
-	 * 
-	 * @param	selection	the new selection
-	 */
-	private void fireSelectionChanged( ISelection selection ) {
-		getManagedForm().fireSelectionChanged(this, selection);
-	}
-	
-	/**
-	 * Retrieves the back selection history.
-	 * 
-	 * @return	a stack representing the back selection history
-	 */
-	public Stack getBackSelections() {
-		return backSelections;
-	}
-	
-	/**
-	 * Retrieves the forward selection history.
-	 * 
-	 * @return	a stack representing the forward selection history
-	 */
-	public Stack getForwardSelections() {
-		return forwardSelections;
-	}
-	
-	/**
-	 * Steps back in the selection history.
-	 */
-	public void goBack() {
-		// Pre-condition
-		assert backSelections.empty() == false;
-		
-		// Saves the current selection into the foreward selection stack.
-		if( currentSelection != null ) {
-			forwardSelections.push(currentSelection);
-		}
-		
-		// Restores the previous selection.
-		tableViewerSelectionListener.sleeping = true;
-		
-		currentSelection = (ISelection) backSelections.pop();
-		activateFilter( defaultFilter );
-		tableViewer.setSelection( currentSelection, true );
-		fireSelectionChanged(currentSelection);
-		
-		tableViewerSelectionListener.sleeping = false;
-
-		// Refreshes the history actions.
-		goBack.refresh();
-		goForward.refresh();
-		
-		// Notifies about the selection change.
-		fireSelectionChanged(currentSelection);
-	}
-
-	/**
-	 * Steps forward in the selectio history
-	 */
-	public void goForward() {
-		// Pre-condition
-		assert forwardSelections.empty() == false;
-
-		// Saves the current selection into the backward selection stack.
-		if( currentSelection != null ) {
-			backSelections.push(currentSelection);
-		}
-		
-		// Restores the previous selection
-		tableViewerSelectionListener.sleeping = true;
-		
-		currentSelection = (ISelection) forwardSelections.pop();
-		activateFilter( defaultFilter );
-		tableViewer.setSelection( currentSelection, true );
-		fireSelectionChanged(currentSelection);
-		
-		tableViewerSelectionListener.sleeping = false;
-				
-		// Refreshes the history actions.
-		goBack.refresh();
-		goForward.refresh();
-
-		// Notifies about the selection change.
-		fireSelectionChanged(currentSelection);
-	}
-	
-	/**
-	 * Notifies that the selection has changed and the hitory must be updated
-	 * 
-	 * @param selection	the new selection
-	 */
-	private void goneTo( ISelection selection ) {
-		if( currentSelection == null || selection.equals(currentSelection) == false ) {
-			// Saves the current selection in the backward stack.
-			if( currentSelection != null ) {
-				backSelections.push(currentSelection);
-			}
-			
-			// Clears the foreward selection stack.
-			forwardSelections.clear();
-			
-			// Installs the current selection.
-			currentSelection = selection;
-		}
-	}
-    
-    /**
      * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
      */
     public void initialize(IManagedForm form) {
@@ -692,7 +545,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         assert tableViewer != null;
         
         // Installs several listeners.
-        tableViewerSelectionListener = new MySelectionListener();
+        tableViewerSelectionListener = new MyTableSelectionListener();
         
         tableViewer.addPostSelectionChangedListener( tableViewerSelectionListener );
         tableViewer.addDoubleClickListener( new MyDoubleClickListener() );
@@ -702,8 +555,8 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         goForward.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
         form.getForm().getToolBarManager().add(goBack);
         form.getForm().getToolBarManager().add(goForward);
-		goBack.refresh();
-		goForward.refresh();
+		goBack.selectionChanged(new NavigableSelection());
+		goForward.selectionChanged(new NavigableSelection());
         
         // Default job done by super class.
         super.initialize(form);
@@ -730,13 +583,49 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IFormPart part, ISelection selection) {
-		if( part != this ) {
-			activateFilter( defaultFilter );
-			tableViewer.setSelection( selection, true );
-			goneTo(selection);
-			goBack.refresh();
-			goForward.refresh();
+		// Activates the default filter.
+		activateFilter( defaultFilter );
+		
+		
+		// Updates the navigation actions.
+		goBack.selectionChanged(selection);
+		goForward.selectionChanged(selection);
+	}
+	
+	/**
+	 * Set the new selection of the part. This will forward the selection to the form
+	 * so other parts will be notified about the selection change.
+	 * 
+	 * @param	selection	the new selection
+	 * @param	reveal		tells if the selection should be revealed in the controls 
+	 */
+	public void setSelection( NavigableSelection selection, boolean reveal ) {
+		currentSelection = selection;
+		
+		// If requested, reveals the selection's first element
+		if( reveal == true ) {
+			revealObject(selection.getFirstElement());
 		}
+		
+		// Updates the actions
+		goBack.selectionChanged(currentSelection);
+		goForward.selectionChanged(currentSelection);
+		
+		// Notifies other parts.
+		getManagedForm().fireSelectionChanged(this, selection);		
+	}
+	
+	/**
+	 * Reveals the given object into the managed table viewer by selecting it.
+	 * 
+	 * @param	object	 the object to reveal
+	 */
+	private void revealObject(Object object) {
+		StructuredSelection	selection = (object != null) ? new StructuredSelection(object) : new StructuredSelection();
+
+		tableViewer.removeSelectionChangedListener(tableViewerSelectionListener);
+		tableViewer.setSelection(selection, true);
+		tableViewer.addSelectionChangedListener(tableViewerSelectionListener);
 	}
 	
 }

@@ -19,10 +19,14 @@
 
 package eclox.ui.editor.advanced;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.forms.IManagedForm;
 
 import eclox.core.doxyfiles.Setting;
 
@@ -34,25 +38,20 @@ import eclox.core.doxyfiles.Setting;
  */
 class HistoryAction extends Action {
 	
-	/**
-	 * defines the back navigation direction
-	 */
+	/** defines the back navigation direction */
 	public static final int BACK = 0;
 	
-	/**
-	 * defines the forward navigation direction
-	 */
+	/** defines the forward navigation direction */
 	public static final int FORWARD = 1;
 	
-	/**
-	 * the direction of the navigation assigned to the action
-	 */
+	/** the direction of the navigation assigned to the action */
 	private int direction;
 	
-	/**
-	 * the master part that holds the nivation history
-	 */
+	/** the master part that holds the nivation history */
 	private MasterPart masterPart;
+	
+	/** the current selection */
+	private NavigableSelection selection;
 	
 	
 	/**
@@ -64,7 +63,7 @@ class HistoryAction extends Action {
 	 * Constructor
 	 * 
 	 * @param direction		the navigation direction for the action
-	 * @param masterPart	the master part that holds the navigation history
+	 * @param masterPart	the master part that manage the action
 	 */
 	public HistoryAction(int direction, MasterPart masterPart) {
 		// Pre-condition
@@ -84,11 +83,11 @@ class HistoryAction extends Action {
 	public void run() {
 		switch(direction) {
 		case BACK:
-			masterPart.goBack();
+			masterPart.setSelection( selection.getPreviousSelection(), true );
 			break;
 		
 		case FORWARD:
-			masterPart.goForward();
+			masterPart.setSelection( selection.getNextSelection(), true );
 			break;
 		}
 	}
@@ -100,22 +99,25 @@ class HistoryAction extends Action {
 //	}
 	
 	/**
-	 * Refreshes the state of the action according to the navigation direction and the history state 
+	 * Tells the action that the selection changed
+	 * 
+	 * @param	newSelection	the new selection
 	 */
-	public void refresh() {
-		final Stack history = (direction == BACK) ? masterPart.getBackSelections() : masterPart.getForwardSelections();
+	public void selectionChanged(ISelection newSelection) {
+		assert newSelection instanceof NavigableSelection;
 		
-		// Updates the action to go back in the history.
-		if( history.isEmpty() == false ) {
-			IStructuredSelection	selection	= (IStructuredSelection) history.peek();
-			Setting					setting		= (Setting) selection.getFirstElement();
+		selection = (NavigableSelection) newSelection;
+		Collection sideElements = direction == BACK ? selection.getPreviousElements() : selection.getNextElements();
+		
+		if( sideElements.isEmpty() ) {
+			setEnabled(false);
+			setText(new String());
+		}
+		else {
+			Setting	setting	= (Setting) sideElements.iterator().next();
 			
 			setEnabled(true);
 			setText("Go to " + setting.getProperty(Setting.TEXT));
-		}
-		else {
-			setEnabled(false);
-			setText(new String());
 		}
 	}
 
