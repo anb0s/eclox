@@ -19,14 +19,17 @@
 
 package eclox.ui.editor.advanced;
 
-import java.util.Collection;
-import java.util.List;
 import java.util.Stack;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 
 import eclox.core.doxyfiles.Setting;
 
@@ -37,6 +40,110 @@ import eclox.core.doxyfiles.Setting;
  * @author Guillaume Brocker
  */
 class HistoryAction extends Action {
+	
+	/**
+	 * Implements a menu listener used to trigger selection changes
+	 */
+	private class MySelectionListener implements SelectionListener {
+
+		/**
+		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
+		public void widgetDefaultSelected(SelectionEvent e) {
+			widgetSelected(e);			
+		}
+
+		/**
+		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+		 */
+		public void widgetSelected(SelectionEvent e) {
+			assert e.widget instanceof MenuItem;
+			
+			MenuItem			menuItem = (MenuItem) e.widget;
+			NavigableSelection	selection = (NavigableSelection) menuItem.getData();
+			
+			masterPart.setSelection(selection, true);
+		}
+		
+	}
+	
+    /**
+     * Implements the menu creator tha will create the menu for the action.
+     */
+	private class MyMenuCreator implements IMenuCreator {
+    	
+		private Menu menu;
+
+		/**
+		 * @see org.eclipse.jface.action.IMenuCreator#dispose()
+		 */
+		public void dispose() {
+			if( menu != null ) {
+				menu.dispose();
+			}
+		}
+
+		/**
+		 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Control)
+		 */
+		public Menu getMenu(Control parent) {
+			if( menu == null ) {
+				menu = new Menu(parent);
+			}
+			fill(menu);
+			return menu;
+		}
+
+		/**
+		 * @see org.eclipse.jface.action.IMenuCreator#getMenu(org.eclipse.swt.widgets.Menu)
+		 */
+		public Menu getMenu(Menu parent) {
+			if( menu == null ) {
+				menu = new Menu(parent);
+			}
+			fill(menu);
+			return menu;
+		}
+		
+		/**
+		 * Fills the menu with navigation history.
+		 * 
+		 * @param menu	the menu to full
+		 */
+		private void fill(Menu menu) {
+			// Clears the menu content.
+			MenuItem [] items = menu.getItems();
+			for( int i = 0; i != items.length; ++i ) {
+				items[i].dispose();
+			}
+			
+			// Fills the menu content.
+			NavigableSelection	currentSelection = getFollowingSelection(selection);
+			while(currentSelection != null) {
+				Setting		setting = (Setting) currentSelection.getFirstElement();
+				MenuItem	menuItem = new MenuItem(menu, 0);
+				menuItem.setText( setting.getProperty(Setting.TEXT) );
+				menuItem.setData(currentSelection);
+				menuItem.addSelectionListener(new MySelectionListener());
+				
+				currentSelection = getFollowingSelection(currentSelection);
+			}
+		}
+		
+		/**
+		 * Retrieves the selection following the given one, according
+		 * to the current action's direction.
+		 * 
+		 * @param	selection	a reference selection
+		 * 
+		 * @return	the following selection or null if none
+		 */
+		private NavigableSelection getFollowingSelection( NavigableSelection selection ) {
+			return (direction == BACK) ? selection.getPreviousSelection() : selection.getNextSelection();
+		}
+    	
+    }
+
 	
 	/** defines the back navigation direction */
 	public static final int BACK = 0;
@@ -53,12 +160,6 @@ class HistoryAction extends Action {
 	/** the current selection */
 	private NavigableSelection selection;
 	
-	
-	/**
-	 * the menu creator
-	 */
-//	private MyHistoryActionMenuCreator menuCreator;
-	
 	/**
 	 * Constructor
 	 * 
@@ -66,15 +167,13 @@ class HistoryAction extends Action {
 	 * @param masterPart	the master part that manage the action
 	 */
 	public HistoryAction(int direction, MasterPart masterPart) {
-		// Pre-condition
+		super(new String(), IAction.AS_DROP_DOWN_MENU);
+		
 		assert masterPart != null;
 		
-//		super(new String(), IAction.AS_DROP_DOWN_MENU);
 		this.direction = direction;
 		this.masterPart = masterPart;
-//		this.menuCreator = new MyHistoryActionMenuCreator(history);
-		
-//		setMenuCreator(menuCreator);
+		setMenuCreator(new MyMenuCreator());
 	}
 
 	/**
@@ -93,12 +192,6 @@ class HistoryAction extends Action {
 	}
 	
 	/**
-	 * @see org.eclipse.jface.action.Action#runWithEvent(org.eclipse.swt.widgets.Event)
-	 */
-//	public void runWithEvent(Event event) {
-//	}
-	
-	/**
 	 * Tells the action that the selection changed
 	 * 
 	 * @param	newSelection	the new selection
@@ -107,14 +200,14 @@ class HistoryAction extends Action {
 		assert newSelection instanceof NavigableSelection;
 		
 		selection = (NavigableSelection) newSelection;
-		Collection sideElements = direction == BACK ? selection.getPreviousElements() : selection.getNextElements();
+		Stack sideElements = direction == BACK ? selection.getPreviousElements() : selection.getNextElements();
 		
 		if( sideElements.isEmpty() ) {
 			setEnabled(false);
 			setText(new String());
 		}
 		else {
-			Setting	setting	= (Setting) sideElements.iterator().next();
+			Setting	setting	= (Setting) sideElements.peek();
 			
 			setEnabled(true);
 			setText("Go to " + setting.getProperty(Setting.TEXT));

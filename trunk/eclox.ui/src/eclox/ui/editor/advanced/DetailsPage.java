@@ -110,7 +110,7 @@ public class DetailsPage implements IDetailsPage {
 			Setting		setting		= doxyfile.getSetting( e.getHref().toString() ); 
 			
 			if( setting != null ) {
-				managedForm.fireSelectionChanged( owner, new NavigableSelection(selection, setting) );
+				managedForm.fireSelectionChanged( owner, selection.select(setting) );
 			}
 		}
 
@@ -231,7 +231,7 @@ public class DetailsPage implements IDetailsPage {
     	assert (newSelection instanceof NavigableSelection);
     	
 		// Retreieves the node that is provided by the selection.
-    	if( part != this ) {
+    	/*if( part != this )*/ {
     		selection = (NavigableSelection) newSelection;
 	    	Object	object	= selection.getFirstElement();
 		    Setting	setting	= (object instanceof Setting) ? (Setting) object : null;
