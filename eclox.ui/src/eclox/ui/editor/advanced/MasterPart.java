@@ -244,55 +244,11 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 
         		// Updates the selection
         		StructuredSelection structuredSelection = (StructuredSelection) selection;
-        		setSelection( new NavigableSelection(currentSelection, structuredSelection.getFirstElement()), false );
+        		setSelection( currentSelection.select(structuredSelection.getFirstElement()), false );
         	}
         }
 
     }
-        
-    /**
-     * Implements the menu creator for history actions
-     */
-//    private class MyHistoryActionMenuCreator implements IMenuCreator {
-//    	
-//    	Menu menu;
-//    	Vector history;
-//    	
-//    	public MyHistoryActionMenuCreator(Vector history) {
-//    		this.history = history;
-//    	}
-//
-//		public void dispose() {
-//			// Pre-condition
-//			assert menu != null;
-//			
-//			menu.dispose();
-//		}
-//
-//		public Menu getMenu(Control parent) {
-//			menu = new Menu(parent);
-//			refresh(menu);
-//			return menu;
-//		}
-//
-//		public Menu getMenu(Menu parent) {
-//			menu = new Menu(parent);
-//			refresh(menu);
-//			return menu;
-//		}
-//		
-//		public void refresh(Menu menu) {
-//			ListIterator	i = history.listIterator(history.size());
-//			while(i.hasPrevious()) {
-//				IStructuredSelection	selection = (IStructuredSelection) i.previous();
-//				Setting					setting = (Setting) selection.getFirstElement();
-//				MenuItem				menuItem = new MenuItem(menu, 0);
-//				
-//				menuItem.setText(setting.getProperty(Setting.TEXT));
-//			}
-//		}
-//    	
-//    }
     
     /** the text column index */
 	private final static int TEXT_COLUMN = 0;
@@ -583,9 +539,13 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IFormPart part, ISelection selection) {
-		// Activates the default filter.
-		activateFilter( defaultFilter );
+		assert selection instanceof NavigableSelection;
 		
+		currentSelection = (NavigableSelection) selection;
+		
+		// Activates the default filter.
+		activateFilter( defaultFilter );		
+		revealObject(currentSelection.getFirstElement());
 		
 		// Updates the navigation actions.
 		goBack.selectionChanged(selection);
@@ -623,9 +583,9 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	private void revealObject(Object object) {
 		StructuredSelection	selection = (object != null) ? new StructuredSelection(object) : new StructuredSelection();
 
-		tableViewer.removeSelectionChangedListener(tableViewerSelectionListener);
+		tableViewer.removePostSelectionChangedListener(tableViewerSelectionListener);
 		tableViewer.setSelection(selection, true);
-		tableViewer.addSelectionChangedListener(tableViewerSelectionListener);
+		tableViewer.addPostSelectionChangedListener(tableViewerSelectionListener);
 	}
 	
 }
