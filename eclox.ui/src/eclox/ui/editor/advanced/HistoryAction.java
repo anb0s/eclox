@@ -122,7 +122,7 @@ class HistoryAction extends Action {
 			while(currentSelection != null) {
 				Setting		setting = (Setting) currentSelection.getFirstElement();
 				MenuItem	menuItem = new MenuItem(menu, 0);
-				menuItem.setText( setting.getProperty(Setting.TEXT) );
+				menuItem.setText( setting.hasProperty(Setting.TEXT) ? setting.getProperty(Setting.TEXT) : setting.getIdentifier() );
 				menuItem.setData(currentSelection);
 				menuItem.addSelectionListener(new MySelectionListener());
 				
