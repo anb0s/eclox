@@ -40,7 +40,6 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
@@ -151,7 +150,7 @@ public class BuildJob extends Job {
 		}
 		
 		public void resourceChanged(IResourceChangeEvent event) {
-			IResourceDelta	doxyfileDelta = event.getDelta().findMember( job.getDoxyfilePath() );
+			IResourceDelta	doxyfileDelta = event.getDelta().findMember( job.getDoxyfile().getFullPath() );
 			if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
 			{
 				job.clearMarkers();
@@ -177,7 +176,7 @@ public class BuildJob extends Job {
 	/**
 	 * the path of the doxyfile to build
 	 */
-	private IPath	doxyfilePath;
+	private IFile	doxyfile;
 	
 	/**
 	 * the buffer containing the whole build output log 
@@ -220,12 +219,12 @@ public class BuildJob extends Job {
 	/**
 	 * Constructor.
 	 */
-	private BuildJob( IFile doxyfile ) {
+	private BuildJob( IFile dxfile ) {
 		super( "Doxygen Build" );
 		
-		doxyfilePath = doxyfile.getFullPath();
-		this.setPriority( Job.BUILD );
-		this.setRule( doxyfile );
+		doxyfile = dxfile;
+		setPriority( Job.BUILD );
+		setRule( doxyfile );
 		
 		// References the jobs in the global collection and add a doxyfile listener.
 		jobs.add( this );
@@ -278,12 +277,11 @@ public class BuildJob extends Job {
 		BuildJob	result = null;
 		
 		// Walks through the found jobs to find a relevant build job.
-		IPath		path = doxyfile.getFullPath();
 		Iterator	i = jobs.iterator();
 		while( i.hasNext() )
 		{
 			BuildJob	buildJob = (BuildJob) i.next();
-			if( buildJob.getDoxyfilePath().equals(path) )
+			if( buildJob.getDoxyfile().equals(doxyfile) )
 			{
 				result = buildJob;
 				break;
@@ -315,15 +313,6 @@ public class BuildJob extends Job {
 		synchronized( listeners ) {
 			listeners.remove( listener );
 		}
-	}
-	
-	/**
-	 * Retrieve the path of the doxyfile to build.
-	 * 
-	 * @return	a path to a doxyfile	
-	 */
-	public IPath getDoxyfilePath() {
-		return doxyfilePath;
 	}
 	
 	/**
@@ -364,7 +353,7 @@ public class BuildJob extends Job {
 	 * @return	a file taht is the builded doxyfile
 	 */
 	public IFile getDoxyfile() {
-		return ResourcesPlugin.getWorkspace().getRoot().getFile(doxyfilePath);
+		return doxyfile;
 	}
 	
 	/**
@@ -399,7 +388,7 @@ public class BuildJob extends Job {
 		try
 		{
 			// Initializes the progress monitor.
-			monitor.beginTask( doxyfilePath.toString(), 4 );
+			monitor.beginTask( doxyfile.getFullPath().toString(), 4 );
 			
 			
 			// Clears log and markers.
