@@ -6,8 +6,14 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 
+DOXYFILE_ENCODING.text = Doxyfile Encoding
+DOXYFILE_ENCODING.group = Project
+DOXYFILE_ENCODING.type = text
+DOXYFILE_ENCODING.note = <p>This tag specifies the encoding used for all characters in the config file that follow.</p><p>The default is UTF-8 which is also the encoding used for all text before the first occurrence of this tag. Doxygen uses libiconv (or the iconv built into libc) for the transcoding. See http://www.gnu.org/software/libiconv for the list of possible encodings.</p>
+
 PROJECT_NAME.text = Project Name
 PROJECT_NAME.group = Project
+PROJECT_NAME.type = text
 PROJECT_NAME.note = The PROJECT_NAME tag is a single word (or a sequence of words surrounded by quotes) that should identify the project.
 
 PROJECT_NUMBER.text = Project Number
@@ -128,6 +134,11 @@ BUILTIN_STL_SUPPORT.text = Built-in STL Support
 BUILTIN_STL_SUPPORT.group = Project
 BUILTIN_STL_SUPPORT.type = boolean
 BUILTIN_STL_SUPPORT.note = <p>If you use STL classes (i.e. std::string, std::vector, etc.) but do not want to include (a tag file for) the STL sources as input, then you should set this tag to YES in order to let doxygen match functions declarations and definitions whose arguments contain STL classes (e.g. func(std::string); v.s. func(std::string) {}).</p><p>This also make the inheritance and collaboration diagrams that involve STL classes more complete and accurate.</p>
+
+CPP_CLI_SUPPORT.text = C++/CLI Support
+CPP_CLI_SUPPORT.group = Project
+CPP_CLI_SUPPORT.type = boolean
+CPP_CLI_SUPPORT.note = If you use Microsoft's C++/CLI language, you should set this option to YES to enable parsing support.
 
 DISTRIBUTE_GROUP_DOC.text = Distribute Group Documentation
 DISTRIBUTE_GROUP_DOC.group = Project
@@ -303,6 +314,7 @@ WARN_NO_PARAMDOC.note = This WARN_NO_PARAMDOC option can be abled to get warning
 
 WARN_FORMAT.text = Warn Format
 WARN_FORMAT.group = Messages
+WARN_FORMAT.type = text
 WARN_FORMAT.note = The WARN_FORMAT tag determines the format of the warning messages that doxygen can produce. The string should contain the $file, $line, and $text tags, which will be replaced by the file and line number from which the warning originated and the warning text.
 
 WARN_LOGFILE.text = Warn Logfile
@@ -318,6 +330,11 @@ INPUT.text = Input
 INPUT.group = Inputs
 INPUT.type = path list
 INPUT.note = The INPUT tag can be used to specify the files and/or directories that contain documented source files. You may enter file names like "myfile.cpp" or directories like "/usr/src/myproject". Separate the files or directories with spaces.
+
+INPUT_ENCODING.text = Input Encoding
+INPUT_ENCODING.group = Inputs
+INPUT_ENCODING.type = text
+INPUT_ENCODING.note = <p>This tag can be used to specify the character encoding of the source files that doxygen parses.</p><p>Internally doxygen uses the UTF-8 encoding, which is also the default input encoding. Doxygen uses libiconv (or the iconv built into libc) for the transcoding. See http://www.gnu.org/software/libiconv for the list of possible encodings.</p>
 
 FILE_PATTERNS.text = File Patterns
 FILE_PATTERNS.group = Inputs
@@ -338,6 +355,11 @@ EXCLUDE_SYMLINKS.text = Exclude Symlinks
 EXCLUDE_SYMLINKS.group = Inputs
 EXCLUDE_SYMLINKS.type = boolean
 EXCLUDE_SYMLINKS.note = The EXCLUDE_SYMLINKS tag can be used select whether or not files or directories that are symbolic links (a Unix filesystem feature) are excluded from the input.
+
+EXCLUDE_SYMBOLS.text = Exclude Symbols
+EXCLUDE_SYMBOLS.group = Inputs
+EXCLUDE_SYMBOLS.type = text list
+EXCLUDE_SYMBOLS.note = <p>The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names (namespaces, classes, functions, etc.) that should be excluded from the output.</p><p>The symbol name can be a fully qualified name, a word, or if the wildcard * is used, a substring. Examples: ANamespace, AClass, AClass::ANamespace, ANamespace::*Test</p>
 
 EXCLUDE_PATTERNS.text = Exclude Patterns
 EXCLUDE_PATTERNS.group = Inputs
@@ -789,6 +811,11 @@ CLASS_DIAGRAMS.group = dot Tool
 CLASS_DIAGRAMS.type = boolean
 CLASS_DIAGRAMS.note = <p>If the CLASS_DIAGRAMS tag is set to YES (the default) Doxygen will generate a inheritance diagram (in HTML, RTF and LaTeX) for classes with base or super classes. Setting the tag to NO turns the diagrams off.</p><p>Note that this option is superseded by the HAVE_DOT option below. This is only a fallback. It is recommended to install and use dot, since it yields more powerful graphs.</p>
 
+MSCGEN_PATH.text = mscgen Path
+MSCGEN_PATH.group = dot Tool
+MSCGEN_PATH.type = directory
+MSCGEN_PATH.note = <p>You can define message sequence charts within doxygen comments using the @msc command. Doxygen will then run the mscgen tool (see http://www.mcternan.me.uk/mscgen/) to produce the chart and insert it in the documentation.</p><p>The MSCGEN_PATH tag allows you to specify the directory where the mscgen tool resides. If left empty the tool is assumed to be found in the default search path.</p>
+
 HIDE_UNDOC_RELATIONS.text = Hide Undocumented Relations
 HIDE_UNDOC_RELATIONS.group = dot Tool
 HIDE_UNDOC_RELATIONS.type = boolean
@@ -856,6 +883,7 @@ DIRECTORY_GRAPH.note = If the DIRECTORY_GRAPH, SHOW_DIRECTORIES and HAVE_DOT tag
 
 DOT_IMAGE_FORMAT.text = DOT Image Format
 DOT_IMAGE_FORMAT.group = dot Tool
+DOT_IMAGE_FORMAT.type = text
 DOT_IMAGE_FORMAT.note = The DOT_IMAGE_FORMAT tag can be used to set the image format of the images generated by dot. Possible values are png, jpg, or gif. If left blank png will be used.
 
 DOT_PATH.text = DOT Path
@@ -879,6 +907,11 @@ MAX_DOT_GRAPH_HEIGHT.note = <p>The MAX_DOT_GRAPH_HEIGHT tag can be used to set t
 MAX_DOT_GRAPH_DEPTH.text = Maximum DOT Graph Depth
 MAX_DOT_GRAPH_DEPTH.group = dot Tool
 MAX_DOT_GRAPH_DEPTH.note = <p>The MAX_DOT_GRAPH_DEPTH tag can be used to set the maximum depth of the graphs generated by dot. A depth value of 3 means that only nodes reachable from the root by following a path via at most 3 edges will be shown. Nodes that lay further from the root node will be omitted.</p><p>Note that setting this option to 1 or 2 may greatly reduce the computation time needed for large code bases.</p><p>Also note that a graph may be further truncated if the graph's image dimensions are not sufficient to fit the graph (see MAX_DOT_GRAPH_WIDTH and MAX_DOT_GRAPH_HEIGHT). If 0 is used for the depth value (the default), the graph is not depth-constrained.</p>
+
+DOT_GRAPH_MAX_NODES.text = DOT Graph Max Nodes
+DOT_GRAPH_MAX_NODES.group = dot Tool
+DOT_GRAPH_MAX_NODES.type = text
+DOT_GRAPH_MAX_NODES.note = <p>The DOT_GRAPH_MAX_NODES tag can be used to set the maximum number of nodes that will be shown in the graph.</p><p>If the number of nodes in a graph becomes larger than this value, doxygen will truncate the graph, which is visualized by representing a node as a red box. Note that doxygen will always show the root nodes and its direct children regardless of this setting.</p>
 
 DOT_TRANSPARENT.text = DOT Transparent
 DOT_TRANSPARENT.group = dot Tool
