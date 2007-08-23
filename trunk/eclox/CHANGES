@@ -1,6 +1,14 @@
 eclox-0.6.4
+ * task #5127 : Use content types for the contextual build menu and
+   for the editor. Contextual menu build action gets enhanced. It
+   either launch doxygen when the selection is a doxyfile, prompt
+   for a doxyfile to build when the selection contains doxyfiles
+   or disables otherwise.
+ * sr #1604 : Specially named doxyfiles. It is now possible to define
+   custom doxyfile name and extensions.
  * task #5406 : Support new doxygen 1.5.3 settings
  * task #5405 : Bundle all windows and linux doxygen till 1.5.3
+ * task #5251 : Support new settings of doxygen 1.5.2
  * task #4978 : Add navigation history in the advanced editor page.
  * Fixes bug #6024 : Multiple markers, entries in build history when
    building the same doxyfile from two perspectives.

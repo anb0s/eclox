@@ -1,23 +1,21 @@
-/*
-	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003-2004 Guillaume Brocker
-
-	This file is part of eclox.
-
-	eclox is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	any later version.
-
-	eclox is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with eclox; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
-*/
+// eclox : Doxygen plugin for Eclipse.
+// Copyright (C) 2003,2004,2007 Guillaume Brocker
+// 
+// This file is part of eclox.
+// 
+// eclox is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// any later version.
+// 
+// eclox is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with eclox; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    
 
 package eclox.ui.dialog;
 
@@ -245,22 +243,28 @@ public class DoxyfileSelecterDialog {
 		}		
 	}
 	
-	/**
-	 * The selection dialog.
-	 */
-	private ElementTreeSelectionDialog selectionDialog;
+	private ElementTreeSelectionDialog	selectionDialog;	/** References the managed selection dialog. */
+	private IResource					rootResource;		/** References the root resource that is that will be starting point for doxyfiles search. */ 
 
 	/**
-	 * Constructor.
+	 * Constructor
 	 *
-	 * @param	parentShell	The parent shell, or null to create a top-level shell.
+	 * @param	parentShell	the parent shell, or null to create a top-level shell
 	 */
 	public DoxyfileSelecterDialog(Shell parentShell) {
-		this.selectionDialog = new ElementTreeSelectionDialog(
-			parentShell,
-			new MyLabelProvider(),
-			new MyContentProvider()
-		);
+		selectionDialog = new ElementTreeSelectionDialog(parentShell, new MyLabelProvider(), new MyContentProvider() );
+		rootResource = null;
+	}
+	
+	/**
+	 * Constructor
+	 *
+	 * @param	parentShell	the parent shell, or null to create a top-level shell
+	 * @param	root		the root resource to search for doxyfiles
+	 */
+	public DoxyfileSelecterDialog(Shell parentShell, IResource root ) {
+		selectionDialog = new ElementTreeSelectionDialog(parentShell, new MyLabelProvider(), new MyContentProvider());
+		rootResource = root;
 	}
 	
 	/**
@@ -271,9 +275,9 @@ public class DoxyfileSelecterDialog {
 	}
 	
 	/**
-	 * Retrieve the selected doxyfile.
+	 * Retrieves the selected doxyfile.
 	 * 
-	 * @return	The selecter doxyfile, or null if none.
+	 * @return	the selected doxyfile, or null if none
 	 */
 	public IFile getDoxyfile() {
 		return (IFile) this.selectionDialog.getFirstResult();
@@ -282,12 +286,12 @@ public class DoxyfileSelecterDialog {
 	/**
 	 * Open the selection dialog.
 	 * 
-	 * @return	the dialog return value.
+	 * @return	the dialog return value
 	 * 
 	 * @throws CoreException
 	 */
 	public int open() throws CoreException {
-		ResourceCollector	collector = ResourceCollector.run();
+		ResourceCollector	collector = rootResource != null ? ResourceCollector.run(rootResource) : ResourceCollector.run();
 		
 		this.selectionDialog.setAllowMultiple( false );
 		this.selectionDialog.setInput( collector.getDoxyfiles() );

@@ -1,23 +1,21 @@
-/*
- * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2005 Guillaume Brocker
- *
- * This file is part of eclox.
- *
- * eclox is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * any later version.
- *
- * eclox is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with eclox; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    
- */
+// eclox : Doxygen plugin for Eclipse.
+// Copyright (C) 2003-2007 Guillaume Brocker
+// 
+// This file is part of eclox.
+// 
+// eclox is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// any later version.
+// 
+// eclox is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with eclox; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA    
 
 package eclox.core.doxyfiles;
 
@@ -32,7 +30,8 @@ import org.eclipse.core.runtime.CoreException;
 
 
 /**
- * Implements a resource collector that will serch for all available doxyfiles.
+ * Implements a resource collector that will search for available doxyfiles
+ * either from the workbenck resources' root or from a given resource.
  * 
  * @author gbrocker
  */
@@ -44,17 +43,26 @@ public class ResourceCollector implements IResourceVisitor {
     private Collection m_doxyfiles = new ArrayList();
 
     /**
-     * Creates a new resource collector instance and make it collect all 
-     * doxyfiles.
+     * Runs a collector from the workspace resources' root.
      * 
-     * @return  a resource collector instance
+     * @return  a resource collector containing collected doxfiles
      */
     public static ResourceCollector run() throws CoreException {
-        ResourceCollector   collector = new ResourceCollector();
-        
-        ResourcesPlugin.getWorkspace().getRoot().accept( collector );
-        return collector;
+    	return run( ResourcesPlugin.getWorkspace().getRoot() );
     }
+    
+    /**
+     * Runs a collector from the given root resource.
+     * 
+     * @param	resource	a resource to search for doxyfiles
+     * 
+     * @return  a resource collector containing collected doxfiles
+     */
+	public static ResourceCollector run(IResource root) throws CoreException {
+		ResourceCollector   collector = new ResourceCollector();
+		root.accept( collector );
+		return collector;
+	}
     
     /**
      * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
@@ -67,6 +75,14 @@ public class ResourceCollector implements IResourceVisitor {
         return true;
     }
     
+    /**
+     * Tells if the collector is empty.
+     * 
+     * @return	true or false
+     */
+    public boolean isEmpty() {
+    	return m_doxyfiles.isEmpty();
+    }
     
     /**
      * Retrieves the collection with all collected dixyfile resources.
