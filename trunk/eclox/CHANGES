@@ -1,4 +1,5 @@
 eclox-0.6.4
+ * task #5405 : Bundle all windows and linux doxygen till 1.5.3.
  * task #4978 : Add navigation history in the advanced editor page.
  * Fixes bug #6024 : Multiple markers, entries in build history when
    building the same doxyfile from two perspectives.
