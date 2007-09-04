@@ -15,11 +15,11 @@ body
 #title
 {
 	margin: 0;
-	padding: 0.3em 0 0.3em 0.5em;
-	
+	padding: 0.3em 0 0.3em 20px;
+
 	font-size: 250%;
 	color: rgb(255,255,255);
-	
+
 	background-color: rgb(10,0,110);
 	background-image: url(moon-top.png);
 	background-repeat: no-repeat;
@@ -29,16 +29,15 @@ body
 #contents
 {
 	margin: 0;
-	margin: 0;
-	padding: 0.33em 0 0.33em 0;
-	
-	text-align: right;
-	
+	padding: 0.33em 0 0.33em 20px;
+
+	text-align: left;
+
 	background-color: rgb(90,90,150);
 	background-image: url(moon-bottom.png);
 	background-repeat: no-repeat;
 	background-position: 25px top;
-	
+
 	border-bottom: 1px solid rgb(10,0,110);
 
 }
@@ -65,7 +64,7 @@ body
 	text-decoration: underline;
 }
 
-	
+
 h1, h2, h3
 {
 	font-family: sans-serif;
@@ -80,7 +79,7 @@ h2
 	margin-top: 3em;
 	margin-left: -1em;
 	margin-right: -1em;
-	
+
 	clear: left;
 }
 
@@ -96,12 +95,12 @@ h3#features
 {
 	background-image: url("24/star.png");
 }
-	
+
 h3#screenshots
 {
 	background-image: url("24/screenshots.png");
 }
-	
+
 h3#update-site
 {
 	background-image: url("24/update.png");
@@ -161,7 +160,7 @@ li#package-doxygen
 div.columns
 {
 	float: none;
-	clear: left;
+	clear: both;
 }
 
 div.columns p,ul
@@ -179,6 +178,12 @@ div.two-columns
 img
 {
 	border-width: 0;
+}
+
+img.float-right
+{
+	float: right;
+	margin-left: 2.5em;
 }
 
 #screenshot
