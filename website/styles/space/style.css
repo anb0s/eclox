@@ -180,10 +180,11 @@ img
 	border-width: 0;
 }
 
-img.float-right
+div.float-right
 {
 	float: right;
 	margin-left: 2.5em;
+	padding: 0;
 }
 
 #screenshot
