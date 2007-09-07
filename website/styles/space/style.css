@@ -111,6 +111,11 @@ h3#packages
 	background-image: url("24/packages.png");
 }
 
+h3#message
+{
+	background-image: url("24/mail-new.png");
+}
+
 h3#rate
 {
 	background-image: url("24/favorite.png");
@@ -190,6 +195,15 @@ div.float-right
 #screenshot
 {
 	float: right;
+}
+
+#message-frame
+{
+	border-width: 0;
+	border-style: none;
+	
+	width: 100%;
+	height: 15em;
 }
 
 /** Footer section **/
