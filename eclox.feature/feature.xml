@@ -37,27 +37,27 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 
    <plugin
          id="org.gna.eclox"
-         download-size="0"
+         download-size="16"
          install-size="0"
          version="0.6.4"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.core"
-         download-size="0"
+         download-size="591"
          install-size="0"
          version="0.6.4"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.help"
-         download-size="0"
+         download-size="5"
          install-size="0"
          version="0.6.4"/>
 
    <plugin
          id="org.gna.eclox.ui"
-         download-size="0"
+         download-size="147"
          install-size="0"
          version="0.6.4"
          unpack="false"/>
