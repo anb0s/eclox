@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description url="http://download.gna.org/eclox/update">
+      Eclox Update Site
+   </description>
+   <feature url="features/org.gna.eclox_0.6.0.jar" id="org.gna.eclox" version="0.6.0">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox.doxygen_1.5.0.jar" id="org.gna.eclox.doxygen" version="1.5.0">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox_0.6.1.jar" id="org.gna.eclox" version="0.6.1">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox_0.6.2.jar" id="org.gna.eclox" version="0.6.2">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox_0.6.3.jar" id="org.gna.eclox" version="0.6.3">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox_0.6.4.jar" id="org.gna.eclox" version="0.6.4">
+      <category name="Eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox.doxygen_1.5.3.jar" id="org.gna.eclox.doxygen" version="1.5.3" os="win32" arch="ia64,ia64_32,x86,x86_64">
+      <category name="Eclox"/>
+   </feature>
+   <category-def name="Eclox" label="Eclox">
+      <description>
+         Eclox is a frontend for doxygen.
+      </description>
+   </category-def>
+</site>

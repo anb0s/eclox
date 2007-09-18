@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Eclox Guide" topic="html/index.html" >
+	<topic label="Getting Started" href="html/getting_started.html" />
+	<topic label="Doxygen Manual (online)" href="http://www.stack.nl/~dimitri/doxygen/manual.html" />
+	<topic label="About" href="html/about.html" />
+</toc>
