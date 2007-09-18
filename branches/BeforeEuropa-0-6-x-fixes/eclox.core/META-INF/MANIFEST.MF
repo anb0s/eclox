@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Eclox Core
+Bundle-SymbolicName: org.gna.eclox.core; singleton:=true
+Bundle-Version: 0.6.4
+Bundle-Vendor: Guillaume Brocker
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ org.eclipse.ui
+Bundle-Activator: eclox.core.Plugin
+Export-Package: eclox.core,
+ eclox.core.doxyfiles,
+ eclox.core.doxyfiles.io,
+ eclox.core.doxygen
+Eclipse-AutoStart: true

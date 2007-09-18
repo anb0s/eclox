@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="eclox.ui.editor.Editor"
+            default="true"
+            extensions="doxyfile"
+            filenames="doxyfile"
+            icon="icons/doxyfile.gif"
+            id="eclox.ui.editor.Editor"
+            name="Doxyfile Editor"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="eclox.ui.wizard.NewDoxyfileWizard"
+            hasPages="true"
+            icon="icons/doxyfile_wizard.png"
+            id="eclox.ui.wizard.NewDoxyfile"
+            name="Doxyfile"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="eclox.ui.doxyfilepupop"
+            objectClass="java.lang.Object">
+         <action
+               class="eclox.ui.action.BuildPopupActionDelegate"
+               icon="icons/eclox.png"
+               id="eclox.ui.action.build"
+               label="Build Documentation"/>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="eclox.core.PreferencePage/"
+            class="eclox.ui.PreferencePage"
+            id="eclox.ui.preferencePage"
+            name="Misc"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="eclox.ui.buildActionSet"
+            label="Doxygen Build"
+            visible="true">
+         <action
+               class="eclox.ui.action.BuildActionDelegate"
+               icon="icons/eclox.png"
+               id="eclox.ui.buildAction"
+               label="Doxygen Build"
+               style="pulldown"
+               toolbarPath="org.eclipse.debug.ui.launchActionSet/debug"
+               tooltip="Build Doxyfile"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.console.consoleFactories">
+      <consoleFactory
+            class="eclox.ui.console.ConsoleFactory"
+            label="Doxygen Build"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="eclox.ui.PreferencesInitializer"/>
+   </extension>
+
+</plugin>

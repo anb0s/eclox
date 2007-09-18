@@ -1,0 +1,25 @@
+TODO (later):
+
+- Create a "doxyfiles" view, listing all avaliable doxyfiles in all opened projects.
+- For each plateform, setup default path for doxygen binary.
+- Detect overriden assignments and display a warning.
+- Show when a setting value is inherited and when it is not
+- See what IEditorMatchingStratedgy can do for us.
+- Creation of property page for doxyfiles.
+- Creation of an incremental builder that checks for compatibility with the current doxygen version.
+- Creation of markers to notify problems in doxyfiles found during parsing.
+- Add a build launch action in the build log toolbar.
+- Mettre un nom de fichier de configuration par défaut dans le wizard.
+- Mieux gérer les exceptions plutôt que de laisser des "catch" vides.
+- Mettre une décoration dans l'outline afin d'afficher les éléments qui ont été modifiés.
+- Améliorer l'aspect graphique (icones, images).
+- Ecouter les modifications sur le fichier en cours d'édition pour détecter une modification externe (edition, suppression).
+
+
+WISHES:
+
+- Copier le texte de la sortie de compilation.
+- Bouttons dans la barre d'outils du l'éditeur pour compiler et browser directement la documentation générée.
+- Dans le menu contextuel du fichier doxygen, ajouter des actions pour browser la documentation générée.
+- Recherche d'un tag par mot clé se trouvant dans le nom du tag, soit dans son commentaire associé.
+- Prévoir la localisation des textes.

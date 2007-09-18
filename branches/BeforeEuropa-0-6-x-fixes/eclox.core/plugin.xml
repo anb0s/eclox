@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension-point id="doxygen" name="org.gna.eclox.core.doxygen" schema="schema/doxygen.exsd"/>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="eclox.core.PreferencesInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            file-extensions="Doxyfile, doxyfile"
+            file-names="Doxyfile, doxyfile"
+            id="doxyfile"
+            name="Doxyfile"
+            priority="normal"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="eclox.core.ui.PreferencePage"
+            id="eclox.core.PreferencePage"
+            name="Doxygen"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="eclox.core.PreferencesInitializer"/>
+   </extension>
+   <extension
+         id="doxygen.marker"
+         name="Doxygen Problem"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <attribute name="priority"/>
+      <attribute name="message"/>
+      <attribute name="severity"/>
+      <attribute name="location"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            adaptable="false"
+            class="eclox.core.ui.DoxyfileDecorator"
+            id="eclox.core.decorator"
+            label="Doxygen Build Indicator"
+            lightweight="true"
+            state="true">
+         <description>
+            Shows when doxygen is building a given doxyfile.
+         </description>
+         <enablement>
+            <objectClass name="org.eclipse.core.resources.IFile"/>
+         </enablement>
+      </decorator>
+   </extension>
+
+</plugin>
