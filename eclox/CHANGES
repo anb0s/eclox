@@ -1,4 +1,4 @@
-eclox-0.6.4
+eclox-0.6.4 (18-sep-2007)
  * task #5127 : Use content types for the contextual build menu and
    for the editor. Contextual menu build action gets enhanced. It
    either launch doxygen when the selection is a doxyfile, prompt
