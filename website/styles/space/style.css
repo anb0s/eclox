@@ -136,6 +136,22 @@ h3#cvs
 	background-image: url("24/development.png");
 }
 
+a.go-top
+{
+	color: rgb(170,170,255);
+	
+	font-size: small;
+	font-weight: normal;
+	
+	text-decoration: none;
+}
+
+a.go-top:hover
+{
+	text-decoration: underline;
+}
+
+
 li.enlighted
 {
 	background-repeat: no-repeat;
