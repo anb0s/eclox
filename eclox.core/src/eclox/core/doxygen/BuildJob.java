@@ -225,6 +225,7 @@ public class BuildJob extends Job {
 		doxyfile = dxfile;
 		setPriority( Job.BUILD );
 		setRule( doxyfile );
+		setUser(true);
 		
 		// References the jobs in the global collection and add a doxyfile listener.
 		jobs.add( this );
