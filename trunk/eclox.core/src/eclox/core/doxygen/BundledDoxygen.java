@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Vector;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
@@ -59,7 +60,7 @@ public final class BundledDoxygen extends Doxygen {
 				
 				if( Platform.getOS().equals(os) && Platform.getOSArch().equals(arch) ) {
 					final Path		path	= new Path( elements[j].getAttribute("path") );
-					URL				url		= Plugin.getDefault().find( path );
+					URL				url		= FileLocator.find(Plugin.getDefault().getBundle(), path, null);
 					
 					if( url != null ) {
 						doxygens.add( new BundledDoxygen(url) );
@@ -102,7 +103,7 @@ public final class BundledDoxygen extends Doxygen {
 	 */
 	public String getCommand() {
 		try {
-			return Platform.resolve( location ).getPath();
+			return FileLocator.resolve( location ).getPath();
 		}
 		catch( Throwable t ) {
 			Plugin.log(t);
