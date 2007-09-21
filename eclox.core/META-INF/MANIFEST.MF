@@ -13,4 +13,4 @@ Export-Package: eclox.core,
  eclox.core.doxyfiles,
  eclox.core.doxyfiles.io,
  eclox.core.doxygen
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
