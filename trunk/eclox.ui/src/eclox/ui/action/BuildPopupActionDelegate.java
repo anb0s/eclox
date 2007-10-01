@@ -91,7 +91,7 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 				IResource	resource = (IResource) Platform.getAdapterManager().getAdapter(object, IResource.class);
 				
 				this.resource = resource;
-				if( resource != null ) {
+				if( resource != null && resource.isAccessible() ) {
 					ResourceCollector collector = ResourceCollector.run(resource);
 					
 					// If there is only one collected doxyfile, then assignes that doxyfile as the current resource.
