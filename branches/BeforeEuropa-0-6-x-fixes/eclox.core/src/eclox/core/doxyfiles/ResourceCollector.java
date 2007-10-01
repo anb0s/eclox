@@ -70,7 +70,7 @@ public class ResourceCollector implements IResourceVisitor {
      */
     public boolean visit(IResource resource) throws CoreException {
         // Determine if the current resource is  doxyfile, and if so, stores the resource
-        if( Doxyfile.isDoxyfile(resource) == true ) {
+        if( resource.isAccessible() && Doxyfile.isDoxyfile(resource) == true ) {
             m_doxyfiles.add( resource );
         }
         return true;

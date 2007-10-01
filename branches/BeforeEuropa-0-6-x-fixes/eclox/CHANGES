@@ -1,4 +1,9 @@
-eclox-0.6.4
+eclox-0.6.5 (1-oct-2007)
+ * bug #10074 : Right clicking on a closed project causes an Eclox error.
+   Searching for doxyfiles into a closed project was not handled and
+   ended in an exception. Thanks to slide_o_mix for the report.
+
+eclox-0.6.4 (19-sep-2007)
  * task #5127 : Use content types for the contextual build menu and
    for the editor. Contextual menu build action gets enhanced. It
    either launch doxygen when the selection is a doxyfile, prompt
