@@ -122,16 +122,17 @@ public abstract class Doxygen {
 	/**
 	 * Launch a documentation build.
 	 * 
-	 * @param	file	the file representing the doxygne configuration to use for the build
+	 * @param	file	the file representing the doxygen configuration to use for the build
 	 * 
 	 * @return	The process that run the build.
 	 */
 	public Process build( IFile file ) throws RuntimeException {
 		try {
-			String[]	command = new String[2];
+			String[]	command = new String[3];
 			
 			command[0] = getCommand();
-			command[1] = file.getLocation().makeAbsolute().toOSString();
+			command[1] = "-b";
+			command[2] = file.getLocation().makeAbsolute().toOSString();
 
 // TODO This is code only supported by jre >= 1.5
 //			ProcessBuilder	processBuilder = new ProcessBuilder( command );
