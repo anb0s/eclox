@@ -24,7 +24,6 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
@@ -91,7 +90,7 @@ public class DoxyfileDecorator implements ILightweightLabelDecorator {
 	 * Constructor
 	 */
 	public DoxyfileDecorator() {
-		Platform.getJobManager().addJobChangeListener(jobManagerListener);
+		Job.getJobManager().addJobChangeListener(jobManagerListener);
 	}
 
 	/**
@@ -120,7 +119,7 @@ public class DoxyfileDecorator implements ILightweightLabelDecorator {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	public void dispose() {
-		Platform.getJobManager().removeJobChangeListener(jobManagerListener);
+		Job.getJobManager().removeJobChangeListener(jobManagerListener);
 	}
 
 	/**
