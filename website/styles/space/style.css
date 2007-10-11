@@ -176,6 +176,10 @@ li#package-doxygen
 	background-image: url("16/package.png");
 }
 
+li#package-update
+{
+	background-image: url("16/package.png");
+}
 
 
 div.columns
