@@ -1,5 +1,5 @@
 // eclox : Doxygen plugin for Eclipse.
-// Copyright (C) 2003-2006 Guillaume Brocker
+// Copyright (C) 2003,2006,2007 Guillaume Brocker
 //
 // This file is part of eclox.
 //
@@ -184,16 +184,16 @@ public final class Convenience {
 		// Retrieves the initial path.
 		IPath	initialPath = new Path( path );
 		if( initialPath.isAbsolute() == false ) {
-			initialPath = doxyfile.getParentContainer().getLocation().append( initialPath );
+			initialPath = doxyfile.getFile().getParent().getLocation().append( initialPath );
 		}
 		
 		// If the initial path is not valid, use the doxyfile location as fall back.
 		File	file = new File( initialPath.toOSString() );
 		if( file.exists() == false ) {
-			initialPath = doxyfile.getParentContainer().getLocation();
+			initialPath = doxyfile.getFile().getParent().getLocation();
 		}
 
-		// Displayes the directory dialog to the user
+		// Displays the directory dialog to the user
 		FileDialog		dialog = new FileDialog( shell );
 		String			choosenPathString;
 		
@@ -227,16 +227,16 @@ public final class Convenience {
 		// Retrieves the initial path.
 		IPath	initialPath = new Path( path );
 		if( initialPath.isAbsolute() == false ) {
-			initialPath = doxyfile.getParentContainer().getLocation().append( initialPath );
+			initialPath = doxyfile.getFile().getParent().getLocation().append( initialPath );
 		}
 		
 		// If the initial path is not valid, use the doxyfile location as fall back.
 		File	file = new File( initialPath.toOSString() );
 		if( file.exists() == false ) {
-			initialPath = doxyfile.getParentContainer().getLocation();
+			initialPath = doxyfile.getFile().getParent().getLocation();
 		}
 		
-		// Displayes the directory dialog to the user
+		// Displays the directory dialog to the user
 		DirectoryDialog	dialog = new DirectoryDialog( shell );
 		String			choosenPathString;
 		dialog.setText( "File System Directory Selection" );
@@ -256,7 +256,7 @@ public final class Convenience {
 	}
 	
 	/**
-	 * Escapes the given value trsing. This will place back slashes before
+	 * Escapes the given value string. This will place back slashes before
 	 * any backslash or double quote.
 	 * 
 	 * @param	value	the value string to escape
@@ -277,10 +277,10 @@ public final class Convenience {
 	}
 	
 	/**
-	 * Unescapes the given value string. This will remove escape backslashes 
-	 * located before backslaashes and double quotes.
+	 * Un-escapes the given value string. This will remove escape backslashes 
+	 * located before backslashes and double quotes.
 	 * 
-	 * @param	value	the value trsing to unescape
+	 * @param	value	the value string to un-escape
 	 * 
 	 * @return	the escaped value string
 	 * 
@@ -301,7 +301,7 @@ public final class Convenience {
 	 * In the given string, replaces all matching substring by the given replacement.
 	 * 
 	 * @param	string	the string to update
-	 * @param	search	the sub string to serach and replace
+	 * @param	search	the sub string to search and replace
 	 * @param	replace	the string to place where search matches
 	 * 
 	 * @return	the resulting string

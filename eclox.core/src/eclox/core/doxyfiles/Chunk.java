@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2004 Guillaume Brocker
+ * Copyright (C) 2003,2004,2007 Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -23,12 +23,12 @@ package eclox.core.doxyfiles;
 
 
 /**
- * Implements the default item that can be containined in a doxyfile.
+ * Implements the default item that can be contained in a doxyfile.
  * 
  * A chunk is a piece of text extracted from e doxyfile. It can represent comments,
  * empty lines or whatever.
  * 
- * @author willy
+ * @author Guillaume Brocker
  */
 public abstract class Chunk {
 	
@@ -47,7 +47,7 @@ public abstract class Chunk {
 	}
 	
 	/**
-	 * Updates the chunck owner
+	 * Updates the chunk owner
 	 * 
 	 * @param	owner	the new owner
 	 */
