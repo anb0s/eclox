@@ -1,23 +1,23 @@
 /*
-	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003-2006 Guillaume Brocker
-
-	This file is part of eclox.
-
-    eclox is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    any later version.
-
-    eclox is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with eclox; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
-*/
+ * eclox : Doxygen plugin for Eclipse.
+ * Copyright (C) 2003,2006,2007 Guillaume Brocker
+ *
+ * This file is part of eclox.
+ *
+ * eclox is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * any later version.
+ *
+ * eclox is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with eclox; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
+ */
 
 package eclox.core.doxygen;
 
@@ -32,8 +32,10 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
@@ -42,11 +44,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.jobs.IJobManager;
 import org.eclipse.core.runtime.jobs.Job;
 
 import eclox.core.Plugin;
+import eclox.core.doxyfiles.Doxyfile;
 
 
 /**
@@ -224,7 +230,6 @@ public class BuildJob extends Job {
 		
 		doxyfile = dxfile;
 		setPriority( Job.BUILD );
-		setRule( doxyfile );
 		setUser(true);
 		
 		// References the jobs in the global collection and add a doxyfile listener.
@@ -389,13 +394,16 @@ public class BuildJob extends Job {
 		try
 		{
 			// Initializes the progress monitor.
-			monitor.beginTask( doxyfile.getFullPath().toString(), 4 );
-			
+			monitor.beginTask( doxyfile.getFullPath().toString(), 6 );
 			
 			// Clears log and markers.
 			clearLog();
 			clearMarkers();
 			monitor.worked( 1 );
+			
+			
+			// Locks access to the doxyfile.
+			getJobManager().beginRule( doxyfile, monitor );
 			
 			
 			// Creates the doxygen build process and log feeders. 
@@ -425,19 +433,34 @@ public class BuildJob extends Job {
 			monitor.worked( 2 );
 			
 			
+			// Unlocks the doxyfile.
+			getJobManager().endRule(doxyfile);
+			
+			
 			// Builds error and warning markers
 			createMarkers( monitor );
 			monitor.worked( 3 );
 			
 			
-			// Ensure that doxygen process has finished and job finalization.
+			// Ensure that doxygen process has finished.
 			buildProcess.waitFor();
 			monitor.worked( 4 );
+			
+			
+			// Refreshes the container that has received the documentation outputs.
+			Doxyfile	parsedDoxyfile	= new Doxyfile(this.doxyfile);
+			IContainer	outputContainer = parsedDoxyfile.getOutputContainer();
+			if( outputContainer != null ) {
+				outputContainer.refreshLocal( IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1) );
+			}
 			monitor.done();
 			
 			
 			// Job's done.
 			return Status.OK_STATUS;
+		}
+		catch( OperationCanceledException e ) {
+			return Status.CANCEL_STATUS;
 		}
 		catch( RuntimeException e ) {
 			return new Status(

@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2004 Guillaume Brocker
+ * Copyright (C) 2003,2004,2007 Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -31,8 +31,10 @@ import java.util.Vector;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.content.IContentType;
 
@@ -116,7 +118,7 @@ public class Doxyfile {
 	}
 	
 	/**
-	 * Appends a new chunk to the doxyfile
+	 * Appends a new chunk to the doxyfile.
 	 * 
 	 * @param	chunk	a chunk to append to the doxyfile
 	 */
@@ -124,7 +126,7 @@ public class Doxyfile {
 		// Pre-condition
 		assert chunk.getOwner() == null;
 		
-		// References the chunck.
+		// References the chunk.
 		chunk.setOwner( this );
 		this.chunks.add( chunk );
 		
@@ -148,6 +150,15 @@ public class Doxyfile {
             }
             group.add( setting );
 		}
+	}
+	
+	/**
+	 * Retrieves the resource file that contains the doxyfile.
+	 * 
+	 * @return	a resource file
+	 */
+	public IFile getFile() {
+		return file;
 	}
     
     /**
@@ -174,6 +185,36 @@ public class Doxyfile {
 	}
 	
 	/**
+	 * Retrieves the container that will receive the documentation build outputs.
+	 * 
+	 * @return	a folder, or null when none 
+	 */
+	public IContainer getOutputContainer() {
+		IContainer	outputContainer	= null;
+		Setting		outputSetting	= getSetting("OUTPUT_DIRECTORY");
+		
+		if( outputSetting != null ) {
+			Path	outputPath = new Path(outputSetting.getValue());
+			
+			if( outputPath.isEmpty() ) {
+				outputContainer = file.getParent();
+			}
+			else if( outputPath.isAbsolute() ) {
+				IContainer[]	foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(outputPath);
+				
+				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
+			}
+			else {
+				IPath			fullOutputPath	= file.getParent().getLocation().append(outputPath);
+				IContainer[]	foundContainers	= ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(fullOutputPath);
+				
+				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
+			}
+		}
+		return outputContainer;
+	}
+	
+	/**
 	 * Retrieves a single setting for the specified identifier.
 	 * 
 	 * @param	identifier	a string containing a setting identifier
@@ -191,24 +232,6 @@ public class Doxyfile {
 	 */
 	public Object[] getSettings() {
 		return settings.values().toArray();
-	}
-	
-	/**
-	 * Retrieves the container resource of this doxyfile
-	 * 
-	 * @return	a container instance
-	 */
-	public IContainer getParentContainer() {
-		return file.getParent();
-	}
-	
-	/**
-	 * Retrieves the location of the doxyfile
-	 * 
-	 * @return	a path containing the doxyfile location
-	 */
-	public IPath getResourceLocation() {
-		return file.getLocation();
 	}
 	
 	/**

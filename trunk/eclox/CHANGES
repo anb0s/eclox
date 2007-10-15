@@ -1,3 +1,8 @@
+eclox-0.7.0 (in progress)
+ * task #5524 : Workspace refresh after documentation builds.
+   Once a doxygen build is finished, the resource container that
+   received the documentation output is refreshed.
+ 
 eclox-0.6.5 (1-oct-2007)
  * bug #10074 : Right clicking on a closed project causes an Eclox error.
    Searching for doxyfiles into a closed project was not handled and
