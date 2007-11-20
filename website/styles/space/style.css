@@ -151,6 +151,13 @@ a.go-top:hover
 	text-decoration: underline;
 }
 
+a#delicious
+{
+	background-repeat: no-repeat;
+	background-position: left center;
+	background-image: url("delicious.gif");
+	padding-left: 15px;
+}
 
 li.enlighted
 {
