@@ -1,4 +1,6 @@
 eclox-0.7.0 (in progress)
+ * task #5609 : Update README file. Changed
+   "yellow question mark" by "@-sign in blue".
  * task #5524 : Workspace refresh after documentation builds.
    Once a doxygen build is finished, the resource container that
    received the documentation output is refreshed.
