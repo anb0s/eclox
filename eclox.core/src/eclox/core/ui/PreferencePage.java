@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2003-2007 Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -33,24 +33,29 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 import eclox.core.Plugin;
 
 /**
- * Implements the preferences for the core eclox plugin.
+ * Implements the preferences for the core eclox plug-in.
  * 
  * @author gbrocker
  */
 public class PreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 	
-	public PreferencePage()
-	{
+	public static final String ID = "eclox.core.PreferencePage"; ///< Holds the identifier of the property page.
+	
+	public PreferencePage()	{
 		super( GRID );
 	}
 	
-	public void init(IWorkbench workbench)
-	{
+	/**
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+	 */
+	public void init(IWorkbench workbench)	{
 		setPreferenceStore( new ScopedPreferenceStore( new InstanceScope(), Plugin.getDefault().getBundle().getSymbolicName() ) );
 	}
 
-	protected void createFieldEditors()
-	{
+	/**
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+	 */
+	protected void createFieldEditors()	{
 		// Creates all control instances.
 		Label						doxygenLabel	= new Label( getFieldEditorParent(), SWT.WRAP );
 		DefaultDoxygenFieldEditor	doxygen			= new DefaultDoxygenFieldEditor( getFieldEditorParent() );

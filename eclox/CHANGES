@@ -1,4 +1,10 @@
 eclox-0.7.0 (in progress)
+ * task #4859 : Enhance the error reporting when doxygen invokation fails
+   in the doxyfile creation wizard. When doxygen was not found, the user
+   gets asked for preference edition, or not. When wanted, the preference
+   dialog gets opened and the user can configure eclox to find doxygen.
+   If changes gets validated, the doxyfile generation is started again,
+   it is canceled otherwise.
  * task #5609 : Update README file. Changed
    "yellow question mark" by "@-sign in blue".
  * task #5524 : Workspace refresh after documentation builds.

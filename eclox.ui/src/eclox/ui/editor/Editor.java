@@ -26,6 +26,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -37,7 +38,6 @@ import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ISettingValueListener;
 import eclox.core.doxyfiles.Setting;
 import eclox.core.doxyfiles.io.Serializer;
-import eclox.ui.Plugin;
 import eclox.ui.editor.internal.ResourceChangeListener;
 
 
@@ -111,7 +111,7 @@ public class Editor extends FormEditor implements ISettingValueListener {
 	    	this.firePropertyChange( IEditorPart.PROP_DIRTY );
     	}
     	catch( Throwable throwable ) {
-    		Plugin.showError( throwable );
+    		MessageDialog.openError(getSite().getShell(), "Unexpected Error", throwable.toString());
     	}
     }
 

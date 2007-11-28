@@ -9,8 +9,13 @@ Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.ui
 Bundle-Activator: eclox.core.Plugin
-Export-Package: eclox.core,
- eclox.core.doxyfiles,
- eclox.core.doxyfiles.io,
- eclox.core.doxygen
+Export-Package: eclox.core;uses:="org.eclipse.core.runtime.preferences,org.osgi.framework,org.eclipse.core.runtime",
+ eclox.core.doxyfiles;uses:="org.eclipse.core.resources,org.eclipse.core.runtime",
+ eclox.core.doxyfiles.io;uses:="eclox.core.doxyfiles",
+ eclox.core.doxygen;uses:="org.eclipse.core.resources,org.eclipse.core.runtime.jobs,org.eclipse.core.runtime",
+ eclox.core.ui;
+  uses:="org.eclipse.jface.preference,
+   org.eclipse.jface.viewers,
+   org.eclipse.swt.widgets,
+   org.eclipse.ui"
 Eclipse-LazyStart: true
