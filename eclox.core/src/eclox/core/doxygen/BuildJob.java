@@ -461,12 +461,12 @@ public class BuildJob extends Job {
 		catch( OperationCanceledException e ) {
 			return Status.CANCEL_STATUS;
 		}
-		catch( RuntimeException e ) {
+		catch( InvokeException e ) {
 			return new Status(
 					Status.WARNING,
 					Plugin.getDefault().getBundle().getSymbolicName(),
 					ERROR_DOXYGEN_NOT_FOUND, 
-					e.getMessage(),
+					"Doxygen was not found.",
 					e );			
 		}
 		catch( Throwable t ) {

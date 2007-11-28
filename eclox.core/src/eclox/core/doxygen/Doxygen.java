@@ -125,7 +125,7 @@ public abstract class Doxygen {
 	 * 
 	 * @return	The process that run the build.
 	 */
-	public Process build( IFile file ) throws RuntimeException {
+	public Process build( IFile file ) throws InvokeException {
 		try {
 			String[]	command = new String[3];
 			
@@ -141,8 +141,8 @@ public abstract class Doxygen {
 			
 			return Runtime.getRuntime().exec( command, null, getDir(file).toFile() );
 		}
-		catch(Throwable throwable) {
-			throw new RuntimeException("Unable to launch doxygen.", throwable);
+		catch(IOException ioException) {
+			throw new InvokeException(ioException);
 		}
 	}
 	
