@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2003-2007 Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -28,7 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 
 import eclox.core.IPreferences;
@@ -152,30 +151,45 @@ public abstract class Doxygen {
 	 * 
 	 * @param	file	the configuration file to generate.
 	 */	
-	public void generate( IFile file ) throws RuntimeException, IOException, InterruptedException, CoreException {
-		Process		process;
-		String[]	command = new String[3];
-		
-		// Build the command. 
-		command[0] = getCommand();
-		command[1] =  "-g";
-		command[2] = file.getLocation().toOSString();
-		
-		// Run the command and check for errors.
-		process = Runtime.getRuntime().exec( command, null );
-		if(process.waitFor() != 0) {
-			BufferedReader	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			String			errorMsg = new String();
-			String			line;
+	public void generate( IFile file ) throws InvokeException, RunException {
+		try
+		{
+			Process		process;
+			String[]	command = new String[3];
 			
-			for(line=reader.readLine(); line != null; line=reader.readLine()) {
-				errorMsg = errorMsg.concat(line);
+			// Build the command. 
+			command[0] = getCommand();
+			command[1] =  "-g";
+			command[2] = file.getLocation().toOSString();
+			
+			// Run the command and check for errors.
+			process = Runtime.getRuntime().exec( command, null );
+			if(process.waitFor() != 0) {
+				BufferedReader	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+				String			errorMsg = new String();
+				String			line;
+				
+				for(line=reader.readLine(); line != null; line=reader.readLine()) {
+					errorMsg = errorMsg.concat(line);
+				}
+				throw new RunException( errorMsg );
 			}
-			throw new RuntimeException( errorMsg );
+			
+			// Force some refresh to display the file.
+			file.refreshLocal( 0, null );
 		}
-		
-		// Force some refresh to display the file.
-		file.refreshLocal( 0, null );
+		catch( RunException runException ) {
+			throw runException;
+		}
+		catch( SecurityException securityException ) {
+			throw new InvokeException(securityException);
+		}
+		catch( IOException ioException ) {
+			throw new InvokeException(ioException);
+		}
+		catch( Throwable throwable ) {
+			Plugin.log(throwable);
+		}
 	}
 	
 	

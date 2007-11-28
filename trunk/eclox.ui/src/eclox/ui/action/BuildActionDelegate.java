@@ -1,28 +1,29 @@
 /*
-	eclox : Doxygen plugin for Eclipse.
-	Copyright (C) 2003-2004 Guillaume Brocker
-
-	This file is part of eclox.
-
-	eclox is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	any later version.
-
-	eclox is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with eclox; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
-*/
+ * eclox : Doxygen plugin for Eclipse.
+ * Copyright (C) 2003,2004,2007 Guillaume Brocker
+ * 
+ * This file is part of eclox.
+ * 
+ * eclox is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * any later version.
+ * 
+ * eclox is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with eclox; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
+ */
 
 package eclox.ui.action;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -86,6 +87,11 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 * The next doxyfile to build.
 	 */
 	private IFile nextDoxyfile;
+	
+	/**
+	 * Holds the reference to the workbench window where the action taks place.
+	 */
+	private IWorkbenchWindow window;
 		
 	/**
 	 * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
@@ -109,7 +115,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			new MenuItem(this.menu, SWT.SEPARATOR);
 		}
 		
-		// Add the fallback menu item to let the user choose another doxyfile.
+		// Add the fall-back menu item to let the user choose another doxyfile.
 		MenuItem chooseMenuItem = new MenuItem(this.menu, SWT.PUSH);
 		
 		chooseMenuItem.addSelectionListener(new MenuSelectionListener());
@@ -130,6 +136,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 * Initialization of the action delegate.
 	 */
 	public void init(IWorkbenchWindow window) {
+		this.window = window;
 	}
 
 	/**
@@ -138,7 +145,12 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 * @param	action	the action proxy that handles the presentation portion of the action.
 	 */
 	public void run(IAction action) {
-		this.run(false);
+		try {
+			this.run(false);
+		}
+		catch( Throwable throwable ) {
+			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
+		}
 	}
 
 	/**
@@ -178,7 +190,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			action.setToolTipText(tooltipText);
 		}
 		catch(Throwable throwable) {
-			Plugin.showError(throwable);
+			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
 		}
 	}
 	
@@ -191,7 +203,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		try {
 			IFile	doxyfile = forceChoose == true ? null : this.nextDoxyfile;
 			
-			// If thereis no next doxyfile to build, ask the user for one.
+			// If there is no next doxyfile to build, ask the user for one.
 			if(doxyfile == null) {
 				DoxyfileSelecterDialog doxyfileSelecter = new DoxyfileSelecterDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 				
@@ -205,8 +217,8 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 				Plugin.getDefault().getBuildManager().build( doxyfile );
 			}
 		}
-		catch(Throwable throwable) {
-			Plugin.showError(throwable);
+		catch( Throwable throwable ) {
+			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
 		}
 	}
 	
@@ -226,28 +238,22 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 * @return	a doxfile retrieved from the active editor input.
 	 */
 	private IFile getDoxyfileFromActiveEditor() {
-		IFile doxyfile = null;
+		IFile		doxyfile			= null;
+		IEditorPart	activeEditorPart	= window.getActivePage().getActiveEditor();
 		
-		try {
-			IEditorPart activeEditorPart;
+		if(activeEditorPart != null) {
+			IEditorInput activeEditorInput  = activeEditorPart.getEditorInput();
 			
-			activeEditorPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-			if(activeEditorPart != null) {
-				IEditorInput activeEditorInput  = activeEditorPart.getEditorInput();
+			if(activeEditorInput instanceof IFileEditorInput) {
+				IFileEditorInput fileEditorInput = (IFileEditorInput)activeEditorInput;
+				IFile file = fileEditorInput.getFile();
 				
-				if(activeEditorInput instanceof IFileEditorInput) {
-					IFileEditorInput fileEditorInput = (IFileEditorInput)activeEditorInput;
-					IFile file = fileEditorInput.getFile();
-					
-					if(Doxyfile.isDoxyfile(file) == true) {
-						doxyfile = file;
-					}
-				}	
-			}
+				if(Doxyfile.isDoxyfile(file) == true) {
+					doxyfile = file;
+				}
+			}	
 		}
-		catch(Throwable throwable) {
-			Plugin.showError(throwable);
-		}
+		
 		return doxyfile;
 	}
 	
@@ -258,25 +264,21 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 */
 	private IFile getDoxyfileFromSelection(ISelection selection) {
 		IFile doxyfile = null;
-		
-		try {
-			// Test if the current selection is not empty.
-			if(selection instanceof IStructuredSelection && selection.isEmpty() == false) {
-				IStructuredSelection	structSel = (IStructuredSelection) selection;
-				Object					element = structSel.getFirstElement();
 
-				if(element != null && element instanceof IFile) {
-					IFile	fileElement = (IFile) element;
+		// Test if the current selection is not empty.
+		if(selection instanceof IStructuredSelection && selection.isEmpty() == false) {
+			IStructuredSelection	structSel = (IStructuredSelection) selection;
+			Object					element = structSel.getFirstElement();
 
-					if(fileElement.exists() == true && Doxyfile.isDoxyfile(fileElement) == true) {
-						doxyfile = fileElement;
-					}
+			if(element != null && element instanceof IFile) {
+				IFile	fileElement = (IFile) element;
+
+				if(fileElement.exists() == true && Doxyfile.isDoxyfile(fileElement) == true) {
+					doxyfile = fileElement;
 				}
 			}
 		}
-		catch(Throwable throwable) {
-			Plugin.showError(throwable);
-		}
+
 		return doxyfile;
 	}
 	

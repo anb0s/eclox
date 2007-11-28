@@ -1,12 +1,8 @@
 package eclox.ui;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.plugin.*;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import eclox.ui.console.ConsoleManager;
@@ -101,36 +97,6 @@ public class Plugin extends AbstractUIPlugin {
 	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Error encountered. " + message, null) );
 	}
 	
-	/**
-	 * Show an error with the specified message.
-	 * 
-	 * @param message	A string containing the message to display.
-	 */
-	public static void showError( String message ) {
-		Shell		shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		MessageBox	messageBox = new MessageBox( shell, SWT.ICON_ERROR | SWT.OK );
-		
-		messageBox.setText( "Eclox" );
-		messageBox.setMessage( message );
-		messageBox.open();		
-	}
-	
-	/**
-	 * Show an error message relative to the specified throwable object.
-	 * 
-	 * @param	throwable	The object for which an error message must be shown.
-	 */
-	public static void showError(Throwable throwable) {
-		String	message = throwable.getMessage();
-		
-		if(message != null) {
-			showError(message);
-		}
-		else {
-			showError("Caught exception of class "+throwable.getClass().getName()+" with no messages.");
-		}
-	}
-
 	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path.

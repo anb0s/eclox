@@ -24,6 +24,7 @@ package eclox.ui.editor.advanced;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.FontRegistry;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.layout.FillLayout;
@@ -288,7 +289,7 @@ public class DetailsPage implements IDetailsPage {
 	        editor.refresh();
         }
         catch(Throwable throwable) {
-            Plugin.showError(throwable);
+        	MessageDialog.openError(this.managedForm.getForm().getShell(), "Unexpected Error", throwable.toString());
         }
     }    
 
