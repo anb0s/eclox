@@ -459,9 +459,11 @@ public class BuildJob extends Job {
 			return Status.OK_STATUS;
 		}
 		catch( OperationCanceledException e ) {
+			getJobManager().endRule(doxyfile);
 			return Status.CANCEL_STATUS;
 		}
 		catch( InvokeException e ) {
+			getJobManager().endRule(doxyfile);
 			return new Status(
 					Status.WARNING,
 					Plugin.getDefault().getBundle().getSymbolicName(),
@@ -470,6 +472,7 @@ public class BuildJob extends Job {
 					e );			
 		}
 		catch( Throwable t ) {
+			getJobManager().endRule(doxyfile);
 			return new Status(
 					Status.ERROR,
 					Plugin.getDefault().getBundle().getSymbolicName(),
