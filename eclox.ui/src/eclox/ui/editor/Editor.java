@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2003-2007 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -29,9 +29,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPersistableEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
 
 import eclox.core.doxyfiles.Doxyfile;
@@ -47,27 +47,19 @@ import eclox.ui.editor.internal.ResourceChangeListener;
  * 
  * @author gbrocker
  */
-public class Editor extends FormEditor implements ISettingValueListener {
+/**
+ * @author willy
+ *
+ */
+public class Editor extends FormEditor implements ISettingValueListener, IPersistableEditor {
     
-	/**
-	 * the name of the property attached to a dirty setting
-	 */
-	public final static String PROP_SETTING_DIRTY = "dirty";
+	public final static String PROP_SETTING_DIRTY = "dirty";				///< the name of the property attached to a dirty setting.
+	public final static String SAVED_ACTIVE_PAGE_ID = "SavedActivePageId";	///< Identifies the memo entry containing the identifier if the saved active page identifier.
 	
-    /**
-     * The doxyfile content.
-     */
-    private Doxyfile doxyfile;
-    
-    /**
-     * the resource listener that will manage the editor life-cycle
-     */
-    private ResourceChangeListener resourceChangeListener;
-    
-    /**
-     * The dirty state of the editor
-     */
-    private boolean dirty = false;
+    private Doxyfile				doxyfile;				///< The doxyfile content.
+    private ResourceChangeListener	resourceChangeListener;	///< the resource listener that will manage the editor life-cycle
+    private boolean					dirty = false;			///< The dirty state of the editor
+    private IMemento				savedState;				///< References a saved state to restore, null otherwise.
 
     /**
      * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
@@ -78,6 +70,10 @@ public class Editor extends FormEditor implements ISettingValueListener {
             addPage(new eclox.ui.editor.advanced.Page(this));
             // TODO reactivate
             //this.addPage(new SourcePage(this));
+            
+            // Restores the saved active page.
+            String savedPageId = (savedState != null) ? savedState.getString(SAVED_ACTIVE_PAGE_ID) : null;
+            setActivePage(savedPageId);
         }
         catch( Throwable throwable ) {}
     }
@@ -92,8 +88,8 @@ public class Editor extends FormEditor implements ISettingValueListener {
 		IFile				file = fileEditorInput.getFile();
 	
 		try {
-			// Comits all pending changes.
-    		getActivePageInstance().getManagedForm().commit( true );
+			// Commits all pending changes.
+			commitPages(true);
     		
         	// Stores the doxyfile content.
 	    	Serializer	serializer = new Serializer( doxyfile );
@@ -115,7 +111,7 @@ public class Editor extends FormEditor implements ISettingValueListener {
     	}
     }
 
-    /* (non-Javadoc)
+    /**
      * @see org.eclipse.ui.ISaveablePart#doSaveAs()
      */
     public void doSaveAs() {
@@ -132,37 +128,6 @@ public class Editor extends FormEditor implements ISettingValueListener {
     }
 
     /**
-     * @see org.eclipse.ui.IEditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
-     */
-    public void init( IEditorSite site, IEditorInput input ) throws PartInitException {
-        try {
-            IFileEditorInput	fileInput = (IFileEditorInput) input;
-            
-            // Attaches the resource change listener
-            resourceChangeListener = new ResourceChangeListener(this);
-            ResourcesPlugin.getWorkspace().addResourceChangeListener( resourceChangeListener );
-            
-            // Parses the doxyfile and attaches to all settings.
-            this.doxyfile = new Doxyfile(fileInput.getFile());
-            Iterator	i = this.doxyfile.settingIterator();
-            while( i.hasNext() == true ) {
-                Setting	setting = (Setting) i.next();
-                setting.addSettingListener( this );
-            }
-            
-            // Continue initialization.
-	        this.setPartName(input.getName());
-	        super.init(site, input);
-        }
-        catch( PartInitException partInitException ) {
-            throw partInitException;
-        }
-        catch( Throwable throwable ) {
-            throw new PartInitException( "Unexpected error. "+throwable.getMessage(), throwable );
-        }
-    }
-    
-    /* (non-Javadoc)
      * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
      */
     public boolean isSaveAsAllowed() {
@@ -174,12 +139,12 @@ public class Editor extends FormEditor implements ISettingValueListener {
      * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
      */
     public void settingValueChanged( Setting setting ) {
-    		// Updates the internal editor state.
-        this.dirty = true;
-        this.firePropertyChange( IEditorPart.PROP_DIRTY );
-        
-        // Assignes a dynamic property to the setting.
-        setting.setProperty( PROP_SETTING_DIRTY, "yes" );
+    	// Updates the internal editor state.
+    	this.dirty = true;
+    	this.firePropertyChange( IEditorPart.PROP_DIRTY );
+
+    	// Assigns a dynamic property to the setting.
+    	setting.setProperty( PROP_SETTING_DIRTY, "yes" );
     }
     
     /**
@@ -196,7 +161,7 @@ public class Editor extends FormEditor implements ISettingValueListener {
         // Un-references the doxyfile.
         this.doxyfile = null;
         
-        // Dettaches the resource change listener
+        // Detaches the resource change listener
         ResourcesPlugin.getWorkspace().removeResourceChangeListener( resourceChangeListener );
         resourceChangeListener = null;
 
@@ -207,7 +172,51 @@ public class Editor extends FormEditor implements ISettingValueListener {
     /**
      * @see org.eclipse.ui.ISaveablePart#isDirty()
      */
-    public boolean isDirty() {
-        return super.isDirty() || this.dirty;
-    }
+	public boolean isDirty() {
+		return super.isDirty() || this.dirty;
+	}
+
+	/**
+	 * @see org.eclipse.ui.IPersistableEditor#restoreState(org.eclipse.ui.IMemento)
+	 */
+	public void restoreState(IMemento memento) {
+		savedState = memento;
+	}
+
+	/**
+	 * @see org.eclipse.ui.IPersistable#saveState(org.eclipse.ui.IMemento)
+	 */
+	public void saveState(IMemento memento) {
+		memento.putString(SAVED_ACTIVE_PAGE_ID, getActivePageInstance().getId());
+	}
+
+	/**
+	 * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
+	 */
+	protected void setInput(IEditorInput input) {
+		super.setInput(input);
+
+		try {
+	        IFileEditorInput	fileInput = (IFileEditorInput) input;
+	        
+	        // Attaches the resource change listener
+	        resourceChangeListener = new ResourceChangeListener(this);
+	        ResourcesPlugin.getWorkspace().addResourceChangeListener( resourceChangeListener );
+	        
+	        // Parses the doxyfile and attaches to all settings.
+	        this.doxyfile = new Doxyfile( fileInput.getFile() );
+	        Iterator	i = this.doxyfile.settingIterator();
+	        while( i.hasNext() == true ) {
+	            Setting	setting = (Setting) i.next();
+	            setting.addSettingListener( this );
+	        }
+	        
+	        // Continue initialization.
+	        setPartName( input.getName() );
+		}
+		catch( Throwable throwable ) {
+			MessageDialog.openError(getSite().getShell(), "Unexpected Error", throwable.toString());
+		}
+	}
+    
 }
