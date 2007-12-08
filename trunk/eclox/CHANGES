@@ -1,4 +1,6 @@
-eclox-0.7.0 (in progress)
+eclox-0.7.0 (8-dec-2007)
+ * Creation of the hot update site, that provides latest eclox versions
+   that are still in development.
  * task #4859 : Enhance the error reporting when doxygen invokation fails
    in the doxyfile creation wizard. When doxygen was not found, the user
    gets asked for preference edition, or not. When wanted, the preference
