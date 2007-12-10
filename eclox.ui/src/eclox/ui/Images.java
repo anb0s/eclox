@@ -7,5 +7,6 @@ public interface Images {
 	static String ERASE				= "icons/erase.png";
 	static String LOCK_CONSOLE		= "icons/lock_console.gif";
 	static String TERMINATE			= "icons/terminate.gif";
+	static String REMOVE			= "icons/remove_console.gif";
 	
 }

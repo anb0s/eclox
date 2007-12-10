@@ -1,11 +1,30 @@
+/*
+ * eclox : Doxygen plugin for Eclipse.
+ * Copyright (C) 2003-2007 Guillaume Brocker
+ * 
+ * This file is part of eclox.
+ * 
+ * eclox is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * any later version.
+ * 
+ * eclox is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with eclox; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
+ */
+
 package eclox.ui;
 
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
-import eclox.ui.console.ConsoleManager;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -17,16 +36,10 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	private static Plugin plugin;
 	
-	
 	/**
 	 * the managed build manager
 	 */
 	private BuildManager buildManager;
-	
-	/**
-	 * the managed console manager 
-	 */
-	private ConsoleManager consoleManager;
 	
 	/**
 	 * The constructor.
@@ -40,7 +53,6 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		consoleManager = new ConsoleManager();
 		buildManager = new BuildManager();
 	}
 
@@ -49,7 +61,6 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		buildManager = null;
-		consoleManager = null;
 		plugin = null;
 		super.stop(context);
 	}
@@ -68,15 +79,6 @@ public class Plugin extends AbstractUIPlugin {
 	 */
 	public BuildManager getBuildManager() {
 		return buildManager; 
-	}
-	
-	/**
-	 * Retrieves the console manager of the plugin.
-	 * 
-	 * @return the managed console manager instance
-	 */
-	public ConsoleManager getConsoleManager() {
-		return consoleManager; 
 	}
 	
 	/**

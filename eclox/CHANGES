@@ -1,3 +1,12 @@
+eclox-0.7.1
+ * bug #9693 : Bad console output when several workbench windows are open.
+   This bug was the opportunity for a deep refactoring of the doxygen
+   build console management. Now each doxyfile build job has its own
+   console instance, each console is now able to create several console
+   pages. As a result, console pages (displayed in the same workbench
+   window or not) that point to the same console will show the same
+   output.   
+
 eclox-0.7.0 (8-dec-2007)
  * Creation of the hot update site, that provides latest eclox versions
    that are still in development.

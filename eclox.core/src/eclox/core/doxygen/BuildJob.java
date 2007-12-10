@@ -225,7 +225,7 @@ public class BuildJob extends Job {
 	 * Constructor.
 	 */
 	private BuildJob( IFile dxfile ) {
-		super( "Doxygen Build" );
+		super( "Doxygen Build ["+dxfile.getFullPath().toPortableString()+"]" );
 		
 		doxyfile = dxfile;
 		setPriority( Job.BUILD );
@@ -423,7 +423,9 @@ public class BuildJob extends Job {
 				// Tests if the jobs is supposed to terminate.
 				if( monitor.isCanceled() == true ) {
 					buildProcess.destroy();
-					break;
+					buildProcess.waitFor();
+					getJobManager().endRule(doxyfile);
+					return Status.CANCEL_STATUS;
 				}
 				
 				// Allows other threads to run.
