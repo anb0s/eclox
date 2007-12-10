@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2003-2007 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -25,7 +25,7 @@ import org.eclipse.jface.action.Action;
 
 import eclox.ui.Images;
 import eclox.ui.Plugin;
-import eclox.ui.console.Console;
+import eclox.ui.console.ConsolePage;
 
 /**
  * Implements the action that will lock the console from scrolling while output
@@ -36,24 +36,24 @@ import eclox.ui.console.Console;
 public class LockScroll extends Action {
 	
 	/**
-	 * the console to act on
+	 * the console page to act on
 	 */
-	private Console console;
+	private ConsolePage consolePage;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param console	the console to act on
 	 */
-	public LockScroll( Console console ) {
-		super( "Scroll Lock", AS_CHECK_BOX );
-		this.console = console;
+	public LockScroll( ConsolePage consolePage ) {
+		super("Scroll Lock", AS_CHECK_BOX);
+		this.consolePage = consolePage;
 		setImageDescriptor( Plugin.getImageDescriptor(Images.LOCK_CONSOLE) );
 		setToolTipText( "Scroll Lock" );
 	}
 	
 	public void run() {
-		console.setScrollLocked( isChecked() );
+		consolePage.setScrollLocked( isChecked() );
 		super.run();
 	}
 }

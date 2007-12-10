@@ -58,12 +58,6 @@
       </actionSet>
    </extension>
    <extension
-         point="org.eclipse.ui.console.consoleFactories">
-      <consoleFactory
-            class="eclox.ui.console.ConsoleFactory"
-            label="Doxygen Build"/>
-   </extension>
-   <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="eclox.ui.PreferencesInitializer"/>
    </extension>

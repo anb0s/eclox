@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2003-2007 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -32,10 +32,10 @@ import org.eclipse.ui.PlatformUI;
 
 import eclox.core.doxygen.BuildJob;
 import eclox.core.doxygen.IBuildJobListener;
-import eclox.ui.console.ConsoleManager;
+import eclox.ui.console.Console;
 
 /**
- * This class is reponsible to launch the build for the given doxyfile
+ * This class is responsible to launch the build for the given doxyfile
  * and also manages the build history.
  * 
  * @see		Plugin
@@ -106,7 +106,7 @@ public class BuildManager {
 	 */
 	public void build( IFile doxyfile )
 	{
-		// Retrieves the plugin preferences.
+		// Retrieves the plug-in preferences.
 		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
 		
 		// Ask the user if he wants to save all opened editors before proceeding to build.
@@ -154,9 +154,7 @@ public class BuildManager {
 		jobHistory.add( job );
 		
 		// Updates the console.
-		ConsoleManager	consoleManager = Plugin.getDefault().getConsoleManager();
-		
-		consoleManager.showConsole( job );
+		Console.show( job );
 		
 		// Schedule the job to build.
 		job.schedule();

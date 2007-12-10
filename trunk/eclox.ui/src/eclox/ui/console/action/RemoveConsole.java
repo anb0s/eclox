@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2007 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -19,21 +19,41 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA	
  */
 
-package eclox.ui.console;
+package eclox.ui.console.action;
 
-import org.eclipse.ui.console.IConsoleFactory;
+import org.eclipse.jface.action.Action;
+import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
 
+import eclox.ui.Images;
 import eclox.ui.Plugin;
+import eclox.ui.console.Console;
 
 /**
- * Implements a console factory that will open the doxygen build console.
+ * Implements an action that removes a given console.
  * 
  * @author gbrocker
  */
-public class ConsoleFactory implements IConsoleFactory {
+public class RemoveConsole extends Action {
 
-	public void openConsole() {
-		Plugin.getDefault().getConsoleManager().showConsole( null ); 
+	/**
+	 * the console the action is attached to
+	 */
+	Console console;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param	console	the build console
+	 */
+	public RemoveConsole( Console console ) {
+		super( "Remove", Plugin.getImageDescriptor(Images.REMOVE) );
+		this.console = console;
+		setToolTipText( "Remove Doxygen Build Console" );
 	}
-
+	
+	public void run() {
+		ConsolePlugin.getDefault().getConsoleManager().removeConsoles( new IConsole[] {console} );
+		super.run();
+	}
 }

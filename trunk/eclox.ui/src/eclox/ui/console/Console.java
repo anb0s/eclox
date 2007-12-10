@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2006 Guillaume Brocker
+ * Copyright (C) 2003-2007 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -21,13 +21,13 @@
 
 package eclox.ui.console;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.IJobChangeListener;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.custom.StyledText;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.ui.console.AbstractConsole;
 import org.eclipse.ui.console.ConsolePlugin;
+import org.eclipse.ui.console.IConsole;
+import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.IConsoleView;
 import org.eclipse.ui.part.IPageBookViewPage;
 
@@ -43,266 +43,115 @@ import eclox.core.doxygen.IBuildJobListener;
 public class Console extends AbstractConsole {
 
 	/**
-	 * Implements a build job listener that will maintain the console up-to-date
-	 * with the job log.
-	 * 
-	 * @author gbrocker
+	 * @brief	Implements a build job listener.
 	 */
-	private class MyBuildJobListener implements IBuildJobListener
-	{
+	private class MyBuildJobListener implements IBuildJobListener {
+
 		/**
 		 * @see eclox.core.doxygen.IBuildJobListener#buildJobLogCleared(eclox.core.doxygen.BuildJob)
 		 */
-		public void buildJobLogCleared(BuildJob job) {
-			ConsolePlugin.getStandardDisplay().asyncExec(
-					new Runnable()
-					{
-						public void run()
-						{
-							clearConsole();		
-						}
-					}
-				);
-		}
+		public void buildJobLogCleared(BuildJob job) {}
 
 		/**
 		 * @see eclox.core.doxygen.IBuildJobListener#buildJobLogUpdated(eclox.core.doxygen.BuildJob, java.lang.String)
 		 */
-		public void buildJobLogUpdated(BuildJob job, String output) {
-			final String	text = new String( output );
-			ConsolePlugin.getStandardDisplay().asyncExec(
-					new Runnable() {
-						public void run() {
-							append( text );		
-						}
-					}
-				);
-		}
+		public void buildJobLogUpdated(BuildJob job, String output) {}
 
 		/**
 		 * @see eclox.core.doxygen.IBuildJobListener#buildJobRemoved(eclox.core.doxygen.BuildJob)
 		 */
 		public void buildJobRemoved(BuildJob job) {
-			if( job == getJob() ) {
-				ConsolePlugin.getStandardDisplay().asyncExec(
-						new Runnable() {
-							public void run() {
-								setJob( null );		
-							}
-						}
-					);
-			}
-		}
-		
-		
-		
-	}
-
-	/**
-	 * @brief	Implements a job change listener used to update the interface state according to the
-	 * 			build job events.
-	 * 
-	 * @author gbrocker
-	 */
-	private class MyJobChangedListener implements IJobChangeListener {
-	
-		public void aboutToRun(IJobChangeEvent event) {
-			ConsolePlugin.getStandardDisplay().syncExec(
-					new Runnable()
-					{
-						public void run()
-						{
-							updateActionStates();		
-						}
-					}
-				);
-		}
-
-		public void awake(IJobChangeEvent event) {}
-
-		public void done(final IJobChangeEvent event) {
-			ConsolePlugin.getStandardDisplay().syncExec(
+			final BuildJob	localJob = job;
+			
+			ConsolePlugin.getStandardDisplay().asyncExec(
 					new Runnable() {
 						public void run() {
-							updateActionStates();
-							
-							IStatus	status = event.getResult();
-							if( status.isOK() ) {
-								append( "*** Build finished!" );
-							}
-							else {
-								append( "*** Build aborted! " );
-								append( status.getMessage() );
-							}
+							remove(localJob);		
 						}
 					}
 				);
-		}
-
-		public void running(IJobChangeEvent event) {}
-
-		public void scheduled(IJobChangeEvent event) {}
-
-		public void sleeping(IJobChangeEvent event) {}		
-				
+		}		
 	}
+
+	private static Map	consoles = new HashMap();	///< Holds all known console instances.
+	private BuildJob	job;						///< the build job
 	
-	
-	/**
-	 * the base build console name
-	 */
-	private static String BASE_NAME = "Doxygen";
-	
-	/**
-	 * the current build job
-	 */
-	private BuildJob job;
-	
-	/**
-	 * the current console page
-	 */
-	private ConsolePage page;
-	
-	/**
-	 * a boolean telling if the console scrolling is locked or not
-	 */
-	private boolean scrollLocked = false;
-	
-	/**
-	 * the current build job listener
-	 */
-	private MyBuildJobListener jobListener = new MyBuildJobListener();
-	
-	/**
-	 * the current job change listener
-	 */
-	private MyJobChangedListener jobChangedListener = new MyJobChangedListener();
 	
 	/**
 	 * Constructor
-	 */
-	public Console( BuildJob job )
-	{
-		super( BASE_NAME, null );		
-		page = new ConsolePage( this );
-	}
-	
-	public IPageBookViewPage createPage(IConsoleView view) {
-		return page;
-	}
-	
-	/**
-	 * Appends text to the console.
 	 * 
-	 * @param	text	a string containing the text to append
+	 * @param	job	the build job whose output must be shown
 	 */
-	public void append( String text ) {
-		StyledText	styledText = page.getStyledText();
-		if( styledText != null ) {
-			styledText.append( text );
-			scroll();
-		}
+	private Console(BuildJob job) {
+		super( job.getName(), null );
+		this.job = job;
+		this.job.addBuidJobListener(new MyBuildJobListener());
 	}
 	
 	/**
-	 * Clears the console content.
+	 * @see org.eclipse.ui.console.IConsole#createPage(org.eclipse.ui.console.IConsoleView)
 	 */
-	public void clearConsole() {
-		StyledText	styledText = page.getStyledText();
-		if( styledText != null ) {
-			styledText.setText( new String() );
-		}
+	public IPageBookViewPage createPage(IConsoleView view) {
+		return new ConsolePage(this);
 	}
 	
+	/**
+	 * @see org.eclipse.ui.console.AbstractConsole#dispose()
+	 */
+	protected void dispose() {
+		consoles.remove(job);
+		super.dispose();
+	}
+
+	/**
+	 * @see org.eclipse.ui.console.AbstractConsole#init()
+	 */
+	protected void init() {
+		consoles.put(job, this);
+		super.init();
+	}
+
 	/**
 	 * Retrieves the job currently monitored by the console
 	 * 
 	 * @return	a build job or null if none
 	 */
-	public BuildJob getJob()
-	{
+	public BuildJob getJob() {
 		return job;
 	}
-
+	
 	/**
-	 * Makes the console display the log from the given build job. If the given
-	 * job is a null, then the console will reset its state.
+	 * Shows a console for the given job.
 	 * 
-	 * @param	job	a given build job instance or null
+	 * @param	job	a build that needs a console to be shown
 	 */
-	public void setJob( BuildJob job )
-	{
-		// Skips the job if it is already current.
-		if( this.job == job ) {
-			return;
-		}
+	static public void show( BuildJob job ) {
+		// Retrieves the active workbench window and console manager.
+		IConsoleManager		consoleManager = ConsolePlugin.getDefault().getConsoleManager();
+		Console				console = null;
 		
-		// Expurges the old job.
-		if( this.job != null ) {
-			this.job.removeBuidJobListener( this.jobListener );
-			this.job.removeJobChangeListener( this.jobChangedListener );
-			this.job = null;
-		}
-		
-		// References the new job.
-		this.job = job;
-		
-		// Updates the console contents.
-		if( this.job != null ) {
-			this.job.addBuidJobListener( this.jobListener );
-			this.job.addJobChangeListener( this.jobChangedListener );
-		
-			setName( BASE_NAME + " [" + job.getDoxyfile().getFullPath().toString() + "]" );
-			showJobLog();
-			updateActionStates();
+		if( consoles.containsKey(job) ) {
+			console = (Console) consoles.get(job);
 		}
 		else {
-			setName( BASE_NAME );
-			clearConsole();
-			updateActionStates();
+			console = new Console(job);
+			consoleManager.addConsoles( new IConsole[] {console} );
 		}
+		
+		// Shows the console view.
+		console.activate();
 	}
 	
 	/**
-	 * Updates the lock of the console scroll.
+	 * Removes the console for the given build job.
 	 * 
-	 * @param	locked	a boolean giving the new lock state
+	 * @param	job	a build job
 	 */
-	public void setScrollLocked( boolean locked ) {
-		scrollLocked = locked;
-	}
-	
-	/**
-	 * Shows the current job's log in the console.
-	 */
-	private void showJobLog()
-	{
-		StyledText	styledText = page.getStyledText();
-		if( job != null && page != null && styledText != null ) {
-			styledText.setRedraw( false );
-			styledText.setText( this.job.getLog() );
-			scroll();
-			styledText.setRedraw( true );
+	public static void remove(BuildJob job) {
+		if( consoles.containsKey(job) ) {
+			Console console = (Console) consoles.get(job);
+			
+			ConsolePlugin.getDefault().getConsoleManager().removeConsoles( new IConsole[] {console} );
 		}
 	}
-	
-	/**
-	 * Scolls the console to the end of the log
-	 */
-	private void scroll()
-	{
-		StyledText	styledText = page.getStyledText();
-		if( scrollLocked == false && styledText != null) {
-			styledText.setSelection( styledText.getCharCount() );
-			styledText.showSelection();
-		}
-	}
-	
-	/**
-	 * Updates the state of some action according to the current job's state
-	 */
-	private void updateActionStates() {
-		page.getCancelJobAction().setEnabled( job != null && job.getState() == Job.RUNNING );
-	}
-	
 }
