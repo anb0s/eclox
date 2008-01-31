@@ -26,7 +26,7 @@ body
 	background-position: 25px bottom;
 }
 
-#contents
+#outline
 {
 	margin: 0;
 	padding: 0.33em 0 0.33em 20px;
@@ -42,7 +42,7 @@ body
 
 }
 
-#contents li
+#outline li
 {
 	margin: 0 1.25em 0 0;
 	padding: 0;
@@ -52,20 +52,20 @@ body
 	letter-spacing: 0.05em;
 }
 
-#contents li a
+#outline li a
 {
 	font-family: sans-serif;
 	text-decoration: none;
 	color: rgb(255,255,255);
 }
 
-#contents li a:hover
+#outline li a:hover
 {
 	text-decoration: underline;
 }
 
 
-h1, h2, h3
+h1, h2, h3, p, li
 {
 	font-family: sans-serif;
 }
@@ -193,11 +193,6 @@ div.columns
 {
 	float: none;
 	clear: both;
-}
-
-div.columns p,ul
-{
-	font-size: 85%
 }
 
 div.two-columns
