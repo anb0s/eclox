@@ -101,9 +101,19 @@ h3#screenshots
 	background-image: url("24/screenshots.png");
 }
 
+h3#normal-eclox
+{
+	background-image: url("24/face-angel.png");
+}
+
+h3#hot-eclox
+{
+	background-image: url("24/face-devilish.png");
+}
+
 h3#update-site
 {
-	background-image: url("24/update.png");
+	background-image: url("24/refresh.png");
 }
 
 h3#packages
@@ -128,7 +138,7 @@ h3#bugs-support
 
 h3#mailing-lists
 {
-	background-image: url("24/mail.png");
+	background-image: url("24/internet-group-chat.png");
 }
 
 h3#cvs
