@@ -252,8 +252,10 @@ public class Doxyfile {
 	 */
 	public IPath makePathRelative( IPath path ) {
 		if( isPathRelative(path) ) {
-			int matchingCount = file.getLocation().removeLastSegments(1).matchingFirstSegments( path );
-			return path.removeFirstSegments( matchingCount ).setDevice( new String() );
+			int		matchingCount = file.getLocation().removeLastSegments(1).matchingFirstSegments( path );
+			IPath	relativePath = path.removeFirstSegments( matchingCount ).setDevice( new String() );
+			
+			return relativePath.isEmpty() ? new Path(".") : relativePath;
 		}
 		else {
 			return path;
