@@ -51,7 +51,7 @@ public class ProjectPart extends Part {
 	private DirectoryListEditor inputEditor = new DirectoryListEditor();
 	
 	/**
-	 * the recursvie scan editor
+	 * the recursive scan editor
 	 */
 	private CheckBoxEditor recursiveEditor = new CheckBoxEditor("Scan recursively");
 	
