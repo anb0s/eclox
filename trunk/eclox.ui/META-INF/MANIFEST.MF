@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.gna.eclox.ui; singleton:=true
 Bundle-Version: 0.7.1
 Bundle-Activator: eclox.ui.Plugin
 Bundle-Vendor: Guillaume Brocker
-Bundle-Localization: plugin
+Bundle-Localization: 
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ui.console,

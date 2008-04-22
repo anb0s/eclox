@@ -4,7 +4,7 @@ Bundle-Name: Eclox Core
 Bundle-SymbolicName: org.gna.eclox.core; singleton:=true
 Bundle-Version: 0.7.1
 Bundle-Vendor: Guillaume Brocker
-Bundle-Localization: plugin
+Bundle-Localization: 
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime,
  org.eclipse.ui

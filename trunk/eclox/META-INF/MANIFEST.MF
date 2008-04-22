@@ -4,4 +4,4 @@ Bundle-Name: Eclox Branding Information
 Bundle-SymbolicName: org.gna.eclox; singleton:=true
 Bundle-Version: 0.7.1
 Bundle-Vendor: Guillaume Brocker
-Bundle-Localization: plugin
+Bundle-Localization: 

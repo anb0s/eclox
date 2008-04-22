@@ -4,4 +4,4 @@ Bundle-Name: Doxygen Binaries
 Bundle-SymbolicName: org.gna.eclox.core.doxygen; singleton:=true
 Bundle-Version: 1.5.3
 Fragment-Host: org.gna.eclox.core;bundle-version="0.6.0"
-Bundle-Localization: plugin
+Bundle-Localization: 

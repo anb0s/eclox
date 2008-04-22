@@ -43,7 +43,7 @@ public class LockScroll extends Action {
 	/**
 	 * Constructor
 	 * 
-	 * @param console	the console to act on
+	 * @param consolePage	the console to act on
 	 */
 	public LockScroll( ConsolePage consolePage ) {
 		super("Scroll Lock", AS_CHECK_BOX);
