@@ -54,12 +54,16 @@ public class Plugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		buildManager = new BuildManager();
+		
+		buildManager.restoreState();
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
+		buildManager.saveState();
+		
 		buildManager = null;
 		plugin = null;
 		super.stop(context);

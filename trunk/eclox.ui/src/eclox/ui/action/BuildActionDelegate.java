@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003,2004,2007 Guillaume Brocker
+ * Copyright (C) 2003, 2004, 2007, 2008, Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -74,24 +74,13 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			else {
 				forceChoose = true;
 			}
-			run(forceChoose);
+			doRun(forceChoose);
 		}
 	}
 	
-	/**
-	 * The contextual menu.
-	 */
-	private Menu menu;
-	
-	/**
-	 * The next doxyfile to build.
-	 */
-	private IFile nextDoxyfile;
-	
-	/**
-	 * Holds the reference to the workbench window where the action taks place.
-	 */
-	private IWorkbenchWindow window;
+	private Menu				menu;			///< The managed contextual menu.
+	private IFile				nextDoxyfile;	///< Rembers the next doxyfile to build.
+	private IWorkbenchWindow	window;			///< Holds the reference to the workbench window where the action takes place.
 		
 	/**
 	 * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
@@ -129,62 +118,68 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 * Dispose the delegate.
 	 */
 	public void dispose() {
+		// Frees all resources and references.
 		disposeMenu();
+		nextDoxyfile = null;
+		window = null;
 	}
 
+	
 	/**
-	 * Initialization of the action delegate.
+	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
 	 */
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
 	}
 
+	
 	/**
-	 * This method is called by the proxy action when the action has been triggered.
-	 * 
-	 * @param	action	the action proxy that handles the presentation portion of the action.
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	public void run(IAction action) {
 		try {
-			this.run(false);
+			doRun(false);
 		}
 		catch( Throwable throwable ) {
 			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
 		}
 	}
 
+
 	/**
-	 * Notify that the current selection changed.
+	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		try {
 			// Retrieve the next doxyfile to build from the current selection.
-			this.nextDoxyfile = this.getDoxyfileFromSelection(selection);
+			nextDoxyfile = getDoxyfileFromSelection(selection);
 			
 			// Retrieve the next doxyfile from the current editor.
-			if(this.nextDoxyfile == null) {
-				this.nextDoxyfile = this.getDoxyfileFromActiveEditor();
+			if( nextDoxyfile == null ) {
+				nextDoxyfile = getDoxyfileFromActiveEditor(window);
 			}
+			
 			
 			// If there is no next doxyfile to build and the history is not empty
 			// set the first history element as the next doxyfile.
-			if( this.nextDoxyfile == null ) {
+			if( nextDoxyfile == null ) {
 				BuildJob[]	buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobs();
 				int			buildJobsCount = buildJobs.length;
 				
 				if( buildJobsCount > 0 ) {
-					this.nextDoxyfile = buildJobs[buildJobsCount - 1].getDoxyfile();	
+					nextDoxyfile = buildJobs[buildJobsCount - 1].getDoxyfile();	
 				}				
 			}
 			
-			// Check the existance of the doxyfile.
-			if(this.nextDoxyfile != null && this.nextDoxyfile.exists() == false) {
-				this.nextDoxyfile = null;
+			
+			// Check the existence of the doxyfile.
+			if( nextDoxyfile != null && nextDoxyfile.exists() == false ) {
+				nextDoxyfile = null;
 			}
 			
 			// Update the tooltip.
-			String	tooltipText = this.nextDoxyfile != null ?
-				"Build " + this.nextDoxyfile.getFullPath().toString() :
+			String	tooltipText = nextDoxyfile != null ?
+				"Build " + nextDoxyfile.getFullPath().toString() :
 				"Choose Next Doxyfile";
 				
 			action.setToolTipText(tooltipText);
@@ -194,12 +189,13 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		}
 	}
 	
+	
 	/**
-	 * Internal run. Use the next doxyfile specified to determine what to do.
+	 * Uses the next doxyfile specified to determine what to do.
 	 * 
-	 * @param	forceChoose	true to ask the user for a doxyfile to build.
+	 * @param	forceChoose	@c true to ask the user for a doxyfile to build.
 	 */
-	protected void run(boolean forceChoose) {
+	protected void doRun(boolean forceChoose) {
 		try {
 			IFile	doxyfile = forceChoose == true ? null : this.nextDoxyfile;
 			
@@ -222,6 +218,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		}
 	}
 	
+	
 	/**
 	 * Dispose the owned menu.
 	 */
@@ -232,12 +229,15 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		}
 	}
 	
+	
 	/**
-	 * Retrieve a doxyfile from the active editor.
+	 * Retrieves a doxyfile from the active editor.
+	 * 
+	 * @param	window	a reference to a workbench window
 	 * 
 	 * @return	a doxfile retrieved from the active editor input.
 	 */
-	private IFile getDoxyfileFromActiveEditor() {
+	private static IFile getDoxyfileFromActiveEditor( IWorkbenchWindow window ) {
 		IFile		doxyfile			= null;
 		IEditorPart	activeEditorPart	= window.getActivePage().getActiveEditor();
 		
@@ -257,12 +257,13 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		return doxyfile;
 	}
 	
+	
 	/**
-	 * Retrieve a doxyfile from the specified selection.
+	 * Retrieves a doxyfile from the specified selection.
 	 * 
 	 * @return	a doxyfile retrieved from the specified selection.
 	 */
-	private IFile getDoxyfileFromSelection(ISelection selection) {
+	private static IFile getDoxyfileFromSelection(ISelection selection) {
 		IFile doxyfile = null;
 
 		// Test if the current selection is not empty.
@@ -279,6 +280,8 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			}
 		}
 
+		
+		// Job's done.
 		return doxyfile;
 	}
 	

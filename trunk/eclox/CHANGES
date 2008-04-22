@@ -1,7 +1,13 @@
 eclox-0.7.2
- * bug #10720 : Browsing for input folders. When adding an input folder
-   entry and browsing for the where the doxyfile lies, the path was empty.
-   Empty relative paths are now substituted with ".".
+
+FIX bug #10720 : Browsing for input folders. When adding an input folder
+    entry and browsing for the where the doxyfile lies, the path was empty.
+    Empty relative paths are now substituted with ".".
+
+ADD task #5722 : Remember selected doxyfile for building across eclipse
+    restarts. Now the history of build doxyfiles is saved when eclipse
+    shuts down and restore on start.
+
 
 eclox-0.7.1 (16-dec-2007)
  * bug #9693 : Bad console output when several workbench windows are open.
