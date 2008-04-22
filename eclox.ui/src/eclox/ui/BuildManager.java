@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2007 Guillaume Brocker
+ * Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -21,15 +21,25 @@
 
 package eclox.ui;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.PlatformUI;
 
+import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
 import eclox.core.doxygen.IBuildJobListener;
 import eclox.ui.console.Console;
@@ -84,10 +94,8 @@ public class BuildManager {
 	}
 	
 
-	/**
-	 * Contains the history the launched build jobs
-	 */
-	private List jobHistory = new LinkedList();
+	private static String		STATE_FILE = new String("build-job-history.txt");
+	private List 				jobHistory = new LinkedList();						///< Contains the history the launched build jobs. 
 	
 	
 	/**
@@ -136,7 +144,7 @@ public class BuildManager {
 			Plugin.log( autoSave + ": unsupported auto save state.");
 		}
 		
-		// Retreives the build job for the given doxyfile.
+		// Retrieves the build job for the given doxyfile.
 		BuildJob		job = BuildJob.getJob( doxyfile );
 		
 		// Attaches a listener if applicable.
@@ -157,17 +165,81 @@ public class BuildManager {
 		Console.show( job );
 		
 		// Schedule the job to build.
-		job.schedule();
+		job.schedule(1000);
 	}
+	
 	
 	/**
 	 * Retrieves the latest build jobs that have been registered in the history.
 	 * 
 	 * @return	an array containing the most recent build jobs.
 	 */
-	public BuildJob[] getRecentBuildJobs()
-	{
+	public BuildJob[] getRecentBuildJobs() {
 		return (BuildJob[]) jobHistory.toArray( new BuildJob[0] );
+	}
+	
+	
+	/**
+	 * Restores the state from a file.
+	 */
+	public void restoreState() {
+		try {
+			IPath	statePath = Plugin.getDefault().getStateLocation().append(STATE_FILE);
+			File	stateFile = new File( statePath.toOSString() );
+			
+			if( stateFile.canRead() == true ) {
+				BufferedReader	stateReader = new BufferedReader(new FileReader(stateFile));
+				String			stateLine = stateReader.readLine();
+				
+				while( stateLine != null ) {
+					IPath			doxyfilePath	= new Path( stateLine );
+					IResource		resource		= ResourcesPlugin.getWorkspace().getRoot().findMember(doxyfilePath);
+					
+					if( Doxyfile.isDoxyfile(resource) ) {
+						IFile		doxyfile = (IFile) resource;
+						BuildJob	job = BuildJob.getJob(doxyfile);
+						
+						jobHistory.add(job);
+					}
+					
+					stateLine = stateReader.readLine();
+				}
+			}
+		}
+		catch( Throwable t ) {
+			Plugin.log( t );
+		}
+	}
+	
+	
+	/**
+	 * Saves the state to a file.
+	 */
+	public void saveState() {
+		IPath	statePath = Plugin.getDefault().getStateLocation().append(STATE_FILE);
+		File	stateFile = new File( statePath.toOSString() );
+		
+		stateFile.delete();
+
+		// Now saves the resource path of the next doxyfile to build.
+		try
+		{
+			FileWriter	stateWriter = new FileWriter( stateFile );
+			Iterator	i = jobHistory.iterator();
+			
+			while( i.hasNext() ) {
+				BuildJob	job			= (BuildJob) i.next();
+				IFile		doxyfile	= job.getDoxyfile();
+				
+				stateWriter.write( doxyfile.getFullPath().toString() );
+				stateWriter.write( String.valueOf('\n') );
+			}
+			
+			stateWriter.flush();
+		}
+		catch( Throwable t ) {
+			Plugin.log(t);
+		}
 	}
 	
 }
