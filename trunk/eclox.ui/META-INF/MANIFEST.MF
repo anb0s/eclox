@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclox User Interface
 Bundle-SymbolicName: org.gna.eclox.ui; singleton:=true
-Bundle-Version: 0.7.1
+Bundle-Version: 0.7.2
 Bundle-Activator: eclox.ui.Plugin
 Bundle-Vendor: Guillaume Brocker
 Bundle-Localization: 

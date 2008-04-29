@@ -1,4 +1,4 @@
-eclox-0.7.2
+eclox-0.7.2 (29-apr-2008)
 
 FIX bug #10720 : Browsing for input folders. When adding an input folder
     entry and browsing for the where the doxyfile lies, the path was empty.
