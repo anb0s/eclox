@@ -72,6 +72,11 @@ public class BuildJob extends Job {
 	private static final Pattern problemPattern = Pattern.compile("^(.+?):\\s*(\\d+)\\s*:\\s*(.+?)\\s*:\\s*(.*$(\\s+^  .*$)*)", Pattern.MULTILINE);
 	
 	/**
+	 * Defines the pattern used to match doxygen warnings about obsolete tags.
+	 */
+	private static final Pattern obsoleteTagWarningPattern = Pattern.compile("^Warning: Tag .+ at line (\\d+) of file (.+) has become obsolete.$", Pattern.MULTILINE);
+	
+	/**
 	 * Defines the warning severity string.
 	 */
 	private static final String SEVERITY_WARNING = "warning";
@@ -494,29 +499,58 @@ public class BuildJob extends Job {
 	private void createMarkers( IProgressMonitor monitor ) throws CoreException 
 	{
 		IWorkspaceRoot	workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-		Matcher			matcher = problemPattern.matcher( log );
+		Matcher			matcher = null;
 		
+		// Searches documentation errors and warnings.
+		matcher = problemPattern.matcher( log );		
 		while( matcher.find() == true )
 		{
 			Path		resourcePath = new Path( matcher.group(1) );
 			Integer		lineNumer = new Integer( matcher.group(2) );
 			int			severity = getMarkerSeverity( matcher.group(3) );
 			String		message = new String( matcher.group(4) );
-			IFile		file = workspaceRoot.getFileForLocation( resourcePath );
 			
-			if( file != null )
-			{
-				IMarker	marker = file.createMarker( IMarkers.DOXYGEN_MARKER );
-				
-				marker.setAttribute( IMarker.MESSAGE, message );
-				marker.setAttribute( IMarker.LINE_NUMBER, lineNumer.intValue() );
-				marker.setAttribute( IMarker.LOCATION, file.getProjectRelativePath().toPortableString() );
-				marker.setAttribute( IMarker.PRIORITY, IMarker.PRIORITY_NORMAL );
-				marker.setAttribute( IMarker.SEVERITY, severity );
-				
-				markers.add( marker );
-			}
+			createMarker( workspaceRoot.getFileForLocation(resourcePath), lineNumer.intValue(), message, severity );
+		}
+		matcher = null;
+		
+		
+		// Searches obsolete tags warnings.
+		matcher = obsoleteTagWarningPattern.matcher( log );		
+		while( matcher.find() == true )
+		{
+			Path		resourcePath = new Path( matcher.group(2) );
+			Integer		lineNumer = new Integer( matcher.group(1) );
+			String		message = new String( matcher.group(0) );
+
+			createMarker( workspaceRoot.getFileForLocation(resourcePath), lineNumer.intValue(), message, IMarker.SEVERITY_WARNING );			
+		}
+		matcher = null;
+	}
+	
+	/**
+	 * Creates a single marker for the given file.
+	 * 
+	 * If @c file is null, no marker will be created.
+	 * 
+	 * @param	file		a resource file to create a marker for
+	 * @param	line		a line number
+	 * @param	message		a message explaining the problem
+	 * @param	severity	a severity level
+	 */
+	private void createMarker( IFile file, int line, String message, int severity ) throws CoreException
+	{
+		if( file != null )
+		{
+			IMarker	marker = file.createMarker( IMarkers.DOXYGEN_MARKER );
 			
+			marker.setAttribute( IMarker.MESSAGE, message );
+			marker.setAttribute( IMarker.LINE_NUMBER, line );
+			marker.setAttribute( IMarker.LOCATION, file.getProjectRelativePath().toPortableString() );
+			marker.setAttribute( IMarker.PRIORITY, IMarker.PRIORITY_NORMAL );
+			marker.setAttribute( IMarker.SEVERITY, severity );
+			
+			markers.add( marker );
 		}
 	}
 		
