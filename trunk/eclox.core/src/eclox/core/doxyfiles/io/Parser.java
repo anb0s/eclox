@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2004 Guillaume Brocker
+ * Copyright (C) 2003-2004, 2008, Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -66,7 +66,7 @@ public class Parser {
     private Pattern emptyPattern = Pattern.compile("\\s*");
     
     /**
-     * the setting assignement pattern
+     * the setting assignment pattern
      */
     private Pattern settingAssignmentPattern = Pattern.compile("(\\w+)\\s*=\\s*(.*?)\\s*(\\\\)?");
     
@@ -76,7 +76,7 @@ public class Parser {
     private Pattern settingIncrementPattern = Pattern.compile("(\\w+)\\s*\\+=\\s*(.*?)\\s*(\\\\)?");
     
     /**
-     * the continued setting assignement pattern
+     * the continued setting assignment pattern
      */
     private Pattern continuedSettingAssignmentPattern = Pattern.compile("\\s*(.+?)\\s*(\\\\)?");
     
@@ -90,15 +90,11 @@ public class Parser {
      */
     private Pattern includePathPattern = Pattern.compile("@INCLUDE_PATH\\s*=\\s*(.*)");
     
-    /**
-     * the setting being continued on multiple lines.
-     */
-    private Setting continuedSetting;
     
     /**
      * Constructor.
      * 
-     * @param	input	an input stram instance to parse as a doxyfile
+     * @param	input	an input stream instance to parse as a doxyfile
      */
     public Parser( InputStream input ) throws IOException {
         this.reader = new BufferedReader( new InputStreamReader(input) );
@@ -159,10 +155,9 @@ public class Parser {
             // Retrieves the setting identifier and its values.
             String  identifier = matcher.group(1);
             String  values = matcher.group(2);
-            String  continued = matcher.group(3);
             
             // Call the traitement for the setting assignment and pull out.
-            this.processSettingAssignment( doxyfile, identifier, values, continued != null );
+            this.processSettingAssignment( doxyfile, identifier, values );
             return;
         }
         
@@ -172,14 +167,13 @@ public class Parser {
             // Retrieves the setting identifier and its values.
             String  identifier = matcher.group(1);
             String  values = matcher.group(2);
-            String  continued = matcher.group(3);
             
-            // Call the traitement for the setting assignment and pull out.
-            this.processSettingIncrement( doxyfile, identifier, values, continued != null );
+            // Call the treatment for the setting assignment and pull out.
+            this.processSettingIncrement( doxyfile, identifier, values );
             return;
         }
 
-        // Matches the current line agains the include directive pattern.
+        // Matches the current line against the include directive pattern.
         matcher = includePattern.matcher( line );
         if( matcher.matches() == true ) {
         	this.processAnyLine( doxyfile, line );
@@ -200,7 +194,7 @@ public class Parser {
             String  values = matcher.group(1);
             String  continued = matcher.group(2);
             
-            // Call the traitement for the continued setting assignment and pull out.
+            // Call the treatment for the continued setting assignment and pull out.
             this.processContinuedSettingAssignment( doxyfile, values, continued != null );
             return;            
         }
@@ -239,9 +233,8 @@ public class Parser {
      * @param	doxyfile	a doxyfile where the setting assignment will be stored
      * @param	identifier	a string containing the setting identifier
      * @param	value		a string containing the assigned value
-     * @param   continued   a boolean telling if the setting assignement is continued on multiple line
      */
-    private void processSettingAssignment( Doxyfile doxyfile, String identifier, String value, boolean continued ) throws IOException {
+    private void processSettingAssignment( Doxyfile doxyfile, String identifier, String value ) throws IOException {
     	// Retrieves the setting.
     	Setting	setting = doxyfile.getSetting( identifier );
     	if( setting == null ) {
@@ -251,9 +244,6 @@ public class Parser {
     	
     	// Updates the setting value.
     	setting.setValue( value );
-    	
-        // Remembers if the setting assignment is continued or not.
-        continuedSetting = ( continued == true ) ? setting : null;
   	}
     
     /**
@@ -262,20 +252,17 @@ public class Parser {
      * @param   doxyfile    a doxyfile where the setting assignment will be stored
      * @param   identifier  a string containing the setting identifier
      * @param   value       a string containing the assigned value
-     * @param   continued   a boolean telling if the setting assignement is continued on multiple line
      */
-    private void processSettingIncrement( Doxyfile doxyfile, String identifier, String value, boolean continued ) throws IOException {
-        // Rertieves the setting from the doxyfile.
+    private void processSettingIncrement( Doxyfile doxyfile, String identifier, String value ) throws IOException {
+        // Retrieves the setting from the doxyfile.
         Setting setting = doxyfile.getSetting( identifier );
         if( setting != null ) {
             // Updates the continued setting's value.
             setting.setValue( setting.getValue() + " " + value );
-            // Remembers if the setting assignment is continued or not.
-            continuedSetting = ( continued == true ) ? setting : null;
         }
         else {
         		Plugin.getDefault().logWarning( "At line " + lineNumber + ": the setting was not declared before." );
-            processSettingAssignment( doxyfile, identifier, value, continued );
+            processSettingAssignment( doxyfile, identifier, value );
         }
     }
     
@@ -284,18 +271,20 @@ public class Parser {
      * 
      * @param   doxyfile    a doxyfile where the setting assignment will be stored
      * @param   value       a string containing the assigned value
-     * @param   continued   a boolean telling if the setting assignement is continued on multiple line
+     * @param   continued   a boolean telling if the setting assignment is continued on multiple line
      */
     private void processContinuedSettingAssignment( Doxyfile doxyfile, String value, boolean continued ) throws IOException {
-        // Ensures that a continued setting has been remembered.
-        if( continuedSetting == null ) {
-            Plugin.getDefault().logWarning( "At line " + lineNumber + ": value delcared without a setting name." );
+    	Chunk	lastChunk = doxyfile.getLastChunk();
+    	 
+        // Ensures that a continued setting has been remembered
+    	// and updates it.
+        if( lastChunk instanceof Setting ) {
+        	Setting	continuedSetting = (Setting) lastChunk;
+        	
+            continuedSetting.setValue( continuedSetting.getValue() + " " + value );
         }
         else {
-            // Updates the continued setting's value.
-            continuedSetting.setValue( continuedSetting.getValue() + " " + value );
-            // Remembers if the setting assignment is continued or not.
-            continuedSetting = ( continued == true ) ? continuedSetting : null;
+        	Plugin.getDefault().logWarning( "At line " + lineNumber + ": value delcared without a setting name." );
         }
     }
 }
