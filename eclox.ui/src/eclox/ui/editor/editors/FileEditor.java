@@ -93,4 +93,16 @@ public class FileEditor extends TextEditor {
 		}
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.TextEditor#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean enabled) {
+		assert browseFileSystemButton != null;
+		
+		browseFileSystemButton.setEnabled(enabled);
+		super.setEnabled(enabled);
+	}
+	
+	
+
 }

@@ -124,23 +124,41 @@ public class OutputPart extends Part {
 		addEditor( rtf );
 		addEditor( xml );
 		
-		html.addListener(new MyEditorListener());
-		html.setInput( doxyfile.getSetting("GENERATE_HTML") );
+		if( doxyfile.hasSetting("GENERATE_HTML") ) {
+			html.addListener(new MyEditorListener());
+			html.setInput( doxyfile.getSetting("GENERATE_HTML") );
+			
+			htmlFlavour.addSetting(FRAME_HTML, doxyfile.getSetting("GENERATE_TREEVIEW") );
+			htmlFlavour.addSetting(CHM_HTML, doxyfile.getSetting("GENERATE_HTMLHELP") );
+			
+			htmlSearchEngine.setInput( doxyfile.getSetting("SEARCHENGINE") );
+		}
+		else {
+			html.setEnabled(false);
+			htmlFlavour.setEnabled(false);
+			htmlSearchEngine.setEnabled(false);
+		}
 		
-		htmlFlavour.addSetting(FRAME_HTML, doxyfile.getSetting("GENERATE_TREEVIEW") );
-		htmlFlavour.addSetting(CHM_HTML, doxyfile.getSetting("GENERATE_HTMLHELP") );
-		
-		htmlSearchEngine.setInput( doxyfile.getSetting("SEARCHENGINE") );
-		
-		latex.addListener(new MyEditorListener());
-		latex.setInput( doxyfile.getSetting("GENERATE_LATEX") );
-		
-		latexFlavour.addSetting(LATEX_HYPEDLINKED_PDF, doxyfile.getSetting("PDF_HYPERLINKS") );
-		latexFlavour.addSetting(LATEX_HYPEDLINKED_PDF, doxyfile.getSetting("USE_PDFLATEX") );
-		latexFlavour.addSetting(LATEX_PDF, doxyfile.getSetting("USE_PDFLATEX") );
+		if( doxyfile.hasSetting("GENERATE_LATEX") ) {
+			latex.addListener(new MyEditorListener());
+			latex.setInput( doxyfile.getSetting("GENERATE_LATEX") );
+			
+			latexFlavour.addSetting(LATEX_HYPEDLINKED_PDF, doxyfile.getSetting("PDF_HYPERLINKS") );
+			latexFlavour.addSetting(LATEX_HYPEDLINKED_PDF, doxyfile.getSetting("USE_PDFLATEX") );
+			latexFlavour.addSetting(LATEX_PDF, doxyfile.getSetting("USE_PDFLATEX") );
+		}
+		else {
+			latex.setEnabled(false);
+			latexFlavour.setEnabled(false);
+		}
 		
 		man.setInput( doxyfile.getSetting("GENERATE_MAN") );
+		man.setEnabled( man.hasInput() );
+		
 		rtf.setInput( doxyfile.getSetting("GENERATE_RTF") );
+		rtf.setEnabled( rtf.hasInput() );
+		
 		xml.setInput( doxyfile.getSetting("GENERATE_XML") );
+		xml.setEnabled( xml.hasInput() );
 	}
 }

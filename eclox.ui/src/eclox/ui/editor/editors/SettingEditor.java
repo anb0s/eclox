@@ -1,5 +1,5 @@
 // eclox : Doxygen plugin for Eclipse.
-// Copyright (C) 2003-2007 Guillaume Brocker
+// Copyright (C) 2003-2008, Guillaume Brocker
 //
 // This file is part of eclox.
 //
@@ -23,10 +23,14 @@ import eclox.core.doxyfiles.Setting;
 
 public abstract class SettingEditor extends AbstractEditor {
 
+	private Setting	input = null;	///< References the editor's input.
+	
 	/**
-	 * The current input of the editor
+	 * @see eclox.ui.editor.editors.IEditor#dispose()
 	 */
-	private Setting	input;
+	public void dispose() {
+		input = null;
+	}
 	
 	/**
 	 * Retrieves the editor input.
@@ -38,14 +42,20 @@ public abstract class SettingEditor extends AbstractEditor {
 	}
 	
 	/**
+	 * Tells if the editor has been assigned a setting.
+	 * 
+	 * @return	true or false
+	 */
+	public boolean hasInput() {
+		return input != null;
+	}
+	
+	/**
 	 * Sets the editor input.
 	 * 
-	 * @param	input	the new input of the editor
+	 * @param	input	the new input of the editor, null if none
 	 */
 	public void setInput(Setting input) {
-		// Pre-condition
-		assert input != null;
-		
 		this.input = input;
 	}
 

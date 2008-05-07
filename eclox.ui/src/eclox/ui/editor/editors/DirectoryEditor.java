@@ -33,6 +33,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * 
  * @author gbrocker
  */
+/**
+ * @author gbrocker
+ *
+ */
 public class DirectoryEditor extends TextEditor {
 	
 	/**
@@ -99,5 +103,17 @@ public class DirectoryEditor extends TextEditor {
 			super.text.setText( result );
 		}
 	}
+
+	/**
+	 * @see eclox.ui.editor.editors.TextEditor#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean enabled) {
+		assert browseFileSystemButton != null;
+
+		browseFileSystemButton.setEnabled(enabled);
+		super.setEnabled(enabled);
+	}
+	
+	
 	
 }

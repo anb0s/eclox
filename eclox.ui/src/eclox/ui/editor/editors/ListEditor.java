@@ -135,45 +135,22 @@ public abstract class ListEditor extends SettingEditor {
 		
 	}
 	
-	/**
-	 * the collection of the setting's value compounds.
-	 */
-	private Vector valueCompounds;
+	private Vector valueCompounds;	///< The collection of the setting's value compounds.
 	
-	/**
-	 * the table viewer used to edit the managed setting
-	 */
-	private ListViewer listViewer;
-	
-	/**
-	 * the button allowing to trigger a new value addition
-	 */
-	private Button addButton;
-	
-	/**
-	 * the button allowing to trigger the deletion of selected values 
-	 */
-	private Button removeButton;
-	
-	/**
-	 * the button allowing to move the selected values up
-	 */
-	private Button upButton;
-	
-	/**
-	 * the button allowing to move the selected values down
-	 */
-	private Button downButton;
+	private ListViewer listViewer;	///< the table viewer used to edit the managed setting
+	private Button addButton;		///< the button allowing to trigger a new value addition
+	private Button removeButton;	///< the button allowing to trigger the deletion of selected values
+	private Button upButton;		///< the button allowing to move the selected values up
+	private Button downButton;		///< the button allowing to move the selected values down
 	
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#commit()
 	 */
 	public void commit() {
-		// Pre-condition
-		assert valueCompounds != null;
-		
-		getInput().setValue( valueCompounds );
-		fireEditorChanged();
+		if( hasInput() ) {
+			getInput().setValue( valueCompounds );
+			fireEditorChanged();
+		}
 	}
 
 	/**
@@ -277,6 +254,8 @@ public abstract class ListEditor extends SettingEditor {
 		downButton.dispose();
 		downButton = null;
 		
+		super.dispose();
+		
 		// Post-condition
 		assert listViewer	== null;
 		assert addButton	== null;
@@ -321,15 +300,14 @@ public abstract class ListEditor extends SettingEditor {
 		// Pre-condition
 		assert listViewer != null;
 		
-		valueCompounds = new Vector();
-		getInput().getSplittedValue( valueCompounds );
-		listViewer.setInput(valueCompounds);
-		
-		updateButtons();
-		fireEditorChanged();
-		
-		// Post-condition
-		assert valueCompounds != null;
+		if( hasInput() ) {
+			valueCompounds = new Vector();
+			getInput().getSplittedValue( valueCompounds );
+			listViewer.setInput(valueCompounds);
+			
+			updateButtons();
+			fireEditorChanged();
+		}
 	}
 
 	/**
@@ -343,11 +321,15 @@ public abstract class ListEditor extends SettingEditor {
 	 * @see eclox.ui.editor.editors.IEditor#isStale()
 	 */
 	public boolean isStale() {
-		Collection	values = new Vector();
+		boolean	result = false;
 		
-		getInput().getSplittedValue(values);
-		
-		return valueCompounds.equals(values) == false;
+		if( hasInput() ) {
+			Collection	values = new Vector();
+			
+			getInput().getSplittedValue(values);
+			result = valueCompounds.equals(values) == false;
+		}
+		return result;
 	}
 	
 	/**
@@ -377,8 +359,7 @@ public abstract class ListEditor extends SettingEditor {
 		String	newCompound = editValueCompound( listViewer.getControl().getShell(), getInput(), "new value" );
 		
 		// Inserts the new compound if it has been validated.
-		if( newCompound != null )
-		{
+		if( newCompound != null ) {
 			valueCompounds.add( newCompound );
 			fireEditorChanged();
 			commit();

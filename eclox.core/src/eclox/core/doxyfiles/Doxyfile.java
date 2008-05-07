@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003,2004,2007 Guillaume Brocker
+ * Copyright (C) 2003, 2004, 2007, 2008, Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -232,6 +232,17 @@ public class Doxyfile {
 	 */
 	public Object[] getSettings() {
 		return settings.values().toArray();
+	}
+	
+	/**
+	 * Tells if the doxyfile has the given setting.
+	 * 
+	 * @param	identifier	a string containing a setting identifier
+	 * 
+	 * @return	true or false
+	 */
+	public boolean hasSetting( String identifier ) {
+		return settings.get(identifier) != null;
 	}
 	
 	/**

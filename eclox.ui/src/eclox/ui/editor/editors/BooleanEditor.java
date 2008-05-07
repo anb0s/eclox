@@ -1,5 +1,5 @@
 //eclox : Doxygen plugin for Eclipse.
-//Copyright (C) 2003-2007 Guillaume Brocker
+//Copyright (C) 2003-2008, Guillaume Brocker
 //
 //This file is part of eclox.
 //
@@ -34,35 +34,14 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class BooleanEditor extends SettingEditor {
 	
-	/**
-	 * the yes selection value
-	 */
-	private static String YES = "YES";
+	private static String YES = "YES";	///< the yes selection value
+	private static String NO = "NO";	///< the no selection value
 	
-	/**
-	 * the yes selection value
-	 */
-	private static String NO = "NO";
-	
-	/**
-     * @brief   the yes button
-     */
-    private Button  yesButton;
+	private Button  yesButton;		///< the yes button
+    private Button  noButton;		///< the no button
+    private Button  defaultButton;	///< the default button
     
-    /**
-     * @brief   the no button
-     */
-    private Button  noButton;
-    
-    /**
-     * @brief   the default button
-     */
-    private Button  defaultButton;
-    
-    /**
-     * @brief   a boolean telling if the editor is dirty or not
-     */
-    private boolean isDirty = false;
+    private boolean isDirty = false;	///< a boolean telling if the editor is dirty or not
     
     /**
      * @brief   Implements a selection listener that will be attached to each button.
@@ -89,13 +68,20 @@ public class BooleanEditor extends SettingEditor {
         
     }
     
-	
+    /**
+     * @see eclox.ui.editor.editors.IEditor#commit()
+     */
     public void commit() {
-    	getInput().setValue(getSelection());
-        isDirty = false;
-        fireEditorChanged();
+    	if( hasInput() ) {
+	    	getInput().setValue(getSelection());
+	        isDirty = false;
+	        fireEditorChanged();
+    	}
 	}
 
+	/**
+	 * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+	 */
 	public void createContent(Composite parent, FormToolkit formToolkit) {
 		// Initialize the parent control.
 		RowLayout	layout = new RowLayout(SWT.VERTICAL);
@@ -138,6 +124,8 @@ public class BooleanEditor extends SettingEditor {
 		yesButton = null;
 		noButton = null;
 		defaultButton = null;
+		
+		super.dispose();
 	}
 	
 	/**
@@ -151,7 +139,12 @@ public class BooleanEditor extends SettingEditor {
 	 * @see eclox.ui.editor.editors.IEditor#isStale()
 	 */
 	public boolean isStale() {
-		return getSelection().equalsIgnoreCase(getInput().getValue()) == false;
+		boolean	result = false;
+		
+		if( hasInput() ) {
+			result = getSelection().equalsIgnoreCase(getInput().getValue()) == false;
+		}		
+		return result;
 	}
 	
 	/**
@@ -163,15 +156,17 @@ public class BooleanEditor extends SettingEditor {
         assert noButton != null;
         assert defaultButton != null;
         
-        this.isDirty = false;
-        
-        String  value = getInput().getValue();
-        
-        yesButton.setSelection		( value.compareToIgnoreCase(YES) == 0 );
-        noButton.setSelection		( value.compareToIgnoreCase(NO) == 0 );
-        defaultButton.setSelection	( value.length() == 0 );
-        
-        fireEditorChanged();
+        if( hasInput() ) {
+	        this.isDirty = false;
+	        
+	        String  value = getInput().getValue();
+	        
+	        yesButton.setSelection		( value.compareToIgnoreCase(YES) == 0 );
+	        noButton.setSelection		( value.compareToIgnoreCase(NO) == 0 );
+	        defaultButton.setSelection	( value.length() == 0 );
+	        
+	        fireEditorChanged();
+        }
 	}
     
     /**

@@ -145,15 +145,14 @@ public abstract class MultiEditor extends AbstractEditor {
 	 * @param	setting	the setting to add to the given state
 	 */
 	public void addSetting( String state, Setting setting ) {
-		// Pre-condition
-		assert setting != null;
-		
-		for( int i = 0; i != states.length; ++i ) {
-			if( states[i].name.equals(state) ) {
-				states[i].addSettingToSelect(setting);
-			}
-			else {
-				states[i].addSettingToDeselect(setting);
+		if( setting != null ) {
+			for( int i = 0; i != states.length; ++i ) {
+				if( states[i].name.equals(state) ) {
+					states[i].addSettingToSelect(setting);
+				}
+				else {
+					states[i].addSettingToDeselect(setting);
+				}
 			}
 		}
 	}	
