@@ -49,12 +49,12 @@ public class DiagramsPart extends Part {
 			final String	selection = diagrams.getSelection();
 			final boolean	enabled	= selection != null && selection.equals(DIAGRAM_DOT_TOOL); 
 			
-			classGraph.setEnabled(enabled);
-			collaborationGraph.setEnabled(enabled);
-			includeGraph.setEnabled(enabled);
-			includedByGraph.setEnabled(enabled);
-			graphicalHierarcy.setEnabled(enabled);
-			callGraph.setEnabled(enabled);
+			classGraph        .setEnabled(enabled && classGraph.hasInput());
+			collaborationGraph.setEnabled(enabled && collaborationGraph.hasInput());
+			includeGraph      .setEnabled(enabled && includeGraph.hasInput());
+			includedByGraph   .setEnabled(enabled && includedByGraph.hasInput());
+			graphicalHierarcy .setEnabled(enabled && graphicalHierarcy.hasInput());
+			callGraph         .setEnabled(enabled && callGraph.hasInput());
 		}
 		
 	}
@@ -130,20 +130,34 @@ public class DiagramsPart extends Part {
 		addEditor( callGraph, 16 );
 		
 		// Setup all editors.
-		diagrams.addListener(new MyEditorListener());
-		diagrams.addSetting(DIAGRAM_BUILT_IN, doxyfile.getSetting("CLASS_DIAGRAMS"));
-		diagrams.addSetting(DIAGRAM_DOT_TOOL, doxyfile.getSetting("HAVE_DOT"));
-		
-		classGraph.setInput(doxyfile.getSetting("CLASS_GRAPH"));
-		
-		collaborationGraph.setInput(doxyfile.getSetting("COLLABORATION_GRAPH"));
-		
-		includeGraph.setInput(doxyfile.getSetting("INCLUDE_GRAPH"));
-		
-		includedByGraph.setInput(doxyfile.getSetting("INCLUDED_BY_GRAPH"));
-		
-		graphicalHierarcy.setInput(doxyfile.getSetting("GRAPHICAL_HIERARCHY"));
-		
-		callGraph.setInput(doxyfile.getSetting("CALL_GRAPH"));
+		if( doxyfile.hasSetting("CLASS_DIAGRAMS")
+				&& doxyfile.hasSetting("HAVE_DOT") ) {
+			diagrams.addListener(new MyEditorListener());
+			diagrams.addSetting(DIAGRAM_BUILT_IN, doxyfile.getSetting("CLASS_DIAGRAMS"));
+			diagrams.addSetting(DIAGRAM_DOT_TOOL, doxyfile.getSetting("HAVE_DOT"));
+			
+			classGraph        .setInput(doxyfile.getSetting("CLASS_GRAPH"));
+			collaborationGraph.setInput(doxyfile.getSetting("COLLABORATION_GRAPH"));
+			includeGraph      .setInput(doxyfile.getSetting("INCLUDE_GRAPH"));
+			includedByGraph   .setInput(doxyfile.getSetting("INCLUDED_BY_GRAPH"));
+			graphicalHierarcy .setInput(doxyfile.getSetting("GRAPHICAL_HIERARCHY"));
+			callGraph         .setInput(doxyfile.getSetting("CALL_GRAPH"));
+			
+			classGraph        .setEnabled(classGraph.hasInput());
+			collaborationGraph.setEnabled(collaborationGraph.hasInput());
+			includeGraph      .setEnabled(includeGraph.hasInput());
+			includedByGraph   .setEnabled(includedByGraph.hasInput());
+			graphicalHierarcy .setEnabled(graphicalHierarcy.hasInput());
+			callGraph         .setEnabled(callGraph.hasInput());
+		}
+		else {
+			diagrams          .setEnabled(false);
+			classGraph        .setEnabled(false);
+			collaborationGraph.setEnabled(false);
+			includeGraph      .setEnabled(false);
+			includedByGraph   .setEnabled(false);
+			graphicalHierarcy .setEnabled(false);
+			callGraph         .setEnabled(false);
+		}
 	}
 }

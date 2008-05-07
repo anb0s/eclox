@@ -1,5 +1,5 @@
 // eclox : Doxygen plugin for Eclipse.
-// Copyright (C) 2003-2007 Guillaume Brocker
+// Copyright (C) 2003-2008 Guillaume Brocker
 //
 // This file is part of eclox.
 //
@@ -26,8 +26,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-
-import eclox.core.doxyfiles.Setting;
 
 /**
  * Implements a simple setting editor.
@@ -76,9 +74,11 @@ public class TextEditor extends SettingEditor {
      * @see eclox.ui.editor.editors.IEditor#commit()
      */
     public void commit() {
-		getInput().setValue( text.getText() );
-		hasChanged = false;
-		fireEditorChanged();
+    	if( hasInput() ) {
+			getInput().setValue( text.getText() );
+			hasChanged = false;
+			fireEditorChanged();
+    	}
 	}
     
     /**
@@ -130,18 +130,25 @@ public class TextEditor extends SettingEditor {
 	 * @see eclox.ui.editor.editors.IEditor#isStale()
 	 */
 	public boolean isStale() {
-		return text.getText().equals( getInput().getValue() ) == false;
+		boolean	result = false;
+		
+		if( hasInput() ) {
+			result = text.getText().equals( getInput().getValue() ) == false;
+		}
+		return result;
 	}
 	
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#refresh()
 	 */
 	public void refresh() {
-		textModifyListener.sleeping = true;
-		text.setText( getInput().getValue() );
-		hasChanged = false;
-		textModifyListener.sleeping = false;
-		fireEditorChanged();
+		if( hasInput() )  {
+			textModifyListener.sleeping = true;
+			text.setText( getInput().getValue() );
+			hasChanged = false;
+			textModifyListener.sleeping = false;
+			fireEditorChanged();
+		}
 	}
     
     /**
@@ -165,13 +172,15 @@ public class TextEditor extends SettingEditor {
 	/**
 	 * @see eclox.ui.editor.editors.SettingEditor#setInput(eclox.core.doxyfiles.Setting)
 	 */
-	public void setInput(Setting input) {
-		super.setInput(input);
-		
-		textModifyListener.sleeping = true;
-		text.setText(input.getValue());
-		textModifyListener.sleeping = false;
-        hasChanged = false;
-    }
+//	public void setInput(Setting input) {
+//		super.setInput(input);
+//		
+//		if( hasInput() ) {
+//			textModifyListener.sleeping = true;
+//			text.setText(input.getValue());
+//			textModifyListener.sleeping = false;
+//	        hasChanged = false;
+//		}
+//    }
     
 }

@@ -1,5 +1,5 @@
 //eclox : Doxygen plugin for Eclipse.
-//Copyright (C) 2003-2007 Guillaume Brocker
+//Copyright (C) 2003-2008 Guillaume Brocker
 //
 //This file is part of eclox.
 //
@@ -31,10 +31,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author gbrocker
  *
  */
-/**
- * @author gbrocker
- *
- */
 public class CheckBoxEditor extends SettingEditor {
 	
 	/**
@@ -54,30 +50,13 @@ public class CheckBoxEditor extends SettingEditor {
 		
 	}
 	
-	/**
-	 * Defines the yes setting value
-	 */
-	private static String YES = "YES";
-
-	/**
-	 * Defines the no setting value
-	 */
-	private static String NO = "NO";
+	private static String YES = "YES";	///< Defines the yes setting value
+	private static String NO = "NO";	///< Defines the no setting value
 	
-	/**
-	 * the text of the check box button
-	 */
-	private String text;
+	private String text;	///< the text of the check box button
+	private Button button;	///< the check box button
 	
-	/**
-	 * the check box button
-	 */
-	private Button button;
-	
-	/**
-	 * the current dirty state
-	 */
-	private boolean dirty = false;
+	private boolean dirty = false;	///< the current dirty state
 	
 	/**
 	 * Constructor
@@ -92,12 +71,11 @@ public class CheckBoxEditor extends SettingEditor {
 	 * @see eclox.ui.editor.editors.IEditor#commit()
 	 */
 	public void commit() {
-		// Pre-condition
-		assert getInput() != null;
-		
-		getInput().setValue( getSelection() );
-		dirty = false;
-		fireEditorChanged();
+		if( hasInput() ) {
+			getInput().setValue( getSelection() );
+			dirty = false;
+			fireEditorChanged();
+		}
 	}
 
 	/**
@@ -124,6 +102,8 @@ public class CheckBoxEditor extends SettingEditor {
 		
 		button.dispose();
 		button = null;
+		
+		super.dispose();
 	}
 
 	/**
@@ -156,10 +136,12 @@ public class CheckBoxEditor extends SettingEditor {
 	 * @see eclox.ui.editor.editors.IEditor#isStale()
 	 */
 	public boolean isStale() {
-		// Pre-condition
-		assert getInput() != null;
+		boolean	result = false;
 		
-		return getSelection().equalsIgnoreCase(getInput().getValue()) == false;
+		if( hasInput() ) {
+			result = getSelection().equalsIgnoreCase(getInput().getValue()) == false;
+		}
+		return result;
 	}
 
 	/**
@@ -171,10 +153,12 @@ public class CheckBoxEditor extends SettingEditor {
 		assert button != null;
 		assert button.isDisposed() == false;
 		
-		// Updates the button state.
-		button.setSelection( getInput().getValue().equalsIgnoreCase(YES) );
-		
-		fireEditorChanged();
+		if( hasInput() ) {
+			// Updates the button state.
+			button.setSelection( getInput().getValue().equalsIgnoreCase(YES) );
+			
+			fireEditorChanged();
+		}
 	}
 
 	/**

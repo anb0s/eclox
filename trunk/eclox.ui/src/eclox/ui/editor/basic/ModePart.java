@@ -94,21 +94,46 @@ public class ModePart extends Part {
 		addLabel("Optimize results for:");
 		addEditor( optimizedLangage );
 		
-		// Initialies the editors.
-		entities.addSetting(ENTITIES_DOCUMENTED, doxyfile.getSetting("HIDE_UNDOC_MEMBERS") );
-		entities.addSetting(ENTITIES_DOCUMENTED, doxyfile.getSetting("HIDE_UNDOC_CLASSES") );
-		entities.addSetting(ENTITIES_ALL, doxyfile.getSetting("EXTRACT_ALL") );
-		entities.addSetting(ENTITIES_ALL, doxyfile.getSetting("EXTRACT_PRIVATE") );
-		entities.addSetting(ENTITIES_ALL, doxyfile.getSetting("EXTRACT_STATIC") );
+		// Initializes the editors.
+		if( doxyfile.hasSetting("HIDE_UNDOC_MEMBERS") 
+				&& doxyfile.hasSetting("HIDE_UNDOC_CLASSES")
+				&& doxyfile.hasSetting("EXTRACT_ALL")
+				&& doxyfile.hasSetting("EXTRACT_PRIVATE")
+				&& doxyfile.hasSetting("EXTRACT_STATIC") ) {
+			entities.addSetting(ENTITIES_DOCUMENTED, doxyfile.getSetting("HIDE_UNDOC_MEMBERS") );
+			entities.addSetting(ENTITIES_DOCUMENTED, doxyfile.getSetting("HIDE_UNDOC_CLASSES") );
+			entities.addSetting(ENTITIES_ALL, doxyfile.getSetting("EXTRACT_ALL") );
+			entities.addSetting(ENTITIES_ALL, doxyfile.getSetting("EXTRACT_PRIVATE") );
+			entities.addSetting(ENTITIES_ALL, doxyfile.getSetting("EXTRACT_STATIC") );
+		}
+		else {
+			entities.setEnabled( false );
+		}
 		
-		crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("SOURCE_BROWSER") );
-		crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("REFERENCED_BY_RELATION") );
-		crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("REFERENCES_RELATION") );
-		crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("VERBATIM_HEADERS") );
+		if( doxyfile.hasSetting("SOURCE_BROWSER")
+				&& doxyfile.hasSetting("REFERENCED_BY_RELATION")
+				&& doxyfile.hasSetting("REFERENCES_RELATION")
+				&& doxyfile.hasSetting("VERBATIM_HEADERS") ) {
+			crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("SOURCE_BROWSER") );
+			crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("REFERENCED_BY_RELATION") );
+			crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("REFERENCES_RELATION") );
+			crossReferenced.addSetting(CheckMultiEditor.SELECTED, doxyfile.getSetting("VERBATIM_HEADERS") );
+		}
+		else {
+			crossReferenced.setEnabled(false);
+		}
 		
-		optimizedLangage.addSetting(JAVA, doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA"));
-		optimizedLangage.addSetting(C, doxyfile.getSetting("OPTIMIZE_OUTPUT_FOR_C"));
-		optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA"));
-		optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("EXTRACT_STATIC"));
+		if( doxyfile.hasSetting("OPTIMIZE_OUTPUT_JAVA")
+				&& doxyfile.hasSetting("OPTIMIZE_OUTPUT_FOR_C")
+				&& doxyfile.hasSetting("OPTIMIZE_OUTPUT_JAVA")
+				&& doxyfile.hasSetting("EXTRACT_STATIC") ) {
+			optimizedLangage.addSetting(JAVA,    doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA") );
+			optimizedLangage.addSetting(C,       doxyfile.getSetting("OPTIMIZE_OUTPUT_FOR_C") );
+			optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("OPTIMIZE_OUTPUT_JAVA") );
+			optimizedLangage.addSetting(C_SHARP, doxyfile.getSetting("EXTRACT_STATIC") );
+		}
+		else {
+			optimizedLangage.setEnabled(false);
+		}
 	}
 }
