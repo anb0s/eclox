@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003,2004,2007 Guillaume Brocker
+ * Copyright (C) 2003, 2004, 2007, 2008 Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -26,15 +26,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.dialogs.PreferencesUtil;
 
 import eclox.core.doxygen.Doxygen;
 import eclox.core.doxygen.InvokeException;
 import eclox.core.doxygen.RunException;
+import eclox.ui.Plugin;
 
 /**
  * Implement the new file wizard extension to provide a way to create
@@ -86,16 +85,7 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 			}
 			// Doxygen was impossible to run. 
 			catch( InvokeException invokeException ) {
-				// Asks the user if he wants to edit the preferences to solve the problem.
-				boolean	edit = MessageDialog.openQuestion(getShell(), "Doxygen Not Found", "Eclox was not able to run doxygen. Doxygen is either missing or eclox is not properly configured to use it.\n\nWould you like to edit preferences now ?" );
-				if( ! edit ) {
-					return true;
-				}
-	
-				// Allows the user to edit the preferences and eventually launch doxygen again.
-				String[]	filter = { eclox.core.ui.PreferencePage.ID };
-				int			edited = PreferencesUtil.createPreferenceDialogOn(getShell(), eclox.core.ui.PreferencePage.ID, filter, null).open();
-				if( edited == Window.OK ) {
+				if( Plugin.editPreferencesAfterDoxygenInvocationFailed() ) {
 					continue;
 				}
 				

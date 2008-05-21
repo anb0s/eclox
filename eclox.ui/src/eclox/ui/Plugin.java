@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2007 Guillaume Brocker
+ * Copyright (C) 2003-2008 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -22,24 +22,50 @@
 package eclox.ui;
 
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
- * The main plugin class to be used in the desktop.
+ * The plugin class.
+ */
+/**
+ * @author gbrocker
+ *
  */
 public class Plugin extends AbstractUIPlugin {
 
-	/**
-	 * the shared instance
-	 */
-	private static Plugin plugin;
+	private static Plugin	plugin;			///< The singleton instance.
+	private BuildManager	buildManager;	///< The managed build manager.
+	private JobMonitor		jobMonitor;		///< The managed job monitor.
 	
 	/**
-	 * the managed build manager
+	 * Asks the user if he wants to edit doxygen configuration after a failed
+	 * doxygen invocation.
+	 * 
+	 * @return	@c true if doxygen configuration has been edited, @c false otherwise
 	 */
-	private BuildManager buildManager;
+	public static boolean editPreferencesAfterDoxygenInvocationFailed() {
+		Shell	shell = plugin.getWorkbench().getActiveWorkbenchWindow().getShell();
+		
+		// Asks the user if he wants to edit the preferences to solve the problem.
+		boolean	editionWanted = MessageDialog.openQuestion(shell, "Doxygen Not Found", "Eclox was not able to run doxygen. Doxygen is either missing or eclox is not properly configured to use it.\n\nWould you like to edit preferences now ?" );
+		if( ! editionWanted ) {
+			return false;
+		}
+
+		// Allows the user to edit the preferences and eventually launch doxygen again.
+		String[]	filter = { eclox.core.ui.PreferencePage.ID };
+		int			edited = PreferencesUtil.createPreferenceDialogOn(shell, eclox.core.ui.PreferencePage.ID, filter, null).open();
+
+		return edited == Window.OK;
+	}
+	
 	
 	/**
 	 * The constructor.
@@ -49,23 +75,30 @@ public class Plugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * This method is called upon plug-in activation
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		buildManager = new BuildManager();
 		
+		buildManager = new BuildManager();
 		buildManager.restoreState();
+		
+		jobMonitor = new JobMonitor();
+		Job.getJobManager().addJobChangeListener(jobMonitor);
 	}
 
 	/**
-	 * This method is called when the plug-in is stopped
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		buildManager.saveState();
-		
 		buildManager = null;
+		
+		Job.getJobManager().removeJobChangeListener(jobMonitor);
+		jobMonitor = null;
+		
 		plugin = null;
+		
 		super.stop(context);
 	}
 

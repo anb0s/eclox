@@ -1,5 +1,10 @@
 eclox-0.7.3
 
+ADD task #4841 : Allow the user to configure the doxygen binary to use 
+    when doxygen invocation fails. This may occur when building or
+    creating a doxyfile. A dialog asks the user to edit the preferences
+    and shows the appropriate preference page when applicable.
+
 FIX bug #11598 : Editor crashes when looking for certain tags. Depending
     on doxygen version used to generated a doxyfile, some expected tags
     may not be defined. Now the editor disables user interface controls
