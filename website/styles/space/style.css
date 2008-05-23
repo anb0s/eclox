@@ -10,6 +10,7 @@ body
 {
 	margin-left: -5em;
 	margin-right: -5em;
+	margin-bottom: 2em;
 }
 
 #title
@@ -215,6 +216,47 @@ div.two-columns
 img
 {
 	border-width: 0;
+}
+
+blockquote
+{
+	background-image: url("quote.png");
+	background-repeat: no-repeat;
+	margin-left: 0;
+	margin-right: 0;
+	padding-top: 0.5em;
+	padding-left: 1.5em;
+}
+
+blockquote p
+{
+	font-family: serif;
+	font-style: italic;
+	font-size: 0.95em;
+	color: rgb(50,50,100);
+}
+
+blockquote p.title
+{
+	font-weight: bold;
+}
+
+blockquote a
+{
+	color: rgb(50,50,100);
+	text-decoration: none;
+}
+
+blockquote a:hover
+{
+	color: rgb(0,0,255);
+	text-decoration: underline;
+}
+
+blockquote p.author
+{
+	text-align: right;
+	font-weight: bold;
 }
 
 div.float-right
