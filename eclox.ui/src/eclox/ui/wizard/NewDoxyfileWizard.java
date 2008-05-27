@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003, 2004, 2007, 2008 Guillaume Brocker
+ * Copyright (C) 2003, 2004, 2007, 2008, Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -43,13 +43,20 @@ import eclox.ui.Plugin;
  */
 public class NewDoxyfileWizard extends Wizard implements INewWizard {
 	
-	/**
-	 * The wizard page used to get the file name.
-	 */
-	private NewDoxyfileWizardPage m_page;
+	private IFile					m_doxyfile;	///< The created doxyfile.
+	private NewDoxyfileWizardPage	m_page;		///< The wizard page used to get the file name.
 	
 	/**
-	 * Initialize the new doxyfile wizard.
+	 * Retrieves the created doxyfile.
+	 * 
+	 * @return	the created doxyfile, null if none
+	 */
+	public IFile getDoxyfile() {
+		return m_doxyfile;
+	}
+	
+	/**
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench, org.eclipse.jface.viewers.IStructuredSelection)
 	 */
 	public void init( IWorkbench workbench, IStructuredSelection selection ) {
 		m_page = new NewDoxyfileWizardPage( selection );
@@ -58,9 +65,7 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 	}
 	
 	/**
-	 * Make the wizard finish.
-	 * 
-	 * @return	true if the wizard has completed, false otherwise.
+	 * @see org.eclipse.jface.wizard.Wizard#performFinish()
 	 */
 	public boolean performFinish() {
 		for(;;)	{
@@ -76,6 +81,7 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 			// Creates the effective resource file.
 			try {
 				Doxygen.getDefault().generate( doxyfile );
+				m_doxyfile = doxyfile;
 				return true;
 			}
 			// Doxygen returned an error.

@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2007 Guillaume Brocker
+ * Copyright (C) 2003-2008 Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -125,7 +125,11 @@ public abstract class Doxygen {
 	 * 
 	 * @return	The process that run the build.
 	 */
-	public Process build( IFile file ) throws InvokeException {
+	public Process build( IFile file ) throws InvokeException, RunException {
+		if( file.exists() == false ) {
+			throw new RunException("Missing or bad doxyfile");
+		}
+		
 		try {
 			String[]	command = new String[3];
 			

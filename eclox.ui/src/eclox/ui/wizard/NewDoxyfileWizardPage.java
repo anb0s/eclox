@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003-2007 Guillaume Brocker
+ * Copyright (C) 2003-2008 Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -71,7 +71,7 @@ public class NewDoxyfileWizardPage extends WizardNewFileCreationPage {
 		super("page", selection);
 		setTitle("Doxygen Configuration");
 		setDescription("Creates a new Doxygen configuration file.");
-		setFileName( getInitialFileName(selection.getFirstElement()) );
+		setFileName( selection != null ? getInitialFileName(selection.getFirstElement()) : new String() );
 		setImageDescriptor( Plugin.getImageDescriptor(Images.DOXYFILE_WIZARD));		
 	}
 

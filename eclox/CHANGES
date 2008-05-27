@@ -1,5 +1,9 @@
 eclox-0.7.3
 
+ADD task #5974 : Automatic doxyfile creation when clicking the "build" action.
+    When the user wants to build a doxyfile but none exists in the opened
+    resource, it gets prompt to create a new doxyfile.
+
 ADD task #4841 : Allow the user to configure the doxygen binary to use 
     when doxygen invocation fails. This may occur when building or
     creating a doxyfile. A dialog asks the user to edit the preferences

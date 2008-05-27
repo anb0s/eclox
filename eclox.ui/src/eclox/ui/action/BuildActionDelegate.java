@@ -26,12 +26,15 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -41,8 +44,9 @@ import org.eclipse.ui.PlatformUI;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
+import eclox.ui.DoxyfileSelector;
 import eclox.ui.Plugin;
-import eclox.ui.dialog.DoxyfileSelecterDialog;
+import eclox.ui.wizard.NewDoxyfileWizard;
 
 /**
  * Implement the action handling for the build action.
@@ -197,19 +201,21 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 */
 	protected void doRun(boolean forceChoose) {
 		try {
-			IFile	doxyfile = forceChoose == true ? null : this.nextDoxyfile;
+			IFile				doxyfile = (forceChoose == true) ? null : this.nextDoxyfile;
+			DoxyfileSelector	selector = new DoxyfileSelector(null);
 			
 			// If there is no next doxyfile to build, ask the user for one.
 			if(doxyfile == null) {
-				DoxyfileSelecterDialog doxyfileSelecter = new DoxyfileSelecterDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-				
-				doxyfileSelecter.open();
-				doxyfile = doxyfileSelecter.getDoxyfile();
-				doxyfileSelecter.dispose();
+				selector.open();
+				doxyfile = selector.getDoxyfile();
 			}
 			
-			// If there is a doxyfile, build it.
-			if(doxyfile != null) {
+			// If there is no doxyfile,
+			// we will prompt the user to create one and then edit it.
+			if( doxyfile == null && selector.isCanceled() == false ) {
+				doxyfile = askUserToCreateDoxyfile();
+			}
+			else {
 				Plugin.getDefault().getBuildManager().build( doxyfile );
 			}
 		}
@@ -282,6 +288,33 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 
 		
 		// Job's done.
+		return doxyfile;
+	}
+	
+	/**
+	 * Prompts the user to create a new doxyfile.
+	 * 
+	 * @return	a doxyfile, or null if none.
+	 */
+	private static IFile askUserToCreateDoxyfile() {
+		IFile	doxyfile		= null;
+		Shell	shell			= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		boolean	wantDoxyfile	= MessageDialog.openQuestion(shell, "No Doxyfile Found", "No doxyfile has been found in opened projects.\n\nDo you want to create a new doxyfile now ?" );
+
+		if( wantDoxyfile ) {
+			NewDoxyfileWizard		wizard = new NewDoxyfileWizard();
+			ISelection				selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+			IStructuredSelection	strcSelection = (selection != null && selection instanceof IStructuredSelection) ? (IStructuredSelection) selection : new StructuredSelection();
+
+			wizard.init(PlatformUI.getWorkbench(), strcSelection);
+			
+			
+			WizardDialog	wizardDialog = new WizardDialog(shell, wizard);
+			
+			wizardDialog.open();
+			doxyfile = wizard.getDoxyfile();
+		}
+		
 		return doxyfile;
 	}
 	
