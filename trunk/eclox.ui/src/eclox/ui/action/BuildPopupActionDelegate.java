@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003,2004,2007 Guillaume Brocker
+ * Copyright (C) 2003, 2004, 2007, 2008, Guillaume Brocker
  * 
  * This file is part of eclox.
  * 
@@ -33,8 +33,8 @@ import org.eclipse.ui.IWorkbenchPart;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ResourceCollector;
+import eclox.ui.DoxyfileSelector;
 import eclox.ui.Plugin;
-import eclox.ui.dialog.DoxyfileSelecterDialog;
 
 /**
  * Implement a pop-up menu action delegate that will allow to
@@ -61,20 +61,12 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 		try {
 			IFile	doxyfile = null;
 			
-			// If there is a resource and that resource is a doxyfile, then assigns it as the doxyfile to build.
-			if( resource != null && Doxyfile.isDoxyfile(resource) ) {
-				doxyfile = (IFile) resource;
-			}
-			// Else if there is a resource, but we don't know what it is, then prompts a selection dialog for doxyfiles that may be contained in that resource. 
-			else if( resource != null ) {
-				DoxyfileSelecterDialog selecter = new DoxyfileSelecterDialog(null, resource);
-				
-				selecter.open();
-				doxyfile = selecter.getDoxyfile(); 
-				selecter.dispose();
+			// If there is a resource, it is either a doxyfile 
+			// and if not, we prompt the user to get one.
+			if( resource != null ) {
+				doxyfile = Doxyfile.isDoxyfile(resource) ? (IFile) resource : DoxyfileSelector.open(resource); 
 			}
 
-			// If there is a doxyfile, build it.
 			if( doxyfile != null ) {
 				Plugin.getDefault().getBuildManager().build( doxyfile );
 			}
@@ -113,5 +105,5 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 		
 		action.setEnabled(enabled);
 	}
-
+	
 }
