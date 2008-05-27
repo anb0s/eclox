@@ -213,6 +213,13 @@ div.two-columns
 	margin: 0 4% 1em 2em;
 }
 
+div.three-columns
+{
+	float: left;
+	width: 25%;
+	margin: 0 4% 1em 2em;
+}
+
 img
 {
 	border-width: 0;
