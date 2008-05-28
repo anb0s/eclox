@@ -1,4 +1,4 @@
-eclox-0.7.3
+eclox-0.7.3 (28-mai-2008)
 
 ADD task #5974 : Automatic doxyfile creation when clicking the "build" action.
     When the user wants to build a doxyfile but none exists in the opened

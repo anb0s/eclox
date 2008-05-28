@@ -212,10 +212,10 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			
 			// If there is no doxyfile,
 			// we will prompt the user to create one and then edit it.
-			if( doxyfile == null && selector.isCanceled() == false ) {
+			if (doxyfile == null && selector.hadDoxyfiles() == false) {
 				doxyfile = askUserToCreateDoxyfile();
 			}
-			else {
+			else if (doxyfile != null) {
 				Plugin.getDefault().getBuildManager().build( doxyfile );
 			}
 		}

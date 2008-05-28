@@ -36,6 +36,9 @@
    <feature url="features/org.gna.eclox.hot_0.7.2.jar" id="org.gna.eclox.hot" version="0.7.2">
       <category name="eclox.hot"/>
    </feature>
+   <feature url="features/org.gna.eclox.hot_0.7.3.jar" id="org.gna.eclox.hot" version="0.7.3">
+      <category name="eclox.hot"/>
+   </feature>
    <category-def name="eclox" label="Eclox">
       <description>
          Stable eclox releases

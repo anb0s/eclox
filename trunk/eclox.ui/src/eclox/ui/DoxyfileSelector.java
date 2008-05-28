@@ -54,7 +54,7 @@ import eclox.core.doxyfiles.ResourceCollector;
 public class DoxyfileSelector {
 	
 	/**
-	 * Implement the tree contant provider for the dialog.
+	 * Implement the tree content provider for the dialog.
 	 */
 	private static class MyContentProvider implements ITreeContentProvider {
 		/**
@@ -159,7 +159,7 @@ public class DoxyfileSelector {
 	}
 	
 	/**
-	 * Implement a label provider for the doxyfile selector tree vierwer. 
+	 * Implement a label provider for the doxyfile selector tree viewer. 
 	 */
 	private static class MyLabelProvider extends LabelProvider {
 		/**
@@ -243,9 +243,9 @@ public class DoxyfileSelector {
 		}		
 	}
 	
-	private boolean		canceled = false;	///< Tells if the last selection was canceled by the user.
-	private IFile		doxyfile;			///< The selected doxyfile
-	private IResource	root;				///< The root resource that is that will be starting point for doxyfiles search.
+	private boolean		hadDoxyfiles = false;	///< Tells if there were doxyfiles for selection.
+	private IFile		doxyfile = null;		///< The selected doxyfile
+	private IResource	root = null;			///< The root resource that is that will be starting point for doxyfiles search.
 	
 	
 	/**
@@ -258,17 +258,18 @@ public class DoxyfileSelector {
 	/**
 	 * Opens the selection dialog and tells if the user validated to selection.
 	 * 
-	 * @return	false when the user canceled the selection.
+	 * @return	true when a selection was made, false otherwise.
 	 */
 	public boolean open() {
 		Shell					shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
 		ISelection				selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
 		IStructuredSelection	structuredSelection = (selection != null && selection instanceof IStructuredSelection) ? (IStructuredSelection) selection : new StructuredSelection();
+		boolean					result = false;		
 
-		canceled = false;
-		
 		try	{
 			ResourceCollector	collector = root != null ? ResourceCollector.run(root) : ResourceCollector.run();
+			
+			hadDoxyfiles = collector.isEmpty() == false;
 			
 			if( collector.isEmpty() == false ) {
 				ElementTreeSelectionDialog	selectionDialog = new ElementTreeSelectionDialog(shell, new MyLabelProvider(), new MyContentProvider());
@@ -284,10 +285,7 @@ public class DoxyfileSelector {
 				// Opens the selection dialog and save the selection.
 				if( selectionDialog.open() == ElementTreeSelectionDialog.OK ) {
 					doxyfile = (IFile) selectionDialog.getFirstResult();
-					canceled = false;
-				}
-				else {
-					canceled = true;
+					result = true;
 				}
 			}
 		}
@@ -295,7 +293,7 @@ public class DoxyfileSelector {
 			eclox.ui.Plugin.log(t);
 		}
 		
-		return canceled == false;
+		return result;
 	}
 	
 	/**
@@ -322,11 +320,11 @@ public class DoxyfileSelector {
 	}
 	
 	/**
-	 * @brief	Tells if the last selection was canceled by the user.
+	 * @brief	Tells if there were doxyfiles for last selection.
 	 * 
 	 * @return	true or false
 	 */
-	public boolean isCanceled() {
-		return canceled;
+	public boolean hadDoxyfiles() {
+		return hadDoxyfiles;
 	}
 }
