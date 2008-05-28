@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2007 Guillaume Brocker
+ * Copyright (C) 2007, 2008, Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -27,6 +27,8 @@ package eclox.core.doxygen;
  * @author gbrocker
  */
 public class RunException extends Exception {
+
+	private static final long serialVersionUID = -694030339432059044L;
 
 	/**
 	 * Constructor
