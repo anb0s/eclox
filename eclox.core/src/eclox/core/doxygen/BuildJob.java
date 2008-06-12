@@ -1,6 +1,6 @@
 /*
  * eclox : Doxygen plugin for Eclipse.
- * Copyright (C) 2003,2006,2007 Guillaume Brocker
+ * Copyright (C) 2003, 2006, 2007, 2008, Guillaume Brocker
  *
  * This file is part of eclox.
  *
@@ -74,18 +74,7 @@ public class BuildJob extends Job {
 	/**
 	 * Defines the pattern used to match doxygen warnings about obsolete tags.
 	 */
-	private static final Pattern obsoleteTagWarningPattern = Pattern.compile("^Warning: Tag .+ at line (\\d+) of file (.+) has become obsolete.$", Pattern.MULTILINE);
-	
-	/**
-	 * Defines the warning severity string.
-	 */
-	private static final String SEVERITY_WARNING = "warning";
-	
-	/**
-	 * Defines the warning severity string.
-	 */
-	private static final String SEVERITY_ERROR = "error";
-	
+	private static final Pattern obsoleteTagWarningPattern = Pattern.compile("^Warning: Tag `(.+)' at line (\\d+) of file (.+) has become obsolete.$", Pattern.MULTILINE);
 	
 	
 	/**
@@ -202,29 +191,7 @@ public class BuildJob extends Job {
 	 * a collection containing all markers corresponding to doxygen warning and errors
 	 */
 	private Collection markers = new Vector();
-	
-	
-	/**
-	 * Retrieves the marker severity for the given text. The given
-	 * text may be warning or error.
-	 * 
-	 * @param severity	a string to convert to a marker severity
-	 * 
-	 * @return the marker severity value
-	 */
-	private static int getMarkerSeverity( String severity )
-	{
-		if( severity.compareToIgnoreCase(SEVERITY_ERROR) == 0 ) {
-			return IMarker.SEVERITY_ERROR;
-		}
-		else if( severity.compareToIgnoreCase(SEVERITY_WARNING) == 0 ) {
-			return IMarker.SEVERITY_WARNING;
-		}
-		else {
-			return IMarker.SEVERITY_ERROR;
-		}
-	}
-	
+		
 	
 	/**
 	 * Constructor.
@@ -506,11 +473,14 @@ public class BuildJob extends Job {
 		while( matcher.find() == true )
 		{
 			Path		resourcePath = new Path( matcher.group(1) );
-			Integer		lineNumer = new Integer( matcher.group(2) );
-			int			severity = getMarkerSeverity( matcher.group(3) );
-			String		message = new String( matcher.group(4) );
+			Integer		lineNumer    = new Integer( matcher.group(2) );
+			int			severity     = Marker.toMarkerSeverity( matcher.group(3) );
+			String		message      = new String( matcher.group(4) );
+			IMarker		marker       = Marker.create( workspaceRoot.getFileForLocation(resourcePath), lineNumer.intValue(), message, severity );
 			
-			createMarker( workspaceRoot.getFileForLocation(resourcePath), lineNumer.intValue(), message, severity );
+			if( marker != null ) {
+				markers.add( marker );
+			}
 		}
 		matcher = null;
 		
@@ -519,41 +489,19 @@ public class BuildJob extends Job {
 		matcher = obsoleteTagWarningPattern.matcher( log );		
 		while( matcher.find() == true )
 		{
-			Path		resourcePath = new Path( matcher.group(2) );
-			Integer		lineNumer = new Integer( matcher.group(1) );
 			String		message = new String( matcher.group(0) );
-
-			createMarker( workspaceRoot.getFileForLocation(resourcePath), lineNumer.intValue(), message, IMarker.SEVERITY_WARNING );			
+			String		setting = new String( matcher.group(1) );
+			Integer		lineNumer = new Integer( matcher.group(2) );
+			Path		resourcePath = new Path( matcher.group(3) );
+			IMarker		marker = Marker.create( workspaceRoot.getFileForLocation(resourcePath), setting, lineNumer.intValue(), message, IMarker.SEVERITY_WARNING );
+			
+			if( marker != null ) {
+				markers.add( marker );
+			}			
 		}
 		matcher = null;
 	}
 	
-	/**
-	 * Creates a single marker for the given file.
-	 * 
-	 * If @c file is null, no marker will be created.
-	 * 
-	 * @param	file		a resource file to create a marker for
-	 * @param	line		a line number
-	 * @param	message		a message explaining the problem
-	 * @param	severity	a severity level
-	 */
-	private void createMarker( IFile file, int line, String message, int severity ) throws CoreException
-	{
-		if( file != null )
-		{
-			IMarker	marker = file.createMarker( IMarkers.DOXYGEN_MARKER );
-			
-			marker.setAttribute( IMarker.MESSAGE, message );
-			marker.setAttribute( IMarker.LINE_NUMBER, line );
-			marker.setAttribute( IMarker.LOCATION, file.getProjectRelativePath().toPortableString() );
-			marker.setAttribute( IMarker.PRIORITY, IMarker.PRIORITY_NORMAL );
-			marker.setAttribute( IMarker.SEVERITY, severity );
-			
-			markers.add( marker );
-		}
-	}
-		
 	/**
 	 * Notifies observers that the log has been cleared.
 	 */
