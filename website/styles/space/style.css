@@ -1,16 +1,19 @@
 body
 {
 	margin: 0;
-	padding-left: 5em;
-	padding-right: 5em;
+	padding: 0;
 	background-color: rgb(255,255,255);
 }
 
 #header
 {
-	margin-left: -5em;
-	margin-right: -5em;
 	margin-bottom: 2em;
+}
+
+#content
+{
+	padding-left: 10%;
+	padding-right: 10%;
 }
 
 #title
