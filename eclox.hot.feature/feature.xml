@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.gna.eclox.hot"
-      label="Hot Eclox"
-      version="0.7.3"
+      label="Eclox Hot"
+      version="0.8.0"
       provider-name="Guillaume Brocker"
-      plugin="org.gna.eclox">
+      plugin="org.gna.eclox"
+      exclusive="true">
 
    <description url="http://home.gna.org/eclox">
       Eclox provides the Doxygen documentation system for Eclipse.
@@ -33,6 +34,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
    <url>
       <update label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
       <discovery label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
+      <discovery label="Eclox Homepage" url="http://eclox.eu"/>
    </url>
 
    <requires>
@@ -40,7 +42,6 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.console"/>
-      <import plugin="org.gna.eclox.core"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.editors"/>
@@ -50,27 +51,27 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
          id="org.gna.eclox"
          download-size="0"
          install-size="0"
-         version="0.7.3"
+         version="0.8.0"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.core"
          download-size="0"
          install-size="0"
-         version="0.7.3"
+         version="0.8.0"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.help"
          download-size="0"
          install-size="0"
-         version="0.7.3"/>
+         version="0.8.0"/>
 
    <plugin
          id="org.gna.eclox.ui"
          download-size="0"
          install-size="0"
-         version="0.7.3"
+         version="0.8.0"
          unpack="false"/>
 
 </feature>
