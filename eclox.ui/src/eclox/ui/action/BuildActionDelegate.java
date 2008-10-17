@@ -38,6 +38,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.PlatformUI;
@@ -244,8 +245,9 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 * @return	a doxfile retrieved from the active editor input.
 	 */
 	private static IFile getDoxyfileFromActiveEditor( IWorkbenchWindow window ) {
-		IFile		doxyfile			= null;
-		IEditorPart	activeEditorPart	= window.getActivePage().getActiveEditor();
+		IFile			doxyfile			= null;
+		IWorkbenchPage	activePage			= window.getActivePage();
+		IEditorPart		activeEditorPart	= activePage != null ? window.getActivePage().getActiveEditor() : null;
 		
 		if(activeEditorPart != null) {
 			IEditorInput activeEditorInput  = activeEditorPart.getEditorInput();
