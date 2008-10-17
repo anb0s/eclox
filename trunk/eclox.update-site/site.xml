@@ -3,50 +3,17 @@
    <description url="http://download.gna.org/eclox/update">
       Eclox Update Site
    </description>
-   <feature url="features/org.gna.eclox_0.6.0.jar" id="org.gna.eclox" version="0.6.0">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox.doxygen_1.5.0.jar" id="org.gna.eclox.doxygen" version="1.5.0">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox_0.6.1.jar" id="org.gna.eclox" version="0.6.1">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox_0.6.2.jar" id="org.gna.eclox" version="0.6.2">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox_0.6.3.jar" id="org.gna.eclox" version="0.6.3">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox_0.6.4.jar" id="org.gna.eclox" version="0.6.4">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox.doxygen_1.5.3.jar" id="org.gna.eclox.doxygen" version="1.5.3" os="win32" arch="ia64,ia64_32,x86,x86_64">
-      <category name="eclox"/>
-   </feature>
    <feature url="features/org.gna.eclox_0.6.5.jar" id="org.gna.eclox" version="0.6.5">
       <category name="eclox"/>
    </feature>
-   <feature url="features/org.gna.eclox.hot_0.7.0.jar" id="org.gna.eclox.hot" version="0.7.0">
-      <category name="eclox.hot"/>
-   </feature>
-   <feature url="features/org.gna.eclox.hot_0.7.1.jar" id="org.gna.eclox.hot" version="0.7.1">
-      <category name="eclox.hot"/>
-   </feature>
-   <feature url="features/org.gna.eclox.hot_0.7.2.jar" id="org.gna.eclox.hot" version="0.7.2">
-      <category name="eclox.hot"/>
-   </feature>
    <feature url="features/org.gna.eclox.hot_0.7.3.jar" id="org.gna.eclox.hot" version="0.7.3">
-      <category name="eclox.hot"/>
+      <category name="eclox"/>
    </feature>
-   <category-def name="eclox" label="Eclox">
-      <description>
-         Stable eclox releases
-      </description>
-   </category-def>
-   <category-def name="eclox.hot" label="Hot Eclox">
-      <description>
-         Latest eclox releases (still under development)
-      </description>
-   </category-def>
+   <feature url="features/org.gna.eclox_0.8.0.jar" id="org.gna.eclox" version="0.8.0">
+      <category name="eclox"/>
+   </feature>
+   <feature url="features/org.gna.eclox.hot_0.8.0.jar" id="org.gna.eclox.hot" version="0.8.0">
+      <category name="eclox"/>
+   </feature>
+   <category-def name="eclox" label="eclox"/>
 </site>
