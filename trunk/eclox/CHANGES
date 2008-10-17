@@ -1,3 +1,9 @@
+eclox-0.8.0 (17-oct-2008)
+
+New release of eclox, for eclipse 3.3+ ! Release 0.8.0 integrates all features
+and fixes done in 0.7.x releases.  
+
+
 eclox-0.7.3 (28-mai-2008)
 
 ADD task #5974 : Automatic doxyfile creation when clicking the "build" action.
