@@ -64,7 +64,7 @@ public class OutputPart extends Part {
 	/**
 	 * html flavour state
 	 */
-	private static final String CHM_HTML = "prepared for comporessed HTML (.chm)";
+	private static final String CHM_HTML = "prepared for compressed HTML (.chm)";
 	
 	/**
 	 * latex flavour for hyperlinked pdf state

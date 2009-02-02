@@ -1,3 +1,7 @@
+eclox-0.8.1
+
+FIX bug #12915 : Misspelling in Doxyfile Editor.
+
 eclox-0.8.0 (17-oct-2008)
 
 New release of eclox, for eclipse 3.3+ ! Release 0.8.0 integrates all features
