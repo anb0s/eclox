@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description url="http://download.gna.org/eclox/update">
-      Eclox Update Site
+   <description name="Eclox Update Site" url="http://download.gna.org/eclox/update">
+      This is the official eclox&apos;s update site.
    </description>
    <feature url="features/org.gna.eclox_0.6.5.jar" id="org.gna.eclox" version="0.6.5">
       <category name="eclox"/>
