@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.gna.eclox"
+      label="Eclox"
+      version="0.8.0"
+      provider-name="Guillaume Brocker"
+      plugin="org.gna.eclox"
+      exclusive="true">
+
+   <description url="http://home.gna.org/eclox">
+      Eclox provides the Doxygen documentation system for Eclipse.
+
+This feature provides a documentation builder and a graphical editor for doxygen.
+   </description>
+
+   <copyright url="http://home.gna.org/eclox">
+      Copyright (C) 2003-2008 Guillaume Brocker
+   </copyright>
+
+   <license url="http://www.gnu.org/licenses/gpl.txt">
+      This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
+   </license>
+
+   <url>
+      <update label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
+      <discovery label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
+      <discovery label="Eclox Homepage" url="http://eclox.eu"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.ui.editors"/>
+   </requires>
+
+   <plugin
+         id="org.gna.eclox"
+         download-size="16"
+         install-size="0"
+         version="0.8.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.gna.eclox.core"
+         download-size="591"
+         install-size="0"
+         version="0.8.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.gna.eclox.help"
+         download-size="5"
+         install-size="0"
+         version="0.8.0"/>
+
+   <plugin
+         id="org.gna.eclox.ui"
+         download-size="147"
+         install-size="0"
+         version="0.8.0"
+         unpack="false"/>
+
+</feature>
