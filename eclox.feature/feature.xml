@@ -45,27 +45,27 @@ You should have received a copy of the GNU General Public License along with thi
          id="org.gna.eclox"
          download-size="16"
          install-size="0"
-         version="0.8.0"
+         version="0.10.0"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.core"
          download-size="591"
          install-size="0"
-         version="0.8.0"
+         version="0.10.0"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.help"
          download-size="5"
          install-size="0"
-         version="0.8.0"/>
+         version="0.10.0"/>
 
    <plugin
          id="org.gna.eclox.ui"
          download-size="147"
          install-size="0"
-         version="0.8.0"
+         version="0.10.0"
          unpack="false"/>
 
 </feature>
