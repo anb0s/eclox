@@ -2,7 +2,7 @@
 <feature
       id="org.gna.eclox.hot"
       label="Eclox Hot"
-      version="0.8.0"
+      version="0.10.0"
       provider-name="Guillaume Brocker"
       plugin="org.gna.eclox"
       exclusive="true">
