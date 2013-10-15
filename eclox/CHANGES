@@ -1,3 +1,8 @@
+eclox-0.10.1 (15-oct-2013)
+
+Applied patch to fix some typo in help.
+
+
 eclox-0.10.0 (7-juil-2013)
 
 New release of eclox distributed under EPL 1.0 (to allow debian packaging).
