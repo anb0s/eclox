@@ -2,7 +2,7 @@
 <feature
       id="org.gna.eclox"
       label="Eclox"
-      version="0.10.0"
+      version="0.10.1"
       provider-name="Guillaume Brocker"
       plugin="org.gna.eclox"
       exclusive="true">
