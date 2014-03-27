@@ -24,7 +24,7 @@ All rights reserved. This program and the accompanying materials are made availa
    <url>
       <update label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
       <discovery label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
-      <discovery label="Eclox Homepage" url="http://eclox.eu"/>
+      <discovery label="Eclox Homepage" url="http://home.gna.org/eclox"/>
    </url>
 
    <requires>
@@ -41,27 +41,27 @@ All rights reserved. This program and the accompanying materials are made availa
          id="org.gna.eclox"
          download-size="16"
          install-size="0"
-         version="0.10.0"
+         version="0.10.1"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.core"
          download-size="591"
          install-size="0"
-         version="0.10.0"
+         version="0.10.1"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.help"
          download-size="5"
          install-size="0"
-         version="0.10.0"/>
+         version="0.10.1"/>
 
    <plugin
          id="org.gna.eclox.ui"
          download-size="147"
          install-size="0"
-         version="0.10.0"
+         version="0.10.1"
          unpack="false"/>
 
 </feature>
