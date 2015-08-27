@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2003-2007, 2013 Guillaume Brocker
- * 
+ * Copyright (C) 2015, Andre Bossert
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,8 +9,9 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - added show command in console / title
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.console;
 
@@ -29,7 +31,7 @@ import eclox.core.doxygen.IBuildJobListener;
 
 /**
  * Implements the doxygen output console
- * 
+ *
  * @author Guillaume Brocker
  */
 public class Console extends AbstractConsole {
@@ -54,24 +56,24 @@ public class Console extends AbstractConsole {
 		 */
 		public void buildJobRemoved(BuildJob job) {
 			final BuildJob	localJob = job;
-			
+
 			ConsolePlugin.getStandardDisplay().asyncExec(
 					new Runnable() {
 						public void run() {
-							remove(localJob);		
+							remove(localJob);
 						}
 					}
 				);
-		}		
+		}
 	}
 
 	private static Map	consoles = new HashMap();	///< Holds all known console instances.
 	private BuildJob	job;						///< the build job
-	
-	
+
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param	job	the build job whose output must be shown
 	 */
 	private Console(BuildJob job) {
@@ -79,14 +81,14 @@ public class Console extends AbstractConsole {
 		this.job = job;
 		this.job.addBuidJobListener(new MyBuildJobListener());
 	}
-	
+
 	/**
 	 * @see org.eclipse.ui.console.IConsole#createPage(org.eclipse.ui.console.IConsoleView)
 	 */
 	public IPageBookViewPage createPage(IConsoleView view) {
 		return new ConsolePage(this);
 	}
-	
+
 	/**
 	 * @see org.eclipse.ui.console.AbstractConsole#dispose()
 	 */
@@ -105,23 +107,23 @@ public class Console extends AbstractConsole {
 
 	/**
 	 * Retrieves the job currently monitored by the console
-	 * 
+	 *
 	 * @return	a build job or null if none
 	 */
 	public BuildJob getJob() {
 		return job;
 	}
-	
+
 	/**
 	 * Shows a console for the given job.
-	 * 
+	 *
 	 * @param	job	a build that needs a console to be shown
 	 */
 	static public void show( BuildJob job ) {
 		// Retrieves the active workbench window and console manager.
 		IConsoleManager		consoleManager = ConsolePlugin.getDefault().getConsoleManager();
 		Console				console = null;
-		
+
 		if( consoles.containsKey(job) ) {
 			console = (Console) consoles.get(job);
 		}
@@ -129,20 +131,23 @@ public class Console extends AbstractConsole {
 			console = new Console(job);
 			consoleManager.addConsoles( new IConsole[] {console} );
 		}
-		
+
+		// anb0s: refresh the name
+		console.setName(job.getName());
+
 		// Shows the console view.
 		console.activate();
 	}
-	
+
 	/**
 	 * Removes the console for the given build job.
-	 * 
+	 *
 	 * @param	job	a build job
 	 */
 	public static void remove(BuildJob job) {
 		if( consoles.containsKey(job) ) {
 			Console console = (Console) consoles.get(job);
-			
+
 			ConsolePlugin.getDefault().getConsoleManager().removeConsoles( new IConsole[] {console} );
 		}
 	}
