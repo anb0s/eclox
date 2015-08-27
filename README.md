@@ -6,3 +6,9 @@ Features Overview
 - integrated doxygen invocation
 - doxygen outputs logging and
 - optional packaged doxygen binaries (for windows and linux)
+
+old project page (migration ongoing): http://home.gna.org/eclox
+
+new page:  http://anb0s.github.io/eclox
+
+update-site (migration ongoing): http://anbos.de/eclipse/eclox-updatesite
