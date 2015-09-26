@@ -3,8 +3,8 @@
       id="org.gna.eclox.doxygen"
       label="doxygen binaries"
       version="1.5.3"
-      provider-name="Guillaume Brocker"
-      plugin="org.gna.eclox"
+      provider-name="Guillaume Brocker, Andre Bossert"
+      plugin="org.gna.eclox.branding"
       os="win32"
       arch="ia64,ia64_32,x86,x86_64">
 
@@ -37,8 +37,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
    </url>
 
    <requires>
-      <import plugin="org.gna.eclox.core" version="0.6.0" match="greaterOrEqual"/>
-      <import plugin="org.gna.eclox"/>
+      <import feature="org.gna.eclox" version="0.11.0"/>
    </requires>
 
    <plugin
@@ -47,7 +46,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
          arch="ia64,ia64_32,x86,x86_64"
          download-size="6685"
          install-size="0"
-         version="1.5.3"
+         version="0.0.0"
          fragment="true"/>
 
 </feature>

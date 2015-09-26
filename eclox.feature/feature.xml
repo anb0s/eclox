@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.gna.eclox"
+      id="org.gna.eclox.feature"
       label="Eclox"
-      version="0.10.2.qualifier"
+      version="0.11.0"
       provider-name="Guillaume Brocker, Andre Bossert"
-      plugin="org.gna.eclox"
+      plugin="org.gna.eclox.branding"
       exclusive="true">
 
    <description url="http://home.gna.org/eclox">
@@ -38,30 +38,29 @@ This feature provides a documentation builder and a graphical editor for doxygen
    </requires>
 
    <plugin
-         id="org.gna.eclox"
-         download-size="16"
-         install-size="0"
-         version="0.10.2.qualifier"
-         unpack="false"/>
-
-   <plugin
          id="org.gna.eclox.core"
          download-size="591"
          install-size="0"
-         version="0.10.2.qualifier"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.help"
          download-size="5"
          install-size="0"
-         version="0.10.2.qualifier"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.gna.eclox.ui"
          download-size="147"
          install-size="0"
-         version="0.10.2.qualifier"
+         version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.gna.eclox.branding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

@@ -2,8 +2,8 @@
 <feature
       id="org.gna.eclox.hot"
       label="Eclox Hot"
-      version="0.10.1"
-      provider-name="Guillaume Brocker"
+      version="0.11.0"
+      provider-name="Guillaume Brocker, Andre Bossert"
       plugin="org.gna.eclox"
       exclusive="true">
 
@@ -48,30 +48,29 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
    </requires>
 
    <plugin
-         id="org.gna.eclox"
-         download-size="0"
-         install-size="0"
-         version="0.8.0"
-         unpack="false"/>
-
-   <plugin
          id="org.gna.eclox.core"
          download-size="0"
          install-size="0"
-         version="0.8.0"
+         version="0.0.0"
          unpack="false"/>
 
    <plugin
          id="org.gna.eclox.help"
          download-size="0"
          install-size="0"
-         version="0.8.0"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.gna.eclox.ui"
          download-size="0"
          install-size="0"
-         version="0.8.0"
+         version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="org.gna.eclox.branding"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"/>
 
 </feature>

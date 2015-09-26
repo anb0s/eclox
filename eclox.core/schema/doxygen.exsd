@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.gna.eclox.core">
+<schema targetNamespace="org.gna.eclox.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
          <meta.schema plugin="org.gna.eclox.core" id="doxygen" name="Bundled Doxygen Binaries"/>
@@ -11,6 +11,11 @@
    </annotation>
 
    <element name="extension">
+      <annotation>
+         <appInfo>
+            <meta.element />
+         </appInfo>
+      </annotation>
       <complexType>
          <sequence>
             <element ref="doxygen"/>
@@ -69,6 +74,8 @@
                <restriction base="string">
                   <enumeration value="x86">
                   </enumeration>
+                  <enumeration value="x86_64">
+                  </enumeration>
                </restriction>
             </simpleType>
          </attribute>
@@ -126,13 +133,5 @@
       </documentation>
    </annotation>
 
-   <annotation>
-      <appInfo>
-         <meta.section type="copyright"/>
-      </appInfo>
-      <documentation>
-         
-      </documentation>
-   </annotation>
 
 </schema>

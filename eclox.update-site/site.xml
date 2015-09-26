@@ -3,17 +3,12 @@
    <description name="Eclox Update Site" url="http://download.gna.org/eclox/update">
       This is the official eclox&apos;s update site.
    </description>
-   <feature url="features/org.gna.eclox_0.6.5.jar" id="org.gna.eclox" version="0.6.5">
-      <category name="eclox"/>
+   <feature url="features/org.gna.eclox.feature_0.11.0.jar" id="org.gna.eclox.feature" version="0.11.0">
+      <category name="eclox_0_11"/>
    </feature>
-   <feature url="features/org.gna.eclox.hot_0.7.3.jar" id="org.gna.eclox.hot" version="0.7.3">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox_0.8.0.jar" id="org.gna.eclox" version="0.8.0">
-      <category name="eclox"/>
-   </feature>
-   <feature url="features/org.gna.eclox.hot_0.8.0.jar" id="org.gna.eclox.hot" version="0.8.0">
-      <category name="eclox"/>
-   </feature>
-   <category-def name="eclox" label="eclox"/>
+   <category-def name="eclox_0_11" label="Eclox 0.11">
+      <description>
+         Container for Eclox eclipse plugins.
+      </description>
+   </category-def>
 </site>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<fragment>
+   <extension
+         point="org.gna.eclox.core.doxygen">
+      <doxygen
+            arch="x86"
+            os="linux"
+            path="bin/linux/x86_64/doxygen-1.8.10"/>
+      <doxygen
+            arch="x86"
+            os="win32"
+            path="bin/win32/x86/doxygen-1.8.10.exe"/>
+      <doxygen
+            arch="x86_64"
+            os="win32"
+            path="bin/win32/x86_64/doxygen-1.8.10.exe"/>
+   </extension>
+
+</fragment>
