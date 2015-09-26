@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Doxygen Binaries
+Bundle-Name: Doxygen binaries
 Bundle-SymbolicName: org.gna.eclox.doxygen.core;singleton:=true
 Bundle-Version: 1.8.10
 Fragment-Host: org.gna.eclox.core;bundle-version="0.11.0"
