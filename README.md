@@ -8,8 +8,6 @@ Features Overview
 - doxygen outputs logging and
 - optional packaged doxygen binaries (for windows and linux)
 
-project page:  http://anb0s.github.io/eclox
+project page and update site:  http://anb0s.github.io/eclox
 
-update-site (migration ongoing): http://anbos.de/eclipse/eclox-updatesite
-
-old project page (migration ongoing): http://home.gna.org/eclox
+old project page (migration completed): http://home.gna.org/eclox
