@@ -12,12 +12,6 @@ project page and update site:  http://anb0s.github.io/eclox
 
 old project page (migration completed): http://home.gna.org/eclox
 
-MANUAL
-
-          Eclox, a Doxygen frontend plugin for Eclipse.
-                <http://anb0s.github.io/eclox>
-
-
 1. INSTALLATION
 
  There are two options to install the plugin: using the update site or
