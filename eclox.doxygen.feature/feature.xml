@@ -5,7 +5,7 @@
       version="1.8.10"
       provider-name="Guillaume Brocker, Andre Bossert"
       plugin="org.gna.eclox.branding"
-      os="win32"
+      os="linux,win32"
       arch="ia64,ia64_32,x86,x86_64">
 
    <description url="http://anb0s.github.io/eclox">

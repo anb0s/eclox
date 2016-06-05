@@ -163,7 +163,7 @@ public class BuildJob extends Job {
 	/**
 	 * a collection containing all created build jobs
 	 */
-	private static Collection jobs = new HashSet();
+	private static Collection<BuildJob> jobs = new HashSet<BuildJob>();
 
 	/**
 	 * the path of the doxygen
@@ -183,12 +183,12 @@ public class BuildJob extends Job {
 	/**
 	 * a set containing all registered build job listeners
 	 */
-	private Set listeners = new HashSet();
+	private Set<IBuildJobListener> listeners = new HashSet<IBuildJobListener>();
 
 	/**
 	 * a collection containing all markers corresponding to doxygen warning and errors
 	 */
-	private Collection markers = new Vector();
+	private Collection<IMarker> markers = new Vector<IMarker>();
 
 
 	/**
@@ -258,7 +258,7 @@ public class BuildJob extends Job {
 		BuildJob	result = null;
 
 		// Walks through the found jobs to find a relevant build job.
-		Iterator	i = jobs.iterator();
+		Iterator<BuildJob>	i = jobs.iterator();
 		while( i.hasNext() )
 		{
 			BuildJob	buildJob = (BuildJob) i.next();
@@ -310,7 +310,7 @@ public class BuildJob extends Job {
 	public void clearMarkers()
 	{
 		// Removes all markers from their respective resource
-		Iterator	i = markers.iterator();
+		Iterator<IMarker>	i = markers.iterator();
 		while( i.hasNext() )
 		{
 			IMarker	marker = (IMarker) i.next();
@@ -529,7 +529,7 @@ public class BuildJob extends Job {
 	 */
 	private void fireLogCleared() {
 		synchronized ( listeners ) {
-			Iterator	i = listeners.iterator();
+			Iterator<IBuildJobListener>	i = listeners.iterator();
 			while( i.hasNext() ) {
 				IBuildJobListener	listener = (IBuildJobListener) i.next();
 
@@ -545,7 +545,7 @@ public class BuildJob extends Job {
 	 */
 	private void fireLogUpdated( String newText ) {
 		synchronized ( listeners ) {
-			Iterator	i = listeners.iterator();
+			Iterator<IBuildJobListener>	i = listeners.iterator();
 			while( i.hasNext() ) {
 				IBuildJobListener	listener = (IBuildJobListener) i.next();
 
@@ -559,7 +559,7 @@ public class BuildJob extends Job {
 	 */
 	private void fireRemoved() {
 		synchronized ( listeners ) {
-			Iterator	i = listeners.iterator();
+			Iterator<IBuildJobListener>	i = listeners.iterator();
 			while( i.hasNext() ) {
 				IBuildJobListener	listener = (IBuildJobListener) i.next();
 

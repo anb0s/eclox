@@ -6,3 +6,4 @@ Bundle-Version: 0.11.0.qualifier
 Bundle-Vendor: Guillaume Brocker, Andre Bossert
 Bundle-Localization: 
 Bundle-ClassPath: target/eclox-branding-lib.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7

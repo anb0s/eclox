@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2007, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.ui;
 
@@ -31,7 +31,7 @@ import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
 
 public class DoxyfileDecorator implements ILightweightLabelDecorator {
-	
+
 	/**
 	 * Implements a job change listener
 	 */
@@ -46,10 +46,10 @@ public class DoxyfileDecorator implements ILightweightLabelDecorator {
 		 */
 		public void done(IJobChangeEvent event) {
 			Job	job = event.getJob();
-			
+
 			if( job.belongsTo(BuildJob.FAMILY) ) {
 				BuildJob	buildJob = (BuildJob) job;
-				
+
 				fireProviderChangedEvent( buildJob.getDoxyfile() );
 			}
 		}
@@ -59,27 +59,27 @@ public class DoxyfileDecorator implements ILightweightLabelDecorator {
 		 */
 		public void running(IJobChangeEvent event) {
 			Job	job = event.getJob();
-			
+
 			if( job.belongsTo(BuildJob.FAMILY) ) {
 				BuildJob	buildJob = (BuildJob) job;
-				
+
 				fireProviderChangedEvent( buildJob.getDoxyfile() );
 			}
 		}
-		
-		
+
+
 	}
-	
+
 	/**
 	 * the collection of attached listeners
 	 */
-	private Collection listeners = new Vector();
-	
+	private Collection<ILabelProviderListener> listeners = new Vector<ILabelProviderListener>();
+
 	/**
 	 * the job listener
 	 */
 	private MyJobListener jobManagerListener = new MyJobListener();
-	
+
 	/**
 	 * Constructor
 	 */
@@ -94,7 +94,7 @@ public class DoxyfileDecorator implements ILightweightLabelDecorator {
 		if( Doxyfile.isDoxyfile(element) ) {
 			IFile		doxyfile	= (IFile) element;
 			BuildJob	job			= BuildJob.findJob(doxyfile);
-			
+
 			if( job != null && job.getState() == BuildJob.RUNNING ) {
 				decoration.addOverlay( ImageDescriptor.createFromFile(this.getClass(), "build_co.gif"), IDecoration.BOTTOM_LEFT );
 				decoration.addSuffix(" (building...)");
@@ -129,19 +129,19 @@ public class DoxyfileDecorator implements ILightweightLabelDecorator {
 	public void removeListener(ILabelProviderListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	/**
 	 * Notifies listerners that the given resource'l decoration need to be updated
-	 * 
+	 *
 	 * @param	resource	a resource to refresh
 	 */
 	private void fireProviderChangedEvent( Object resource ) {
-		Iterator					i		= listeners.iterator();
+		Iterator<ILabelProviderListener>					i		= listeners.iterator();
 		LabelProviderChangedEvent	event	= new LabelProviderChangedEvent(this, resource);
-		
+
 		while( i.hasNext() ) {
 			ILabelProviderListener	listener = (ILabelProviderListener) i.next();
-			
+
 			listener.labelProviderChanged(event);
 		}
 	}

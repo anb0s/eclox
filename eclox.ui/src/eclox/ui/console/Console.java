@@ -67,7 +67,7 @@ public class Console extends AbstractConsole {
 		}
 	}
 
-	private static Map	consoles = new HashMap();	///< Holds all known console instances.
+	private static Map<BuildJob, Console>	consoles = new HashMap<BuildJob, Console>();	///< Holds all known console instances.
 	private BuildJob	job;						///< the build job
 
 

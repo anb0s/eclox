@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2007, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.editors;
 
@@ -44,39 +44,39 @@ import eclox.core.doxyfiles.Setting;
 /**
  * Implements a list setting editor. This class is abstract since it provides no way to
  * edit value compounds. See derived classes.
- * 
+ *
  * @author gbrocker
  */
 public abstract class ListEditor extends SettingEditor {
-	
+
 	/**
 	 * Implements the table viewer content provider.
 	 */
 	private class MyContentProvider implements IStructuredContentProvider {
 
 		public Object[] getElements(Object inputElement) {
-			Vector	compounds = (Vector) inputElement;
-			
+			Vector<?>	compounds = (Vector<?>) inputElement;
+
 			return compounds.toArray();
 		}
 
 		public void dispose() {}
 
 		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
-		
+
 	}
-	
+
 	/**
 	 * Implements the table viewer label provider.
 	 */
 	private class MyLabelProvider extends LabelProvider {
-		
+
 		public String getText(Object element) {
 			return new String( (String)element );
 		}
-		
+
 	}
-	
+
 	/**
 	 * Implements an open listener that will trigger the edition of the selected list viewer item.
 	 */
@@ -85,9 +85,9 @@ public abstract class ListEditor extends SettingEditor {
 		public void open(OpenEvent event) {
 			editSelectedValueCompound();
 		}
-		
+
 	}
-	
+
 	/**
 	 * Implements a button selection listener.
 	 */
@@ -115,9 +115,9 @@ public abstract class ListEditor extends SettingEditor {
 				assert false;
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Implements a selection change listener to update the button states.
 	 */
@@ -126,17 +126,17 @@ public abstract class ListEditor extends SettingEditor {
 		public void selectionChanged(SelectionChangedEvent event) {
 			updateButtons();
 		}
-		
+
 	}
-	
-	private Vector valueCompounds;	///< The collection of the setting's value compounds.
-	
+
+	private Vector<String> valueCompounds;	///< The collection of the setting's value compounds.
+
 	private ListViewer listViewer;	///< the table viewer used to edit the managed setting
 	private Button addButton;		///< the button allowing to trigger a new value addition
 	private Button removeButton;	///< the button allowing to trigger the deletion of selected values
 	private Button upButton;		///< the button allowing to move the selected values up
 	private Button downButton;		///< the button allowing to move the selected values down
-	
+
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#commit()
 	 */
@@ -153,18 +153,18 @@ public abstract class ListEditor extends SettingEditor {
 	public void createContent(Composite parent, FormToolkit formToolkit) {
 		// Pre-condition
 		assert listViewer == null;
-		
+
 		// Activates border painting.
 		formToolkit.paintBordersFor( parent );
-		
+
 		// Installs the layout.
 		FormLayout	layout = new FormLayout();
 		layout.spacing = 2;
 		parent.setLayout( layout );
-		
+
 		// Creates the list viewer and installs it in the layout.
 		FormData		formData;
-		
+
 		listViewer = new ListViewer( parent, 0 );
 		formData = new FormData();
 		formData.top = new FormAttachment( 0, 2 );
@@ -178,49 +178,49 @@ public abstract class ListEditor extends SettingEditor {
 		listViewer.setContentProvider( new MyContentProvider() );
 		listViewer.setLabelProvider( new MyLabelProvider() );
 		listViewer.addOpenListener( new MyOpenListener() );
-		
+
 		// Creates various buttons and installs them in the layout.
 		addButton		= formToolkit.createButton( parent, "Add",    0 );
 		removeButton	= formToolkit.createButton( parent, "Remove", 0 );
 		upButton		= formToolkit.createButton( parent, "Up",     0 );
 		downButton		= formToolkit.createButton( parent, "Down",   0 );
-		
+
 		formData = new FormData();
 		formData.top = new FormAttachment( 0, 0 );
 		formData.right = new FormAttachment( 100, 0 );
 		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		addButton.setLayoutData( formData );
-		
+
 		formData = new FormData();
 		formData.top = new FormAttachment( addButton, 0, SWT.BOTTOM );
 		formData.right = new FormAttachment( 100, 0 );
 		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		removeButton.setLayoutData( formData );
-		
+
 		formData = new FormData();
 		formData.top = new FormAttachment( removeButton, 6, SWT.BOTTOM );
 		formData.right = new FormAttachment( 100, 0 );
 		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		upButton.setLayoutData( formData );
-		
+
 		formData = new FormData();
 		formData.top = new FormAttachment( upButton, 0, SWT.BOTTOM );
 		formData.right = new FormAttachment( 100, 0 );
 		formData.left = new FormAttachment( listViewer.getControl(), 2, SWT.RIGHT );
 		downButton.setLayoutData( formData );
-		
+
 		// Assignes a selection listener to the managed buttons.
 		MyButtonSelectionListener selectionListener = new MyButtonSelectionListener();
-		
+
 		addButton.addSelectionListener( selectionListener );
 		removeButton.addSelectionListener( selectionListener );
 		upButton.addSelectionListener( selectionListener );
 		downButton.addSelectionListener( selectionListener );
-		
+
 		// Adds a selection change listener to the list viewer and initializes the button states.
 		listViewer.addPostSelectionChangedListener( new MySelectionChangedListener() );
 		updateButtons();
-		
+
 		// Post-condition
 		assert listViewer != null;
 	}
@@ -236,7 +236,7 @@ public abstract class ListEditor extends SettingEditor {
 		assert removeButton	!= null;
 		assert upButton		!= null;
 		assert downButton	!= null;
-		
+
 		listViewer.getControl().dispose();
 		listViewer = null;
 		addButton.dispose();
@@ -247,9 +247,9 @@ public abstract class ListEditor extends SettingEditor {
 		upButton = null;
 		downButton.dispose();
 		downButton = null;
-		
+
 		super.dispose();
-		
+
 		// Post-condition
 		assert listViewer	== null;
 		assert addButton	== null;
@@ -267,13 +267,13 @@ public abstract class ListEditor extends SettingEditor {
 		assert addButton	!= null;
 		assert removeButton	!= null;
 		assert upButton		!= null;
-		assert downButton	!= null;	
-		
+		assert downButton	!= null;
+
 		listViewer.getControl().setEnabled(enabled);
 		addButton.setEnabled(enabled);
 		removeButton.setEnabled(enabled);
 		upButton.setEnabled(enabled);
-		downButton.setEnabled(enabled);		
+		downButton.setEnabled(enabled);
 	}
 
 	/**
@@ -282,23 +282,23 @@ public abstract class ListEditor extends SettingEditor {
 	public void setFocus() {
 		// Pre-condition
 		assert listViewer != null;
-		
+
 		listViewer.getControl().setFocus();
 
 	}
-	
+
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#refresh()
 	 */
 	public void refresh() {
 		// Pre-condition
 		assert listViewer != null;
-		
+
 		if( hasInput() ) {
-			valueCompounds = new Vector();
+			valueCompounds = new Vector<String>();
 			getInput().getSplittedValue( valueCompounds );
 			listViewer.setInput(valueCompounds);
-			
+
 			updateButtons();
 			fireEditorChanged();
 		}
@@ -310,37 +310,37 @@ public abstract class ListEditor extends SettingEditor {
 	public boolean isDirty() {
 		return false;
 	}
-	
+
 	/**
 	 * @see eclox.ui.editor.editors.IEditor#isStale()
 	 */
 	public boolean isStale() {
 		boolean	result = false;
-		
+
 		if( hasInput() ) {
-			Collection	values = new Vector();
-			
+			Collection<String>	values = new Vector<String>();
+
 			getInput().getSplittedValue(values);
 			result = valueCompounds.equals(values) == false;
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Edits the given value compound and returns the new comound value. 
+	 * Edits the given value compound and returns the new comound value.
 	 * Null is interpreted as a canceled edition.
-	 * 
+	 *
 	 * Sub classes have to implement this method to provide a dialog to the user to do
 	 * the value compund edition.
-	 * 
+	 *
 	 * @param parent		the parent shell that implementors may use as parent window for any dialog
 	 * @param setting	the setting begin edited (it is just given as information and should be edited directly)
 	 * @param compound	the value compund to edit
-	 * 
+	 *
 	 * @return	a string containing the new compund value or null
 	 */
 	abstract protected String editValueCompound( Shell parent, Setting setting, String compound );
-	
+
 	/**
 	 * Adds a new value compound.
 	 */
@@ -348,10 +348,10 @@ public abstract class ListEditor extends SettingEditor {
 		// Pre-condition
 		assert listViewer != null;
 		assert valueCompounds != null;
-		
+
 		// Edits a new value.
 		String	newCompound = editValueCompound( listViewer.getControl().getShell(), getInput(), "new value" );
-		
+
 		// Inserts the new compound if it has been validated.
 		if( newCompound != null ) {
 			valueCompounds.add( newCompound );
@@ -361,36 +361,36 @@ public abstract class ListEditor extends SettingEditor {
 			listViewer.setSelection( new StructuredSelection(new Integer(valueCompounds.size() -1)) );
 		}
 	}
-	
+
 	/**
 	 * Edits the value compound that is selected in the list viewer.
-	 * 
+	 *
 	 * @return	true when a compound has been modified, false otherwise
 	 */
 	private boolean editSelectedValueCompound() {
 		// Pre-condition
 		assert listViewer != null;
-		assert valueCompounds != null; 
-		
-		
+		assert valueCompounds != null;
+
+
 		// Retrieves and handles the selection.
 		IStructuredSelection	selection	= (IStructuredSelection) listViewer.getSelection();
 		String					original	= (String) selection.getFirstElement();
 		String					edited		= editValueCompound( listViewer.getControl().getShell(), getInput(), original );
-		
+
 		// Processes the edited compound.
-		if( edited != null ) {			
+		if( edited != null ) {
 			// Updates the setting.
 			valueCompounds.set( valueCompounds.indexOf(original), edited );
 			fireEditorChanged();
-			
+
 			// Commit changes and erstores the selection.
 			listViewer.getControl().setRedraw( false );
 			commit();
 			listViewer.refresh();
 			listViewer.setSelection( new StructuredSelection(edited) );
 			listViewer.getControl().setRedraw( true );
-			
+
 			// Job's done.
 			return true;
 		}
@@ -398,7 +398,7 @@ public abstract class ListEditor extends SettingEditor {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Moves the value compounds corresponding to the current selection up.
 	 */
@@ -406,19 +406,19 @@ public abstract class ListEditor extends SettingEditor {
 		// Pre-condition
 		assert listViewer != null;
 		assert valueCompounds != null;
-		
+
 		// Retrieves the current selection and skip if it is empty.
 		IStructuredSelection	selection = (IStructuredSelection) listViewer.getSelection();
 		if( selection.isEmpty() == true ) {
 			return;
 		}
-		
+
 		// Retrieves the list of the selected items.
-		Vector		selected	= new Vector(selection.toList());
-		Iterator	i			= valueCompounds.iterator();
+		Vector<Object>		selected	= new Vector<Object>(selection.toList());
+		Iterator<String>	i			= valueCompounds.iterator();
 		while( i.hasNext() == true && selected.isEmpty() == false ) {
 			Object	current = i.next();
-			
+
 			if( current.equals(selected.get(0)) ) {
 				int index = valueCompounds.indexOf(current);
 				if( index > 0 ) {
@@ -446,24 +446,24 @@ public abstract class ListEditor extends SettingEditor {
 		// Pre-condition
 		assert listViewer != null;
 		assert valueCompounds != null;
-		
+
 		// Retrieves the current selection and skip if it is empty.
 		IStructuredSelection		selection = (IStructuredSelection) listViewer.getSelection();
 		if( selection.isEmpty() == true ) {
 			return;
 		}
-		
+
 		// Retrieves the list of the selected items.
-		Vector		selected = new Vector(selection.toList());
-		
+		Vector<?>		selected = new Vector<Object>(selection.toList());
+
 		Collections.reverse( selected );
 		Collections.reverse(valueCompounds);
-		
+
 		// Retrieves the list of the selected items.
-		Iterator	i			= valueCompounds.iterator();
+		Iterator<String>	i			= valueCompounds.iterator();
 		while( i.hasNext() == true && selected.isEmpty() == false ) {
 			Object	current = i.next();
-			
+
 			if( current.equals(selected.get(0)) ) {
 				int index = valueCompounds.indexOf(current);
 				if( index > 0 ) {
@@ -475,17 +475,17 @@ public abstract class ListEditor extends SettingEditor {
 				selected.remove(0);
 			}
 		}
-		
+
 		Collections.reverse(valueCompounds);
 		fireEditorChanged();
-		
+
 		// Commits changes and reselected moved objects.
 		listViewer.getControl().setRedraw( false );
 		commit();
 		listViewer.refresh();
 		listViewer.getControl().setRedraw( true );
 	}
-	
+
 	/**
 	 * Removes the selected value compounds.
 	 */
@@ -493,17 +493,17 @@ public abstract class ListEditor extends SettingEditor {
 		// Pre-condition
 		assert listViewer != null;
 		assert valueCompounds != null;
-		
+
 		// Retrieves the current selection and skip if it is empty.
 		IStructuredSelection		selection = (IStructuredSelection) listViewer.getSelection();
 		if( selection.isEmpty() == true ) {
 			return;
 		}
-		
+
 		// Removes selected items from the value compounds.
 		valueCompounds.removeAll( selection.toList() );
 		fireEditorChanged();
-		
+
 		// Commits changes.
 		commit();
 		listViewer.refresh();
@@ -518,10 +518,10 @@ public abstract class ListEditor extends SettingEditor {
 		assert removeButton != null;
 		assert upButton != null;
 		assert downButton != null;
-		
+
 		// Retrieves the selection emptiness and updates the buttons.
 		boolean willBeEnabled = listViewer.getSelection().isEmpty() == false;
-		
+
 		removeButton.setEnabled( willBeEnabled );
 		upButton.setEnabled( willBeEnabled );
 		downButton.setEnabled( willBeEnabled );

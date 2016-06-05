@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2005, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.advanced;
 
@@ -27,16 +27,16 @@ import eclox.ui.editor.editors.TextEditor;
 import eclox.ui.editor.editors.TextListEditor;
 
 /**
- * An instance of this class registers all setting editor classes by setting type. 
- * 
+ * An instance of this class registers all setting editor classes by setting type.
+ *
  * @author gbrocker
  */
 public class EditorClassRegister {
-    
+
     /**
      * The map registering all editor classes.
      */
-    private Map register = new HashMap();
+    private Map<String, Class<?>> register = new HashMap<String, Class<?>>();
 
     /**
      * Constructor.
@@ -50,26 +50,26 @@ public class EditorClassRegister {
     		register.put( "directory list",	DirectoryListEditor.class );
     		register.put( "path list",		PathListEditor.class );
     }
-    
+
     /**
      * Retrieves a class for the specified setting.
-     * 
+     *
      * @param	setting	a setting for which an editor must be retrieved
-     * 
+     *
      * @return	a setting editor class
      */
-    public Class find(Setting setting) {
+    public Class<?> find(Setting setting) {
         // Retrieves the editor class for that type
         String type = setting.getProperty( Setting.TYPE );
-        Class result = (Class) register.get(type);
-        
+        Class<?> result = (Class<?>) register.get(type);
+
         // Little fallback if no matching editor class was found.
         if(result == null) {
         	Plugin.log(setting.getIdentifier() + ": missing or wrong TYPE property.");
             result = TextEditor.class;
         }
-        
+
         return result;
     }
-    
+
 }

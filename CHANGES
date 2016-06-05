@@ -5,7 +5,7 @@ eclox-0.11.0-internal (05.06.2016)
 - added composite site to support testing and release update streams
 
 ----------------------------------------------------------------
-eclox-0.10.2-test (26.09.2015)
+eclox-0.10.3-test (26.09.2015)
 ----------------------------------------------------------------
 #161 migrate to GitHub and #162 prepare release 0.11.0
 - reorganized some project files and names
@@ -14,7 +14,7 @@ eclox-0.10.2-test (26.09.2015)
 - created composite update-site for CI
 
 ----------------------------------------------------------------
-eclox-0.10.2-test (27.08.2015)
+eclox-0.10.2 (27.08.2015)
 ----------------------------------------------------------------
 Project move from GNA.org to GitHub
 - added support of eclipse variables to resolve doxygen path

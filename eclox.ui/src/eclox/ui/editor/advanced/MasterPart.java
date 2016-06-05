@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2007, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.advanced;
 
@@ -64,7 +64,7 @@ import eclox.ui.editor.advanced.filters.Modified;
 
 /**
  * Implements the master part's user interface.
- * 
+ *
  * @author gbrocker
  */
 public class MasterPart extends SectionPart implements IPartSelectionListener {
@@ -92,21 +92,21 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
          */
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
     }
-	
+
 	/**
      * Implements the mouse listener attached to the table.
-     * 
+     *
      * This listener will search for a DetailsPart in the managed form given
      * at construction time and will set the focus on that part.
      */
     private class MyDoubleClickListener implements IDoubleClickListener {
-        
+
         /**
          * @see org.eclipse.jface.viewers.IDoubleClickListener#doubleClick(org.eclipse.jface.viewers.DoubleClickEvent)
          */
         public void doubleClick(DoubleClickEvent event) {
         	IManagedForm	managedForm = getManagedForm();
-            
+
             // Searchs for the details part in the managed form and set the focus on it.
             IFormPart   parts[] = managedForm.getParts();
             for( int i = 0; i < parts.length; ++i ) {
@@ -117,9 +117,9 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
                 }
             }
         }
-        
+
     }
-	
+
 	/**
      * Implements a filter button listener
      */
@@ -129,7 +129,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
          * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
          */
         public void widgetDefaultSelected(SelectionEvent e) {
-            Object  data   = e.widget.getData(); 
+            Object  data   = e.widget.getData();
             IFilter filter = (IFilter) data;
            	activateFilter( filter );
         }
@@ -138,40 +138,40 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
          * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
          */
         public void widgetSelected(SelectionEvent e) {
-            Object  data   = e.widget.getData(); 
+            Object  data   = e.widget.getData();
             IFilter filter = (IFilter) data;
             activateFilter( filter );
         }
-        
+
     }
-	
+
     /**
      * Implements the label provider.
      */
 	private class MyLabelProvider extends LabelProvider implements ITableLabelProvider, ISettingPropertyListener {
-		
+
 		/**
 		 * the set of all settings the label provider has registered to
 		 */
-		private Set settings = new HashSet();
-		
+		private Set<Setting> settings = new HashSet<Setting>();
+
 		/**
 		 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 		 */
 		public void dispose() {
 			// Walks through all settings and unregisters from the listeners
-			Iterator	i = settings.iterator();
+			Iterator<Setting>	i = settings.iterator();
 			while( i.hasNext() == true ) {
 				Object	object = i.next();
 				Setting	setting = (Setting) object;
-				
+
 				setting.removeSettingListener( this );
 			}
 			settings.clear();
-			
+
 			super.dispose();
 		}
-		
+
 		/**
 		 * @see org.eclipse.jface.viewers.ITableLabelProvider#getColumnImage(java.lang.Object, int)
 		 */
@@ -186,19 +186,19 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		public String getColumnText(Object element, int columnIndex) {
 			// Pre-condition
 			assert element instanceof Setting;
-			
+
 			// Retrieves the setting's text.
             Setting setting = (Setting) element;
-            
+
             // Registers as an observer of the setting
             setting.addSettingListener( this );
             settings.add( setting );
-            
+
             // Determine the text to return according to the given column index.
             String	columnText;
             if( columnIndex == TEXT_COLUMN ) {
             		columnText = setting.hasProperty( Setting.TEXT )					? setting.getProperty( Setting.TEXT ) : setting.getIdentifier();
-                columnText = setting.hasProperty( Editor.PROP_SETTING_DIRTY )	? ("*").concat( columnText ) : columnText; 
+                columnText = setting.hasProperty( Editor.PROP_SETTING_DIRTY )	? ("*").concat( columnText ) : columnText;
             }
             else if (columnIndex == VALUE_COLUMN ){
             		columnText = setting.getValue();
@@ -222,7 +222,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		}
 
     }
-    
+
     /**
      * Implements a tree viewer selection listener.
      */
@@ -232,7 +232,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
          * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
          */
         public void selectionChanged(SelectionChangedEvent event) {
-        	ISelection selection = event.getSelection();        	
+        	ISelection selection = event.getSelection();
         	if( selection.isEmpty() == false ) {
         		assert selection instanceof StructuredSelection;
 
@@ -243,98 +243,98 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         }
 
     }
-    
+
     /** the text column index */
 	private final static int TEXT_COLUMN = 0;
-    
+
     /** the value column index */
 	private final static int VALUE_COLUMN = 1;
-        
+
     /** the doxyfile being edited */
 	private Doxyfile doxyfile;
-    
+
     /** the active filter */
-    private IFilter activeFilter; 
-    
+    private IFilter activeFilter;
+
     /** the default filter */
     private IFilter defaultFilter = new All();
-    
+
     /** the parent composite for filter buttons */
     private Composite filterButtons;
-    
+
     /** the parent composite for filter controls */
     private Composite filterControls;
 
     /** the list viewer */
     private TableViewer tableViewer;
-    
+
     /** the table viewer selection listener */
     private MyTableSelectionListener tableViewerSelectionListener;
-	
+
     /** the go backward history action */
     private HistoryAction goBack = new HistoryAction(HistoryAction.BACK, this);
-    
+
     /** the go foreward history action */
     private HistoryAction goForward = new HistoryAction(HistoryAction.FORWARD, this);
-    
+
     /** the current selection */
-    private NavigableSelection currentSelection = new NavigableSelection(); 
-    
+    private NavigableSelection currentSelection = new NavigableSelection();
+
     /**
      * Constructor
-     * 
+     *
      * @param   parent		a composite that is the parent of all part controls
      * @param   toolkit		a toolkit used to create the part controls.
      * @param	doxyfile	a doxyfile to edit
      */
     public MasterPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
         super( parent, toolkit, Section.TITLE_BAR|Section.COMPACT );
-        
+
         this.doxyfile = doxyfile;
-        
+
         // Initializes the managed section.
         Section section = getSection();
         section.setText("Settings");
         section.marginHeight = 5;
         section.marginWidth = 10;
         toolkit.paintBordersFor( section );
-        
+
         // Creates the main section container.
         Composite   rootContainer = toolkit.createComposite( section );
         section.setClient( rootContainer );
         rootContainer.setLayout( new FormLayout() );
-        
+
         // Continues with other initializations.
         createFilterButtons( toolkit, rootContainer );
         createSubControls( toolkit, rootContainer );
-                
+
         // Adds some filters.
         addFilter( toolkit, defaultFilter );
         addFilter( toolkit, new ByGroup() );
         addFilter( toolkit, new Custom() );
         addFilter( toolkit, new Modified() );
-        
+
         // Activates the default filter.
         activateFilter( defaultFilter );
     }
-    
+
 	/**
      * Activates the specified filter.
-     * 
+     *
      * @param   filter  a filter that must be activated
      */
 	private void activateFilter( IFilter filter ) {
 		Section	section = getSection();
-		
+
 		// Freezes the section widget.
 		section.setRedraw( false );
-			
+
         // Updates the filter button's state.
         Control[]   controls = filterButtons.getChildren();
         for( int i = 0; i < controls.length; ++i ) {
             Control control	= controls[i];
             Button  button	= (Button) control;
-            
+
             button.setSelection( control.getData() == filter );
         }
 
@@ -348,14 +348,14 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	            activeFilter.setDoxyfile( null );
 	            activeFilter = null;
 	        }
-	        
+
 	        // Activates the new filter.
 	        activeFilter = filter;
 	        activeFilter.setDoxyfile( doxyfile );
 	        activeFilter.createControls( getManagedForm(), filterControls );
 	        activeFilter.createViewerFilters( tableViewer );
 	        tableViewer.refresh();
-	        
+
 	        // Adapts the size of the filter control container & relayout the section content.
 	        Object      tableLayoutData = tableViewer.getTable().getLayoutData();
 	        FormData    tableFormData = (FormData) tableLayoutData;
@@ -367,18 +367,18 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 	        		filterControls.setVisible( true );
 	        		tableFormData.top = new FormAttachment( filterControls, 6, SWT.BOTTOM );
 	        }
-	        
+
 	        // Reactivates section widget.
 	        section.layout( true, true );
         }
-        
+
         // Reactivates the redrawing.
         section.setRedraw( true );
     }
 
 	/**
      * Adds a new filter to the master part.
-     * 
+     *
      * @param   toolkit a toolkit to use for the widget creation
      * @param   filter  a new filter to add
      */
@@ -390,7 +390,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 
 	/**
      * Creates all buttons for setting filters.
-     * 
+     *
      * @param   toolkit the form tool to use for the control creation
      * @param   parent  a composite that will be the parent of all controls
      */
@@ -398,7 +398,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         // Pre-condition
         assert filterButtons == null;
         assert filterControls == null;
-        
+
         // Creates the filter button container.
         FillLayout   buttonContainerLayout   = new FillLayout( SWT.HORIZONTAL );
         filterButtons = toolkit.createComposite( parent );
@@ -406,15 +406,15 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         buttonContainerLayout.marginHeight  = 0;
         buttonContainerLayout.spacing = 3;
         filterButtons.setLayout( buttonContainerLayout );
-        
+
         // Assignes layout data fo the filter button container.
         FormData    buttonFormData = new FormData();
         buttonFormData.top   = new FormAttachment(   0, 0 );
         buttonFormData.right = new FormAttachment( 100, 0 );
         buttonFormData.left  = new FormAttachment(   0, 0 );
         filterButtons.setLayoutData( buttonFormData );
-        
-        
+
+
         // Post-condition
         assert filterButtons != null;
     }
@@ -427,9 +427,9 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         assert filterButtons != null;
         assert filterControls == null;
         assert tableViewer == null;
-        
+
         toolkit.paintBordersFor( parent );
-                
+
         // Creates the sub parent control container.
         Composite   subParent = toolkit.createComposite( parent );
         FormData    subParentFormData = new FormData();
@@ -442,7 +442,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         subParent.setLayout( new FormLayout() );
         subParent.setData( FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER );
 
-        
+
         // Creates the filter control container.
         FormData    controlFormData = new FormData();
         controlFormData.top   = new FormAttachment(   0,  5 );
@@ -450,7 +450,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         controlFormData.left  = new FormAttachment(   0,  5 );
         filterControls = toolkit.createComposite( subParent );
         filterControls.setLayoutData( controlFormData );
-        
+
         // Creates the table widget that will display all settings.
         Table	table = new Table( subParent, SWT.V_SCROLL|SWT.FULL_SELECTION );
         FormData formData = new FormData();
@@ -462,44 +462,44 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         formData.width  = 10;
         table.setLayoutData( formData );
         table.setHeaderVisible( true );
-        
-        // Adds some columns to the table 
+
+        // Adds some columns to the table
         TableColumn	tableColumn;
         tableColumn = new TableColumn( table, SWT.LEFT, TEXT_COLUMN );
         tableColumn.setText( "Name" );
         tableColumn = new TableColumn( table, SWT.LEFT, VALUE_COLUMN );
         tableColumn.setText( "Value" );
-        
+
         // Creates the table viewer.
         tableViewer = new TableViewer( table );
         tableViewer.setContentProvider( new MyContentProvider() );
         tableViewer.setLabelProvider( new MyLabelProvider() );
         tableViewer.setInput( doxyfile );
-        
+
         // Updates the column widths.
         TableColumn	columns[] = table.getColumns();
         columns[ TEXT_COLUMN ].pack();
         columns[ VALUE_COLUMN ].pack();
 
-        
+
         // Post-condition
         assert filterControls != null;
         assert tableViewer != null;
     }
-	
+
     /**
      * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
      */
     public void initialize(IManagedForm form) {
         // Pre-condition
         assert tableViewer != null;
-        
+
         // Installs several listeners.
         tableViewerSelectionListener = new MyTableSelectionListener();
-        
+
         tableViewer.addPostSelectionChangedListener( tableViewerSelectionListener );
         tableViewer.addDoubleClickListener( new MyDoubleClickListener() );
-        
+
         // Installs the actions
         goBack.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_BACK));
         goForward.setImageDescriptor(PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(ISharedImages.IMG_TOOL_FORWARD));
@@ -507,11 +507,11 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
         form.getForm().getToolBarManager().add(goForward);
 		goBack.selectionChanged(new NavigableSelection());
 		goForward.selectionChanged(new NavigableSelection());
-        
+
         // Default job done by super class.
         super.initialize(form);
     }
-    
+
     /**
 	 * @see org.eclipse.ui.forms.AbstractFormPart#isStale()
 	 */
@@ -520,7 +520,7 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		// to know if the data model has changed since last refresh.
 		return true;
 	}
-	
+
     /**
      * @see org.eclipse.ui.forms.AbstractFormPart#refresh()
      */
@@ -528,50 +528,50 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		tableViewer.refresh();
 		super.refresh();
 	}
-    
+
     /**
 	 * @see org.eclipse.ui.forms.IPartSelectionListener#selectionChanged(org.eclipse.ui.forms.IFormPart, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IFormPart part, ISelection selection) {
 		assert selection instanceof NavigableSelection;
-		
+
 		currentSelection = (NavigableSelection) selection;
-		
+
 		// Activates the default filter.
-		activateFilter( defaultFilter );		
+		activateFilter( defaultFilter );
 		revealObject(currentSelection.getFirstElement());
-		
+
 		// Updates the navigation actions.
 		goBack.selectionChanged(selection);
 		goForward.selectionChanged(selection);
 	}
-	
+
 	/**
 	 * Set the new selection of the part. This will forward the selection to the form
 	 * so other parts will be notified about the selection change.
-	 * 
+	 *
 	 * @param	selection	the new selection
-	 * @param	reveal		tells if the selection should be revealed in the controls 
+	 * @param	reveal		tells if the selection should be revealed in the controls
 	 */
 	public void setSelection( NavigableSelection selection, boolean reveal ) {
 		currentSelection = selection;
-		
+
 		// If requested, reveals the selection's first element
 		if( reveal == true ) {
 			revealObject(selection.getFirstElement());
 		}
-		
+
 		// Updates the actions
 		goBack.selectionChanged(currentSelection);
 		goForward.selectionChanged(currentSelection);
-		
+
 		// Notifies other parts.
-		getManagedForm().fireSelectionChanged(this, selection);		
+		getManagedForm().fireSelectionChanged(this, selection);
 	}
-	
+
 	/**
 	 * Reveals the given object into the managed table viewer by selecting it.
-	 * 
+	 *
 	 * @param	object	 the object to reveal
 	 */
 	private void revealObject(Object object) {
@@ -581,5 +581,5 @@ public class MasterPart extends SectionPart implements IPartSelectionListener {
 		tableViewer.setSelection(selection, true);
 		tableViewer.addPostSelectionChangedListener(tableViewerSelectionListener);
 	}
-	
+
 }

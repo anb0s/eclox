@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2004, 2007, 2008, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxyfiles;
 
@@ -35,105 +35,105 @@ import eclox.core.doxyfiles.io.Parser;
 
 /**
  * Implements the Doxyfile wrapper.
- * 
+ *
  * @author gbrocker
  */
 public class Doxyfile {
-	
+
 	/**
 	 * the file that holds the doxyfile content
 	 */
 	private IFile file;
-	
+
 	/**
 	 * a collection containing all doxyfile's chunks
 	 */
-	private AbstractList chunks = new Vector();
-    
+	private AbstractList<Chunk> chunks = new Vector<Chunk>();
+
     /**
      * a map containing all managed settings
      */
-    private Map settings = new LinkedHashMap();
-    
+    private Map<String, Setting> settings = new LinkedHashMap<String, Setting>();
+
     /**
      * a map containing all managed groups
      */
-    private Map groups = new LinkedHashMap();
-    
+    private Map<String, Group> groups = new LinkedHashMap<String, Group>();
+
     /**
      * Tells if the given object is a doxyfile
-     * 
+     *
      * @param	object	an object to test
-     * 
+     *
      * @return	true or false
      */
     public static boolean isDoxyfile(Object object) {
-    	return (object instanceof IResource) && isDoxyfile((IResource) object); 
+    	return (object instanceof IResource) && isDoxyfile((IResource) object);
     }
-    
+
     /**
 	 * Tells if the specified resource is a doxyfile.
-	 * 
+	 *
 	 * @param	resource	the resource to test
-	 * 
-	 * @return	<code>true</code> or <code>false</code>  
+	 *
+	 * @return	<code>true</code> or <code>false</code>
 	 */
 	public static boolean isDoxyfile(IResource resource) {
 		return (resource instanceof IFile) && isDoxyfile((IFile) resource);
 	}
-	
+
 	/**
 	 * Tells if the specified file is a doxyfile.
-	 * 
+	 *
 	 * @param	file	the file to test
-	 * 
-	 * @return	<code>true</code> or <code>false</code>  
+	 *
+	 * @return	<code>true</code> or <code>false</code>
 	 */
 	public static boolean isDoxyfile(IFile file) {
         String          name = file.getName();
 		IContentType	contentType = Platform.getContentTypeManager().findContentTypeFor( name );
-		
+
 		return contentType != null ? contentType.getId().equals("org.gna.eclox.core.doxyfile") : false;
 	}
-	
-	
+
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param	file	a file resource instance that is assumed to be a doxyfile
 	 */
 	public Doxyfile( IFile file ) throws IOException, CoreException {
 		this.file = file;
-		
+
 	    Parser parser = new Parser(file.getContents());
 	    parser.read( this );
 	}
-	
+
 	/**
 	 * Appends a new chunk to the doxyfile.
-	 * 
+	 *
 	 * @param	chunk	a chunk to append to the doxyfile
 	 */
 	public void append( Chunk chunk ) {
 		// Pre-condition
 		assert chunk.getOwner() == null;
-		
+
 		// References the chunk.
 		chunk.setOwner( this );
 		this.chunks.add( chunk );
-		
-		// Do special handling for settings. 
+
+		// Do special handling for settings.
 		if( chunk instanceof Setting ) {
 			Setting	setting = (Setting) chunk;
 			this.settings.put( setting.getIdentifier(), setting );
-            
+
             // Retrieves the setting group name.
             String groupName = setting.getProperty( Setting.GROUP );
             if( groupName == null ) {
                 groupName = new String( "Others" );
                 setting.setProperty( Setting.GROUP, groupName );
             }
-            
+
             // Retrieves the setting group and stores the setting in it.
             Group group = (Group) this.groups.get( groupName );
             if( group == null ) {
@@ -143,28 +143,28 @@ public class Doxyfile {
             group.add( setting );
 		}
 	}
-	
+
 	/**
 	 * Retrieves the resource file that contains the doxyfile.
-	 * 
+	 *
 	 * @return	a resource file
 	 */
 	public IFile getFile() {
 		return file;
 	}
-    
+
     /**
      * Retrieves all groups present in the doxyfile.
-     * 
+     *
      * @return  an array containing all groups
      */
     public Object[] getGroups() {
         return this.groups.values().toArray();
     }
-	
+
 	/**
 	 * Retrieves the last appended chunk
-	 * 
+	 *
 	 * @return	the last added chunk or null if none
 	 */
 	public Chunk getLastChunk() {
@@ -175,112 +175,112 @@ public class Doxyfile {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Retrieves the container that will receive the documentation build outputs.
-	 * 
-	 * @return	a folder, or null when none 
+	 *
+	 * @return	a folder, or null when none
 	 */
 	public IContainer getOutputContainer() {
 		IContainer	outputContainer	= null;
 		Setting		outputSetting	= getSetting("OUTPUT_DIRECTORY");
-		
+
 		if( outputSetting != null ) {
 			Path	outputPath = new Path(outputSetting.getValue());
-			
+
 			if( outputPath.isEmpty() ) {
 				outputContainer = file.getParent();
 			}
 			else if( outputPath.isAbsolute() ) {
 				IContainer[]	foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(outputPath);
-				
+
 				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
 			}
 			else {
 				IPath			fullOutputPath	= file.getParent().getLocation().append(outputPath);
 				IContainer[]	foundContainers	= ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(fullOutputPath);
-				
+
 				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
 			}
 		}
 		return outputContainer;
 	}
-	
+
 	/**
 	 * Retrieves a single setting for the specified identifier.
-	 * 
+	 *
 	 * @param	identifier	a string containing a setting identifier
-	 * 
+	 *
 	 * @return	the found setting or null if none
 	 */
 	public Setting getSetting( String identifier ) {
 		return (Setting) settings.get(identifier);
 	}
-	
+
 	/**
 	 * Retrieves all settings as an array
-	 * 
+	 *
 	 * @return	an array of settings
 	 */
 	public Object[] getSettings() {
 		return settings.values().toArray();
 	}
-	
+
 	/**
 	 * Tells if the doxyfile has the given setting.
-	 * 
+	 *
 	 * @param	identifier	a string containing a setting identifier
-	 * 
+	 *
 	 * @return	true or false
 	 */
 	public boolean hasSetting( String identifier ) {
 		return settings.get(identifier) != null;
 	}
-	
+
 	/**
 	 * Tells if the given path is relative to the doxyfile.
-	 * 
+	 *
 	 * @return	true or false
 	 */
 	public boolean isPathRelative( IPath path ) {
 		return file.getLocation().removeLastSegments(1).isPrefixOf( path );
 	}
-	
+
 	/**
 	 * Makes the given path relative to the doxyfile path only of the given
 	 * path point to a location that is in the sub-directory containing the
-	 * doxyfile. 
-	 * 
+	 * doxyfile.
+	 *
 	 * @return	the argument path made relative to the doxyfile
 	 */
 	public IPath makePathRelative( IPath path ) {
 		if( isPathRelative(path) ) {
 			int		matchingCount = file.getLocation().removeLastSegments(1).matchingFirstSegments( path );
 			IPath	relativePath = path.removeFirstSegments( matchingCount ).setDevice( new String() );
-			
+
 			return relativePath.isEmpty() ? new Path(".") : relativePath;
 		}
 		else {
 			return path;
 		}
 	}
-	
+
 	/**
 	 * Retrieves the iterator the whole chunk collection.
-	 * 
+	 *
 	 * @return	an iterator on chunks
 	 */
-	public Iterator iterator() {
+	public Iterator<Chunk> iterator() {
 		return this.chunks.iterator();
 	}
-	
+
 	/**
 	 * Retrieves the iterator on the setting collection.
-	 * 
+	 *
 	 * @return	an iterator on Setting instances
 	 */
-	public Iterator settingIterator() {
+	public Iterator<Setting> settingIterator() {
 		return settings.values().iterator();
 	}
-	
+
 }

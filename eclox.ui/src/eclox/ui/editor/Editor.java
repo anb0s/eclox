@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor;
 
@@ -36,7 +36,7 @@ import eclox.ui.editor.internal.ResourceChangeListener;
 
 /**
  * Implements the doxyfile editor.
- * 
+ *
  * @author gbrocker
  */
 /**
@@ -44,10 +44,10 @@ import eclox.ui.editor.internal.ResourceChangeListener;
  *
  */
 public class Editor extends FormEditor implements ISettingValueListener, IPersistableEditor {
-    
+
 	public final static String PROP_SETTING_DIRTY = "dirty";				///< the name of the property attached to a dirty setting.
 	public final static String SAVED_ACTIVE_PAGE_ID = "SavedActivePageId";	///< Identifies the memo entry containing the identifier if the saved active page identifier.
-	
+
     private Doxyfile				doxyfile;				///< The doxyfile content.
     private ResourceChangeListener	resourceChangeListener;	///< the resource listener that will manage the editor life-cycle
     private boolean					dirty = false;			///< The dirty state of the editor
@@ -62,7 +62,7 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
             addPage(new eclox.ui.editor.advanced.Page(this));
             // TODO reactivate
             //this.addPage(new SourcePage(this));
-            
+
             // Restores the saved active page.
             String savedPageId = (savedState != null) ? savedState.getString(SAVED_ACTIVE_PAGE_ID) : null;
             setActivePage(savedPageId);
@@ -78,22 +78,22 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
 		IEditorInput		editorInput = this.getEditorInput();
 		IFileEditorInput	fileEditorInput = (IFileEditorInput) editorInput;
 		IFile				file = fileEditorInput.getFile();
-	
+
 		try {
 			// Commits all pending changes.
 			commitPages(true);
-    		
+
         	// Stores the doxyfile content.
 	    	Serializer	serializer = new Serializer( doxyfile );
 	    	file.setContents( serializer, false, true, monitor );
-	    	
+
 	    	// Clears the dirty property set on some settings.
-	    	Iterator		i = doxyfile.settingIterator();
+	    	Iterator<?>		i = doxyfile.settingIterator();
 	    	while( i.hasNext() ) {
 	    		Setting	setting = (Setting) i.next();
 	    		setting.removeProperty( PROP_SETTING_DIRTY );
 	    	}
-	    	
+
 	    	// Resets the dirty flag.
 	    	this.dirty = false;
 	    	this.firePropertyChange( IEditorPart.PROP_DIRTY );
@@ -109,10 +109,10 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
     public void doSaveAs() {
         // TODO implement "save as"
     }
-    
+
     /**
      * Retrieves the doxyfile attached to the editor.
-     * 
+     *
      * @return	a doxyfile instance
      */
     public Doxyfile getDoxyfile() {
@@ -126,7 +126,7 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
         // TODO implement "save as"
         return false;
     }
-    
+
     /**
      * @see eclox.doxyfiles.ISettingListener#settingValueChanged(eclox.doxyfiles.Setting)
      */
@@ -138,21 +138,21 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
     	// Assigns a dynamic property to the setting.
     	setting.setProperty( PROP_SETTING_DIRTY, "yes" );
     }
-    
+
     /**
      * @see org.eclipse.ui.IWorkbenchPart#dispose()
      */
     public void dispose() {
         // Unregisters the editor from the settings
-        Iterator		i = this.doxyfile.settingIterator();
+        Iterator<?>		i = this.doxyfile.settingIterator();
         while( i.hasNext() == true ) {
             Setting	setting = (Setting) i.next();
             setting.removeSettingListener( this );
         }
-        
+
         // Un-references the doxyfile.
         this.doxyfile = null;
-        
+
         // Detaches the resource change listener
         ResourcesPlugin.getWorkspace().removeResourceChangeListener( resourceChangeListener );
         resourceChangeListener = null;
@@ -160,7 +160,7 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
         // Continue...
         super.dispose();
     }
-    
+
     /**
      * @see org.eclipse.ui.ISaveablePart#isDirty()
      */
@@ -190,19 +190,19 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
 
 		try {
 	        IFileEditorInput	fileInput = (IFileEditorInput) input;
-	        
+
 	        // Attaches the resource change listener
 	        resourceChangeListener = new ResourceChangeListener(this);
 	        ResourcesPlugin.getWorkspace().addResourceChangeListener( resourceChangeListener );
-	        
+
 	        // Parses the doxyfile and attaches to all settings.
 	        this.doxyfile = new Doxyfile( fileInput.getFile() );
-	        Iterator	i = this.doxyfile.settingIterator();
+	        Iterator<?>	i = this.doxyfile.settingIterator();
 	        while( i.hasNext() == true ) {
 	            Setting	setting = (Setting) i.next();
 	            setting.addSettingListener( this );
 	        }
-	        
+
 	        // Continue initialization.
 	        setPartName( input.getName() );
 		}
@@ -210,5 +210,5 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
 			MessageDialog.openError(getSite().getShell(), "Unexpected Error", throwable.toString());
 		}
 	}
-    
+
 }

@@ -189,7 +189,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		// Pre-condition
 		assert( table != null );
 
-		Vector		checked	= new Vector();
+		Vector<TableItem>		checked	= new Vector<TableItem>();
 		TableItem[]	items	= table.getItems();
 
 		for( int i = 0; i < items.length; ++i ) {
@@ -386,8 +386,8 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 
 
 		// Adds bundled doxygens.
-		Collection	bundled = BundledDoxygen.getAll();
-		Iterator	i		= bundled.iterator();
+		Collection<?> bundled = BundledDoxygen.getAll();
+		Iterator<?>	  i       = bundled.iterator();
 		while( i.hasNext() ) {
 			addItem( (Doxygen) i.next() );
 		}
