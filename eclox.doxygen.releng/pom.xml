@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>org.gna.eclox.doxygen.releng</artifactId>
+	<version>1.8.10</version>
+	<packaging>pom</packaging>
+	<name>Eclox Doxygen Releng</name>
+
+	<parent>
+		<groupId>org.gna.eclox.group</groupId>
+		<artifactId>org.gna.eclox</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<repositories>
+		<repository>
+			<id>eclox</id>
+			<layout>p2</layout>
+			<url>${eclox-site}</url>
+		</repository>
+	</repositories>
+
+	<modules>
+	    <module>../eclox.platform</module>
+		<module>../eclox.doxygen.core</module>
+		<module>../eclox.doxygen.feature</module>
+		<module>../eclox.doxygen.site</module>
+	</modules>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-versions-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+					<newVersion>1.8.10</newVersion>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

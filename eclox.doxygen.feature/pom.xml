@@ -3,38 +3,15 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>org.gna.eclox.doxygen.feature</artifactId>
+	<packaging>eclipse-feature</packaging>
+	<name>Eclox Doxygen Feature</name>
+
 	<parent>
 		<groupId>org.gna.eclox.group</groupId>
-		<artifactId>org.gna.eclox.parent</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<artifactId>org.gna.eclox.doxygen.releng</artifactId>
+		<version>1.8.10</version>
+		<relativePath>../eclox.doxygen.releng</relativePath>
 	</parent>
-	<groupId>org.gna.eclox.group</groupId>
-	<artifactId>org.gna.eclox.doxygen.feature</artifactId>
-	<version>1.8.10</version>
-	<packaging>eclipse-feature</packaging>
-	<properties>
-		<tycho.version>0.23.1</tycho.version>
-	</properties>
-
-	<repositories>
-		<!-- add Mars repository to resolve dependencies -->
-		<repository>
-			<id>Mars</id>
-			<layout>p2</layout>
-			<url>http://download.eclipse.org/releases/mars/</url>
-		</repository>
-	</repositories>
-
-	<build>
-		<plugins>
-			<plugin>
-				<!-- enable tycho build extension -->
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<extensions>true</extensions>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>
