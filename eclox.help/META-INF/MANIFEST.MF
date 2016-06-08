@@ -5,3 +5,4 @@ Bundle-SymbolicName: org.gna.eclox.help; singleton:=true
 Bundle-Version: 0.10.2.qualifier
 Bundle-Vendor: Guillaume Brocker, Andre Bossert
 Bundle-Localization: 
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
