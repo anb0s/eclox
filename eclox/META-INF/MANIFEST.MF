@@ -3,5 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Eclox Branding Information
 Bundle-SymbolicName: org.gna.eclox; singleton:=true
 Bundle-Version: 0.10.2.qualifier
-Bundle-Vendor: Guillaume Brocker
+Bundle-Vendor: Guillaume Brocker, Andre Bossert
 Bundle-Localization: 
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

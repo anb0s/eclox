@@ -7,14 +7,15 @@
       plugin="org.gna.eclox"
       exclusive="true">
 
-   <description url="http://home.gna.org/eclox">
+   <description url="http://anb0s.github.io/eclox">
       Eclox provides the Doxygen documentation system for Eclipse.
-
-This feature provides a documentation builder and a graphical editor for doxygen.
+This feature provides a documentation builder and a graphical
+editor for doxygen.
    </description>
 
-   <copyright url="http://home.gna.org/eclox">
+   <copyright url="http://anb0s.github.io/eclox">
       Copyright (C) 2003-2013 Guillaume Brocker
+Copyright (C) 2015-2016 Andre Bossert
    </copyright>
 
    <license url="http://www.eclipse.org/legal/epl-v10.html">
@@ -22,9 +23,9 @@ This feature provides a documentation builder and a graphical editor for doxygen
    </license>
 
    <url>
-      <update label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
-      <discovery label="Eclox Update Site" url="http://download.gna.org/eclox/update"/>
-      <discovery label="Eclox Homepage" url="http://home.gna.org/eclox"/>
+      <update label="Eclox Update Site" url="http://anb0s.github.io/eclox"/>
+      <discovery label="Eclox Update Site" url="http://anb0s.github.io/eclox"/>
+      <discovery label="Eclox Homepage" url="http://anb0s.github.io/eclox"/>
    </url>
 
    <requires>
