@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?artifactRepository class='org.eclipse.equinox.internal.p2.artifact.repository.simple.SimpleArtifactRepository' version='1.0.0'?>
+<repository name='file:/C:/Users/gbrocker/workspace/eclox.update-site/ - artifacts' type='org.eclipse.equinox.p2.artifact.repository.simpleRepository' version='1'>
+  <properties size='2'>
+    <property name='p2.compressed' value='false'/>
+    <property name='p2.timestamp' value='1224247196299'/>
+  </properties>
+  <mappings size='3'>
+    <rule filter='(&amp; (classifier=osgi.bundle))' output='${repoUrl}/plugins/${id}_${version}.jar'/>
+    <rule filter='(&amp; (classifier=binary))' output='${repoUrl}/binary/${id}_${version}'/>
+    <rule filter='(&amp; (classifier=org.eclipse.update.feature))' output='${repoUrl}/features/${id}_${version}.jar'/>
+  </mappings>
+  <artifacts size='5'>
+    <artifact classifier='org.eclipse.update.feature' id='org.gna.eclox' version='0.8.0'>
+      <properties size='2'>
+        <property name='artifact.size' value='2552'/>
+        <property name='download.size' value='2552'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.gna.eclox' version='0.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='16678'/>
+        <property name='download.size' value='16678'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.gna.eclox.core' version='0.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='62000'/>
+        <property name='download.size' value='62000'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.gna.eclox.help' version='0.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='4798'/>
+        <property name='download.size' value='4798'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+    <artifact classifier='osgi.bundle' id='org.gna.eclox.ui' version='0.8.0'>
+      <properties size='3'>
+        <property name='artifact.size' value='151217'/>
+        <property name='download.size' value='151217'/>
+        <property name='download.contentType' value='application/zip'/>
+      </properties>
+    </artifact>
+  </artifacts>
+</repository>
