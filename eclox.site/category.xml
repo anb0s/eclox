@@ -8,7 +8,7 @@
    </feature>
    <category-def name="Eclox-0.11" label="Eclox 0.11">
       <description>
-         Container for Eclox eclipse plugins.
+         Container for Eclox eclipse plugins (EPL).
       </description>
    </category-def>
 </site>
