@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <description name="Eclox Update Site" url="http://download.gna.org/eclox/update">
+      This is the official eclox&apos;s update site.
+   </description>
+   <feature url="features/org.gna.eclox_0.10.2.201606081049.jar" id="org.gna.eclox" version="0.10.2.201606081049">
+      <category name="eclox_0_10"/>
+   </feature>
+   <feature url="features/org.gna.eclox_0.10.1.jar" id="org.gna.eclox" version="0.10.1">
+      <category name="eclox_0_10"/>
+   </feature>
+   <feature url="features/org.gna.eclox_0.8.0.jar" id="org.gna.eclox" version="0.8.0">
+      <category name="eclox_0_8"/>
+   </feature>
+   <category-def name="eclox_0_10" label="eclox 0.10">
+      <description>
+         Eclox EPL Releases
+      </description>
+   </category-def>
+   <category-def name="eclox_0_8" label="eclox 0.8">
+      <description>
+         Eclox GPL Releases
+      </description>
+   </category-def>
+</site>
