@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -29,7 +30,21 @@ import eclox.core.Plugin;
 
 public final class BundledDoxygen extends Doxygen {
 
-	private URL	location;
+	private URL	url;
+
+    /**
+     * Constructor
+     */
+    public BundledDoxygen() {
+    }
+
+    /**
+     * Constructor
+     */
+    public BundledDoxygen(URL url) {
+        assert( url != null );
+        this.url = url;
+    }
 
 	/**
 	 * Retrieves all available bundled doxygen binaries.
@@ -41,21 +56,17 @@ public final class BundledDoxygen extends Doxygen {
 		IExtensionRegistry	registry	= Platform.getExtensionRegistry();
 		IExtensionPoint		point		= registry.getExtensionPoint("org.gna.eclox.core.doxygen");
 		IExtension[]		extensions	= point.getExtensions();
-
 		for (int i = 0; i < extensions.length; i++) {
 			IExtension				extension	= extensions[i];
 			IConfigurationElement[] elements	= extension.getConfigurationElements();
-
 			for (int j = 0; j < elements.length; j++) {
 				final String	arch	= elements[j].getAttribute("arch");
 				final String	os		= elements[j].getAttribute("os");
-
 				if( Platform.getOS().equals(os) && Platform.getOSArch().equals(arch) ) {
 					final Path		path	= new Path( elements[j].getAttribute("path") );
 					URL				url		= FileLocator.find(Plugin.getDefault().getBundle(), path, null);
-
 					if( url != null ) {
-						doxygens.add( new BundledDoxygen(url) );
+						doxygens.add(new BundledDoxygen(url));
 					}
 					else {
 						Plugin.getDefault().logError( path.toString() + ": not a valid doxygen path." );
@@ -66,66 +77,37 @@ public final class BundledDoxygen extends Doxygen {
 		return doxygens;
 	}
 
-	/**
-	 * Creates a bundled doxygen instance from the given identifier
-	 *
-	 * @param	identifier	a string containing an identifier
-	 *
-	 * @return	a new bundled doxygen wrapper
-	 */
-	public static BundledDoxygen createFromIdentifier( final String identifier ) {
-		BundledDoxygen	doxygen = null;
-
-		if( identifier.startsWith( BundledDoxygen.class.getName() ) ) {
-			final String	location =  identifier.substring( identifier.indexOf(' ') + 1 );
-
-			try {
-				doxygen = new BundledDoxygen( new URL(location) );
-			}
-			catch( Throwable t ) {
-				Plugin.log( t );
-				doxygen = null;
-			}
-		}
-		return doxygen;
-	}
-
-	/**
-	 * @see eclox.core.doxygen.Doxygen#getCommand()
-	 */
+	@Override
 	public String getCommand() {
 		try {
-			return FileLocator.resolve( location ).getPath();
+			return FileLocator.resolve(url).getPath();
 		}
-		catch( Throwable t ) {
+		catch(Throwable t) {
 			Plugin.log(t);
 			return null;
 		}
 	}
 
-	/**
-	 * @see eclox.core.doxygen.Doxygen#getDescription()
-	 */
+	@Override
 	public String getDescription() {
 		return new String();
 	}
 
-	/**
-	 * @see eclox.core.doxygen.Doxygen#getIdentifier()
-	 */
+	@Override
 	public String getIdentifier() {
-		return this.getClass().getName() + " " + location;
+		return this.getClass().getName() + " " + url;
 	}
 
-	/**
-	 * Constructor
-	 *
-	 * @param	location	an url giving the location a doxygen binary
-	 */
-	private BundledDoxygen( URL location ) {
-		this.location = location;
-
-		assert( location != null );
-	}
+    @Override
+    public void setLocation(String location) {
+        assert( location != null );
+        assert( location.length() != 0 );
+        try {
+            this.url = new URL(location);
+        }
+        catch( Throwable t ) {
+            Plugin.log( t );
+        }
+    }
 
 }

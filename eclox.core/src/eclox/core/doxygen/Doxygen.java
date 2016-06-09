@@ -10,7 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - added support of eclipse variables to resolve doxygen path
- *                   - added support of GRAPHVIZ_PATH variable - passed to enviroment
+ *                   - added support of eclipse variables passed to environment
  *
  ******************************************************************************/
 
@@ -56,49 +56,53 @@ public abstract class Doxygen {
 	 * Retrieves the default doxygen instance to use.
 	 */
 	public static Doxygen getDefault() {
-		final String	identifier	= Plugin.getDefault().getPluginPreferences().getString( IPreferences.DEFAULT_DOXYGEN );
-		Doxygen			doxygen		= null;
-
-		// Try the creation of a default doxygen instance.
-		doxygen = DefaultDoxygen.createFromIdentifier(identifier);
-		if( doxygen != null ) {
-			return doxygen;
+	    Doxygen doxygen = null;
+		final String identifier	= Plugin.getDefault().getPluginPreferences().getString( IPreferences.DEFAULT_DOXYGEN );
+		List<Class<? extends Doxygen>> doxygenClassList = new ArrayList<Class<? extends Doxygen>>();
+		doxygenClassList.add(DefaultDoxygen.class);
+		doxygenClassList.add(CustomDoxygen.class);
+		doxygenClassList.add(BundledDoxygen.class);
+		for (Class<? extends Doxygen> doxygenClass : doxygenClassList) {
+		    doxygen = getFromClassAndIdentifier(doxygenClass, identifier);
+		    if (doxygen != null)
+		        break;
 		}
-
-		// Try the creation of a custom doxygen instance.
-		doxygen = CustomDoxygen.createFromIdentifier(identifier);
-		if( doxygen != null ) {
-			return doxygen;
-		}
-
-		// Try the creation of a bundled doxygen instance.
-		doxygen = BundledDoxygen.createFromIdentifier(identifier);
-		if( doxygen != null ) {
-			return doxygen;
-		}
-
-		// No doxygen could be created.
-		return null;
+		return doxygen;
 	}
 
+    public static Doxygen getFromClassAndIdentifier(Class<? extends Doxygen> doxygenClass, String identifier) {
+        Doxygen doxygen = null;
+        if( identifier.startsWith(doxygenClass.getName()) ) {
+            String location = null;
+            int locationIndex = identifier.indexOf('=');
+            if (locationIndex == -1)
+                locationIndex = identifier.indexOf(' ');
+            if (locationIndex != -1)
+                location = identifier.substring(locationIndex  + 1 );
+            try {
+                doxygen = doxygenClass.newInstance();
+                if (location != null)
+                    doxygen.setLocation(location);
+            } catch (InstantiationException | IllegalAccessException e) {
+                doxygen = null;
+            }
+        }
+        return doxygen;
+    }
 
-	/**
+    /**
 	 * Retrieves the version string of wrapped doxygen.
 	 *
 	 * @return	a string containing the doxygen version string
 	 */
 	public String getVersion() {
 		try {
-			// Builds the command.
-			String[]	command = new String[2];
-
-			command[0] = getCommand();
-			command[1] = "--help";
-
+		    // create process builder with doxygen command
+            ProcessBuilder pb = new ProcessBuilder(getCommand(), "--help");
 			// Runs the command and retrieves the version string.
-			Process				doxygen	= Runtime.getRuntime().exec( command );
-			BufferedReader		input	= new BufferedReader( new InputStreamReader(doxygen.getInputStream()) );
-			BufferedReader		error	= new BufferedReader( new InputStreamReader(doxygen.getErrorStream()) );
+			Process				process	= pb.start();
+			BufferedReader		input	= new BufferedReader( new InputStreamReader(process.getInputStream()) );
+			BufferedReader		error	= new BufferedReader( new InputStreamReader(process.getErrorStream()) );
 
 			// Matches the doxygen welcome message.
 			Pattern	pattern	= Pattern.compile( "^doxygen\\s+version\\s+([\\d\\.]+).*", Pattern.CASE_INSENSITIVE|Pattern.DOTALL );
@@ -237,26 +241,19 @@ public abstract class Doxygen {
 		try
 		{
 			Process		process;
-			String[]	command = new String[3];
-
-			// Build the command.
-			command[0] = getCommand();
-			command[1] =  "-g";
-			command[2] = file.getLocation().toOSString();
-
+            // create process builder with doxygen command and doxyfile
+            ProcessBuilder pb = new ProcessBuilder(getCommand(), "-g", file.getLocation().makeAbsolute().toOSString());
 			// Run the command and check for errors.
-			process = Runtime.getRuntime().exec( command, null );
+			process = pb.start();
 			if(process.waitFor() != 0) {
 				BufferedReader	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 				String			errorMsg = new String();
 				String			line;
-
 				for(line=reader.readLine(); line != null; line=reader.readLine()) {
 					errorMsg = errorMsg.concat(line);
 				}
 				throw new RunException( errorMsg );
 			}
-
 			// Force some refresh to display the file.
 			file.refreshLocal( 0, null );
 		}
@@ -274,6 +271,10 @@ public abstract class Doxygen {
 		}
 	}
 
+    /**
+     * Updates the location of the custom doxygen.
+     */
+    public abstract void setLocation(String location);
 
 	/**
 	 * Retrieves the string containing the command line to the doxygen binary.
@@ -283,7 +284,6 @@ public abstract class Doxygen {
 	 */
 	public abstract String getCommand();
 
-
 	/**
 	 * Retrieves the description string of the doxygen wrapper instance.
 	 *
@@ -291,14 +291,12 @@ public abstract class Doxygen {
 	 */
 	public abstract String getDescription();
 
-
 	/**
 	 * Retrieves the identifier of the doxygen wrapper.
 	 *
 	 * @return	a string containing the doxygen wrapper identifier
 	 */
 	public abstract String getIdentifier();
-
 
 	/**
 	 * Retrieve the diretory of the specified file.

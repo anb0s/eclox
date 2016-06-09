@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * 
+ * Copyright (C) 2015-2016, Andre Bossert
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,50 +10,35 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxygen;
 
 /**
  * Implements the doxygen wrapper that use the eventual doxygen program reachable
  * in the default path.
- * 
+ *
  * @author gbrocker
  */
 public class DefaultDoxygen extends Doxygen {
-	
-	/**
-	 * Creates a new default doxygen instance from the given identifier.
-	 * 
-	 * @param	identifier	a string containing an identifier
-	 * 
-	 * @return	a new default doxygen instance or null when creation failed
-	 */
-	public static DefaultDoxygen createFromIdentifier( final String identifier ) {
-		if( DefaultDoxygen.class.getName().equalsIgnoreCase( identifier ) ) {
-			return new DefaultDoxygen();
-		}
-		else {
-			return null;
-		}
-	}
 
-	/**
-	 * @see eclox.core.doxygen.Doxygen#getCommand()
-	 */
+    @Override
 	public String getCommand() {
 		return COMMAND_NAME;
 	}
 
-	/**
-	 * @see eclox.core.doxygen.Doxygen#getDescription()
-	 */
+	@Override
 	public String getDescription() {
 		return new String();
 	}
 
+	@Override
 	public String getIdentifier() {
 		return getClass().getName();
 	}
+
+    @Override
+    public void setLocation(String location) {
+    }
 
 }

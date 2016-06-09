@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * Copyright (C) 2015, Andre Bossert
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -263,7 +263,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		if( item.getChecked() == true ) {
 			TableItem[]	checked	= getCheckedItems();
 
-			// Updates chekced items so that only one is chekced at the same time.
+			// Updates checked items so that only one is checked at the same time.
 			for( int i = 0; i < checked.length; ++i ) {
 				if( checked[i] != item ) {
 					checked[i].setChecked( false );
@@ -332,7 +332,6 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		descriptionColumn.setText( "Description" );
 		table.setHeaderVisible( true );
 
-
 		// Creates the composite containing all buttons and located on the right side of the table.
 		GridData	buttonsData		= new GridData( GridData.END );
 		FillLayout	buttonsLayout	= new FillLayout( SWT.VERTICAL );
@@ -343,8 +342,6 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		buttons.setLayoutData( buttonsData );
 		buttonsLayout.spacing = 5;
 		buttons.setLayout( buttonsLayout );
-
-
 
 		// Creates the button controlling custom doyxgen wrappers.
 		add		= new Button( buttons, SWT.PUSH );
@@ -369,13 +366,11 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		// Adds default doxygen instance.
 		addItem( new DefaultDoxygen() );
 
-
 		// Adds custom doxygens.
-		final String	raw			= getPreferenceStore().getString( IPreferences.CUSTOM_DOXYGENS );
-		final String[]	splitted	= raw.split( "\n");
+		final String	raw			= getPreferenceStore().getString(IPreferences.CUSTOM_DOXYGENS);
+		final String[]	splitted	= raw.split("\n");
 		for( int i = 0; i < splitted.length; ++i ) {
-			CustomDoxygen	doxygen = CustomDoxygen.createFromIdentifier( splitted[i] );
-
+			Doxygen	doxygen = Doxygen.getFromClassAndIdentifier(CustomDoxygen.class, splitted[i]);
 			if( doxygen != null ) {
 				addItem( doxygen );
 			}
@@ -384,14 +379,12 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 			}
 		}
 
-
 		// Adds bundled doxygens.
 		Collection<?> bundled = BundledDoxygen.getAll();
 		Iterator<?>	  i       = bundled.iterator();
 		while( i.hasNext() ) {
 			addItem( (Doxygen) i.next() );
 		}
-
 
 		// Select the default doxygen wrapper
 		checkItem( getPreferenceStore().getString( IPreferences.DEFAULT_DOXYGEN ) );
