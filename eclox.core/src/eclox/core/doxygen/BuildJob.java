@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2006-2008, 2013, Guillaume Brocker
- * Copyright (C) 2015, Andre Bossert
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0

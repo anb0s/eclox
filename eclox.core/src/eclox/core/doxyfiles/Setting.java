@@ -92,9 +92,9 @@ public class Setting extends Chunk {
         if( defaultProperties == null ) {
             try {
                 InputStream propertiesInput = Plugin.class.getResourceAsStream("/misc/setting-properties.txt");
-
                 defaultProperties = new Properties();
-                defaultProperties.load( propertiesInput );
+                if (propertiesInput != null)
+                    defaultProperties.load( propertiesInput );
             }
             catch( Throwable throwable ) {
                 Plugin.log( throwable );

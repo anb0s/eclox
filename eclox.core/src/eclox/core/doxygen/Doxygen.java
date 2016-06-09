@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2008, 2013, Guillaume Brocker
- * Copyright (C) 2015, Andre Bossert
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +19,10 @@ package eclox.core.doxygen;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +30,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.variables.IDynamicVariable;
+import org.eclipse.core.variables.IStringVariable;
 import org.eclipse.core.variables.IStringVariableManager;
 import org.eclipse.core.variables.IValueVariable;
 import org.eclipse.core.variables.VariablesPlugin;
@@ -118,41 +123,60 @@ public abstract class Doxygen {
 		}
 	}
 
-	private String resolveEclipseVariable(String key) {
-		if (key == null)
-			return null;
-		IStringVariableManager variableManager = VariablesPlugin.getDefault()
-				.getStringVariableManager();
-		int index = key.indexOf(':');
-		if (index > 1) {
-			String varName = key.substring(0, index);
-			IDynamicVariable variable = variableManager
-					.getDynamicVariable(varName);
-			if (variable == null)
-				return null;
-			try {
-				if (key.length() > index + 1)
-					return variable.getValue(key.substring(index + 1));
-				return variable.getValue(null);
-			} catch (CoreException e) {
-				return null;
-			}
+	private String resolveOneVariable(String key, IStringVariableManager variableManager, boolean dynamicAllowed) {
+		if (key != null) {
+    		if (variableManager == null) {
+        		variableManager = VariablesPlugin.getDefault()
+        				.getStringVariableManager();
+    		}
+            if (variableManager != null)
+            {
+                // static variable
+                IValueVariable staticVar = variableManager.getValueVariable(key);
+                if (staticVar != null) {
+                    return staticVar.getValue();
+                }
+                // dynamic variable
+                else if (dynamicAllowed) {
+                    String varName = key;
+                    String valuePar = null;
+                    // check if parameterized and get parameter
+                    int index = key.indexOf(':');
+                    if (index > 1) {
+                        varName = key.substring(0, index);
+                        if (key.length() > index + 1)
+                            valuePar = key.substring(index + 1);
+                    }
+                    // get dynamic variable
+                    IDynamicVariable dynVar = variableManager
+                            .getDynamicVariable(varName);
+                    if (dynVar == null)
+                        return null;
+                    try {
+                        return dynVar.getValue(valuePar);
+                    } catch (CoreException e) {
+                        return null;
+                    }
+                }
+            }
 		}
-		IValueVariable variable = variableManager.getValueVariable(key);
-		if (variable == null) {
-			IDynamicVariable dynamicVariable = variableManager
-					.getDynamicVariable(key);
-			if (dynamicVariable == null)
-				return null;
-			try {
-				return dynamicVariable.getValue(null);
-			} catch (CoreException e) {
-				return null;
-			}
-		}
-		return variable.getValue();
+        return null;
 	}
 
+    private void resolveAllVariables(Map<String, String> varMap) {
+        IStringVariableManager variableManager = VariablesPlugin.getDefault()
+                .getStringVariableManager();
+        for (IStringVariable strVar : variableManager.getVariables()) {
+            String name = strVar.getName();
+            if (name != null && !name.isEmpty())
+            {
+                String value = resolveOneVariable(name, variableManager, false);
+                if (value != null) {
+                    varMap.put(name, value);
+                }
+            }
+        }
+    }
 	/**
 	 * Launch a documentation build.
 	 *
@@ -164,30 +188,44 @@ public abstract class Doxygen {
 		if( file.exists() == false ) {
 			throw new RunException("Missing or bad doxyfile");
 		}
-
 		try {
-			String[]	command = new String[3];
-
-			command[0] = getCommand();
-			command[1] = "-b";
-			command[2] = file.getLocation().makeAbsolute().toOSString();
-
-// TODO This is code only supported by jre >= 1.5
-//			ProcessBuilder	processBuilder = new ProcessBuilder( command );
-//			processBuilder.directory( getDir(file).toFile() );
-//			processBuilder.redirectErrorStream( true );
-//			return processBuilder.start();
-
-			// anb0s: added GRAPHVIZ_PATH support
-			final String envs = "GRAPHVIZ_PATH";
-			String graphVizPath = resolveEclipseVariable(envs);
-			String[] envp = new String[1];
-			envp[0] = envs + "=" + graphVizPath;
-			return Runtime.getRuntime().exec( command, envp, getDir(file).toFile() );
+		    // create process builder with doxygen command and doxyfile
+		    ProcessBuilder pb = new ProcessBuilder(getCommand(), "-b", file.getLocation().makeAbsolute().toOSString());
+		    // set working directory and redirect error stream
+		    pb.directory(getDir(file).toFile());
+		    pb.redirectErrorStream(true);
+		    // get passed system environment
+            Map<String, String> env = pb.environment();
+            // add own variables, like GRAPHVIZ_PATH etc.
+            //addEcloxVarsToEnvironment(env);
+            // add all defined variables
+            addAllVarsToEnvironment(env);
+            // return the process
+			return pb.start();
 		}
 		catch(IOException ioException) {
 			throw new InvokeException(ioException);
 		}
+	}
+
+	private void addEcloxVarsToEnvironment(Map<String, String> env) {
+	    List<String> vars = new ArrayList<String>();
+	    vars.add("GRAPHVIZ_PATH");
+	    for (String name : vars) {
+	        if (name != null && !name.isEmpty())
+	        {
+                String value = resolveOneVariable(name, null, true);
+                if (value != null) {
+                    env.put(name, value);
+                }
+	        }
+        }
+	}
+
+	private void addAllVarsToEnvironment(Map<String, String> env) {
+	    Map<String, String> resolvedVars = new HashMap<String, String>();
+	    resolveAllVariables(resolvedVars);
+	    env.putAll(resolvedVars);
 	}
 
 	/**
