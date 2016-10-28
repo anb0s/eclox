@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2007, 2013, Guillaume Brocker
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - Add ability to use Doxyfile not in project scope
  *
  ******************************************************************************/
 
@@ -92,9 +94,8 @@ public class DoxyfileDecorator implements ILightweightLabelDecorator {
 	 */
 	public void decorate(Object element, IDecoration decoration) {
 		if( Doxyfile.isDoxyfile(element) ) {
-			IFile		doxyfile	= (IFile) element;
-			BuildJob	job			= BuildJob.findJob(doxyfile);
-
+			Doxyfile doxyfile	= new Doxyfile((IFile) element, null);
+			BuildJob job		= BuildJob.findJob(doxyfile);
 			if( job != null && job.getState() == BuildJob.RUNNING ) {
 				decoration.addOverlay( ImageDescriptor.createFromFile(this.getClass(), "build_co.gif"), IDecoration.BOTTOM_LEFT );
 				decoration.addSuffix(" (building...)");

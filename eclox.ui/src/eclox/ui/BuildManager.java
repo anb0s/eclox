@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2008, 2013, Guillaume Brocker
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - Add ability to use Doxyfile not in project scope
  *
  ******************************************************************************/
 
@@ -104,7 +106,7 @@ public class BuildManager {
 	 *
 	 * @param	doxyfile	the doxyfile to build
 	 */
-	public void build( IFile doxyfile )
+	public void build( Doxyfile doxyfile )
 	{
 		// Retrieves the plug-in preferences.
 		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
@@ -137,7 +139,7 @@ public class BuildManager {
 		}
 
 		// Retrieves the build job for the given doxyfile.
-		BuildJob		job = BuildJob.getJob( doxyfile );
+		BuildJob job = BuildJob.getJob( doxyfile );
 
 		// Attaches a listener if applicable.
 		if( jobHistory.contains(job) == false ) {
@@ -182,18 +184,19 @@ public class BuildManager {
 			if( stateFile.canRead() == true ) {
 				BufferedReader	stateReader = new BufferedReader(new FileReader(stateFile));
 				String			stateLine = stateReader.readLine();
-
 				while( stateLine != null ) {
-					IPath			doxyfilePath	= new Path( stateLine );
-					IResource		resource		= ResourcesPlugin.getWorkspace().getRoot().findMember(doxyfilePath);
-
+					IPath doxyfilePath= new Path( stateLine );
+					IFile doxyIFile = null;
+					File doxyFile = null;
+					IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(doxyfilePath);
 					if( Doxyfile.isDoxyfile(resource) ) {
-						IFile		doxyfile = (IFile) resource;
-						BuildJob	job = BuildJob.getJob(doxyfile);
-
-						jobHistory.add(job);
+					    doxyIFile = (IFile)resource;
+					} else {
+					    doxyFile = new File(stateLine);
 					}
-
+					Doxyfile doxyfile = new Doxyfile(doxyIFile, doxyFile);
+					BuildJob job = BuildJob.getJob(doxyfile);
+					jobHistory.add(job);
 					stateLine = stateReader.readLine();
 				}
 				stateReader.close();
@@ -221,10 +224,9 @@ public class BuildManager {
 			Iterator<BuildJob>	i = jobHistory.iterator();
 
 			while( i.hasNext() ) {
-				BuildJob	job			= (BuildJob) i.next();
-				IFile		doxyfile	= job.getDoxyfile();
-
-				stateWriter.write( doxyfile.getFullPath().toString() );
+				BuildJob job	  = (BuildJob) i.next();
+				Doxyfile doxyfile = job.getDoxyfile();
+				stateWriter.write( doxyfile.getFullPath() );
 				stateWriter.write( String.valueOf('\n') );
 			}
 

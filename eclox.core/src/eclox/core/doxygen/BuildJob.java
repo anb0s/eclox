@@ -10,12 +10,14 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - improved thread handling, added show command in console / title
+ *                   - Add ability to use Doxyfile not in project scope
  *
  ******************************************************************************/
 
 package eclox.core.doxygen;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
@@ -143,14 +145,17 @@ public class BuildJob extends Job {
 		}
 
 		public void resourceChanged(IResourceChangeEvent event) {
-			IResourceDelta	doxyfileDelta = event.getDelta().findMember( job.getDoxyfile().getFullPath() );
-			if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
-			{
-				job.clearMarkers();
-				jobs.remove( job );
-				job.fireRemoved();
-				ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
-			}
+		    IFile ifile = job.getDoxyfile().getIFile();
+		    if (ifile != null) {
+    			IResourceDelta	doxyfileDelta = event.getDelta().findMember( ifile.getFullPath() );
+    			if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
+    			{
+    				job.clearMarkers();
+    				jobs.remove( job );
+    				job.fireRemoved();
+    				ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
+    			}
+		    }
 		}
 
 	}
@@ -173,7 +178,7 @@ public class BuildJob extends Job {
 	/**
 	 * the path of the doxyfile to build
 	 */
-	private IFile	doxyfile;
+	private Doxyfile doxyfile;
 
 	/**
 	 * the buffer containing the whole build output log
@@ -194,7 +199,7 @@ public class BuildJob extends Job {
 	/**
 	 * Constructor.
 	 */
-	private BuildJob(IFile dxfile) {
+	private BuildJob(Doxyfile dxfile) {
 		super("");
 
 		doxyfile = dxfile;
@@ -229,7 +234,7 @@ public class BuildJob extends Job {
 	 *
 	 * @return	a build job that is in charge of building the given doxyfile
 	 */
-	public static BuildJob getJob( IFile doxyfile )
+	public static BuildJob getJob( Doxyfile doxyfile )
 	{
 		BuildJob	result = findJob( doxyfile );
 
@@ -253,7 +258,7 @@ public class BuildJob extends Job {
 	 *
 	 * @return	a build job for the given doxyfile or null if none
 	 */
-	public static BuildJob findJob( IFile doxyfile )
+	public static BuildJob findJob( Doxyfile doxyfile )
 	{
 		BuildJob	result = null;
 
@@ -333,7 +338,7 @@ public class BuildJob extends Job {
 	 *
 	 * @return	a file taht is the builded doxyfile
 	 */
-	public IFile getDoxyfile() {
+	public Doxyfile getDoxyfile() {
 		return doxyfile;
 	}
 
@@ -347,7 +352,7 @@ public class BuildJob extends Job {
 	}
 
 	public void updateJobName() {
-		setName("Doxygen Build ["+ command + " -b " + doxyfile.getFullPath().toPortableString()+"]");
+		setName("Doxygen Build ["+ command + " -b " + doxyfile.getFullPath()+"]");
 	}
 
 	/**
@@ -379,10 +384,12 @@ public class BuildJob extends Job {
 	 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	protected IStatus run( IProgressMonitor monitor ) {
+        IFile doxyIFile = getDoxyfile().getIFile();
+        File doxyFile   = getDoxyfile().getFile();
 		try
 		{
 			// Initializes the progress monitor.
-			monitor.beginTask( doxyfile.getFullPath().toString(), 6 );
+			monitor.beginTask( doxyfile.getFullPath(), 6 );
 
 			// Clears log and markers.
 			// TODO: anb0s: this is not woking like expected no in Eclipse 4.x -> verify
@@ -390,13 +397,18 @@ public class BuildJob extends Job {
 			clearMarkers();
 			monitor.worked( 1 );
 
-
 			// Locks access to the doxyfile.
-			getJobManager().beginRule( doxyfile, monitor );
-
+			if (doxyIFile != null) {
+			    getJobManager().beginRule(doxyIFile, monitor);
+			}
 
 			// Creates the doxygen build process and log feeders.
-			Process	buildProcess	= Doxygen.getDefault().build( getDoxyfile() );
+			Process	buildProcess	= null;
+			if (doxyIFile != null) {
+			    buildProcess = Doxygen.getDefault().build(doxyIFile);
+			} else {
+			    buildProcess = Doxygen.getDefault().build(doxyFile);
+			}
 			Thread	inputLogFeeder	= new Thread( new MyLogFeeder(buildProcess.getInputStream()) );
 			Thread	errorLogFeeder	= new Thread( new MyLogFeeder(buildProcess.getErrorStream()) );
 
@@ -416,7 +428,9 @@ public class BuildJob extends Job {
 				if( monitor.isCanceled() == true ) {
 					buildProcess.destroy();
 					buildProcess.waitFor();
-					getJobManager().endRule(doxyfile);
+					if (doxyIFile != null) {
+					    getJobManager().endRule(doxyIFile);
+					}
 					return Status.CANCEL_STATUS;
 				}
 
@@ -427,39 +441,41 @@ public class BuildJob extends Job {
 			}
 			monitor.worked( 2 );
 
-
 			// Unlocks the doxyfile.
-			getJobManager().endRule(doxyfile);
-
+			if (doxyIFile != null) {
+			    getJobManager().endRule(doxyIFile);
+			}
 
 			// Builds error and warning markers
 			createMarkers( monitor );
 			monitor.worked( 3 );
 
-
 			// Ensure that doxygen process has finished.
 			buildProcess.waitFor();
 			monitor.worked( 4 );
 
-
 			// Refreshes the container that has received the documentation outputs.
-			Doxyfile	parsedDoxyfile	= new Doxyfile(this.doxyfile);
+			Doxyfile parsedDoxyfile	= getDoxyfile();
+			parsedDoxyfile.load();
 			IContainer	outputContainer = parsedDoxyfile.getOutputContainer();
 			if( outputContainer != null ) {
 				outputContainer.refreshLocal( IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 1) );
 			}
 			monitor.done();
 
-
 			// Job's done.
 			return Status.OK_STATUS;
 		}
 		catch( OperationCanceledException e ) {
-			getJobManager().endRule(doxyfile);
+		    if (doxyIFile != null) {
+		        getJobManager().endRule(doxyIFile);
+		    }
 			return Status.CANCEL_STATUS;
 		}
 		catch( InvokeException e ) {
-			getJobManager().endRule(doxyfile);
+		    if (doxyIFile != null) {
+		        getJobManager().endRule(doxyIFile);
+		    }
 			return new Status(
 					Status.WARNING,
 					Plugin.getDefault().getBundle().getSymbolicName(),
@@ -468,7 +484,9 @@ public class BuildJob extends Job {
 					e );
 		}
 		catch( Throwable t ) {
-			getJobManager().endRule(doxyfile);
+		    if (doxyIFile != null) {
+		        getJobManager().endRule(doxyIFile);
+		    }
 			return new Status(
 					Status.ERROR,
 					Plugin.getDefault().getBundle().getSymbolicName(),
@@ -477,7 +495,6 @@ public class BuildJob extends Job {
 					t );
 		}
 	}
-
 
 	/**
 	 * Creates resource markers while finding warning and errors in the

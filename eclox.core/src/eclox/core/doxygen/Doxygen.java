@@ -11,12 +11,14 @@
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - added support of eclipse variables to resolve doxygen path
  *                   - added support of eclipse variables passed to environment
+ *                   - Add ability to use Doxyfile not in project scope
  *
  ******************************************************************************/
 
 package eclox.core.doxygen;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -189,28 +191,32 @@ public abstract class Doxygen {
 	 * @return	The process that run the build.
 	 */
 	public Process build( IFile file ) throws InvokeException, RunException {
-		if( file.exists() == false ) {
-			throw new RunException("Missing or bad doxyfile");
-		}
-		try {
-		    // create process builder with doxygen command and doxyfile
-		    ProcessBuilder pb = new ProcessBuilder(getCommand(), "-b", file.getLocation().makeAbsolute().toOSString());
-		    // set working directory and redirect error stream
-		    pb.directory(getDir(file).toFile());
-		    pb.redirectErrorStream(true);
-		    // get passed system environment
+	    return build(file.getLocation().makeAbsolute().toFile());
+	}
+
+    public Process build( File file ) throws InvokeException, RunException {
+        if( file.exists() == false ) {
+            throw new RunException("Missing or bad doxyfile");
+        }
+        try {
+            // create process builder with doxygen command and doxyfile
+            ProcessBuilder pb = new ProcessBuilder(getCommand(), "-b", file.getAbsolutePath());
+            // set working directory and redirect error stream
+            pb.directory(file.getParentFile().getAbsoluteFile());
+            pb.redirectErrorStream(true);
+            // get passed system environment
             Map<String, String> env = pb.environment();
             // add own variables, like GRAPHVIZ_PATH etc.
             //addEcloxVarsToEnvironment(env);
             // add all defined variables
             addAllVarsToEnvironment(env);
             // return the process
-			return pb.start();
-		}
-		catch(IOException ioException) {
-			throw new InvokeException(ioException);
-		}
-	}
+            return pb.start();
+        }
+        catch(IOException ioException) {
+            throw new InvokeException(ioException);
+        }
+    }
 
 	private void addEcloxVarsToEnvironment(Map<String, String> env) {
 	    List<String> vars = new ArrayList<String>();

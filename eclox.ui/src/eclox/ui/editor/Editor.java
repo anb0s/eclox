@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,15 +9,21 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - Add ability to use Doxyfile not in project scope
  *
  ******************************************************************************/
 
 package eclox.ui.editor;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorInput;
@@ -25,6 +32,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableEditor;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.ide.FileStoreEditorInput;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ISettingValueListener;
@@ -75,17 +83,47 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
      */
     public void doSave( IProgressMonitor monitor ) {
         // Retrieves the file input.
-		IEditorInput		editorInput = this.getEditorInput();
-		IFileEditorInput	fileEditorInput = (IFileEditorInput) editorInput;
-		IFile				file = fileEditorInput.getFile();
+		IEditorInput editorInput = this.getEditorInput();
+		IFile ifile = null;
+		File  file = null;
+		if (editorInput instanceof IFileEditorInput) {
+		    ifile = ((IFileEditorInput)editorInput).getFile();
+		} else {
+            URI fileuri = ((FileStoreEditorInput)editorInput).getURI();
+            file = new File(fileuri.getPath());
+		}
 
 		try {
 			// Commits all pending changes.
 			commitPages(true);
 
         	// Stores the doxyfile content.
-	    	Serializer	serializer = new Serializer( doxyfile );
-	    	file.setContents( serializer, false, true, monitor );
+	    	Serializer serializer = new Serializer(doxyfile);
+	    	if (ifile != null) {
+	    	    ifile.setContents(serializer, false, true, monitor);
+	    	} else {
+	    	    FileOutputStream outputStream = null;
+                try {
+	    	        // write the inputStream to a FileOutputStream
+	    	        outputStream = new FileOutputStream(file);
+	    	        int read = 0;
+	    	        byte[] bytes = new byte[1024];
+	    	        while ((read = serializer.read(bytes)) != -1) {
+	    	            outputStream.write(bytes, 0, read);
+	    	        }
+	    	    } catch (IOException e) {
+	    	        e.printStackTrace();
+	    	    } finally {
+	    	        if (outputStream != null) {
+	    	            try {
+	    	                outputStream.close();
+	    	            } catch (IOException e) {
+	    	                e.printStackTrace();
+	    	            }
+
+	    	        }
+	    	    }
+	    	}
 
 	    	// Clears the dirty property set on some settings.
 	    	Iterator<?>		i = doxyfile.settingIterator();
@@ -189,14 +227,30 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
 		super.setInput(input);
 
 		try {
-	        IFileEditorInput	fileInput = (IFileEditorInput) input;
+		    IFile ifile = null;
+		    File   file = null;
+		    if (input instanceof IFileEditorInput) {
+		        ifile = ((IFileEditorInput)input).getFile();
+		    } else if (input instanceof IAdaptable) {
+	            IAdaptable adaptable = (IAdaptable) input;
+	            ifile = (IFile) adaptable.getAdapter(IFile.class);
+	            if (ifile == null) {
+	                if (adaptable instanceof FileStoreEditorInput) {
+	                    URI fileuri = ((FileStoreEditorInput) adaptable).getURI();
+	                    file = new File(fileuri.getPath());
+	                } else {
+	                    file = (File) adaptable.getAdapter(File.class);
+	                }
+	            }
+	        }
 
 	        // Attaches the resource change listener
 	        resourceChangeListener = new ResourceChangeListener(this);
 	        ResourcesPlugin.getWorkspace().addResourceChangeListener( resourceChangeListener );
 
 	        // Parses the doxyfile and attaches to all settings.
-	        this.doxyfile = new Doxyfile( fileInput.getFile() );
+	        this.doxyfile = new Doxyfile(ifile, file);
+	        this.doxyfile.load();
 	        Iterator<?>	i = this.doxyfile.settingIterator();
 	        while( i.hasNext() == true ) {
 	            Setting	setting = (Setting) i.next();

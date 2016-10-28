@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2004, 2007, 2008, 2013, Guillaume Brocker
+ * Copyright (C) 2015-2016, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,12 +9,18 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - Add ability to use Doxyfile not in project scope
  *
  ******************************************************************************/
 
 package eclox.core.doxyfiles;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -41,9 +48,14 @@ import eclox.core.doxyfiles.io.Parser;
 public class Doxyfile {
 
 	/**
-	 * the file that holds the doxyfile content
+	 * the eclipse file that holds the doxyfile content
 	 */
-	private IFile file;
+	private IFile ifile;
+
+    /**
+     * the system file (outside eclipse) that holds the doxyfile content
+     */
+	private File file;
 
 	/**
 	 * a collection containing all doxyfile's chunks
@@ -102,12 +114,20 @@ public class Doxyfile {
 	 *
 	 * @param	file	a file resource instance that is assumed to be a doxyfile
 	 */
-	public Doxyfile( IFile file ) throws IOException, CoreException {
+	public Doxyfile( IFile ifile, File file ) {
+		this.ifile = ifile;
 		this.file = file;
-
-	    Parser parser = new Parser(file.getContents());
-	    parser.read( this );
 	}
+
+    public void load() throws CoreException, FileNotFoundException, IOException {
+        InputStream input;
+        if (ifile != null)
+		    input = ifile.getContents();
+		else
+		    input = new BufferedInputStream(new FileInputStream(file));
+	    Parser parser = new Parser(input);
+	    parser.read( this );
+    }
 
 	/**
 	 * Appends a new chunk to the doxyfile.
@@ -149,9 +169,18 @@ public class Doxyfile {
 	 *
 	 * @return	a resource file
 	 */
-	public IFile getFile() {
-		return file;
+	public IFile getIFile() {
+		return ifile;
 	}
+
+    /**
+     * Retrieves the resource file that contains the doxyfile.
+     *
+     * @return  a file
+     */
+    public File getFile() {
+        return file;
+    }
 
     /**
      * Retrieves all groups present in the doxyfile.
@@ -189,17 +218,16 @@ public class Doxyfile {
 			Path	outputPath = new Path(outputSetting.getValue());
 
 			if( outputPath.isEmpty() ) {
-				outputContainer = file.getParent();
+			    if (ifile != null)
+			        outputContainer = ifile.getParent();
 			}
 			else if( outputPath.isAbsolute() ) {
 				IContainer[]	foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(outputPath);
-
 				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
 			}
-			else {
-				IPath			fullOutputPath	= file.getParent().getLocation().append(outputPath);
+			else if (ifile != null) {
+				IPath			fullOutputPath	= ifile.getParent().getLocation().append(outputPath);
 				IContainer[]	foundContainers	= ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(fullOutputPath);
-
 				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
 			}
 		}
@@ -243,7 +271,10 @@ public class Doxyfile {
 	 * @return	true or false
 	 */
 	public boolean isPathRelative( IPath path ) {
-		return file.getLocation().removeLastSegments(1).isPrefixOf( path );
+	    if (ifile != null)
+	        return ifile.getLocation().removeLastSegments(1).isPrefixOf( path );
+	    else
+	        return false;
 	}
 
 	/**
@@ -255,9 +286,8 @@ public class Doxyfile {
 	 */
 	public IPath makePathRelative( IPath path ) {
 		if( isPathRelative(path) ) {
-			int		matchingCount = file.getLocation().removeLastSegments(1).matchingFirstSegments( path );
+			int		matchingCount = ifile.getLocation().removeLastSegments(1).matchingFirstSegments( path );
 			IPath	relativePath = path.removeFirstSegments( matchingCount ).setDevice( new String() );
-
 			return relativePath.isEmpty() ? new Path(".") : relativePath;
 		}
 		else {
@@ -282,5 +312,29 @@ public class Doxyfile {
 	public Iterator<Setting> settingIterator() {
 		return settings.values().iterator();
 	}
+
+    public String getFullPath() {
+        if (ifile != null) {
+            return ifile.getFullPath().toOSString();
+        } else {
+            return file.getAbsolutePath();
+        }
+    }
+
+    public String getName() {
+        if (ifile != null) {
+            return ifile.getName();
+        } else {
+            return file.getName();
+        }
+    }
+
+    public boolean exists() {
+        if (ifile != null) {
+            return ifile.exists();
+        } else {
+            return file.exists();
+        }
+    }
 
 }
