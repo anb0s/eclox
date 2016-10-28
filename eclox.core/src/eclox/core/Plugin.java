@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * 
+ * Copyright (C) 2015-2016, Andre Bossert
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,8 +9,9 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - Improvement static declaration of plugin relative identifier
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core;
 
@@ -19,16 +21,16 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Implements the core eclox plugin
- * 
+ *
  * @author gbrocker
  */
 public class Plugin extends org.eclipse.core.runtime.Plugin {
-	
+
 	/**
 	 * the default plugin instance
 	 */
 	private static Plugin plugin;
-	
+
 
 	/**
 	 * The constructor.
@@ -42,6 +44,7 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		String name = getBundle().getSymbolicName();
 	}
 
 	/**
@@ -51,35 +54,35 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 		super.stop(context);
 		plugin = null;
 	}
-	
+
 	/**
 	 * Returns the shared instance.
 	 */
 	public static Plugin getDefault() {
 		return plugin;
 	}
-	
+
 	/**
 	 * Adds the specified message into the plugin's log as a warning.
-	 *  
+	 *
 	 * @param message	a string containing a message to log as a warning
 	 */
 	public void logWarning( String message ) {
 	    getLog().log( new Status(Status.WARNING, getBundle().getSymbolicName(), 0, message, null) );
 	}
-	
+
 	/**
 	 * Adds the specified message into the plugin's log as an error.
-	 *  
+	 *
 	 * @param message	a string containing a message to log as an error
 	 */
 	public void logError( String message ) {
 	    getLog().log( new Status(Status.ERROR, getBundle().getSymbolicName(), 0, message, null) );
 	}
-	
+
 	/**
 	 * Adds the specified throwable object into the plugin's log as an error.
-	 *  
+	 *
 	 * @param throwable	a throwable instance to log
 	 */
 	public static void log( Throwable throwable ) {
