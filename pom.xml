@@ -39,7 +39,7 @@
 						<artifact>
 							<groupId>org.gna.eclox.group</groupId>
 							<artifactId>org.gna.eclox.platform</artifactId>
-							<version>0.0.1-SNAPSHOT</version>
+							<version>${project.version}</version>
 							<classifier>${target.platform}</classifier>
 						</artifact>
 					</target>
