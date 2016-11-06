@@ -44,7 +44,6 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		String name = getBundle().getSymbolicName();
 	}
 
 	/**

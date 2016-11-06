@@ -10,7 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - Add ability to use Doxyfile not in project scope
- *
+ *                   - Refactoring of deprecated API usage
  ******************************************************************************/
 
 package eclox.ui.editor.editors;
@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
@@ -264,8 +265,9 @@ public final class Convenience {
 	public static String escapeValue( String value )
 	{
 		String	result = value;
-
-		if( Plugin.getDefault().getPluginPreferences().getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
+	    // Retrieves the plug-in preferences.
+        IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
+		if( preferences.getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
 			result = replace( result, "\\", "\\\\" );	// Replaces all \ by \\
 			result = replace( result, "\"", "\\\"" );	// Replaces all " by \"
 		}
@@ -285,8 +287,9 @@ public final class Convenience {
 	public static String unescapeValue( String value )
 	{
 		String	result = value;
-
-		if( Plugin.getDefault().getPluginPreferences().getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
+	    // Retrieves the plug-in preferences.
+        IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
+		if( preferences.getBoolean(IPreferences.HANDLE_ESCAPED_VALUES) == true ) {
 			result = replace( result, "\\\"", "\"" );	// Replaces all \" by "
 			result = replace( result, "\\\\", "\\" );	// Replaces all \\ by \
 		}

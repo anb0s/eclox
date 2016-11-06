@@ -10,6 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - Add ability to use Doxyfile not in project scope
+ *                   - Refactoring of deprecated API usage
  *
  ******************************************************************************/
 
@@ -28,7 +29,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Preferences;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.PlatformUI;
@@ -109,7 +110,7 @@ public class BuildManager {
 	public void build( Doxyfile doxyfile )
 	{
 		// Retrieves the plug-in preferences.
-		Preferences	preferences = Plugin.getDefault().getPluginPreferences();
+	    IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
 
 		// Ask the user if he wants to save all opened editors before proceeding to build.
 		final String	autoSave = preferences.getString( IPreferences.AUTO_SAVE );

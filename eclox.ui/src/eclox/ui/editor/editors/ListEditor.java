@@ -414,7 +414,8 @@ public abstract class ListEditor extends SettingEditor {
 		}
 
 		// Retrieves the list of the selected items.
-		Vector<Object>		selected	= new Vector<Object>(selection.toList());
+		@SuppressWarnings("unchecked")
+        Vector<Object>		selected	= new Vector<Object>(selection.toList());
 		Iterator<String>	i			= valueCompounds.iterator();
 		while( i.hasNext() == true && selected.isEmpty() == false ) {
 			Object	current = i.next();
@@ -454,7 +455,8 @@ public abstract class ListEditor extends SettingEditor {
 		}
 
 		// Retrieves the list of the selected items.
-		Vector<?>		selected = new Vector<Object>(selection.toList());
+		@SuppressWarnings("unchecked")
+        Vector<?>		selected = new Vector<Object>(selection.toList());
 
 		Collections.reverse( selected );
 		Collections.reverse(valueCompounds);

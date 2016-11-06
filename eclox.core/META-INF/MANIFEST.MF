@@ -20,6 +20,6 @@ Export-Package: eclox.core;uses:="org.eclipse.core.runtime.preferences,org.osgi.
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets,
    org.eclipse.ui"
-Eclipse-LazyStart: true
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: target/eclox-core-lib.jar

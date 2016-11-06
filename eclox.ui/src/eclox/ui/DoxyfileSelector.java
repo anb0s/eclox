@@ -243,7 +243,9 @@ public class DoxyfileSelector {
 
 
 	/**
-	 * @param	root		the root resource to search for doxyfiles, the workspace root if null
+	 * Initializes DoxyfileSelector
+	 *
+	 * @param	rootResource		the root resource to search for doxyfiles, the workspace root if null
 	 */
 	public DoxyfileSelector( IResource rootResource ) {
 		this.root = rootResource;
