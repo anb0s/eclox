@@ -2,14 +2,14 @@
 
 Eclox is a simple doxygen frontend plug-in for eclipse. It aims to provide a slim and sleek integration of the code documentation process into eclipse.
 
+![eclox_arch](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox.png "Eclox Architecture")
+
 Features Overview:
 ------------------
 - Graphical edition of doxyfile settings
 - integrated doxygen invocation
 - doxygen outputs logging and
 - optional packaged doxygen binaries (for windows and linux)
-
-![eclox_arch](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox.png "Eclox Architecture")
 
 Installation:
 -------------
