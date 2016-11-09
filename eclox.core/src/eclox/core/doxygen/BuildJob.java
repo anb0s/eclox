@@ -399,7 +399,7 @@ public class BuildJob extends Job {
 
             // Locks access to the doxyfile.
             if (doxyIFile != null) {
-                getJobManager().beginRule(doxyIFile, monitor);
+                getJobManager().beginRule(doxyIFile, subMonitor);
             }
 
             // Creates the doxygen build process and log feeders.

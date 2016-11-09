@@ -47,20 +47,20 @@ import eclox.core.doxyfiles.io.Parser;
  */
 public class Doxyfile {
 
-	/**
-	 * the eclipse file that holds the doxyfile content
-	 */
-	private IFile ifile;
+    /**
+     * the eclipse file that holds the doxyfile content
+     */
+    private IFile ifile;
 
     /**
      * the system file (outside eclipse) that holds the doxyfile content
      */
-	private File file;
+    private File file;
 
-	/**
-	 * a collection containing all doxyfile's chunks
-	 */
-	private AbstractList<Chunk> chunks = new Vector<Chunk>();
+    /**
+     * a collection containing all doxyfile's chunks
+     */
+    private AbstractList<Chunk> chunks = new Vector<Chunk>();
 
     /**
      * a map containing all managed settings
@@ -80,72 +80,72 @@ public class Doxyfile {
      * @return	true or false
      */
     public static boolean isDoxyfile(Object object) {
-    	return (object instanceof IResource) && isDoxyfile((IResource) object);
+        return (object instanceof IResource) && isDoxyfile((IResource) object);
     }
 
     /**
-	 * Tells if the specified resource is a doxyfile.
-	 *
-	 * @param	resource	the resource to test
-	 *
-	 * @return	<code>true</code> or <code>false</code>
-	 */
-	public static boolean isDoxyfile(IResource resource) {
-		return (resource instanceof IFile) && isDoxyfile((IFile) resource);
-	}
+     * Tells if the specified resource is a doxyfile.
+     *
+     * @param	resource	the resource to test
+     *
+     * @return	<code>true</code> or <code>false</code>
+     */
+    public static boolean isDoxyfile(IResource resource) {
+        return (resource instanceof IFile) && isDoxyfile((IFile) resource);
+    }
 
-	/**
-	 * Tells if the specified file is a doxyfile.
-	 *
-	 * @param	file	the file to test
-	 *
-	 * @return	<code>true</code> or <code>false</code>
-	 */
-	public static boolean isDoxyfile(IFile file) {
+    /**
+     * Tells if the specified file is a doxyfile.
+     *
+     * @param	file	the file to test
+     *
+     * @return	<code>true</code> or <code>false</code>
+     */
+    public static boolean isDoxyfile(IFile file) {
         String          name = file.getName();
-		IContentType	contentType = Platform.getContentTypeManager().findContentTypeFor( name );
+        IContentType	contentType = Platform.getContentTypeManager().findContentTypeFor( name );
 
-		return contentType != null ? contentType.getId().equals("org.gna.eclox.core.doxyfile") : false;
-	}
+        return contentType != null ? contentType.getId().equals("org.gna.eclox.core.doxyfile") : false;
+    }
 
 
-	/**
-	 * Constructor
-	 *
-	 * @param	file	a file resource instance that is assumed to be a doxyfile
-	 */
-	public Doxyfile( IFile ifile, File file ) {
-		this.ifile = ifile;
-		this.file = file;
-	}
+    /**
+     * Constructor
+     *
+     * @param	file	a file resource instance that is assumed to be a doxyfile
+     */
+    public Doxyfile( IFile ifile, File file ) {
+        this.ifile = ifile;
+        this.file = file;
+    }
 
     public void load() throws CoreException, FileNotFoundException, IOException {
         InputStream input;
         if (ifile != null)
-		    input = ifile.getContents();
-		else
-		    input = new BufferedInputStream(new FileInputStream(file));
-	    Parser parser = new Parser(input);
-	    parser.read( this );
+            input = ifile.getContents();
+        else
+            input = new BufferedInputStream(new FileInputStream(file));
+        Parser parser = new Parser(input);
+        parser.read( this );
     }
 
-	/**
-	 * Appends a new chunk to the doxyfile.
-	 *
-	 * @param	chunk	a chunk to append to the doxyfile
-	 */
-	public void append( Chunk chunk ) {
-		// Pre-condition
-		assert chunk.getOwner() == null;
+    /**
+     * Appends a new chunk to the doxyfile.
+     *
+     * @param	chunk	a chunk to append to the doxyfile
+     */
+    public void append( Chunk chunk ) {
+        // Pre-condition
+        assert chunk.getOwner() == null;
 
-		// References the chunk.
-		chunk.setOwner( this );
-		this.chunks.add( chunk );
+        // References the chunk.
+        chunk.setOwner( this );
+        this.chunks.add( chunk );
 
-		// Do special handling for settings.
-		if( chunk instanceof Setting ) {
-			Setting	setting = (Setting) chunk;
-			this.settings.put( setting.getIdentifier(), setting );
+        // Do special handling for settings.
+        if( chunk instanceof Setting ) {
+            Setting	setting = (Setting) chunk;
+            this.settings.put( setting.getIdentifier(), setting );
 
             // Retrieves the setting group name.
             String groupName = setting.getProperty( Setting.GROUP );
@@ -161,17 +161,17 @@ public class Doxyfile {
                 this.groups.put( groupName, group );
             }
             group.add( setting );
-		}
-	}
+        }
+    }
 
-	/**
-	 * Retrieves the resource file that contains the doxyfile.
-	 *
-	 * @return	a resource file
-	 */
-	public IFile getIFile() {
-		return ifile;
-	}
+    /**
+     * Retrieves the resource file that contains the doxyfile.
+     *
+     * @return	a resource file
+     */
+    public IFile getIFile() {
+        return ifile;
+    }
 
     /**
      * Retrieves the resource file that contains the doxyfile.
@@ -191,127 +191,129 @@ public class Doxyfile {
         return this.groups.values().toArray();
     }
 
-	/**
-	 * Retrieves the last appended chunk
-	 *
-	 * @return	the last added chunk or null if none
-	 */
-	public Chunk getLastChunk() {
-		if( this.chunks.isEmpty() == false ) {
-			return (Chunk) this.chunks.get( this.chunks.size() - 1 );
-		}
-		else {
-			return null;
-		}
-	}
+    /**
+     * Retrieves the last appended chunk
+     *
+     * @return	the last added chunk or null if none
+     */
+    public Chunk getLastChunk() {
+        if( this.chunks.isEmpty() == false ) {
+            return (Chunk) this.chunks.get( this.chunks.size() - 1 );
+        }
+        else {
+            return null;
+        }
+    }
 
-	/**
-	 * Retrieves the container that will receive the documentation build outputs.
-	 *
-	 * @return	a folder, or null when none
-	 */
-	public IContainer getOutputContainer() {
-		IContainer	outputContainer	= null;
-		Setting		outputSetting	= getSetting("OUTPUT_DIRECTORY");
+    /**
+     * Retrieves the container that will receive the documentation build outputs.
+     *
+     * @return	a folder, or null when none
+     */
+    public IContainer getOutputContainer() {
+        IContainer	outputContainer	= null;
+        Setting		outputSetting	= getSetting("OUTPUT_DIRECTORY");
 
-		if( outputSetting != null ) {
-			Path	outputPath = new Path(outputSetting.getValue());
+        if( outputSetting != null ) {
+            Path outputPath = new Path(outputSetting.getValue());
+            if(outputPath.isEmpty()) {
+                if (ifile != null) {
+                    outputContainer = ifile.getParent();
+                }
+            } else {
+                File containerFile = null;
+                if( !outputPath.isAbsolute() ) {
+                    if (ifile != null) {
+                        containerFile = ifile.getParent().getLocation().append(outputPath).toFile();
+                    } else {
+                        containerFile = new Path(file.getParentFile().getAbsolutePath()).append(outputPath).toFile();
+                    }
+                }
+                IContainer[] foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocationURI(containerFile.toURI());
+                outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
+            }
+        }
+        return outputContainer;
+    }
 
-			if( outputPath.isEmpty() ) {
-			    if (ifile != null)
-			        outputContainer = ifile.getParent();
-			}
-			else if( outputPath.isAbsolute() ) {
-				IContainer[]	foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(outputPath);
-				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
-			}
-			else if (ifile != null) {
-				IPath			fullOutputPath	= ifile.getParent().getLocation().append(outputPath);
-				IContainer[]	foundContainers	= ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(fullOutputPath);
-				outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
-			}
-		}
-		return outputContainer;
-	}
+    /**
+     * Retrieves a single setting for the specified identifier.
+     *
+     * @param	identifier	a string containing a setting identifier
+     *
+     * @return	the found setting or null if none
+     */
+    public Setting getSetting( String identifier ) {
+        return (Setting) settings.get(identifier);
+    }
 
-	/**
-	 * Retrieves a single setting for the specified identifier.
-	 *
-	 * @param	identifier	a string containing a setting identifier
-	 *
-	 * @return	the found setting or null if none
-	 */
-	public Setting getSetting( String identifier ) {
-		return (Setting) settings.get(identifier);
-	}
+    /**
+     * Retrieves all settings as an array
+     *
+     * @return	an array of settings
+     */
+    public Object[] getSettings() {
+        return settings.values().toArray();
+    }
 
-	/**
-	 * Retrieves all settings as an array
-	 *
-	 * @return	an array of settings
-	 */
-	public Object[] getSettings() {
-		return settings.values().toArray();
-	}
+    /**
+     * Tells if the doxyfile has the given setting.
+     *
+     * @param	identifier	a string containing a setting identifier
+     *
+     * @return	true or false
+     */
+    public boolean hasSetting( String identifier ) {
+        return settings.get(identifier) != null;
+    }
 
-	/**
-	 * Tells if the doxyfile has the given setting.
-	 *
-	 * @param	identifier	a string containing a setting identifier
-	 *
-	 * @return	true or false
-	 */
-	public boolean hasSetting( String identifier ) {
-		return settings.get(identifier) != null;
-	}
+    /**
+     * Tells if the given path is relative to the doxyfile.
+     *
+     * @return	true or false
+     */
+    public boolean isPathRelative( IPath path ) {
+        if (ifile != null)
+            return ifile.getLocation().removeLastSegments(1).isPrefixOf( path );
+        else
+            return false;
+    }
 
-	/**
-	 * Tells if the given path is relative to the doxyfile.
-	 *
-	 * @return	true or false
-	 */
-	public boolean isPathRelative( IPath path ) {
-	    if (ifile != null)
-	        return ifile.getLocation().removeLastSegments(1).isPrefixOf( path );
-	    else
-	        return false;
-	}
+    /**
+     * Makes the given path relative to the doxyfile path only of the given
+     * path point to a location that is in the sub-directory containing the
+     * doxyfile.
+     *
+     * @return	the argument path made relative to the doxyfile
+     */
+    public IPath makePathRelative( IPath path ) {
+        if( isPathRelative(path) ) {
+            int		matchingCount = ifile.getLocation().removeLastSegments(1).matchingFirstSegments( path );
+            IPath	relativePath = path.removeFirstSegments( matchingCount ).setDevice( new String() );
+            return relativePath.isEmpty() ? new Path(".") : relativePath;
+        }
+        else {
+            return path;
+        }
+    }
 
-	/**
-	 * Makes the given path relative to the doxyfile path only of the given
-	 * path point to a location that is in the sub-directory containing the
-	 * doxyfile.
-	 *
-	 * @return	the argument path made relative to the doxyfile
-	 */
-	public IPath makePathRelative( IPath path ) {
-		if( isPathRelative(path) ) {
-			int		matchingCount = ifile.getLocation().removeLastSegments(1).matchingFirstSegments( path );
-			IPath	relativePath = path.removeFirstSegments( matchingCount ).setDevice( new String() );
-			return relativePath.isEmpty() ? new Path(".") : relativePath;
-		}
-		else {
-			return path;
-		}
-	}
+    /**
+     * Retrieves the iterator the whole chunk collection.
+     *
+     * @return	an iterator on chunks
+     */
+    public Iterator<Chunk> iterator() {
+        return this.chunks.iterator();
+    }
 
-	/**
-	 * Retrieves the iterator the whole chunk collection.
-	 *
-	 * @return	an iterator on chunks
-	 */
-	public Iterator<Chunk> iterator() {
-		return this.chunks.iterator();
-	}
-
-	/**
-	 * Retrieves the iterator on the setting collection.
-	 *
-	 * @return	an iterator on Setting instances
-	 */
-	public Iterator<Setting> settingIterator() {
-		return settings.values().iterator();
-	}
+    /**
+     * Retrieves the iterator on the setting collection.
+     *
+     * @return	an iterator on Setting instances
+     */
+    public Iterator<Setting> settingIterator() {
+        return settings.values().iterator();
+    }
 
     public String getFullPath() {
         if (ifile != null) {
