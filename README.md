@@ -9,6 +9,8 @@ Features Overview:
 - doxygen outputs logging and
 - optional packaged doxygen binaries (for windows and linux)
 
+![eclox_arch](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox.png "Eclox Architecture")
+
 Installation:
 -------------
 There are two options to install the plugin: using the update site or using the packaged feature.
@@ -26,12 +28,18 @@ Configuration
 
 Once the plugin installed, you must ensure that the default PATH environment variable makes the Doxygen binary reachable for the plugin. If not, you can update PATH to include to directory containing the Doxygen binary, or you can tell eclox where that binary is located on your system (which is in my opinion the better solution). To do this, open eclipse's preference edition dialog window and go into the new "Doxygen" section.
 
+
+
 Usage
 -----
 
 You can create new Doxygen projects (also called doxyfiles) using the creation wizard. Go to "File->New->Other->Other->Doxygen Configuration". Press next and set both file location and name. Then a empty doxyfile will be created at the specified location, the wizard automatically adds the ".Doxyfile" extension.
 
 You should now see a file with a blue @-sign icon. This is your new doxyfile. Double-clicking on it will open the editor. You can now browse and edit the settings.
+
+![eclox_editor_basic](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/editor-basic.png "Eclox basic editor")
+
+![eclox_editor_advanced](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/editor-advanced.png "Eclox advanced editor")
 
 Once your have properly set all doxyfile fields, you can launch a documentation build using the toolbar icon showing a blue @-sign. In the case the button is not visible in the toolbar, your current perspective needs to get configured. Go to "Window->Customize perspective->Commands" and in "Available command groups" check "Doxygen". Additionally, you can browse the latest builds by clicking the down arrow right to the toolbar button.
 
