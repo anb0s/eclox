@@ -28,7 +28,7 @@ Configuration
 
 Once the plugin installed, you must ensure that the default PATH environment variable makes the Doxygen binary reachable for the plugin. If not, you can update PATH to include to directory containing the Doxygen binary, or you can tell eclox where that binary is located on your system (which is in my opinion the better solution). To do this, open eclipse's preference edition dialog window and go into the new "Doxygen" section.
 
-
+For **Mac OS X** users there is an excellent HowTo: https://github.com/theolind/mahm3lib/wiki/Integrating-Doxygen-with-Eclipse
 
 Usage
 -----
