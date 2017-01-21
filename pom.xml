@@ -17,7 +17,7 @@
 
 	<properties>
 		<tycho.version>0.24.0</tycho.version>
-		<target.platform>Eclipse-4.5</target.platform>
+		<target.platform>Eclipse-4.6</target.platform>
 		<eclox-site>file:/${basedir}/../eclox.site/target/repository</eclox-site>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
