@@ -12,6 +12,9 @@
  *     Andre Bossert - improved thread handling, added show command in console / title
  *                   - Add ability to use Doxyfile not in project scope
  *                   - Refactoring of deprecated API usage
+ *                   - Support resources in linked folders
+ *                     https://github.com/anb0s/eclox/issues/176
+ *                     Thanks to Corderbollie!
  ******************************************************************************/
 
 package eclox.core.doxygen;
@@ -20,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +49,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.filesystem.URIUtil;
 
 import eclox.core.Plugin;
 import eclox.core.doxyfiles.Doxyfile;
@@ -500,9 +505,10 @@ public class BuildJob extends Job {
      * Creates resource markers while finding warning and errors in the
      * managed log.
      *
-     * @param	monitor	the progress monitor used to watch for cancel requests.
+     * @param   monitor	the progress monitor used to watch for cancel requests.
+     * @throws  CoreException, URISyntaxException
      */
-    private void createMarkers( IProgressMonitor monitor ) throws CoreException
+    private void createMarkers( IProgressMonitor monitor ) throws CoreException, URISyntaxException
     {
         IWorkspaceRoot	workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
         Matcher			matcher = null;
@@ -515,14 +521,20 @@ public class BuildJob extends Job {
             Integer		lineNumer    = new Integer( matcher.group(2) );
             int			severity     = Marker.toMarkerSeverity( matcher.group(3) );
             String		message      = new String( matcher.group(4) );
-            IMarker		marker       = Marker.create( workspaceRoot.getFileForLocation(resourcePath), lineNumer.intValue(), message, severity );
-
-            if( marker != null ) {
-                markers.add( marker );
+            if (resourcePath != null)
+            {
+                IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
+                if ((files.length > 0) && (files[0] != null))
+                {
+                    IMarker     marker = Marker.create( files[0], lineNumer.intValue(), message, severity );
+                    if( marker != null )
+                    {
+                        markers.add( marker );
+                    }
+                }
             }
         }
         matcher = null;
-
 
         // Searches obsolete tags warnings.
         matcher = obsoleteTagWarningPattern.matcher( log );
@@ -532,10 +544,17 @@ public class BuildJob extends Job {
             String		setting = new String( matcher.group(1) );
             Integer		lineNumer = new Integer( matcher.group(2) );
             Path		resourcePath = new Path( matcher.group(3) );
-            IMarker		marker = Marker.create( workspaceRoot.getFileForLocation(resourcePath), setting, lineNumer.intValue(), message, IMarker.SEVERITY_WARNING );
-
-            if( marker != null ) {
-                markers.add( marker );
+            if (resourcePath != null)
+            {
+                IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
+                if ((files.length > 0) && (files[0] != null))
+                {
+                    IMarker     marker = Marker.create( files[0], setting, lineNumer.intValue(), message, IMarker.SEVERITY_WARNING );
+                    if( marker != null )
+                    {
+                        markers.add( marker );
+                    }
+                }
             }
         }
         matcher = null;
