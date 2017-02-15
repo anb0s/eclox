@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2005, 2013 Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.advanced.filters;
 
@@ -30,36 +30,36 @@ import eclox.core.doxyfiles.Setting;
 
 /**
  * Implements a filter that shows settings by groups.
- * 
+ *
  * @author gbrocker
  */
 public class ByGroup implements IFilter {
-    
+
 	/**
 	 * the doxyfile being filtered
 	 */
 	private Doxyfile doxyfile;
-	
+
     /**
      * the combo control displaying all group that are selectable by the user
      */
     private Combo combo;
-    
+
     /**
      * the saved combo selection index
      */
-    private int savedComboSelection = -1;
-    
+    private int savedComboSelection = 0;
+
     /**
      * the current viewer beging filtered.
      */
     private StructuredViewer viewer;
-    
+
     /**
      * the current viewer filter that filters objects displayed in the setting viewer
      */
     private MyViewerFilter viewerFilter;
-    
+
     /**
      * Implements a selection listener for the managed combo control.
      */
@@ -71,7 +71,7 @@ public class ByGroup implements IFilter {
 		public void widgetDefaultSelected(SelectionEvent e) {
 			// Pre-condition
 			assert viewer != null;
-			
+
 			viewer.refresh();
 		}
 
@@ -81,12 +81,12 @@ public class ByGroup implements IFilter {
 		public void widgetSelected(SelectionEvent e) {
 			// Pre-condition
 			assert viewer != null;
-			
+
 			viewer.refresh();
 		}
-    	
+
     }
-    
+
     /**
      * Implements a structure viewer filter that will filter setting according to the
      * selected group
@@ -99,12 +99,12 @@ public class ByGroup implements IFilter {
         public boolean select(Viewer viewer, Object parentElement, Object element) {
 	        	// Pre-condition
 	        	assert combo != null;
-	        	assert element instanceof Setting; 
-	        	
-	        	// Retrieves the selected group name. 
+	        	assert element instanceof Setting;
+
+	        	// Retrieves the selected group name.
 	        	int		groupIndex = combo.getSelectionIndex();
 	        	String	groupName = groupIndex >= 0 ? combo.getItem( groupIndex ) : null;
-	        	
+
 	        	// Tests if the given element is in the right group.
 	        	if( groupName != null ) {
 		        	Setting	setting = (Setting) element;
@@ -115,14 +115,14 @@ public class ByGroup implements IFilter {
 	        		return false;
 	        	}
         }
-        
+
     }
 
     /**
 	 * @see eclox.ui.editor.advanced.filters.IFilter#setDoxyfile(eclox.doxyfiles.Doxyfile)
 	 */
 	public void setDoxyfile(Doxyfile doxyfile) {
-		this.doxyfile = doxyfile; 
+		this.doxyfile = doxyfile;
 	}
 
 	/**
@@ -132,12 +132,12 @@ public class ByGroup implements IFilter {
         // Pre-condition
         assert combo == null;
         assert doxyfile != null;
-        
+
         // Creates the managed combo control.
         combo = new Combo( parent, SWT.FLAT|SWT.BORDER|SWT.READ_ONLY );
         combo.addSelectionListener( new MySelectionListener() );
         parent.setLayout( new FillLayout() );
-        
+
         // Fills the combo with group names.
         Object[]		objects = doxyfile.getGroups();
         int			i;
@@ -145,10 +145,10 @@ public class ByGroup implements IFilter {
         		Group	group = (Group) objects[i];
         		combo.add( group.getName() );
         }
-        
+
         // Restores the combo selection.
         combo.select( savedComboSelection );
-        
+
         // Post-condition
         assert combo != null;
     }
@@ -160,12 +160,12 @@ public class ByGroup implements IFilter {
         // Pre-condition
         assert this.viewerFilter == null;
         assert this.viewer == null;
-        
+
         // Creates the viewer filter.
         this.viewerFilter = new MyViewerFilter();
         this.viewer = viewer;
         this.viewer.addFilter( viewerFilter );
-        
+
         // Post-condition
         assert this.viewerFilter != null;
         assert this.viewer == viewer;
@@ -177,15 +177,15 @@ public class ByGroup implements IFilter {
     public void disposeControls() {
         // Pre-condition
         assert combo != null;
-        
+
         // Saves the combo selection.
         savedComboSelection = combo.getSelectionIndex();
-        
+
         // Diposes the managed combo control.
         combo.getParent().setLayout( null );
         combo.dispose();
         combo = null;
-        
+
         // Post-condition
         assert combo == null;
     }
@@ -197,12 +197,12 @@ public class ByGroup implements IFilter {
         // Pre-condition
         assert this.viewerFilter != null;
         assert this.viewer == viewer;
-        
+
         // Disposes the viewer filter.
         this.viewer.removeFilter( viewerFilter );
         this.viewer = null;
         this.viewerFilter = null;
-        
+
         // Post-condition
         assert this.viewerFilter == null;
         assert this.viewer == null;
