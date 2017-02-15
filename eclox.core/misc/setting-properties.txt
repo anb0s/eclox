@@ -1,4 +1,4 @@
-# This file provides additionnal properties to the items of a doxyfile.
+# This file provides additional properties to the items of a doxyfile.
 #
 # eclox
 
@@ -742,7 +742,7 @@ PERLMOD_MAKEVAR_PREFIX.group = Perl Module Output
 PERLMOD_MAKEVAR_PREFIX.note = The names of the make variables in the generated doxyrules.make file are prefixed with the string contained in PERLMOD_MAKEVAR_PREFIX. This is useful so different doxyrules.make files included by the same Makefile don't overwrite each other's variables.
 
 #---------------------------------------------------------------------------
-# Configuration options related to the preprocessor   
+# Configuration options related to the preprocessor
 #---------------------------------------------------------------------------
 
 ENABLE_PREPROCESSING.text = Enable Preprocessing
@@ -791,7 +791,7 @@ SKIP_FUNCTION_MACROS.type = boolean
 SKIP_FUNCTION_MACROS.note = If the SKIP_FUNCTION_MACROS tag is set to YES (the default) then doxygen's preprocessor will remove all function-like macros that are alone on a line, have an all uppercase name, and do not end with a semicolon. Such function macros are typically used for boiler-plate code, and will confuse the parser if not removed.
 
 #---------------------------------------------------------------------------
-# Configuration::additions related to external references   
+# Configuration::additions related to external references
 #---------------------------------------------------------------------------
 
 TAGFILES.text = Tag Files
@@ -820,7 +820,7 @@ PERL_PATH.type = file
 PERL_PATH.note = The PERL_PATH should be the absolute path and name of the perl script interpreter (i.e. the result of `which perl').
 
 #---------------------------------------------------------------------------
-# Configuration options related to the dot tool   
+# Configuration options related to the dot tool
 #---------------------------------------------------------------------------
 
 CLASS_DIAGRAMS.text = Class Diagrams
@@ -951,7 +951,7 @@ DOT_CLEANUP.type = boolean
 DOT_CLEANUP.note = If the DOT_CLEANUP tag is set to YES (the default) Doxygen will remove the intermediate dot files that are used to generate the various graphs.
 
 #---------------------------------------------------------------------------
-# Configuration::additions related to the search engine   
+# Configuration::additions related to the search engine
 #---------------------------------------------------------------------------
 
 SEARCHENGINE.text = Search Engine

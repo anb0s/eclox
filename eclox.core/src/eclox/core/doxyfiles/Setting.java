@@ -91,7 +91,7 @@ public class Setting extends Chunk {
         // Ensures that properties have been loaded.
         if( defaultProperties == null ) {
             try {
-                InputStream propertiesInput = Plugin.class.getResourceAsStream("/misc/setting-properties.txt");
+                InputStream propertiesInput = Plugin.getResourceAsStream("/misc/setting-properties.txt");
                 defaultProperties = new Properties();
                 if (propertiesInput != null)
                     defaultProperties.load( propertiesInput );

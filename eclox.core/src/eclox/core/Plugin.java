@@ -15,6 +15,12 @@
 
 package eclox.core;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
@@ -30,7 +36,6 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 	 * the default plugin instance
 	 */
 	private static Plugin plugin;
-
 
 	/**
 	 * The constructor.
@@ -86,5 +91,18 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
 	 */
 	public static void log( Throwable throwable ) {
 	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Exception caught. " + throwable.toString(), throwable) );
+	}
+
+	public static InputStream getResourceAsStream(IPath path) {
+	    try {
+            return FileLocator.openStream(plugin.getBundle(), path, true);
+        } catch (IOException e) {
+            log(e);
+        }
+        return null;
+	}
+
+	public static InputStream getResourceAsStream(String path) {
+	    return getResourceAsStream(new Path(path));
 	}
 }
