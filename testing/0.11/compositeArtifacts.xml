@@ -2,10 +2,10 @@
 <?compositeArtifactRepository version='1.0.0'?>
 <repository name='Eclox 0.11' type='org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository' version='1.0.0'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1485037090108'/>
+    <property name='p2.timestamp' value='1487759054963'/>
     <property name='p2.atomic.composite.loading' value='true'/>
   </properties>
-  <children size='7'>
+  <children size='8'>
     <child location='0.11.0.v20160605-0854'/>
     <child location='0.11.0.v20160605-1017'/>
     <child location='0.11.0.v20160608-1117'/>
@@ -13,5 +13,6 @@
     <child location='0.11.0.v20161101-1923'/>
     <child location='0.11.0.v20161106-1459'/>
     <child location='0.11.0.v20170121-2217'/>
+    <child location='0.11.0.v20170222-1024'/>
   </children>
 </repository>
