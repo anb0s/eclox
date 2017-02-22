@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2004, 2013 Guillaume Brocker
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - #171: added sorting column in advanced tab
  *
  ******************************************************************************/
 
@@ -316,6 +318,18 @@ public class Setting extends Chunk {
 				valueListener.settingValueChanged( this );
 			}
 		}
+    }
+
+    public String getTextLabel(String propDirty) {
+        String columnText;
+            columnText = hasProperty(Setting.TEXT) ? getProperty(Setting.TEXT)
+                    : getIdentifier();
+            columnText = hasProperty(propDirty) ? ("*").concat(columnText) : columnText;
+        return columnText;
+    }
+    
+    public String getValueLabel() {
+        return getValue();
     }
 
 }
