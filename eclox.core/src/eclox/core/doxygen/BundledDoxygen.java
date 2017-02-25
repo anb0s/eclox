@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -14,6 +14,7 @@
 
 package eclox.core.doxygen;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Vector;
@@ -23,7 +24,6 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
 import eclox.core.Plugin;
@@ -54,7 +54,7 @@ public final class BundledDoxygen extends Doxygen {
 	public static Collection<BundledDoxygen> getAll() {
 		Collection<BundledDoxygen>			doxygens	= new Vector<BundledDoxygen>();
 		IExtensionRegistry	registry	= Platform.getExtensionRegistry();
-		IExtensionPoint		point		= registry.getExtensionPoint("org.gna.eclox.core.doxygen");
+		IExtensionPoint		point		= registry.getExtensionPoint("org.gna.eclox.core.doxygen");		
 		IExtension[]		extensions	= point.getExtensions();
 		for (int i = 0; i < extensions.length; i++) {
 			IExtension				extension	= extensions[i];
@@ -63,14 +63,15 @@ public final class BundledDoxygen extends Doxygen {
 				final String	arch	= elements[j].getAttribute("arch");
 				final String	os		= elements[j].getAttribute("os");
 				if( Platform.getOS().equals(os) && Platform.getOSArch().equals(arch) ) {
-					final Path		path	= new Path( elements[j].getAttribute("path") );
-					URL				url		= FileLocator.find(Plugin.getDefault().getBundle(), path, null);
-					if( url != null ) {
-						doxygens.add(new BundledDoxygen(url));
-					}
-					else {
-						Plugin.getDefault().logError( path.toString() + ": not a valid doxygen path." );
-					}
+					String	path	= elements[j].getAttribute("path");
+					URL url;
+                    try {
+                        url = FileLocator.toFileURL(Platform.getBundle("org.gna.eclox.doxygen.core").getEntry(path));
+                        doxygens.add(new BundledDoxygen(url));
+                    } catch (IOException e) {
+                        //Plugin.getDefault().logError( path + ": not a valid doxygen path." );
+                        Plugin.log(e);
+                    }
 				}
 			}
 		}
