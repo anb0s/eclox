@@ -15,9 +15,11 @@ Installation:
 -------------
 There are two options to install the plugin: using the update site or using the packaged feature.
 
-The update site is the more convenient way to install **eclox** and it is located at: http://anb0s.github.io/eclox
+The update site is the more convenient way to install **eclox** and it is located at:
+http://anb0s.github.io/eclox
 
-It is also available at Eclipse Markeplace: http://marketplace.eclipse.org/content/eclox
+It is also available at Eclipse Markeplace:
+http://marketplace.eclipse.org/content/eclox
 
 When using the packaged feature, you must extract the archive content into your eclipse's root location.
 
