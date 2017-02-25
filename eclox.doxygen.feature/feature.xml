@@ -2,7 +2,7 @@
 <feature
       id="org.gna.eclox.doxygen.feature"
       label="Doxygen binaries"
-      version="1.8.10"
+      version="1.8.13"
       provider-name="Guillaume Brocker, Andre Bossert"
       plugin="org.gna.eclox.branding"
       os="linux,win32"

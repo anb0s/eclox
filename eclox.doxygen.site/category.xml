@@ -3,7 +3,7 @@
    <description name="Eclox Update Site" url="http://download.gna.org/eclox/update">
       This is the official eclox&apos;s update site.
    </description>
-   <feature url="features/org.gna.eclox.doxygen.feature_1.8.10.jar" id="org.gna.eclox.doxygen.feature" version="1.8.10" os="win32" arch="ia64,ia64_32,x86,x86_64">
+   <feature url="features/org.gna.eclox.doxygen.feature_1.8.13.jar" id="org.gna.eclox.doxygen.feature" version="1.8.13" os="linux,win32" arch="ia64,ia64_32,x86,x86_64">
       <category name="doxygen"/>
    </feature>
    <category-def name="doxygen" label="Doxygen"/>
