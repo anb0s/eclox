@@ -9,10 +9,66 @@
 	<name>Eclox Doxygen Site</name>
 
 	<parent>
-		<groupId>org.gna.eclox.group</groupId>
+		<groupId>org.gna.eclox.doxygen.group</groupId>
 		<artifactId>org.gna.eclox.doxygen.releng</artifactId>
-		<version>1.8.13</version>
+		<version>1.8.13-SNAPSHOT</version>
 		<relativePath>../eclox.doxygen.releng</relativePath>
 	</parent>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-eclipserun-plugin</artifactId>
+				<version>${tycho.version}</version>
+				<configuration>
+				    <!-- IMPORTANT: DO NOT split the arg line -->
+					<appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -Dsite.label="Eclox Doxygen" -Dsite.dir=${site.dir} -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -DbuildQualifier=${buildQualifier}</appArgLine>
+					<repositories>
+						<repository>
+							<id>Mars</id>
+							<layout>p2</layout>
+							<url>http://download.eclipse.org/releases/mars</url>
+						</repository>
+					</repositories>
+					<dependencies>
+						<dependency>
+							<artifactId>org.eclipse.ant.core</artifactId>
+							<type>eclipse-plugin</type>
+						</dependency>
+						<dependency>
+							<artifactId>org.apache.ant</artifactId>
+							<type>eclipse-plugin</type>
+						</dependency>
+						<dependency>
+							<artifactId>org.eclipse.equinox.p2.repository.tools</artifactId>
+							<type>eclipse-plugin</type>
+						</dependency>
+						<dependency>
+                            <artifactId>org.eclipse.equinox.p2.core.feature</artifactId>
+                            <type>eclipse-feature</type>
+                        </dependency>
+                        <dependency>
+                            <artifactId>org.eclipse.equinox.p2.extras.feature</artifactId>
+                            <type>eclipse-feature</type>
+                        </dependency>
+                        <dependency>
+                            <artifactId>org.eclipse.equinox.ds</artifactId>
+                            <type>eclipse-plugin</type>
+                        </dependency>
+					</dependencies>
+				</configuration>
+				<executions>
+					<execution>
+						<id>add-p2-composite-repository</id>
+						<phase>package</phase>
+						<goals>
+							<goal>eclipse-run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

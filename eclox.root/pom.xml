@@ -5,14 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.gna.eclox.group</groupId>
-	<artifactId>org.gna.eclox</artifactId>
+	<artifactId>org.gna.eclox.root</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>Eclox</name>
+	<name>Eclox Root</name>
 
 	<modules>
-		<module>eclox.releng</module>
-		<!-- module>eclox.doxygen.releng</module-->
+		<module>../eclox.releng</module>
 	</modules>
 
 	<properties>

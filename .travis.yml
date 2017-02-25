@@ -2,6 +2,6 @@ language: java
 jdk:
   - oraclejdk7
 
-before_script:
+before_script: cd eclox.root
 
 script: mvn clean verify

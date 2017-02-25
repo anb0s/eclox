@@ -2,11 +2,11 @@
 <feature
       id="org.gna.eclox.doxygen.feature"
       label="Doxygen binaries"
-      version="1.8.13"
+      version="1.8.13.qualifier"
       provider-name="Guillaume Brocker, Andre Bossert"
       plugin="org.gna.eclox.branding"
       os="linux,win32"
-      arch="ia64,ia64_32,x86,x86_64">
+      arch="x86,x86_64">
 
    <description url="http://anb0s.github.io/eclox">
       Eclox provides the Doxygen documentation system for Eclipse.
@@ -15,7 +15,7 @@ This feature provides Doxygen binaries for Eclox.
 
    <copyright url="http://anb0s.github.io/eclox">
       Copyright (C) 2003-2013 Guillaume Brocker
-Copyright (C) 2015-2016 Andre Bossert
+Copyright (C) 2015-2017 Andre Bossert
    </copyright>
 
    <license url="http://www.gnu.org/licenses/gpl.txt">
@@ -38,14 +38,16 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
    </url>
 
    <requires>
-      <import plugin="org.gna.eclox.core"/>
+      <import plugin="org.gna.eclox.core" version="0.11.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
          id="org.gna.eclox.doxygen.core"
+         os="linux,win32"
+         arch="x86,x86_64"
          download-size="0"
          install-size="0"
-         version="1.8.10"
+         version="0.0.0"
          fragment="true"
          unpack="false"/>
 

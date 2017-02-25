@@ -11,8 +11,9 @@
 
 	<parent>
 		<groupId>org.gna.eclox.group</groupId>
-		<artifactId>org.gna.eclox</artifactId>
+		<artifactId>org.gna.eclox.root</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../eclox.root</relativePath>
 	</parent>
 
 	<modules>

@@ -9,9 +9,9 @@
 	<name>Eclox Doxygen Core</name>
 
 	<parent>
-		<groupId>org.gna.eclox.group</groupId>
+		<groupId>org.gna.eclox.doxygen.group</groupId>
 		<artifactId>org.gna.eclox.doxygen.releng</artifactId>
-		<version>1.8.13</version>
+		<version>1.8.13-SNAPSHOT</version>
 		<relativePath>../eclox.doxygen.releng</relativePath>
 	</parent>
 
