@@ -37,7 +37,7 @@
 				<artifactId>tycho-versions-plugin</artifactId>
 				<version>${tycho.version}</version>
 				<configuration>
-					<newVersion>1.8.10</newVersion>
+					<newVersion>1.8.13</newVersion>
 				</configuration>
 			</plugin>
 		</plugins>
