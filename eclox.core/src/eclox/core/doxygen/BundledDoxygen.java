@@ -14,6 +14,7 @@
 
 package eclox.core.doxygen;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
@@ -54,7 +55,7 @@ public final class BundledDoxygen extends Doxygen {
 	public static Collection<BundledDoxygen> getAll() {
 		Collection<BundledDoxygen>			doxygens	= new Vector<BundledDoxygen>();
 		IExtensionRegistry	registry	= Platform.getExtensionRegistry();
-		IExtensionPoint		point		= registry.getExtensionPoint("org.gna.eclox.core.doxygen");		
+		IExtensionPoint		point		= registry.getExtensionPoint("org.gna.eclox.core.doxygen");
 		IExtension[]		extensions	= point.getExtensions();
 		for (int i = 0; i < extensions.length; i++) {
 			IExtension				extension	= extensions[i];
@@ -67,6 +68,12 @@ public final class BundledDoxygen extends Doxygen {
 					URL url;
                     try {
                         url = FileLocator.toFileURL(Platform.getBundle("org.gna.eclox.doxygen.core").getEntry(path));
+                        // https://github.com/anb0s/eclox/issues/184
+                        // [v0.11] bundled Doxygen binaries are not working (not executable) at Linux
+                        File exe = new File (FileLocator.resolve(url).getPath());
+                        if (!exe.canExecute()) {
+                        	exe.setExecutable(true);
+                        }
                         doxygens.add(new BundledDoxygen(url));
                     } catch (IOException e) {
                         //Plugin.getDefault().logError( path + ": not a valid doxygen path." );

@@ -4,7 +4,7 @@
    <extension
          point="org.gna.eclox.core.doxygen">
       <doxygen
-            arch="x86"
+            arch="x86_64"
             os="linux"
             path="bin/linux/x86_64/doxygen-1.8.13"/>
       <doxygen
