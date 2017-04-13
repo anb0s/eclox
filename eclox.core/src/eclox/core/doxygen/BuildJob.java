@@ -15,8 +15,10 @@
  *                   - Support resources in linked folders
  *                     https://github.com/anb0s/eclox/issues/176
  *                     Thanks to Corderbollie!
- *                   - fixed java.lang.IllegalArgumentException: endRule without matching beginRule 
+ *                   - fixed java.lang.IllegalArgumentException: endRule without matching beginRule
  *                     https://github.com/anb0s/eclox/issues/175
+ *                   - fixed obsolete settings are not marked
+ *                     https://github.com/anb0s/eclox/issues/187
  *
  ******************************************************************************/
 
@@ -78,7 +80,7 @@ public class BuildJob extends Job {
     /**
      * Defines the pattern used to match doxygen warnings about obsolete tags.
      */
-    private static final Pattern obsoleteTagWarningPattern = Pattern.compile("^Warning: Tag `(.+)' at line (\\d+) of file (.+) has become obsolete.$", Pattern.MULTILINE);
+    private static final Pattern obsoleteTagWarningPattern = Pattern.compile("(?i)^warning: Tag `(.+)' at line (\\d+) of file `(.+)' has become obsolete.$", Pattern.MULTILINE);
 
 
     /**
@@ -504,7 +506,7 @@ public class BuildJob extends Job {
      * @param   monitor	the progress monitor used to watch for cancel requests.
      * @throws  CoreException, URISyntaxException
      */
-    private void createMarkers( IProgressMonitor monitor ) throws CoreException, URISyntaxException {        
+    private void createMarkers( IProgressMonitor monitor ) throws CoreException, URISyntaxException {
         Matcher			matcher = null;
 
         // Searches documentation errors and warnings.
@@ -538,7 +540,7 @@ public class BuildJob extends Job {
                 IMarker marker = Marker.create(file, setting, lineNumer.intValue(), message, severity);
                 if( marker != null ) {
                     markers.add(marker);
-                    break; // exit loop 
+                    break; // exit loop
                 }
             }
         }
