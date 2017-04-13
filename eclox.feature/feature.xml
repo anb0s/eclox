@@ -2,7 +2,7 @@
 <feature
       id="org.gna.eclox.feature"
       label="Eclox"
-      version="0.11.0.qualifier"
+      version="0.11.1.qualifier"
       provider-name="Guillaume Brocker, Andre Bossert"
       plugin="org.gna.eclox.branding"
       exclusive="true">
