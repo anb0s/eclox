@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2006-2008, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,6 +15,9 @@
  *                   - Support resources in linked folders
  *                     https://github.com/anb0s/eclox/issues/176
  *                     Thanks to Corderbollie!
+ *                   - fixed java.lang.IllegalArgumentException: endRule without matching beginRule 
+ *                     https://github.com/anb0s/eclox/issues/175
+ *
  ******************************************************************************/
 
 package eclox.core.doxygen;
@@ -391,8 +394,7 @@ public class BuildJob extends Job {
     protected IStatus run( IProgressMonitor monitor ) {
         IFile doxyIFile = getDoxyfile().getIFile();
         File doxyFile   = getDoxyfile().getFile();
-        try
-        {
+        try {
             // Initializes the progress monitor.
             SubMonitor subMonitor = SubMonitor.convert(monitor, doxyfile.getFullPath(), 6);
 
@@ -449,6 +451,7 @@ public class BuildJob extends Job {
             // Unlocks the doxyfile.
             if (doxyIFile != null) {
                 getJobManager().endRule(doxyIFile);
+                doxyIFile = null;
             }
 
             // Builds error and warning markers
@@ -470,34 +473,27 @@ public class BuildJob extends Job {
 
             // Job's done.
             return Status.OK_STATUS;
-        }
-        catch( OperationCanceledException e ) {
-            if (doxyIFile != null) {
-                getJobManager().endRule(doxyIFile);
-            }
+        } catch(OperationCanceledException e) {
             return Status.CANCEL_STATUS;
-        }
-        catch( InvokeException e ) {
-            if (doxyIFile != null) {
-                getJobManager().endRule(doxyIFile);
-            }
+        } catch( InvokeException e ) {
             return new Status(
                     Status.WARNING,
                     Plugin.getDefault().getBundle().getSymbolicName(),
                     ERROR_DOXYGEN_NOT_FOUND,
                     "Doxygen was not found.",
                     e );
-        }
-        catch( Throwable t ) {
-            if (doxyIFile != null) {
-                getJobManager().endRule(doxyIFile);
-            }
+        } catch( Throwable t ) {
             return new Status(
                     Status.ERROR,
                     Plugin.getDefault().getBundle().getSymbolicName(),
                     0,
                     t.getMessage(),
                     t );
+        }
+        finally {
+            if (doxyIFile != null) {
+                getJobManager().endRule(doxyIFile);
+            }
         }
     }
 
@@ -508,56 +504,44 @@ public class BuildJob extends Job {
      * @param   monitor	the progress monitor used to watch for cancel requests.
      * @throws  CoreException, URISyntaxException
      */
-    private void createMarkers( IProgressMonitor monitor ) throws CoreException, URISyntaxException
-    {
-        IWorkspaceRoot	workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+    private void createMarkers( IProgressMonitor monitor ) throws CoreException, URISyntaxException {        
         Matcher			matcher = null;
 
         // Searches documentation errors and warnings.
         matcher = problemPattern.matcher( log );
-        while( matcher.find() == true )
-        {
+        while( matcher.find() == true ) {
             Path		resourcePath = new Path( matcher.group(1) );
             Integer		lineNumer    = new Integer( matcher.group(2) );
             int			severity     = Marker.toMarkerSeverity( matcher.group(3) );
             String		message      = new String( matcher.group(4) );
-            if (resourcePath != null)
-            {
-                IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
-                if ((files.length > 0) && (files[0] != null))
-                {
-                    IMarker     marker = Marker.create( files[0], lineNumer.intValue(), message, severity );
-                    if( marker != null )
-                    {
-                        markers.add( marker );
-                    }
-                }
-            }
+            createMarkersForResource(resourcePath, null, lineNumer, severity, message);
         }
         matcher = null;
 
         // Searches obsolete tags warnings.
         matcher = obsoleteTagWarningPattern.matcher( log );
-        while( matcher.find() == true )
-        {
+        while( matcher.find() == true ) {
             String		message = new String( matcher.group(0) );
             String		setting = new String( matcher.group(1) );
             Integer		lineNumer = new Integer( matcher.group(2) );
             Path		resourcePath = new Path( matcher.group(3) );
-            if (resourcePath != null)
-            {
-                IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
-                if ((files.length > 0) && (files[0] != null))
-                {
-                    IMarker     marker = Marker.create( files[0], setting, lineNumer.intValue(), message, IMarker.SEVERITY_WARNING );
-                    if( marker != null )
-                    {
-                        markers.add( marker );
-                    }
+            createMarkersForResource(resourcePath, setting, lineNumer, IMarker.SEVERITY_WARNING, message);
+        }
+        matcher = null;
+    }
+
+    private void createMarkersForResource(Path resourcePath, String setting, Integer lineNumer, int severity, String message) throws CoreException {
+        if (resourcePath != null) {
+            IWorkspaceRoot  workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+            IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
+            for (IFile file : files) {
+                IMarker marker = Marker.create(file, setting, lineNumer.intValue(), message, severity);
+                if( marker != null ) {
+                    markers.add(marker);
+                    break; // exit loop 
                 }
             }
         }
-        matcher = null;
     }
 
     /**
