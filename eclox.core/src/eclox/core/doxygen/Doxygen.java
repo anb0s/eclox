@@ -114,15 +114,22 @@ public abstract class Doxygen {
             // create process builder with doxygen command
             ProcessBuilder pb = new ProcessBuilder(getCommand(), "--help");
             // Runs the command and retrieves the version string.
-            Process				process	= pb.start();
-            BufferedReader		input	= new BufferedReader( new InputStreamReader(process.getInputStream()) );
-            BufferedReader		error	= new BufferedReader( new InputStreamReader(process.getErrorStream()) );
+            Process	process	= pb.start();
+            /*int ret = */process.waitFor();
+
+            BufferedReader input	= new BufferedReader( new InputStreamReader(process.getInputStream()) );
+            BufferedReader error	= new BufferedReader( new InputStreamReader(process.getErrorStream()) );
 
             // Matches the doxygen welcome message.
             Pattern	pattern	= Pattern.compile( "^doxygen\\s+version\\s+([\\d\\.]+).*", Pattern.CASE_INSENSITIVE|Pattern.DOTALL );
-            Matcher	matcher	= pattern.matcher( input.readLine() );
+            Matcher matcher = null;
+            String inputLine = input.readLine();
 
-            if( matcher.matches() ) {
+            if (inputLine != null && inputLine.length() > 0) {
+                matcher = pattern.matcher(inputLine);
+            }
+
+            if( matcher != null && matcher.matches() ) {
                 return matcher.group( 1 );
             }
             else {
@@ -131,8 +138,7 @@ public abstract class Doxygen {
                 while( (line = error.readLine()) != null ) {
                     errorMessage = errorMessage.concat(line);
                 }
-
-                throw new RuntimeException( "Unable to get doxygen version. " + errorMessage );
+                throw new RuntimeException( "Unable to get doxygen version: " + errorMessage );
             }
         }
         catch( Throwable t ) {
