@@ -1,47 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
 
-	<artifactId>org.gna.eclox.doxygen.releng</artifactId>
-	<version>1.8.13-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<name>Eclox Doxygen Releng</name>
+  <artifactId>org.gna.eclox.doxygen.releng</artifactId>
+  <version>1.8.13-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Eclox Doxygen Releng</name>
 
-	<parent>
-		<groupId>org.gna.eclox.doxygen.group</groupId>
-		<artifactId>org.gna.eclox.doxygen.root</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-		<relativePath>../eclox.doxygen.root</relativePath>
-	</parent>
+  <parent>
+    <groupId>org.gna.eclox.doxygen.group</groupId>
+    <artifactId>org.gna.eclox.doxygen.root</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <relativePath>../eclox.doxygen.root</relativePath>
+  </parent>
 
-	<repositories>
-		<repository>
-			<id>eclox</id>
-			<layout>p2</layout>
-			<url>${eclox-site}</url>
-		</repository>
-	</repositories>
+  <repositories>
+    <repository>
+      <id>eclox</id>
+      <layout>p2</layout>
+      <url>${eclox-site}</url>
+    </repository>
+  </repositories>
 
-	<modules>
-	    <module>../eclox.doxygen.platform</module>
-		<module>../eclox.doxygen.core</module>
-		<module>../eclox.doxygen.feature</module>
-		<module>../eclox.doxygen.site</module>
-	</modules>
+  <modules>
+      <module>../eclox.doxygen.platform</module>
+    <module>../eclox.doxygen.core</module>
+    <module>../eclox.doxygen.feature</module>
+    <module>../eclox.doxygen.site</module>
+  </modules>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-versions-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<configuration>
-					<newVersion>1.8.14-SNAPSHOT</newVersion>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <properties>
+    <new.version>1.8.14-SNAPSHOT</new.version>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-versions-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <newVersion>${new.version}</newVersion>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>
