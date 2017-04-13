@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <description name="Eclox Update Site" url="http://download.gna.org/eclox/update">
+   <description name="Eclox Update Site" url="http://anb0s.github.io/eclox">
       This is the official eclox&apos;s update site.
    </description>
    <feature url="features/org.gna.eclox.doxygen.feature_1.8.13.qualifier.jar" id="org.gna.eclox.doxygen.feature" version="1.8.13.qualifier" os="linux,win32" arch="x86,x86_64">
-      <category name="doxygen"/>
+      <category name="Eclox-Doxygen"/>
    </feature>
-   <category-def name="doxygen" label="Doxygen"/>
+   <category-def name="Eclox-Doxygen" label="Eclox Doxygen">
+      <description>
+         Container for Eclox Doxygen Bundle plugins.
+      </description>
+   </category-def>
 </site>
