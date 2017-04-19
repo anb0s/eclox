@@ -21,6 +21,8 @@ http://anb0s.github.io/eclox
 It is also available at Eclipse Markeplace:
 http://marketplace.eclipse.org/content/eclox
 
+<a href="http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=1536329" class="drag" title="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client"><img class="img-responsive" src="https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.png" alt="Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client" /></a>
+
 When using the packaged feature, you must extract the archive content into your eclipse's root location.
 
 For additional details, please refer to eclipse's user guide.
