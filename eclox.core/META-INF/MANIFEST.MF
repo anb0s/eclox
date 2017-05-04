@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Eclox Core
 Bundle-SymbolicName: org.gna.eclox.core; singleton:=true
 Bundle-Version: 0.11.2.qualifier
-Bundle-Vendor: Guillaume Brocker, Andre Bossert
+Bundle-Vendor: Andre Bossert
 Bundle-Localization: 
 Require-Bundle: org.eclipse.core.resources,
  org.eclipse.core.runtime,
