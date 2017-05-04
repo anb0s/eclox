@@ -213,8 +213,7 @@ public class Doxyfile {
     public IContainer getOutputContainer() {
         IContainer	outputContainer	= null;
         Setting		outputSetting	= getSetting("OUTPUT_DIRECTORY");
-
-        if( outputSetting != null ) {
+        if(outputSetting != null) {
             Path outputPath = new Path(outputSetting.getValue());
             if(outputPath.isEmpty()) {
                 if (ifile != null) {
@@ -222,15 +221,21 @@ public class Doxyfile {
                 }
             } else {
                 File containerFile = null;
-                if( !outputPath.isAbsolute() ) {
+                if(outputPath.isAbsolute()) {
+                    containerFile = outputPath.toFile();
+                } else {
                     if (ifile != null) {
                         containerFile = ifile.getParent().getLocation().append(outputPath).toFile();
                     } else {
                         containerFile = new Path(file.getParentFile().getAbsolutePath()).append(outputPath).toFile();
                     }
                 }
-                IContainer[] foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocationURI(containerFile.toURI());
-                outputContainer = foundContainers.length == 1 ? foundContainers[0] : null;
+                if (containerFile != null && containerFile.exists()) {
+                    IContainer[] foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocationURI(containerFile.toURI());
+                    if (foundContainers.length >= 1) {
+                        outputContainer =  foundContainers[0];
+                    }
+                }
             }
         }
         return outputContainer;
