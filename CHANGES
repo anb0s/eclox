@@ -1,3 +1,66 @@
+see too: https://github.com/anb0s/eclox/releases
+
+----------------------------------------------------------------
+v0.11.2 (09.05.2017)
+----------------------------------------------------------------
+Bug fixes for the first minor release @GitHub
+Fixed issues (https://github.com/anb0s/eclox/milestone/5?closed=1):
+- #191 exception after build if OUTPUT_DIRECTORY is an absolute path
+- #192 add Eclipse 4.2 target platform
+- #193 fix feature and plugin provider-name
+
+----------------------------------------------------------------
+v0.11.1  (18.04.2017)
+----------------------------------------------------------------
+Bug fixes for the first release @GitHub!
+Fixed issues (https://github.com/anb0s/eclox/milestone/4?closed=1):
+- #175 java.lang.IllegalArgumentException: endRule without matching beginRule
+- #186 NPE when trying to create new Doxyfile
+- #187 obsolete settings are not marked
+- #189 Doxygen binaries 1.8.13.v20170413-1543
+
+----------------------------------------------------------------
+v0.11.0 (26.02.2017)
+----------------------------------------------------------------
+First official release at GitHub!
+Main changes:
+- migrate to GitHub #161
+- support configurable working directory #87
+- support relative or project-based path to doxygen.exe #75
+- open a file that is not a resource in eclipse #15, #68
+- support resources in linked folders #176 **Thanks to Corderbollie**
+- scrollbar for input directories in graphical editor #167
+- sorting column in advanced tab #171
+- add update site with bundled Doxygen executables #182
+- updated project structure and build process
+- added composite site to support testing and release update streams Fixed execution of bundled linux x86_64 binary.
+All fixed issues (https://github.com/anb0s/eclox/milestone/1?closed=1):
+- #11 muliple Doxyfiles - editing
+- #12 Import of existing configuration files
+- #15 Add ability to use Doxyfile not in project scope
+- #68 open a file that is not a resource in eclipse
+- #75 relative or project-based path to doxygen.exe
+- #86 environment variables needed for some doxyfiles
+- #87 working directory not configurable
+- #114 Improvement static declaration of plugin relative identifier
+- #144 Tell more about the directory where eclox is stared
+- #161 migrate to GitHub
+- #162 prepare release 0.11.0
+- #163 Unable to use GraphViz
+- #164 Unable to create the selected preference page. eclox/core/ui/PreferencePage : Unsupported major.minor version 52.0
+- #165 new GitHub update site shows only one version &quot;Eclox 0.10.2.201508272130&quot;
+- #167 Scrollbar missing for Input Directories in Graphical Editor
+- #170 Graphviz and PlantUML on Windows
+- #171 Sorting column in Advanced tab
+- #173 [v0.11] invalid custom doxygen identifier found
+- #174 [v0.11] endRule without matching beginRule
+- #175 java.lang.IllegalArgumentException: endRule without matching beginRule
+- #178 No groups on advanced tab
+- #176 Support resources in linked folders
+- #182 [v0.11] add update site with bundled Doxygen executables
+- #184 [v0.11] bundled Doxygen binaries are not working (not executable) at Linux Known issues:
+- #166 freeze of build with Grep Console installed --&gt; **related to other plugin, please apply the described workaround**
+
 ----------------------------------------------------------------
 eclox-0.11.0-internal (05.06.2016)
 ----------------------------------------------------------------
@@ -23,7 +86,7 @@ Project move from GNA.org to GitHub
 - improved thread handling, added show command in console / title
 
 ----------------------------------------------------------------
-new maintainer: 2015-2016, Andre Bossert
+new maintainer: 2015-20xy, Andre Bossert
 ----------------------------------------------------------------
 
 ----------------------------------------------------------------
