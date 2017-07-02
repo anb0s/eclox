@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -171,11 +171,9 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 	 */
 	private void checkItem( final String identifier ) {
 		TableItem[]	items = table.getItems();
-
 		for( int i = 0; i < items.length; ++i ) {
 			Doxygen	current = (Doxygen) items[i].getData();
-
-			items[i].setChecked( current.getIdentifier().equalsIgnoreCase( identifier ) );
+			items[i].setChecked( current.getIdentifier().equalsIgnoreCase(identifier) );
 		}
 	}
 
@@ -367,16 +365,20 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		addItem( new DefaultDoxygen() );
 
 		// Adds custom doxygens.
-		final String	raw			= getPreferenceStore().getString(IPreferences.CUSTOM_DOXYGENS);
-		final String[]	splitted	= raw.split("\n");
-		for( int i = 0; i < splitted.length; ++i ) {
-			Doxygen	doxygen = Doxygen.getFromClassAndIdentifier(CustomDoxygen.class, splitted[i]);
-			if( doxygen != null ) {
-				addItem( doxygen );
-			}
-			else {
-				Plugin.getDefault().logError( splitted[i] + ": invalid custom doxygen identifier found." );
-			}
+		final String raw= getPreferenceStore().getString(IPreferences.CUSTOM_DOXYGENS);
+		if ( (raw != null) && (!raw.isEmpty()) ) {
+	        final String[]  splitted    = raw.split("\n");
+	        for( int i = 0; i < splitted.length; ++i ) {
+	            if ( (splitted[i] != null) && (!splitted[i].isEmpty()) ) {
+    	            Doxygen doxygen = Doxygen.getFromClassAndIdentifier(CustomDoxygen.class, splitted[i]);
+    	            if( doxygen != null ) {
+    	                addItem(doxygen);
+    	            }
+    	            else {
+    	                Plugin.getDefault().logError( "Invalid custom doxygen identifier found: '" + splitted[i] + "'");
+    	            }
+	            }
+	        }
 		}
 
 		// Adds bundled doxygens.
@@ -387,7 +389,7 @@ public class DefaultDoxygenFieldEditor extends FieldEditor {
 		}
 
 		// Select the default doxygen wrapper
-		checkItem( getPreferenceStore().getString( IPreferences.DEFAULT_DOXYGEN ) );
+		checkItem( getPreferenceStore().getString(IPreferences.DEFAULT_DOXYGEN) );
 	}
 
 
