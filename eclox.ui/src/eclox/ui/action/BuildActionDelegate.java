@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2004, 2007, 2008, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -211,7 +211,8 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 
 			// If there is no next doxyfile to build, ask the user for one.
 			if(doxyfile == null) {
-				selector.open();
+			    selector.open();
+				//selector.openNew();
 				doxyIFile = selector.getDoxyfile();
 				if (doxyIFile != null) {
 				    doxyfile = new Doxyfile(doxyIFile, null);

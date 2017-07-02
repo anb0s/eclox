@@ -322,7 +322,7 @@ public class Doxyfile {
 
     public String getFullPath() {
         if (ifile != null) {
-            return ifile.getFullPath().toOSString();
+            return ifile.getFullPath().toString();
         } else {
             return file.getAbsolutePath();
         }

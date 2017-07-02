@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2004, 2007, 2008, 2013, Guillaume Brocker
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - show nested elements
  *
  ******************************************************************************/
 
@@ -21,18 +23,23 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
+import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -191,13 +198,17 @@ public class DoxyfileSelector {
 		public String getText(Object element) {
             // Pre-condition.
             assert element instanceof IResource;
-
-            String              result = null;
-            IResource           resourse = (IResource) element;
-            IWorkbenchAdapter   workbenchAdapter = (IWorkbenchAdapter) resourse.getAdapter( IWorkbenchAdapter.class );
-            if( workbenchAdapter != null ) {
-                result = workbenchAdapter.getLabel( element );
+            String result = null;
+            IResource resource = (IResource) element;
+            if (resource.getType() == IResource.PROJECT) {
+                IWorkbenchAdapter   workbenchAdapter = (IWorkbenchAdapter) resource.getAdapter( IWorkbenchAdapter.class );
+                if( workbenchAdapter != null ) {
+                    result = workbenchAdapter.getLabel( element );
+                }
+            } else {
+                result = resource.getProjectRelativePath().toString();
             }
+
             return result;
 		}
 	}
@@ -237,6 +248,21 @@ public class DoxyfileSelector {
 		}
 	}
 
+	private static class MyDoxyfileSelectionDialog extends ElementTreeSelectionDialog {
+
+        public MyDoxyfileSelectionDialog(Shell parent, ILabelProvider labelProvider,
+                ITreeContentProvider contentProvider) {
+            super(parent, labelProvider, contentProvider);
+        }
+
+        @Override
+        protected TreeViewer createTreeViewer(Composite parent) {
+            TreeViewer viewer = super.createTreeViewer(parent);
+            viewer.expandAll();
+            return viewer;
+        }
+	}
+
 	private boolean		hadDoxyfiles = false;	///< Tells if there were doxyfiles for selection.
 	private IFile		doxyfile = null;		///< The selected doxyfile
 	private IResource	root = null;			///< The root resource that is that will be starting point for doxyfiles search.
@@ -268,7 +294,7 @@ public class DoxyfileSelector {
 			hadDoxyfiles = collector.isEmpty() == false;
 
 			if( collector.isEmpty() == false ) {
-				ElementTreeSelectionDialog	selectionDialog = new ElementTreeSelectionDialog(shell, new MyLabelProvider(), new MyContentProvider());
+			    MyDoxyfileSelectionDialog selectionDialog = new MyDoxyfileSelectionDialog(shell, new MyLabelProvider(), new MyContentProvider());
 
 				selectionDialog.setAllowMultiple( false );
 				selectionDialog.setInput( collector.getDoxyfiles() );
@@ -300,9 +326,9 @@ public class DoxyfileSelector {
 	 * @return	the selected doxyfile, null otherwise
 	 */
 	public static IFile open( IResource root ) {
-		DoxyfileSelector	selector = new DoxyfileSelector(root);
-
+		DoxyfileSelector selector = new DoxyfileSelector(root);
 		selector.open();
+		//selector.openNew();
 		return selector.getDoxyfile();
 	}
 
@@ -323,4 +349,24 @@ public class DoxyfileSelector {
 	public boolean hadDoxyfiles() {
 		return hadDoxyfiles;
 	}
+
+    public boolean openNew() {
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+        IStructuredSelection structuredSelection = (selection != null && selection instanceof IStructuredSelection) ? (IStructuredSelection) selection : new StructuredSelection();
+        boolean result = false;
+
+        FilteredResourcesSelectionDialog dialog = new FilteredResourcesSelectionDialog(shell, false, ResourcesPlugin.getWorkspace().getRoot(), IResource.FILE);
+        dialog.setInitialPattern("*.doxyfile");
+        dialog.setMessage( "Select a Doxyfile:" );
+        dialog.setTitle( "Doxyfile Selection" );
+
+        // Opens the selection dialog and save the selection.
+        if (dialog.open() == FilteredResourcesSelectionDialog.OK) {
+            //Object[] result = dialog.getResult();
+            doxyfile = (IFile) dialog.getFirstResult();
+            result = true;
+        }
+        return result;
+    }
 }
