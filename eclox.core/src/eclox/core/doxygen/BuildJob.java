@@ -70,7 +70,7 @@ public class BuildJob extends Job {
     /**
      * Defines the doxygen not found error code
      */
-    public static final int ERROR_DOXYGEN_NOT_FOUND = 1;
+    public static final int ERROR_DOXYGEN_NOT_FOUND = 2; // ATTENTION: Status.OK_STATUS = 0, Status.CANCEL_STATUS = 1
 
     /**
      * Defines the pattern used to match doxygen warnings and errors
@@ -98,6 +98,8 @@ public class BuildJob extends Job {
          */
         private InputStream	input;
 
+        private boolean cancel = false;
+
         /**
          * Constructor
          *
@@ -116,6 +118,10 @@ public class BuildJob extends Job {
                 String			newLine;
 
                 for(;;)	{
+                    // check if cancel
+                    if (cancel) {
+                        break;
+                    }
                     // Processes a new process output line.
                     newLine = reader.readLine();
                     if( newLine != null ) {
@@ -126,12 +132,17 @@ public class BuildJob extends Job {
                     else {
                         break;
                     }
+                    Thread.yield();
                 }
             }
             catch( Throwable t )
             {
                 Plugin.log( t );
             }
+        }
+
+        public void cancel() {
+            cancel = true;
         }
     }
 
@@ -401,7 +412,6 @@ public class BuildJob extends Job {
             SubMonitor subMonitor = SubMonitor.convert(monitor, doxyfile.getFullPath(), 6);
 
             // Clears log and markers.
-            // TODO: anb0s: this is not woking like expected no in Eclipse 4.x -> verify
             clearLog();
             clearMarkers();
             subMonitor.worked( 1 );
@@ -418,35 +428,34 @@ public class BuildJob extends Job {
             } else {
                 buildProcess = Doxygen.getDefault().build(doxyFile);
             }
-            Thread	inputLogFeeder	= new Thread( new MyLogFeeder(buildProcess.getInputStream()) );
-            Thread	errorLogFeeder	= new Thread( new MyLogFeeder(buildProcess.getErrorStream()) );
+
+            // stdin and stderr
+            MyLogFeeder inputLogFeeder = new MyLogFeeder(buildProcess.getInputStream());
+            Thread	inputLogThread	= new Thread(inputLogFeeder);
+            MyLogFeeder errorLogFeeder = new MyLogFeeder(buildProcess.getErrorStream());
+            Thread	errorLogThread	= new Thread(errorLogFeeder);
 
             // Wait either for the feeders to terminate or the user to cancel the job.
-            inputLogFeeder.start();
-            errorLogFeeder.start();
-            // TODO: anb0s: this is not woking like expected no in Eclipse 4.x -> verify
-            inputLogFeeder.join();
-            errorLogFeeder.join();
+            inputLogThread.start();
+            errorLogThread.start();
             for(;;)	{
                 // Tests of the log feeders have terminated.
-                if( inputLogFeeder.isAlive() == false && errorLogFeeder.isAlive() == false ) {
+                if( inputLogThread.isAlive() == false && errorLogThread.isAlive() == false ) {
                     break;
                 }
 
                 // Tests if the jobs is supposed to terminate.
                 if( monitor.isCanceled() == true ) {
+                    // stop the log threads
+                    inputLogFeeder.cancel();
+                    errorLogFeeder.cancel();
                     buildProcess.destroy();
                     buildProcess.waitFor();
-                    if (doxyIFile != null) {
-                        getJobManager().endRule(doxyIFile);
-                    }
                     return Status.CANCEL_STATUS;
                 }
 
-                // Allows other threads to run.
-                // TODO: anb0s: does not work as expected on windows
+                // Allows other threads to run (and cancel!)
                 Thread.yield();
-                Thread.sleep(1000L);
             }
             subMonitor.worked( 2 );
 
