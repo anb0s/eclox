@@ -287,7 +287,7 @@ public class BuildJob extends Job {
         Iterator<BuildJob>	i = jobs.iterator();
         while( i.hasNext() )
         {
-            BuildJob	buildJob = (BuildJob) i.next();
+            BuildJob buildJob = (BuildJob)i.next();
             if( buildJob.getDoxyfile().equals(doxyfile) )
             {
                 result = buildJob;

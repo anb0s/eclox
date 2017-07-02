@@ -91,7 +91,7 @@ public class Doxyfile {
      * @return	<code>true</code> or <code>false</code>
      */
     public static boolean isDoxyfile(IResource resource) {
-        return (resource instanceof IFile) && isDoxyfile((IFile) resource);
+        return (resource != null) && (resource instanceof IFile) && isDoxyfile((IFile) resource);
     }
 
     /**
@@ -342,6 +342,15 @@ public class Doxyfile {
         } else {
             return file.exists();
         }
+    }
+
+    @Override
+    public boolean equals(Object arg0) {
+        if (arg0 instanceof Doxyfile) {
+            Doxyfile doxyTo = (Doxyfile)arg0;
+            return getFullPath().equals(doxyTo.getFullPath());
+        }
+        return false;
     }
 
 }

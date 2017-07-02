@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2008, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -79,9 +79,8 @@ public class BuildManager {
 			{
 				int	newSize = ((Integer) event.getNewValue()).intValue();
 				int curSize = jobHistory.size();
-
 				if( curSize > newSize ) {
-					jobHistory = jobHistory.subList( curSize - newSize, curSize );
+				    jobHistory = jobHistory.subList( curSize - newSize, curSize );
 				}
 			}
 		}
@@ -89,8 +88,8 @@ public class BuildManager {
 	}
 
 
-	private static String		STATE_FILE = new String("build-job-history.txt");
-	private List<BuildJob> 				jobHistory = new LinkedList<BuildJob>();						///< Contains the history the launched build jobs.
+	private static String STATE_FILE = new String("build-job-history.txt");
+	private List<BuildJob> jobHistory = new LinkedList<BuildJob>();						///< Contains the history the launched build jobs.
 
 
 	/**
@@ -140,7 +139,7 @@ public class BuildManager {
 		}
 
 		// Retrieves the build job for the given doxyfile.
-		BuildJob job = BuildJob.getJob( doxyfile );
+		BuildJob job = BuildJob.getJob(doxyfile);
 
 		// Attaches a listener if applicable.
 		if( jobHistory.contains(job) == false ) {
@@ -150,19 +149,18 @@ public class BuildManager {
 		// Updates the job history.
 		int	preferedHistorySize = preferences.getInt( IPreferences.BUILD_HISTORY_SIZE );
 
-		jobHistory.remove( job );
+		jobHistory.remove(job);
 		if( jobHistory.size() >= preferedHistorySize && jobHistory.isEmpty() == false ) {
 			jobHistory.remove( 0 );
 		}
-		jobHistory.add( job );
+		jobHistory.add(job);
 
 		// Updates the console.
-		Console.show( job );
+		Console.show(job);
 
 		// Schedule the job to build.
 		job.schedule(1000);
 	}
-
 
 	/**
 	 * Retrieves the latest build jobs that have been registered in the history.
@@ -172,7 +170,6 @@ public class BuildManager {
 	public BuildJob[] getRecentBuildJobs() {
 		return (BuildJob[]) jobHistory.toArray( new BuildJob[0] );
 	}
-
 
 	/**
 	 * Restores the state from a file.
@@ -197,7 +194,21 @@ public class BuildManager {
 					}
 					Doxyfile doxyfile = new Doxyfile(doxyIFile, doxyFile);
 					BuildJob job = BuildJob.getJob(doxyfile);
-					jobHistory.add(job);
+					if (jobHistory.isEmpty()) {
+					    jobHistory.add(job);
+					} else {
+					    boolean contains = false;
+    					for(int i=0;i<jobHistory.size();i++) {
+    					    BuildJob jobOld = jobHistory.get(i);
+    					    if (jobOld.getDoxyfile().equals(job.getDoxyfile())) {
+    					        contains = true;
+    					        break;
+    					    }
+    					}
+    					if (!contains) {
+    					    jobHistory.add(job);
+    					}
+					}
 					stateLine = stateReader.readLine();
 				}
 				stateReader.close();
