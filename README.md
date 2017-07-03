@@ -49,3 +49,8 @@ Once your have properly set all doxyfile fields, you can launch a documentation 
 When the documentation build starts, a new view showing the build log opens. In its toolbar, a button named "Stop" allows you to halt the current build process. The current build also appears in the Eclipse job progress view and you can control the job from there.
 
 The build toolbar action determine the next doxyfile to build depending on the current active workbench part (editor or view) and the current selection in that part. For example, if the active part is a doxyfile editor, the next doxyfile to build will be the one being edited. If the active part is the resource explorer and the current selection is a doxyfile, that doxyfile will be next to get build. In the case the active part selection doesn't correspond to a doxyfile, the last built doxyfile will be rebuiled. And if the build history is empty, you will be asked for the doxyfile to build.
+
+For developers and contributors
+-------------------------------
+Please checkout the wiki page:
+https://github.com/anb0s/eclox/wiki/How-to-build
