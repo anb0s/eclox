@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2008, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,11 +8,15 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Guillaume Brocker - Initial API and implementation
- *     Andre Bossert - added support of eclipse variables to resolve doxygen path
- *                   - added support of eclipse variables passed to environment
- *                   - Add ability to use Doxyfile not in project scope
- *                   - Refactoring of deprecated API usage
+ *     Guillaume Brocker
+ *     - Initial API and implementation
+ *     Andre Bossert
+ *     - added support of eclipse variables to resolve doxygen path
+ *     - added support of eclipse variables passed to environment
+ *     - Add ability to use Doxyfile not in project scope
+ *     - Refactoring of deprecated API usage
+ *     - fixed Doxygen Build Console: stderr and stdin are not synchronized
+ *       see https://github.com/anb0s/eclox/issues/201
  *
  ******************************************************************************/
 
@@ -221,7 +225,6 @@ public abstract class Doxygen {
             ProcessBuilder pb = new ProcessBuilder(getCommand(), "-b", file.getAbsolutePath());
             // set working directory and redirect error stream
             pb.directory(file.getParentFile().getAbsoluteFile());
-            pb.redirectErrorStream(true);
             // get passed system environment
             Map<String, String> env = pb.environment();
             // add own variables, like GRAPHVIZ_PATH etc.
