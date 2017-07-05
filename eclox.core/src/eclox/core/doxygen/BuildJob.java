@@ -8,17 +8,21 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Guillaume Brocker - Initial API and implementation
- *     Andre Bossert - improved thread handling, added show command in console / title
- *                   - Add ability to use Doxyfile not in project scope
- *                   - Refactoring of deprecated API usage
- *                   - Support resources in linked folders
- *                     https://github.com/anb0s/eclox/issues/176
- *                     Thanks to Corderbollie!
- *                   - fixed java.lang.IllegalArgumentException: endRule without matching beginRule
- *                     https://github.com/anb0s/eclox/issues/175
- *                   - fixed obsolete settings are not marked
- *                     https://github.com/anb0s/eclox/issues/187
+ *     Guillaume Brocker
+ *     - Initial API and implementation
+ *     Andre Bossert
+ *     - improved thread handling, added show command in console / title
+ *     - Add ability to use Doxyfile not in project scope
+ *     - Refactoring of deprecated API usage
+ *     - Support resources in linked folders
+ *       https://github.com/anb0s/eclox/issues/176
+ *       Thanks to Corderbollie!
+ *     - fixed java.lang.IllegalArgumentException: endRule without matching beginRule
+ *       https://github.com/anb0s/eclox/issues/175
+ *     - fixed obsolete settings are not marked
+ *       https://github.com/anb0s/eclox/issues/187
+ *     - fixed java.lang.IllegalArgumentException if resource not found
+ *       https://github.com/anb0s/eclox/issues/195
  *
  ******************************************************************************/
 
@@ -544,13 +548,21 @@ public class BuildJob extends Job {
     private void createMarkersForResource(Path resourcePath, String setting, Integer lineNumer, int severity, String message) throws CoreException {
         if (resourcePath != null) {
             IWorkspaceRoot  workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
-            IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
-            for (IFile file : files) {
-                IMarker marker = Marker.create(file, setting, lineNumer.intValue(), message, severity);
-                if( marker != null ) {
-                    markers.add(marker);
-                    break; // exit loop
+            try {
+                IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
+                for (IFile file : files) {
+                    IMarker marker = Marker.create(file, setting, lineNumer.intValue(), message, severity);
+                    if( marker != null ) {
+                        markers.add(marker);
+                        break; // exit loop
+                    }
                 }
+            } catch (IllegalArgumentException ex) {
+                // no op, because the resource cannot be found, so it's not absolute
+                // see IWorkspaceRoot
+                //if (!location.isAbsolute())
+                //    throw new IllegalArgumentException()
+                // see https://github.com/anb0s/eclox/issues/195
             }
         }
     }
