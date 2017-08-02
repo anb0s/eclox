@@ -117,9 +117,13 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
                     MenuItem menuItem = new MenuItem(this.menu, SWT.PUSH);
                     menuItem.addSelectionListener( new MenuSelectionListener() );
                     Doxyfile currentDoxyfile = job.getDoxyfile();
-                    menuItem.setData(currentDoxyfile );
+                    menuItem.setData(currentDoxyfile);
                     menuItem.setText(currentDoxyfile.getName() + " [" + currentDoxyfile.getFullPath() + "]");
-                    menuItem.setImage(Plugin.getImage(itemType.getImageId()));
+                    if (currentDoxyfile.getIFile() != null) {
+                        menuItem.setImage(Plugin.getImage(itemType.getImageId()));
+                    } else {
+                        menuItem.setImage(Plugin.getImage("user"));
+                    }
 		        }
 		        // Add some sugar in the ui
 		        if( buildJobs.length > 0 ) {
@@ -201,7 +205,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			}
 
 			// Check the existence of the doxyfile.
-			if( nextDoxyfile != null && nextDoxyfile.exists() == false ) {
+			if( nextDoxyfile != null && nextDoxyfile.exists(true) == false ) {
 				nextDoxyfile = null;
 			}
 
@@ -225,49 +229,13 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
         try {
             switch(itemType) {
                 case chooseDoxyfile:
-                    Doxyfile doxyfile = null;
-                    IFile doxyIFile = null;
-                    DoxyfileSelector selector = new DoxyfileSelector(null);
-                    // If there is no next doxyfile to build, ask the user for one.
-                    selector.open();
-                    //selector.openNew();
-                    doxyIFile = selector.getDoxyfile();
-                    if (doxyIFile != null) {
-                        doxyfile = new Doxyfile(doxyIFile, null);
-                    }
-                    // If there is no doxyfile,
-                    // we will prompt the user to create one and then edit it.
-                    if (doxyfile == null && selector.hadDoxyfiles() == false) {
-                        doxyIFile = askUserToCreateDoxyfile();
-                        if (doxyIFile != null) {
-                            doxyfile = new Doxyfile(doxyIFile, null);
-                        }
-                    }
-                    else if (doxyfile != null) {
-                        Plugin.getDefault().getBuildManager().build(doxyfile);
-                    }
+                    doRun(chooseDoxyfile());
                     break;
                 case clearHistory:
-                    BuildJob[]  buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
-                    Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                    ListSelectionDialog dialog =
-                       new ListSelectionDialog(shell, buildJobs, ArrayContentProvider.getInstance(),
-                                new BuildJobLabelProvider(), "Select Doxyfiles you want to remove from history");
-                    dialog.setTitle("Clear History");
-                    //dialog.setInitialSelections(new Object []{....selections});
-                    if (dialog.open() == Window.OK) {
-                        Object[] result = dialog.getResult();
-                        if (result.length > 0) {
-                            BuildJob[] clearJobs = new BuildJob[result.length];
-                            System.arraycopy(result, 0, clearJobs, 0, result.length);
-                            Plugin.getDefault().getBuildManager().removeAll(clearJobs);
-                        }
-                    }
+                    clearHistory(Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed(), null);
                     break;
                 case buildDoxyfile:
-                    if (nextDoxyfile != null) {
-                        Plugin.getDefault().getBuildManager().build(nextDoxyfile);
-                    }
+                    doRun(nextDoxyfile);
                     break;
                 case unknown:
                     break;
@@ -280,6 +248,66 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
         }
 	}
 
+    private void clearHistory(BuildJob[] buildJobs, BuildJob[] selectedJobs) {
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        ListSelectionDialog dialog =
+           new ListSelectionDialog(shell, buildJobs, ArrayContentProvider.getInstance(),
+                    new BuildJobLabelProvider(), "Select Doxyfiles you want to remove from history");
+        dialog.setTitle("Clear History");
+        if ( (selectedJobs != null) && (selectedJobs.length > 0) ) {
+            dialog.setInitialSelections(selectedJobs);
+        }
+        if (dialog.open() == Window.OK) {
+            Object[] result = dialog.getResult();
+            if (result.length > 0) {
+                BuildJob[] clearJobs = new BuildJob[result.length];
+                System.arraycopy(result, 0, clearJobs, 0, result.length);
+                Plugin.getDefault().getBuildManager().removeAll(clearJobs);
+            }
+        }
+    }
+
+    private Doxyfile chooseDoxyfile() {
+        Doxyfile doxyfile = null;
+        IFile doxyIFile = null;
+        DoxyfileSelector selector = new DoxyfileSelector(null);
+        // If there is no next doxyfile to build, ask the user for one.
+        selector.open();
+        //selector.openNew();
+        doxyIFile = selector.getDoxyfile();
+        if (doxyIFile != null) {
+            doxyfile = new Doxyfile(doxyIFile, null);
+        }
+        // If there is no doxyfile,
+        // we will prompt the user to create one and then edit it.
+        if (doxyfile == null && selector.hadDoxyfiles() == false) {
+            doxyIFile = askUserToCreateDoxyfile();
+            if (doxyIFile != null) {
+                doxyfile = new Doxyfile(doxyIFile, null);
+            }
+        }
+        return doxyfile;
+    }
+
+	protected void doRun(Doxyfile doxyfile) {
+        if (doxyfile != null) {
+            if (doxyfile.exists(true)) {
+                Plugin.getDefault().getBuildManager().build(doxyfile);
+            } else {
+                MessageDialog dialog = new MessageDialog(
+                        null, "Missing Doxyfile", null, "Cannot find Doxyfile '" + doxyfile.getFullPath() + "'\n\nDo you want to delete the missing Doxyfile from the history?",
+                        MessageDialog.WARNING,
+                        new String[] {"Yes", "No"},
+                        1); // no is the default
+                int result = dialog.open();
+                if (result == 0) {
+                    BuildJob[] clearJobs = new BuildJob[1];
+                    clearJobs[0] = BuildJob.getJob(doxyfile);
+                    clearHistory(Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed(), clearJobs);
+                }
+            }
+        }
+	}
 
 	/**
 	 * Dispose the owned menu.

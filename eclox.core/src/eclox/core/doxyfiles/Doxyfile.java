@@ -336,9 +336,13 @@ public class Doxyfile {
         }
     }
 
-    public boolean exists() {
+    public boolean exists(boolean full) {
         if (ifile != null) {
-            return ifile.exists();
+            if (full) {
+                return ifile.getLocation().makeAbsolute().toFile().exists();
+            } else {
+                return ifile.exists();
+            }
         } else {
             return file.exists();
         }

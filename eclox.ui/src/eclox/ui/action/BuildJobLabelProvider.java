@@ -64,7 +64,7 @@ public class BuildJobLabelProvider implements ILabelProvider {
                 }
                 return result;
             } else {
-                Plugin.getImage("user");
+                return Plugin.getImage("user");
             }
         }
         return null;

@@ -75,7 +75,6 @@ public class BuildManager {
 	 * according to the relevant preference changes.
 	 */
 	private class MyPreferenceListener implements IPropertyChangeListener {
-
 		public void propertyChange(PropertyChangeEvent event) {
 			if( event.getProperty() == IPreferences.BUILD_HISTORY_SIZE )
 			{
@@ -86,13 +85,10 @@ public class BuildManager {
 				}
 			}
 		}
-
 	}
-
 
 	private static String STATE_FILE = new String("build-job-history.txt");
 	private List<BuildJob> jobHistory = new LinkedList<BuildJob>();						///< Contains the history the launched build jobs.
-
 
 	/**
 	 * Constructor

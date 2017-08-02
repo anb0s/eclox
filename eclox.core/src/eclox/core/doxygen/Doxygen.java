@@ -205,17 +205,25 @@ public abstract class Doxygen {
             }
         }
     }
+
     /**
      * Launch a documentation build.
      *
-     * @param	file	the file representing the doxygen configuration to use for the build
+     * @param	ifile	the workspace file representing the doxygen configuration to use for the build
      *
      * @return	The process that run the build.
      */
-    public Process build( IFile file ) throws InvokeException, RunException {
-        return build(file.getLocation().makeAbsolute().toFile());
+    public Process build( IFile ifile ) throws InvokeException, RunException {
+        return build(ifile.getLocation().makeAbsolute().toFile());
     }
 
+    /**
+     * Launch a documentation build.
+     *
+     * @param   file   the file representing the doxygen configuration to use for the build
+     *
+     * @return  The process that run the build.
+     */
     public Process build( File file ) throws InvokeException, RunException {
         if( file.exists() == false ) {
             throw new RunException("Missing or bad doxyfile");

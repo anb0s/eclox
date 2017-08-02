@@ -169,20 +169,12 @@ public class Plugin extends AbstractUIPlugin {
                 imagePath = "icons/" + imageId + ".png";
             }
             addImageToRegistry(registry, bundle, imagePath, imageId);
-
         }
-        /*
-        addImageToRegistry(registry, bundle, "icons/doxyfile.gif", "doxyfile");
         addImageToRegistry(registry, bundle, "icons/eclox.gif", "eclox");
         addImageToRegistry(registry, bundle, "icons/default.png", "default");
         addImageToRegistry(registry, bundle, "icons/eclipse.png", "eclipse");
         addImageToRegistry(registry, bundle, "icons/erase.png", "erase");
-        addImageToRegistry(registry, bundle, "icons/explore.png", "explore");
-        addImageToRegistry(registry, bundle, "icons/explore1.png", "explore1");
-        addImageToRegistry(registry, bundle, "icons/explore2.png", "explore2");
-        addImageToRegistry(registry, bundle, "icons/run.png", "run");
         addImageToRegistry(registry, bundle, "icons/user.png", "user");
-        */
      }
 
     protected void addImageToRegistry(ImageRegistry registry, Bundle bundle, String imagePath, String image_id) {
