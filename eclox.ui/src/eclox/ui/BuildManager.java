@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -168,8 +170,24 @@ public class BuildManager {
 	 * @return	an array containing the most recent build jobs.
 	 */
 	public BuildJob[] getRecentBuildJobs() {
-		return (BuildJob[]) jobHistory.toArray( new BuildJob[0] );
+		return (BuildJob[]) jobHistory.toArray(new BuildJob[0]);
 	}
+
+    /**
+     * Retrieves the latest build jobs that have been registered in the history.
+     *
+     * @return  an array containing the most recent build jobs REVERSED
+     */
+    public BuildJob[] getRecentBuildJobsReversed() {
+        BuildJob[] jobs = getRecentBuildJobs();
+        for(int i = 0; i < jobs.length / 2; i++)
+        {
+            BuildJob temp = jobs[i];
+            jobs[i] = jobs[jobs.length - i - 1];
+            jobs[jobs.length - i - 1] = temp;
+        }
+        return jobs;
+    }
 
 	/**
 	 * Restores the state from a file.
@@ -249,5 +267,18 @@ public class BuildManager {
 			Plugin.log(t);
 		}
 	}
+
+    public void removeAll(BuildJob[] objects) {
+        if (!jobHistory.isEmpty()) {
+            Collection<BuildJob> collection = Arrays.asList(objects);
+            jobHistory.removeAll(collection);
+        }
+    }
+
+    public void removeAll() {
+        if (!jobHistory.isEmpty()) {
+            jobHistory.clear();
+        }
+    }
 
 }
