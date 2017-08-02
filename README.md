@@ -27,7 +27,7 @@ http://anb0s.github.io/eclox
 OR
 
 You can download the update site for offline install --> go to: https://github.com/anb0s/eclox/releases
-and download the org.gna.eclox.site-X.zip file, e.g. for latest stable version: https://github.com/anb0s/eclox/releases/download/eclox-0.11.2/org.gna.eclox.site-0.11.2-SNAPSHOT.zip
+and download the org.gna.eclox.site-X.zip file, e.g. for latest stable version: https://github.com/anb0s/eclox/releases/latest
 
 Now use inside Eclipse: "Help-> Install New Software... -> Add... -> Archive...", select the zip file and enter name:
 
