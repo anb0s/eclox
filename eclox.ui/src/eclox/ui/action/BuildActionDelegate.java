@@ -22,9 +22,11 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -40,6 +42,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.dialogs.ListSelectionDialog;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 
 import eclox.core.doxyfiles.Doxyfile;
@@ -69,21 +72,27 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		}
 
 		private void processData(Object data) {
+		    MenuItemType itemType = MenuItemType.unknown;
 		    Doxyfile doxyfile = null;
 			if(data != null) {
-			    if (data instanceof Doxyfile) {
-			        doxyfile = (Doxyfile)data;
-			    } else if (data instanceof IFile) {
-			        doxyfile = new Doxyfile((IFile)data, null);
-			    } else if (data instanceof File) {
-			        doxyfile = new Doxyfile(null, (File)data);
+			    if (data instanceof MenuItemType) {
+			        itemType = (MenuItemType)data;
+			    } else {
+			        itemType = MenuItemType.buildDoxyfile;
+	                if (data instanceof Doxyfile) {
+	                    doxyfile = (Doxyfile)data;
+	                } else if (data instanceof IFile) {
+	                    doxyfile = new Doxyfile((IFile)data, null);
+	                } else if (data instanceof File) {
+	                    doxyfile = new Doxyfile(null, (File)data);
+	                }
 			    }
 			}
-			if (doxyfile != null) {
-			    nextDoxyfile = doxyfile;
-			    doRun(false);
-			} else {
-			    doRun(true);
+			if (itemType != MenuItemType.unknown) {
+			    if (doxyfile != null) {
+			        nextDoxyfile = doxyfile;
+			    }
+			    doRun(itemType);
 			}
 		}
 	}
@@ -99,25 +108,37 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 		disposeMenu();
 		this.menu = new Menu(parent);
 
-		// Fill it up with the build history items.
-		BuildJob[]	buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobs();
-		for( int i = buildJobs.length - 1; i >= 0; i-- ) {
-			MenuItem menuItem = new MenuItem(this.menu, SWT.PUSH);
-			Doxyfile currentDoxyfile = buildJobs[i].getDoxyfile();
-			menuItem.addSelectionListener( new MenuSelectionListener() );
-			menuItem.setData( currentDoxyfile );
-			menuItem.setText( currentDoxyfile.getName() + " [" + currentDoxyfile.getFullPath() + "]" );
+		boolean historyIsEmpty = true;
+		for (MenuItemType itemType : MenuItemType.getValidValues()) {
+		    if (itemType == MenuItemType.buildDoxyfile) {
+		        // Fill it up with the build history items:
+		        BuildJob[]  buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
+		        for (BuildJob job : buildJobs) {
+                    MenuItem menuItem = new MenuItem(this.menu, SWT.PUSH);
+                    menuItem.addSelectionListener( new MenuSelectionListener() );
+                    Doxyfile currentDoxyfile = job.getDoxyfile();
+                    menuItem.setData(currentDoxyfile );
+                    menuItem.setText(currentDoxyfile.getName() + " [" + currentDoxyfile.getFullPath() + "]");
+                    menuItem.setImage(Plugin.getImage(itemType.getImageId()));
+		        }
+		        // Add some sugar in the ui
+		        if( buildJobs.length > 0 ) {
+		            new MenuItem(this.menu, SWT.SEPARATOR);
+		            historyIsEmpty = false;
+		        }
+		    } else {
+		        // Add the special menu items, e.g. fall-back menu item to let the user choose another doxyfile or clear history:
+                MenuItem specialMenuItem = new MenuItem(this.menu, SWT.PUSH);
+                specialMenuItem.addSelectionListener(new MenuSelectionListener());
+	            specialMenuItem.setData(itemType);
+	            specialMenuItem.setText(itemType.getName() + "...");
+	            specialMenuItem.setImage(Plugin.getImage(itemType.getImageId()));
+	            // disable some entries
+	            if (historyIsEmpty && (itemType == MenuItemType.clearHistory)) {
+	                specialMenuItem.setEnabled(false);
+	            }
+		    }
 		}
-		// Add some sugar in the ui
-		if( buildJobs.length > 0 ) {
-			new MenuItem(this.menu, SWT.SEPARATOR);
-		}
-
-		// Add the fall-back menu item to let the user choose another doxyfile.
-		MenuItem chooseMenuItem = new MenuItem(this.menu, SWT.PUSH);
-
-		chooseMenuItem.addSelectionListener(new MenuSelectionListener());
-		chooseMenuItem.setText("Choose Doxyfile...");
 
 		// Job's done.
 		return this.menu;
@@ -147,7 +168,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 	 */
 	public void run(IAction action) {
 		try {
-			doRun(false);
+			doRun(MenuItemType.buildDoxyfile);
 		}
 		catch( Throwable throwable ) {
 			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
@@ -173,10 +194,9 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 			// If there is no next doxyfile to build and the history is not empty
 			// set the first history element as the next doxyfile.
 			if( nextDoxyfile == null ) {
-				BuildJob[]	buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobs();
-				int			buildJobsCount = buildJobs.length;
-				if( buildJobsCount > 0 ) {
-					nextDoxyfile = buildJobs[buildJobsCount - 1].getDoxyfile();
+				BuildJob[] buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
+				if(buildJobs.length > 0) {
+					nextDoxyfile = buildJobs[0].getDoxyfile();
 				}
 			}
 
@@ -200,40 +220,64 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
 
 	/**
 	 * Uses the next doxyfile specified to determine what to do.
-	 *
-	 * @param	forceChoose	@c true to ask the user for a doxyfile to build.
 	 */
-	protected void doRun(boolean forceChoose) {
-		try {
-			Doxyfile		 doxyfile = (forceChoose == true) ? null : this.nextDoxyfile;
-			IFile            doxyIFile = null;
-			DoxyfileSelector selector = new DoxyfileSelector(null);
-
-			// If there is no next doxyfile to build, ask the user for one.
-			if(doxyfile == null) {
-			    selector.open();
-				//selector.openNew();
-				doxyIFile = selector.getDoxyfile();
-				if (doxyIFile != null) {
-				    doxyfile = new Doxyfile(doxyIFile, null);
-				}
-			}
-
-			// If there is no doxyfile,
-			// we will prompt the user to create one and then edit it.
-			if (doxyfile == null && selector.hadDoxyfiles() == false) {
-                doxyIFile = askUserToCreateDoxyfile();
-                if (doxyIFile != null) {
-                    doxyfile = new Doxyfile(doxyIFile, null);
-                }
-			}
-			else if (doxyfile != null) {
-				Plugin.getDefault().getBuildManager().build( doxyfile );
-			}
-		}
-		catch( Throwable throwable ) {
-			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
-		}
+	protected void doRun(MenuItemType itemType) {
+        try {
+            switch(itemType) {
+                case chooseDoxyfile:
+                    Doxyfile doxyfile = null;
+                    IFile doxyIFile = null;
+                    DoxyfileSelector selector = new DoxyfileSelector(null);
+                    // If there is no next doxyfile to build, ask the user for one.
+                    selector.open();
+                    //selector.openNew();
+                    doxyIFile = selector.getDoxyfile();
+                    if (doxyIFile != null) {
+                        doxyfile = new Doxyfile(doxyIFile, null);
+                    }
+                    // If there is no doxyfile,
+                    // we will prompt the user to create one and then edit it.
+                    if (doxyfile == null && selector.hadDoxyfiles() == false) {
+                        doxyIFile = askUserToCreateDoxyfile();
+                        if (doxyIFile != null) {
+                            doxyfile = new Doxyfile(doxyIFile, null);
+                        }
+                    }
+                    else if (doxyfile != null) {
+                        Plugin.getDefault().getBuildManager().build(doxyfile);
+                    }
+                    break;
+                case clearHistory:
+                    BuildJob[]  buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
+                    Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                    ListSelectionDialog dialog =
+                       new ListSelectionDialog(shell, buildJobs, ArrayContentProvider.getInstance(),
+                                new BuildJobLabelProvider(), "Select Doxyfiles you want to remove from history");
+                    dialog.setTitle("Clear History");
+                    //dialog.setInitialSelections(new Object []{....selections});
+                    if (dialog.open() == Window.OK) {
+                        Object[] result = dialog.getResult();
+                        if (result.length > 0) {
+                            BuildJob[] clearJobs = new BuildJob[result.length];
+                            System.arraycopy(result, 0, clearJobs, 0, result.length);
+                            Plugin.getDefault().getBuildManager().removeAll(clearJobs);
+                        }
+                    }
+                    break;
+                case buildDoxyfile:
+                    if (nextDoxyfile != null) {
+                        Plugin.getDefault().getBuildManager().build(nextDoxyfile);
+                    }
+                    break;
+                case unknown:
+                    break;
+                default:
+                    break;
+            }
+        }
+        catch( Throwable throwable ) {
+            MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
+        }
 	}
 
 
