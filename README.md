@@ -30,9 +30,11 @@ You can download the update site for offline install --> go to: https://github.c
 and download the org.gna.eclox.site-X.zip file, e.g. for latest stable version: https://github.com/anb0s/eclox/releases/download/eclox-0.11.2/org.gna.eclox.site-0.11.2-SNAPSHOT.zip
 
 Now use inside Eclipse: "Help-> Install New Software... -> Add... -> Archive...", select the zip file and enter name:
+
 ![image](https://user-images.githubusercontent.com/95811/28266004-008a8bfc-6af3-11e7-9569-095445024e0a.png)
 
 and select it:
+
 ![image](https://user-images.githubusercontent.com/95811/28266031-2517479e-6af3-11e7-945e-75d85a448630.png)
 
 
