@@ -34,8 +34,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 
-import eclox.ui.action.MenuItemType;
-
 /**
  * The plugin class.
  */
@@ -162,19 +160,14 @@ public class Plugin extends AbstractUIPlugin {
 
     protected void initializeImageRegistry(ImageRegistry registry) {
         Bundle bundle = Platform.getBundle(plugin.getBundle().getSymbolicName());
-        for(String imageId : MenuItemType.getImageIdsAsList()) {
-            String imagePath = "icons/" + imageId + ".gif";
+        for(String imageId : Images.getIdsAsList()) {
+            String imagePath = Constants.IMAGE_PATH + imageId + Constants.IMAGE_EXT;
             URL url = bundle.getEntry(imagePath);
             if (url == null) {
-                imagePath = "icons/" + imageId + ".png";
+                imagePath = Constants.IMAGE_PATH + imageId + Constants.IMAGE_OLD_EXT;
             }
             addImageToRegistry(registry, bundle, imagePath, imageId);
         }
-        addImageToRegistry(registry, bundle, "icons/eclox.gif", "eclox");
-        addImageToRegistry(registry, bundle, "icons/default.png", "default");
-        addImageToRegistry(registry, bundle, "icons/eclipse.png", "eclipse");
-        addImageToRegistry(registry, bundle, "icons/erase.png", "erase");
-        addImageToRegistry(registry, bundle, "icons/user.png", "user");
      }
 
     protected void addImageToRegistry(ImageRegistry registry, Bundle bundle, String imagePath, String image_id) {

@@ -11,16 +11,16 @@
  *
  ******************************************************************************/
 
-package eclox.ui.action;
+package eclox.ui;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public enum MenuItemType {
-    unknown(-1, "Unknown", "default"),
-    buildDoxyfile(0, "Build Doxyfile", "doxyfile"),
-    chooseDoxyfile(1, "Choose Doxyfile", "explore2"),
-    clearHistory(2, "Clear History", "erase");
+    unknown(-1, "Unknown", Images.DEFAULT.getId()),
+    buildDoxyfile(0, "Build Doxyfile", Images.DOXYFILE.getId()),
+    chooseDoxyfile(1, "Choose Doxyfile", Images.EXPLORE.getId()),
+    clearHistory(2, "Clear History", Images.ERASE.getId());
     // attributes
     private final int id;
     private final String name;

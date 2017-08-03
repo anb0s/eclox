@@ -8,7 +8,7 @@
             default="true"
             extensions="doxyfile"
             filenames="doxyfile"
-            icon="icons/doxyfile.gif"
+            icon="images/doxyfile.gif"
             id="eclox.ui.editor.Editor"
             name="Doxyfile Editor"/>
    </extension>
@@ -17,7 +17,7 @@
       <wizard
             class="eclox.ui.wizard.NewDoxyfileWizard"
             hasPages="true"
-            icon="icons/doxyfile_wizard.png"
+            icon="images/doxyfile_wizard.png"
             id="eclox.ui.wizard.NewDoxyfile"
             name="Doxyfile"/>
    </extension>
@@ -28,7 +28,7 @@
             objectClass="java.lang.Object">
          <action
                class="eclox.ui.action.BuildPopupActionDelegate"
-               icon="icons/eclox.png"
+               icon="images/eclox.png"
                id="eclox.ui.action.build"
                label="Build Documentation"/>
       </objectContribution>
@@ -49,7 +49,7 @@
             visible="true">
          <action
                class="eclox.ui.action.BuildActionDelegate"
-               icon="icons/eclox.png"
+               icon="images/eclox.png"
                id="eclox.ui.buildAction"
                label="Doxygen Build"
                style="pulldown"

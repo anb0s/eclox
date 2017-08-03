@@ -48,6 +48,8 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
 import eclox.ui.DoxyfileSelector;
+import eclox.ui.Images;
+import eclox.ui.MenuItemType;
 import eclox.ui.Plugin;
 import eclox.ui.wizard.NewDoxyfileWizard;
 
@@ -122,7 +124,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
                     if (currentDoxyfile.getIFile() != null) {
                         menuItem.setImage(Plugin.getImage(itemType.getImageId()));
                     } else {
-                        menuItem.setImage(Plugin.getImage("user"));
+                        menuItem.setImage(Plugin.getImage(Images.USER.getId()));
                     }
 		        }
 		        // Add some sugar in the ui

@@ -22,6 +22,7 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
+import eclox.ui.Images;
 import eclox.ui.Plugin;
 
 public class BuildJobLabelProvider implements ILabelProvider {
@@ -64,7 +65,7 @@ public class BuildJobLabelProvider implements ILabelProvider {
                 }
                 return result;
             } else {
-                return Plugin.getImage("user");
+                return Plugin.getImage(Images.USER.getId());
             }
         }
         return null;

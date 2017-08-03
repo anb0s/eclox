@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * 
+ * Copyright (C) 2015-2017, Andre Bossert
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,8 +9,9 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - images handling
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.console.action;
 
@@ -21,19 +23,19 @@ import eclox.ui.Plugin;
 import eclox.ui.console.Console;
 
 public class ClearLog extends Action {
-	
+
 	/**
 	 * the console to act on
 	 */
 	private Console	console;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param	console	the console to act on
 	 */
 	public ClearLog( Console console ) {
-		super( "Clear Console", Plugin.getImageDescriptor(Images.CLEAR_CONSOLE) );
+		super("Clear Console", Plugin.getImageDescriptor(Images.CLEAR_CONSOLE.getId()));
 		this.console = console;
 		setToolTipText( "Clear Build Log" );
 	}
@@ -43,8 +45,8 @@ public class ClearLog extends Action {
 		if( job != null ) {
 			job.clearLog();
 		}
-		
+
 		super.run();
 	}
-	
+
 }
