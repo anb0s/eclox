@@ -207,6 +207,36 @@ public abstract class Doxygen {
     }
 
     /**
+     * Launch a doxygen with given file an mode
+     *
+     * @param   file   the file representing the doxygen configuration to use for the build
+     *
+     * @return  The process that run the build.
+     */
+    public Process run(File file, boolean checkIfFileExisting, String mode) throws InvokeException, RunException {
+        if(checkIfFileExisting && (file.exists() == false) ) {
+            throw new RunException("Missing or bad doxyfile");
+        }
+        try {
+            // create process builder with doxygen command and doxyfile
+            ProcessBuilder pb = new ProcessBuilder(getCommand(), mode, file.getAbsolutePath());
+            // set working directory
+            pb.directory(file.getParentFile().getAbsoluteFile());
+            // get passed system environment
+            Map<String, String> env = pb.environment();
+            // add own variables, like GRAPHVIZ_PATH etc.
+            //addEcloxVarsToEnvironment(env);
+            // add all defined variables
+            addAllVarsToEnvironment(env);
+            // return the process
+            return pb.start();
+        }
+        catch(IOException ioException) {
+            throw new InvokeException(ioException);
+        }
+    }
+
+    /**
      * Launch a documentation build.
      *
      * @param	ifile	the workspace file representing the doxygen configuration to use for the build
@@ -225,26 +255,7 @@ public abstract class Doxygen {
      * @return  The process that run the build.
      */
     public Process build( File file ) throws InvokeException, RunException {
-        if( file.exists() == false ) {
-            throw new RunException("Missing or bad doxyfile");
-        }
-        try {
-            // create process builder with doxygen command and doxyfile
-            ProcessBuilder pb = new ProcessBuilder(getCommand(), "-b", file.getAbsolutePath());
-            // set working directory and redirect error stream
-            pb.directory(file.getParentFile().getAbsoluteFile());
-            // get passed system environment
-            Map<String, String> env = pb.environment();
-            // add own variables, like GRAPHVIZ_PATH etc.
-            //addEcloxVarsToEnvironment(env);
-            // add all defined variables
-            addAllVarsToEnvironment(env);
-            // return the process
-            return pb.start();
-        }
-        catch(IOException ioException) {
-            throw new InvokeException(ioException);
-        }
+        return run(file, true, "-b");
     }
 
     private void addEcloxVarsToEnvironment(Map<String, String> env) {
@@ -270,16 +281,27 @@ public abstract class Doxygen {
     /**
      * Generate an empty configuration file.
      *
+     * @param   ifile   the configuration file to generate.
+     */
+    public void generate(IFile ifile) throws InvokeException, RunException {
+        generate(ifile.getLocation().makeAbsolute().toFile());
+        // Force some refresh to display the file.
+        try {
+            ifile.refreshLocal( 0, null );
+        } catch (Throwable throwable) {
+            Plugin.log(throwable);
+        }
+    }
+
+    /**
+     * Generate an empty configuration file.
+     *
      * @param	file	the configuration file to generate.
      */
-    public void generate( IFile file ) throws InvokeException, RunException {
+    public void generate(File file) throws InvokeException, RunException {
         try
         {
-            Process		process;
-            // create process builder with doxygen command and doxyfile
-            ProcessBuilder pb = new ProcessBuilder(getCommand(), "-g", file.getLocation().makeAbsolute().toOSString());
-            // Run the command and check for errors.
-            process = pb.start();
+            Process process = run(file, false, "-g");
             if(process.waitFor() != 0) {
                 BufferedReader	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String			errorMsg = new String();
@@ -289,8 +311,6 @@ public abstract class Doxygen {
                 }
                 throw new RunException( errorMsg );
             }
-            // Force some refresh to display the file.
-            file.refreshLocal( 0, null );
         }
         catch( RunException runException ) {
             throw runException;
