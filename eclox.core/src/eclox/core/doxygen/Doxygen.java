@@ -258,6 +258,7 @@ public abstract class Doxygen {
         return run(file, true, "-b");
     }
 
+    /*
     private void addEcloxVarsToEnvironment(Map<String, String> env) {
         List<String> vars = new ArrayList<String>();
         vars.add("GRAPHVIZ_PATH");
@@ -271,6 +272,7 @@ public abstract class Doxygen {
             }
         }
     }
+    */
 
     private void addAllVarsToEnvironment(Map<String, String> env) {
         Map<String, String> resolvedVars = new HashMap<String, String>();

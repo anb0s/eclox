@@ -23,7 +23,6 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -39,7 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
-import org.eclipse.ui.dialogs.FilteredResourcesSelectionDialog;
 import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
@@ -350,6 +348,7 @@ public class DoxyfileSelector {
 		return hadDoxyfiles;
 	}
 
+	/*
     public boolean openNew() {
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
         ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
@@ -369,4 +368,5 @@ public class DoxyfileSelector {
         }
         return result;
     }
+    */
 }
