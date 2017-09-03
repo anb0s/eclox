@@ -22,18 +22,6 @@
             name="Doxyfile"/>
    </extension>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="eclox.ui.doxyfilepupop"
-            objectClass="java.lang.Object">
-         <action
-               class="eclox.ui.action.BuildPopupActionDelegate"
-               icon="images/eclox.png"
-               id="eclox.ui.action.build"
-               label="Build Documentation"/>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="eclox.core.PreferencePage"
@@ -60,6 +48,79 @@
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer class="eclox.ui.PreferencesInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            categoryId="eclox.ui.commands.category"
+            id="eclox.ui.commands.build"
+            name="Build">
+      </command>
+      <category
+            id="eclox.ui.commands.category"
+            name="Eclox">
+      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="eclox.ui.handlers.Build"
+            commandId="eclox.ui.commands.build">
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <menu
+               icon="images/eclox.png"
+               label="Build Documentation">
+            <visibleWhen>
+               <with
+                     variable="activePart">
+                  <test
+                        args="resourceType"
+                        forcePluginActivation="true"
+                        property="eclox.ui.EditorPropertyTester.hasResourceSelection"
+                        value="resourceTypeUnknown">
+                  </test>
+               </with>
+            </visibleWhen>
+            <command
+                  commandId="eclox.ui.commands.build"
+                  icon="images/eclox.png"
+                  label="Build"
+                  style="push">
+            </command>
+         </menu>
+         <command
+               commandId="eclox.ui.commands.build"
+               icon="images/eclox.png"
+               label="Build Documentation"
+               style="push">
+            <visibleWhen>
+               <with
+                     variable="activePart">
+                  <test
+                        args="resourceType"
+                        forcePluginActivation="true"
+                        property="eclox.ui.EditorPropertyTester.hasResourceSelection"
+                        value="resourceTypeFileOrDirectory">
+                  </test>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="eclox.ui.EditorPropertyTester"
+            id="eclox.ui.EditorPropertyTester"
+            namespace="eclox.ui.EditorPropertyTester"
+            properties="hasResourceSelection"
+            type="org.eclipse.ui.IWorkbenchPart">
+      </propertyTester>
    </extension>
 
 </plugin>

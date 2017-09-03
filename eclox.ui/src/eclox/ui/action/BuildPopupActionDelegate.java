@@ -1,6 +1,6 @@
 /*******************************************************************************
- * Copyright (C) 2003, 2004? 2007, 2008, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2003, 2004, 2007, 2008, 2013, Guillaume Brocker
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - Add ability to use Doxyfile not in project scope
+ *                   - fixed: context menu entry shown unnecessarily
  *
  ******************************************************************************/
 
@@ -29,6 +30,7 @@ import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ResourceCollector;
 import eclox.ui.DoxyfileSelector;
 import eclox.ui.Plugin;
+import eclox.ui.ResourceType;
 
 /**
  * Implement a pop-up menu action delegate that will allow to
@@ -64,7 +66,9 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 			}
 		}
 		catch(Throwable throwable) {
-			MessageDialog.openError(targetPart.getSite().getShell(), "Unexpected Error", throwable.toString());
+		    if (targetPart != null) {
+		        MessageDialog.openError(targetPart.getSite().getShell(), "Unexpected Error", throwable.toString());
+		    }
 		}
 	}
 
@@ -72,26 +76,66 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
 	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
-		boolean					enabled = false;
-		IStructuredSelection	strSelection = (IStructuredSelection) selection;
-		try {
-			if( strSelection.size() == 1 ) {
-				Object		object = strSelection.getFirstElement();
-				IResource	resource = (IResource) Platform.getAdapterManager().getAdapter(object, IResource.class);
-				this.resource = resource;
-				if( resource != null && resource.isAccessible() ) {
-					ResourceCollector collector = ResourceCollector.run(resource);
-					// If there is only one collected doxyfile, then assigns that doxyfile as the current resource.
-					this.resource = collector.getSize() == 1 ? collector.getFirst() : this.resource;
-					// Enables the action when a doxyfile has been found.
-					enabled = collector.isEmpty() == false;
-				}
-			}
-		}
-		catch(Throwable throwable) {
-			MessageDialog.openError(targetPart.getSite().getShell(), "Unexpected Error", throwable.toString());
-		}
-		action.setEnabled(enabled);
+	    this.resource = getDoxygenResourceRoot(selection, this.targetPart);
+	    if (action != null) {
+	        action.setEnabled(this.resource != null);
+	    }
 	}
+
+	static public IResource getDoxygenResourceForType(ISelection selection, IWorkbenchPart targetPart, ResourceType resType) {
+	    IResource resource = null;
+	    if (resType != ResourceType.resourceTypeUnknown) {
+    	    resource = getDoxygenResourceRoot(selection, targetPart);
+    	    if (resource != null) {
+    	        if (resType != ResourceType.resourceTypeFileOrDirectory) {
+            	    boolean isDoxyfile = Doxyfile.isDoxyfile(resource);
+            	    if (resType == ResourceType.resourceTypeFile) {
+            	        if (!isDoxyfile) {
+            	            resource = null;
+            	        }
+            	    }
+            	    else if (resType == ResourceType.resourceTypeDirectory) {
+                        if (isDoxyfile) {
+                            resource = null;
+                        }
+            	    }
+    	        }
+    	    }
+	    }
+	    return resource;
+	}
+
+    static public IResource getDoxygenResourceRoot(ISelection selection, IWorkbenchPart targetPart) {
+        IResource resource = null;
+        IStructuredSelection strSelection = (IStructuredSelection) selection;
+        try {
+            if( strSelection.size() == 1 ) {
+                Object object = strSelection.getFirstElement();
+                resource = (IResource) Platform.getAdapterManager().getAdapter(object, IResource.class);
+                if( resource != null && resource.isAccessible() ) {
+                    ResourceCollector collector = ResourceCollector.run(resource);
+                    if (!collector.isEmpty()) {
+                        // if there is only one collected doxyfile, then assigns that doxyfile as the current resource
+                        if (collector.getSize() == 1) {
+                            resource = collector.getFirst();
+                        }
+                        // else: just use the root (container) to the two or more doxyfiles for later selection by user
+                    } else {
+                        // resets the resource when a doxyfile has not been found
+                        resource = null;
+                    }
+                } else {
+                    // resets the resource when it was not accessible
+                    resource = null;
+                }
+            }
+        }
+        catch(Throwable throwable) {
+            if (targetPart != null) {
+                MessageDialog.openError(targetPart.getSite().getShell(), "Unexpected Error", throwable.toString());
+            }
+        }
+        return resource;
+    }
 
 }
