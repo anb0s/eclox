@@ -63,6 +63,26 @@ public abstract class Doxygen {
     protected final static String COMMAND_NAME = "doxygen";
 
     /**
+     * a string containing command option for 'help'
+     */
+    protected final static String COMMAND_OPTION_HELP = "--help";
+
+    /**
+     * a string containing command option for 'build'
+     */
+    protected final static String COMMAND_OPTION_BUILD = "-b";
+
+    /**
+     * a string containing command option for 'update'
+     */
+    protected final static String COMMAND_OPTION_UPDATE = "-u";
+
+    /**
+     * a string containing command option for 'generate'
+     */
+    protected final static String COMMAND_OPTION_GENERATE = "-g";
+
+    /**
      * Retrieves the default doxygen instance to use.
      */
     public static Doxygen getDefault() {
@@ -116,7 +136,7 @@ public abstract class Doxygen {
     public String getVersion() {
         try {
             // create process builder with doxygen command
-            ProcessBuilder pb = new ProcessBuilder(getCommand(), "--help");
+            ProcessBuilder pb = new ProcessBuilder(getCommand(), COMMAND_OPTION_HELP);
             // Runs the command and retrieves the version string.
             Process	process	= pb.start();
             /*int ret = */process.waitFor();
@@ -213,13 +233,13 @@ public abstract class Doxygen {
      *
      * @return  The process that run the build.
      */
-    public Process run(File file, boolean checkIfFileExisting, String mode) throws InvokeException, RunException {
+    public Process run(File file, boolean checkIfFileExisting, String commandOption) throws InvokeException, RunException {
         if(checkIfFileExisting && (file.exists() == false) ) {
             throw new RunException("Missing or bad doxyfile");
         }
         try {
             // create process builder with doxygen command and doxyfile
-            ProcessBuilder pb = new ProcessBuilder(getCommand(), mode, file.getAbsolutePath());
+            ProcessBuilder pb = new ProcessBuilder(getCommand(), commandOption, file.getAbsolutePath());
             // set working directory
             pb.directory(file.getParentFile().getAbsoluteFile());
             // get passed system environment
@@ -243,7 +263,7 @@ public abstract class Doxygen {
      *
      * @return	The process that run the build.
      */
-    public Process build( IFile ifile ) throws InvokeException, RunException {
+    public Process build(IFile ifile) throws InvokeException, RunException {
         return build(ifile.getLocation().makeAbsolute().toFile());
     }
 
@@ -254,8 +274,8 @@ public abstract class Doxygen {
      *
      * @return  The process that run the build.
      */
-    public Process build( File file ) throws InvokeException, RunException {
-        return run(file, true, "-b");
+    public Process build(File file) throws InvokeException, RunException {
+        return run(file, true, COMMAND_OPTION_BUILD);
     }
 
     /*
@@ -298,12 +318,21 @@ public abstract class Doxygen {
     /**
      * Generate an empty configuration file.
      *
-     * @param	file	the configuration file to generate.
+     * @param   file    the configuration file to generate.
      */
     public void generate(File file) throws InvokeException, RunException {
+        run_local(file, false, COMMAND_OPTION_GENERATE);
+    }
+
+    /**
+     * Generate an empty configuration file.
+     *
+     * @param	file	the configuration file to generate.
+     */
+    public void run_local(File file, boolean checkIfFileExisting, String commandOption) throws InvokeException, RunException {
         try
         {
-            Process process = run(file, false, "-g");
+            Process process = run(file, checkIfFileExisting, commandOption);
             if(process.waitFor() != 0) {
                 BufferedReader	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String			errorMsg = new String();
@@ -326,6 +355,46 @@ public abstract class Doxygen {
         catch( Throwable throwable ) {
             Plugin.log(throwable);
         }
+    }
+
+    /**
+     * Launch update for configuration file.
+     *
+     * @param   ifile   the configuration file to update.
+     */
+    public void update(IFile ifile) throws InvokeException, RunException {
+        update(ifile.getLocation().makeAbsolute().toFile());
+        // Force some refresh to display the file.
+        try {
+            ifile.refreshLocal( 0, null );
+        } catch (Throwable throwable) {
+            Plugin.log(throwable);
+        }
+    }
+
+    /**
+     * Launch update for configuration file.
+     *
+     * @param   file   the configuration file to update.
+     */
+    public void update(File file) throws InvokeException, RunException {
+        run_local(file, true, COMMAND_OPTION_UPDATE);
+    }
+
+    public static String getCommandOptionHelp() {
+        return COMMAND_OPTION_HELP;
+    }
+
+    public static String getCommandOptionBuild() {
+        return COMMAND_OPTION_BUILD;
+    }
+
+    public static String getCommandOptionUpdate() {
+        return COMMAND_OPTION_UPDATE;
+    }
+
+    public static String getCommandOptionGenerate() {
+        return COMMAND_OPTION_GENERATE;
     }
 
     /**

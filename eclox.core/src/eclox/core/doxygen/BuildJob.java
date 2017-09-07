@@ -243,7 +243,7 @@ public class BuildJob extends Job {
     /**
      * Retrieves all doxygen build jobs.
      *
-     * @return	an arry containing all doxygen build jobs (can be empty).
+     * @return	an array containing all doxygen build jobs (can be empty).
      */
     public static BuildJob[] getAllJobs()
     {
@@ -255,7 +255,6 @@ public class BuildJob extends Job {
      * a new job will be created.
      *
      * @param	doxyfile	a given doxyfile instance
-     * @param	doxygen		a string containing the doxygen command to use
      *
      * @return	a build job that is in charge of building the given doxyfile
      */

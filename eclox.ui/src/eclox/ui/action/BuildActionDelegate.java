@@ -47,6 +47,9 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
+import eclox.core.doxygen.Doxygen;
+import eclox.core.doxygen.InvokeException;
+import eclox.core.doxygen.RunException;
 import eclox.ui.DoxyfileSelector;
 import eclox.ui.Images;
 import eclox.ui.MenuItemType;
@@ -231,13 +234,16 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
         try {
             switch(itemType) {
                 case chooseDoxyfile:
-                    doRun(chooseDoxyfile());
+                    doBuild(chooseDoxyfile());
                     break;
                 case clearHistory:
                     clearHistory(Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed(), null);
                     break;
                 case buildDoxyfile:
-                    doRun(nextDoxyfile);
+                    doBuild(nextDoxyfile);
+                    break;
+                case updateDoxyfile:
+                    doUpdate(chooseDoxyfile());
                     break;
                 case unknown:
                     break;
@@ -291,7 +297,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
         return doxyfile;
     }
 
-	protected void doRun(Doxyfile doxyfile) {
+	protected void doBuild(Doxyfile doxyfile) {
         if (doxyfile != null) {
             if (doxyfile.exists(true)) {
                 Plugin.getDefault().getBuildManager().build(doxyfile);
@@ -310,6 +316,30 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
             }
         }
 	}
+
+    protected void doUpdate(Doxyfile doxyfile) {
+        if (doxyfile != null) {
+            if (doxyfile.exists(true)) {
+                try {
+                    IFile doxyIFile = doxyfile.getIFile();
+                    File doxyFile   = doxyfile.getFile();
+                    if (doxyIFile != null) {
+                        Doxygen.getDefault().update(doxyIFile);
+                    } else {
+                        Doxygen.getDefault().update(doxyFile);
+                    }
+                }
+                // Doxygen returned an error.
+                catch( RunException runException ) {
+                    //MessageDialog.openError(getShell(), "Doxygen Error", "An error occured while running doxygen. " + runException.toString());
+                }
+                // Doxygen was impossible to run.
+                catch( InvokeException invokeException ) {
+                    //
+                }
+            }
+        }
+    }
 
 	/**
 	 * Dispose the owned menu.

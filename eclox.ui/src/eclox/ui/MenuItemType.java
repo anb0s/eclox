@@ -19,8 +19,9 @@ import java.util.List;
 public enum MenuItemType {
     unknown(-1, "Unknown", Images.DEFAULT.getId()),
     buildDoxyfile(0, "Build Doxyfile", Images.DOXYFILE.getId()),
-    chooseDoxyfile(1, "Choose Doxyfile", Images.EXPLORE.getId()),
-    clearHistory(2, "Clear History", Images.ERASE.getId());
+    chooseDoxyfile(1, "Build Doxyfile", Images.EXPLORE.getId()),
+    updateDoxyfile(2, "Update Doxyfile", Images.EXPLORE.getId()),
+    clearHistory(3, "Clear History", Images.ERASE.getId());
     // attributes
     private final int id;
     private final String name;
