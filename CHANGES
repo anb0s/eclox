@@ -1,6 +1,27 @@
 see too: https://github.com/anb0s/eclox/releases
 
 ----------------------------------------------------------------
+v0.12.0 (??.09.2017)
+----------------------------------------------------------------
+Second minor release @github
+Fixed issues (https://github.com/anb0s/eclox/milestone/3?closed=1):
+- [x]  #18 Support doxygen upgrade feature
+- [x]  #83 context menu entry shown unnecessarily
+- [x]  #91 Implement saveas feature
+- [x] #108 improve detection of warnings concerning undocumented parameters
+- [x] #195 java.lang.IllegalArgumentException in createMarkersForResource
+- [x] #196 terminate build is not working like expected
+- [x] #197 doxygen history menu shows multiple entries for same file
+- [x] #198 doxyfile selection dialog does not show nested elements
+- [x] #199 add "clear history" to history menu
+- [x] #200 invalid custom doxygen identifier found
+- [x] #201 Doxygen Build Console: stderr and stdin are not synchronized
+- [x] #203 remove from history if "eclox.core.doxygen.RunException: Missing or bad doxyfile"
+- [x] #206 [v0.12] console icons are not shown
+- [x] #207 [v0.12] exception if new file created
+- [x] #208 [v0.12] java.lang.NullPointerException in Advanced tab
+
+----------------------------------------------------------------
 v0.11.2 (09.05.2017)
 ----------------------------------------------------------------
 Bug fixes for the first minor release @GitHub
