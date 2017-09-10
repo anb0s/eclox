@@ -24,6 +24,7 @@ import java.util.Iterator;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorInput;
@@ -31,8 +32,10 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableEditor;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.part.FileEditorInput;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ISettingValueListener;
@@ -78,10 +81,64 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
         catch( Throwable throwable ) {}
     }
 
+    private void doSave(IProgressMonitor monitor, IFile ifile, File  file) {
+
+        try {
+            // Commits all pending changes.
+            commitPages(true);
+
+            // Stores the doxyfile content.
+            Serializer serializer = new Serializer(doxyfile);
+            if (ifile != null) {
+                if (ifile.exists()) {
+                    ifile.setContents(serializer, false, true, monitor);
+                } else {
+                    ifile.create(serializer, true, monitor);
+                }
+            } else {
+                FileOutputStream outputStream = null;
+                try {
+                    // write the inputStream to a FileOutputStream
+                    outputStream = new FileOutputStream(file);
+                    int read = 0;
+                    byte[] bytes = new byte[1024];
+                    while ((read = serializer.read(bytes)) != -1) {
+                        outputStream.write(bytes, 0, read);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (outputStream != null) {
+                        try {
+                            outputStream.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+            }
+
+            // Clears the dirty property set on some settings.
+            Iterator<?>     i = doxyfile.settingIterator();
+            while( i.hasNext() ) {
+                Setting setting = (Setting) i.next();
+                setting.removeProperty( PROP_SETTING_DIRTY );
+            }
+
+            // Resets the dirty flag.
+            this.dirty = false;
+            this.firePropertyChange( IEditorPart.PROP_DIRTY );
+        }
+        catch( Throwable throwable ) {
+            MessageDialog.openError(getSite().getShell(), "Unexpected Error", throwable.toString());
+        }
+    }
+
     /**
      * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
      */
-    public void doSave( IProgressMonitor monitor ) {
+    public void doSave(IProgressMonitor monitor) {
         // Retrieves the file input.
 		IEditorInput editorInput = this.getEditorInput();
 		IFile ifile = null;
@@ -92,60 +149,37 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
             URI fileuri = ((FileStoreEditorInput)editorInput).getURI();
             file = new File(fileuri.getPath());
 		}
-
-		try {
-			// Commits all pending changes.
-			commitPages(true);
-
-        	// Stores the doxyfile content.
-	    	Serializer serializer = new Serializer(doxyfile);
-	    	if (ifile != null) {
-	    	    ifile.setContents(serializer, false, true, monitor);
-	    	} else {
-	    	    FileOutputStream outputStream = null;
-                try {
-	    	        // write the inputStream to a FileOutputStream
-	    	        outputStream = new FileOutputStream(file);
-	    	        int read = 0;
-	    	        byte[] bytes = new byte[1024];
-	    	        while ((read = serializer.read(bytes)) != -1) {
-	    	            outputStream.write(bytes, 0, read);
-	    	        }
-	    	    } catch (IOException e) {
-	    	        e.printStackTrace();
-	    	    } finally {
-	    	        if (outputStream != null) {
-	    	            try {
-	    	                outputStream.close();
-	    	            } catch (IOException e) {
-	    	                e.printStackTrace();
-	    	            }
-
-	    	        }
-	    	    }
-	    	}
-
-	    	// Clears the dirty property set on some settings.
-	    	Iterator<?>		i = doxyfile.settingIterator();
-	    	while( i.hasNext() ) {
-	    		Setting	setting = (Setting) i.next();
-	    		setting.removeProperty( PROP_SETTING_DIRTY );
-	    	}
-
-	    	// Resets the dirty flag.
-	    	this.dirty = false;
-	    	this.firePropertyChange( IEditorPart.PROP_DIRTY );
-    	}
-    	catch( Throwable throwable ) {
-    		MessageDialog.openError(getSite().getShell(), "Unexpected Error", throwable.toString());
-    	}
+		// save now
+		doSave(monitor, ifile, file);
     }
 
     /**
      * @see org.eclipse.ui.ISaveablePart#doSaveAs()
      */
     public void doSaveAs() {
-        // TODO implement "save as"
+        // Retrieves the file input.
+        IEditorInput editorInput = this.getEditorInput();
+        IFile ifile = null;
+        if (editorInput instanceof IFileEditorInput) {
+            ifile = ((IFileEditorInput)editorInput).getFile();
+        }
+        // ask user for file
+        SaveAsDialog saveAsDialog = new SaveAsDialog(getSite().getShell());
+        if (ifile != null) {
+            saveAsDialog.setOriginalFile(ifile);
+        }
+        saveAsDialog.open();
+        IPath path = saveAsDialog.getResult();
+        if (path != null) {
+            IFile ifileNew = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+            if (ifileNew != null) {
+                IProgressMonitor progressMonitor = getEditorSite().getActionBars().getStatusLineManager().getProgressMonitor();
+                // save now
+                doSave(progressMonitor, ifileNew, null);
+                // refresh editor to new file
+                setInput(new FileEditorInput (ifileNew));
+            }
+        }
     }
 
     /**
@@ -161,8 +195,7 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
      * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
      */
     public boolean isSaveAsAllowed() {
-        // TODO implement "save as"
-        return false;
+        return true;
     }
 
     /**
