@@ -1,0 +1,23 @@
+#---------------------------------------------------------------------------
+# Module related configuration options
+#---------------------------------------------------------------------------
+# Include the project specific doxygen configuration with the default
+# settings for the project
+
+@INCLUDE = Project.doxyfile
+
+#---------------------------------------------------------------------------
+# Configuration options related to the input files
+#---------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------
+# The INPUT tag is used to specify the files and/or directories that contain
+# documented source files. You may enter file names like myfile.cpp or
+# directories like /usr/src/myproject. Separate the files or directories with
+# spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
+# Note: If this tag is empty the current directory is searched.
+
+# Add here the module specific directories which should be considered to
+# collect documentation relevant files
+
+INPUT = ..\10_Testcases "new value" ..\11_Features "new value 3" "new value 4"

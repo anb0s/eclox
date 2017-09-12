@@ -10,6 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #171: added sorting column in advanced tab
+ *                   - #211: Added support for the += operator
  *
  ******************************************************************************/
 
@@ -55,6 +56,11 @@ public class Setting extends Chunk {
     private Set<ISettingListener> listeners = new HashSet<ISettingListener>();
 
     /**
+     * The string containing the operator (= or +=).
+     */
+    private String operator;
+
+    /**
      * The string containing the setting value.
      */
     private String value;
@@ -63,6 +69,16 @@ public class Setting extends Chunk {
      * The setting local properties.
      */
     private Properties properties = new Properties();
+
+    /**
+     * Defines the assignment operator.
+     */
+    public static final String ASSIGNMENT = "=";
+
+    /**
+     * Defines the assignment operator.
+     */
+    public static final String INCREMENT = "+=";
 
     /**
      * Defines the group property name.
@@ -119,12 +135,24 @@ public class Setting extends Chunk {
     /**
      * Constructor.
      *
+     * @param   identifier  a string containing the setting identifier
+     * @param   value       a string containing the setting value
+     * @param   operator    a string containing the setting operator
+     */
+    public Setting(String identifier, String value, String operator) {
+        this.identifier = new String(identifier);
+        this.value = new String(value);
+        this.operator = new String(operator);
+    }
+
+    /**
+     * Constructor.
+     *
      * @param	identifier	a string containing the setting identifier
      * @param	value		a string containing the setting value
      */
     public Setting(String identifier, String value) {
-        this.identifier = new String(identifier);
-        this.value = new String(value);
+        this(identifier, value, ASSIGNMENT);
     }
 
     /**
@@ -158,6 +186,15 @@ public class Setting extends Chunk {
         } else {
             return getDefaultPropertyValue(this, property);
         }
+    }
+
+    /**
+     * Retrieves the setting operator.
+     *
+     * @return  a string containing the setting operator
+     */
+    public String getOperator() {
+        return operator;
     }
 
     /**
@@ -255,6 +292,15 @@ public class Setting extends Chunk {
     }
 
     /**
+     * Updates the operator of the setting.
+     *
+     * @param   operator   a string representing a operator to set
+     */
+    public void setOperator(String operator) {
+        this.operator = new String(operator);
+    }
+
+    /**
      * Updates the value of the setting.
      *
      * @param	value	a string representing a value to set
@@ -296,7 +342,7 @@ public class Setting extends Chunk {
     }
 
     public String toString() {
-        return this.identifier + " = " + this.value + "\n";
+        return this.identifier + " " + this.operator + " " + this.value + "\n";
     }
 
     /**

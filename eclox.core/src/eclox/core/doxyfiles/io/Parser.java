@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
- *     Andre Bossert -
+ *     Andre Bossert - #211: Added support for the += operator
  *
  ******************************************************************************/
 
@@ -245,11 +245,13 @@ public class Parser {
         // Retrieves the setting from the doxyfile.
         Setting setting = doxyfile.getSetting(identifier);
         if (setting != null) {
-            // Updates the continued setting's value.
+            // Updates the continued setting's value independent of the type (assignment or increment)
+            // because the first operator wins!
             setting.setValue(setting.getValue() + " " + value);
         } else {
-            Plugin.getDefault().logWarning("At line " + lineNumber + ": the setting was not declared before.");
-            processSettingAssignment(doxyfile, identifier, value);
+            Plugin.getDefault().logWarning("At line " + lineNumber + ": the setting was not declared before. But it may be declared in included file!");
+            setting = new Setting(identifier, value, Setting.INCREMENT);
+            doxyfile.append(setting);
         }
     }
 
@@ -268,7 +270,6 @@ public class Parser {
         // and updates it.
         if (lastChunk instanceof Setting) {
             Setting continuedSetting = (Setting) lastChunk;
-
             continuedSetting.setValue(continuedSetting.getValue() + " " + value);
         } else {
             Plugin.getDefault().logWarning("At line " + lineNumber + ": value delcared without a setting name.");
