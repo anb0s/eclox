@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.internal;
 
@@ -30,47 +30,41 @@ import eclox.ui.editor.Editor;
  */
 public class ResourceChangeListener implements IResourceChangeListener {
 
-	/**
-	 * a reference on the editor to manage
-	 */
-	private Editor editor;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	editor	the editor to manage
-	 */
-	public ResourceChangeListener( Editor editor )
-	{
-		this.editor = editor;
-	}
-	
-	public void resourceChanged(IResourceChangeEvent event)
-	{
-		IEditorInput		editorInput = editor.getEditorInput();
-		IFileEditorInput	fileEditorInput = (IFileEditorInput) editorInput;
-		IFile				editorFile = fileEditorInput.getFile();
-		IResourceDelta		doxyfileDelta = event.getDelta().findMember( editorFile.getFullPath() );
-		
-		if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
-		{
-			closeEditor();
-		}
-	}
-	
-	/**
-	 * Closes the editor.
-	 */
-	private void closeEditor()
-	{
-		editor.getSite().getShell().getDisplay().asyncExec(
-					new Runnable() {
-						
-						public void run() {
-							editor.getSite().getPage().closeEditor( editor, false );		
-						}
-					}
-				);
-	}
+    /**
+     * a reference on the editor to manage
+     */
+    private Editor editor;
+
+    /**
+     * Constructor
+     * 
+     * @param	editor	the editor to manage
+     */
+    public ResourceChangeListener(Editor editor) {
+        this.editor = editor;
+    }
+
+    public void resourceChanged(IResourceChangeEvent event) {
+        IEditorInput editorInput = editor.getEditorInput();
+        IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
+        IFile editorFile = fileEditorInput.getFile();
+        IResourceDelta doxyfileDelta = event.getDelta().findMember(editorFile.getFullPath());
+
+        if (doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED) {
+            closeEditor();
+        }
+    }
+
+    /**
+     * Closes the editor.
+     */
+    private void closeEditor() {
+        editor.getSite().getShell().getDisplay().asyncExec(new Runnable() {
+
+            public void run() {
+                editor.getSite().getPage().closeEditor(editor, false);
+            }
+        });
+    }
 
 }

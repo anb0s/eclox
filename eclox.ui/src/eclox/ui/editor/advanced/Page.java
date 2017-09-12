@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.advanced;
 
@@ -17,8 +17,6 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 
 import eclox.ui.editor.Editor;
-
-
 
 /**
  * Implements the settings form page
@@ -31,12 +29,12 @@ public class Page extends FormPage {
      * The page identifier.
      */
     public static final String ID = "advanced";
-    
+
     /**
      * The master/detail block.
      */
     private Block block;
-    
+
     /**
      * Constructor.
      * 
@@ -46,9 +44,9 @@ public class Page extends FormPage {
      */
     public Page(Editor editor) {
         super(editor, Page.ID, "Advanced");
-        block = new Block( editor.getDoxyfile() );
+        block = new Block(editor.getDoxyfile());
     }
-    
+
     /**
      * @see org.eclipse.ui.forms.editor.FormPage#createFormContent(org.eclipse.ui.forms.IManagedForm)
      */

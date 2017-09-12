@@ -27,10 +27,11 @@ public class EditorPropertyTester extends PropertyTester {
 
     @Override
     public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
-        if("hasResourceSelection".equals(property) && receiver instanceof IWorkbenchPart){
+        if ("hasResourceSelection".equals(property) && receiver instanceof IWorkbenchPart) {
             if (args.length > 0 && args[0].equals("resourceType")) {
-                ISelection selection = ((IWorkbenchPart)receiver).getSite().getSelectionProvider().getSelection();
-                return BuildPopupActionDelegate.getDoxygenResourceForType(selection, null, ResourceType.getFromEnum((String)expectedValue)) != null;
+                ISelection selection = ((IWorkbenchPart) receiver).getSite().getSelectionProvider().getSelection();
+                return BuildPopupActionDelegate.getDoxygenResourceForType(selection, null,
+                        ResourceType.getFromEnum((String) expectedValue)) != null;
             }
         }
         return false;

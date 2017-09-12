@@ -15,11 +15,11 @@ package eclox.ui;
 
 public interface Constants {
     // Plugin
-    public static final String PLUGIN_ID         = "eclox.ui";
+    public static final String PLUGIN_ID = "eclox.ui";
     // Icons
-    public static final String IMAGE_EXT         = ".png";
-    public static final String IMAGE_OLD_EXT     = ".gif";
-    public static final String IMAGE_PATH        = "images/";
-	// Preferences
+    public static final String IMAGE_EXT = ".png";
+    public static final String IMAGE_OLD_EXT = ".gif";
+    public static final String IMAGE_PATH = "images/";
+    // Preferences
     //public static final String PREF_ = "PREF_";
 }

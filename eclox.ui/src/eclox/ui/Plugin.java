@@ -43,112 +43,115 @@ import org.osgi.framework.BundleContext;
  */
 public class Plugin extends AbstractUIPlugin {
 
-	private static Plugin	plugin;			///< The singleton instance.
-	private BuildManager	buildManager;	///< The managed build manager.
-	private JobMonitor		jobMonitor;		///< The managed job monitor.
+    private static Plugin plugin; ///< The singleton instance.
+    private BuildManager buildManager; ///< The managed build manager.
+    private JobMonitor jobMonitor; ///< The managed job monitor.
 
-	/**
-	 * Asks the user if he wants to edit doxygen configuration after a failed
-	 * doxygen invocation.
-	 *
-	 * @return	@c true if doxygen configuration has been edited, @c false otherwise
-	 */
-	public static boolean editPreferencesAfterDoxygenInvocationFailed() {
-		Shell	shell = plugin.getWorkbench().getActiveWorkbenchWindow().getShell();
+    /**
+     * Asks the user if he wants to edit doxygen configuration after a failed
+     * doxygen invocation.
+     *
+     * @return	@c true if doxygen configuration has been edited, @c false otherwise
+     */
+    public static boolean editPreferencesAfterDoxygenInvocationFailed() {
+        Shell shell = plugin.getWorkbench().getActiveWorkbenchWindow().getShell();
 
-		// Asks the user if he wants to edit the preferences to solve the problem.
-		boolean	editionWanted = MessageDialog.openQuestion(shell, "Doxygen Not Found", "Eclox was not able to run doxygen. Doxygen is either missing or eclox is not properly configured to use it.\n\nWould you like to edit preferences now ?" );
-		if( ! editionWanted ) {
-			return false;
-		}
+        // Asks the user if he wants to edit the preferences to solve the problem.
+        boolean editionWanted = MessageDialog.openQuestion(shell, "Doxygen Not Found",
+                "Eclox was not able to run doxygen. Doxygen is either missing or eclox is not properly configured to use it.\n\nWould you like to edit preferences now ?");
+        if (!editionWanted) {
+            return false;
+        }
 
-		// Allows the user to edit the preferences and eventually launch doxygen again.
-		String[]	filter = { eclox.core.ui.PreferencePage.ID };
-		int			edited = PreferencesUtil.createPreferenceDialogOn(shell, eclox.core.ui.PreferencePage.ID, filter, null).open();
+        // Allows the user to edit the preferences and eventually launch doxygen again.
+        String[] filter = { eclox.core.ui.PreferencePage.ID };
+        int edited = PreferencesUtil.createPreferenceDialogOn(shell, eclox.core.ui.PreferencePage.ID, filter, null)
+                .open();
 
-		return edited == Window.OK;
-	}
+        return edited == Window.OK;
+    }
 
+    /**
+     * The constructor.
+     */
+    public Plugin() {
+        plugin = this;
+    }
 
-	/**
-	 * The constructor.
-	 */
-	public Plugin() {
-		plugin = this;
-	}
+    /**
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
 
-	/**
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
+        buildManager = new BuildManager();
+        buildManager.restoreState();
 
-		buildManager = new BuildManager();
-		buildManager.restoreState();
+        jobMonitor = new JobMonitor();
+        Job.getJobManager().addJobChangeListener(jobMonitor);
+    }
 
-		jobMonitor = new JobMonitor();
-		Job.getJobManager().addJobChangeListener(jobMonitor);
-	}
+    /**
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    public void stop(BundleContext context) throws Exception {
+        buildManager.saveState();
+        buildManager = null;
 
-	/**
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		buildManager.saveState();
-		buildManager = null;
+        Job.getJobManager().removeJobChangeListener(jobMonitor);
+        jobMonitor = null;
 
-		Job.getJobManager().removeJobChangeListener(jobMonitor);
-		jobMonitor = null;
+        plugin = null;
 
-		plugin = null;
+        super.stop(context);
+    }
 
-		super.stop(context);
-	}
+    /**
+     * Returns the shared instance.
+     */
+    public static Plugin getDefault() {
+        return plugin;
+    }
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static Plugin getDefault() {
-		return plugin;
-	}
+    /**
+     * Retrieves the build manager of the plugin.
+     *
+     * @return the managed build manager instance
+     */
+    public BuildManager getBuildManager() {
+        return buildManager;
+    }
 
-	/**
-	 * Retrieves the build manager of the plugin.
-	 *
-	 * @return the managed build manager instance
-	 */
-	public BuildManager getBuildManager() {
-		return buildManager;
-	}
+    /**
+     * Adds the specified throwable object into the plugin's log as an error.
+     *
+     * @param throwable	a throwable instance to log
+     */
+    public static void log(Throwable throwable) {
+        plugin.getLog().log(new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0,
+                "Exception caught. " + throwable.toString(), throwable));
+    }
 
-	/**
-	 * Adds the specified throwable object into the plugin's log as an error.
-	 *
-	 * @param throwable	a throwable instance to log
-	 */
-	public static void log( Throwable throwable ) {
-	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Exception caught. " + throwable.toString(), throwable) );
-	}
+    /**
+     * Adds the specified message into the plugin's log as an error.
+     *
+     * @param message	a string containing a message to log.
+     */
+    public static void log(String message) {
+        plugin.getLog().log(new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0,
+                "Error encountered. " + message, null));
+    }
 
-	/**
-	 * Adds the specified message into the plugin's log as an error.
-	 *
-	 * @param message	a string containing a message to log.
-	 */
-	public static void log( String message ) {
-	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Error encountered. " + message, null) );
-	}
-
-	/**
-	 * Returns an image descriptor for the image file at the given
-	 * plug-in relative path.
-	 *
-	 * @param path the path
-	 * @return the image descriptor
-	 */
-//	public static ImageDescriptor getImageDescriptor(String path) {
-//    return AbstractUIPlugin.imageDescriptorFromPlugin( plugin.getBundle().getSymbolicName(), path);
-//	}
+    /**
+     * Returns an image descriptor for the image file at the given
+     * plug-in relative path.
+     *
+     * @param path the path
+     * @return the image descriptor
+     */
+    //	public static ImageDescriptor getImageDescriptor(String path) {
+    //    return AbstractUIPlugin.imageDescriptorFromPlugin( plugin.getBundle().getSymbolicName(), path);
+    //	}
 
     public static ImageDescriptor getImageDescriptor(String id) {
         return getDefault().getImageRegistry().getDescriptor(id);
@@ -160,7 +163,7 @@ public class Plugin extends AbstractUIPlugin {
 
     protected void initializeImageRegistry(ImageRegistry registry) {
         Bundle bundle = Platform.getBundle(plugin.getBundle().getSymbolicName());
-        for(String imageId : Images.getIdsAsList()) {
+        for (String imageId : Images.getIdsAsList()) {
             String imagePath = Constants.IMAGE_PATH + imageId + Constants.IMAGE_EXT;
             URL url = bundle.getEntry(imagePath);
             if (url == null) {
@@ -168,7 +171,7 @@ public class Plugin extends AbstractUIPlugin {
             }
             addImageToRegistry(registry, bundle, imagePath, imageId);
         }
-     }
+    }
 
     protected void addImageToRegistry(ImageRegistry registry, Bundle bundle, String imagePath, String image_id) {
         IPath path = new Path(imagePath);

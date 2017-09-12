@@ -9,23 +9,22 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor;
 
 import org.eclipse.ui.forms.editor.FormPage;
 
-
 /**
  * @author gbrocker
  */
 public class SourcePage extends FormPage {
-    
+
     /**
      * Defines the source page identifer.
      */
     public static final String ID = "source";
-    
+
     /**
      * Constructor.
      * 

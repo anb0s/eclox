@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import eclox.core.Plugin;
 import eclox.core.doxygen.DefaultDoxygen;
 
-
 /**
  * Implements the prefenrence initializer for the plugin.
  *
@@ -42,8 +41,8 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
     }
 
     private void setDefaults(IEclipsePreferences defaultNode) {
-        defaultNode.put( IPreferences.DEFAULT_DOXYGEN, new DefaultDoxygen().getIdentifier() );
-        defaultNode.put( IPreferences.CUSTOM_DOXYGENS, "" );
+        defaultNode.put(IPreferences.DEFAULT_DOXYGEN, new DefaultDoxygen().getIdentifier());
+        defaultNode.put(IPreferences.CUSTOM_DOXYGENS, "");
     }
 
 }

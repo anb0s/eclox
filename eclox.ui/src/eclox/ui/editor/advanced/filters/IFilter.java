@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.advanced.filters;
 
@@ -25,13 +25,13 @@ import eclox.core.doxyfiles.Doxyfile;
  * @author gbrocker
  */
 public interface IFilter {
-	
-	/**
-	 * Tells the filter which doxyfile is to filter.
-	 * 
-	 * @param	doxyfile	a doxyfile instance
-	 */
-	void setDoxyfile( Doxyfile doxyfile );
+
+    /**
+     * Tells the filter which doxyfile is to filter.
+     * 
+     * @param	doxyfile	a doxyfile instance
+     */
+    void setDoxyfile(Doxyfile doxyfile);
 
     /**
      * Asks the filter to create its user interface controls.
@@ -39,27 +39,27 @@ public interface IFilter {
      * @param   managedForm a managed form to use for the widget creation
      * @param   parent      a composite being the parent of all widgets
      */
-    void createControls( IManagedForm managedForm, Composite parent );
-    
+    void createControls(IManagedForm managedForm, Composite parent);
+
     /**
      * Asks the filter to create viewer filter and add them in a given viewer
      * 
      * @param   viewer  a viewer where filter must be added
      */
-    void createViewerFilters( StructuredViewer viewer );
-    
+    void createViewerFilters(StructuredViewer viewer);
+
     /**
      * Asks the filter to dispose its controls.
      */
     void disposeControls();
-    
+
     /**
      * Asks the filter to dispose created viewer filter given a viewer
      * 
      * @param   viewer  a structured view from which created viewer filter must be removed
      */
-    void disposeViewerFilers( StructuredViewer viewer );
-    
+    void disposeViewerFilers(StructuredViewer viewer);
+
     /**
      * Retrieves the filter name.
      * 

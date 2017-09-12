@@ -34,117 +34,117 @@ import eclox.core.doxygen.BuildJob;
 
 public class DoxyfileDecorator implements ILightweightLabelDecorator {
 
-	/**
-	 * Implements a job change listener
-	 */
-	/**
-	 * @author gbrocker
-	 *
-	 */
-	private class MyJobListener extends JobChangeAdapter {
+    /**
+     * Implements a job change listener
+     */
+    /**
+     * @author gbrocker
+     *
+     */
+    private class MyJobListener extends JobChangeAdapter {
 
-		/**
-		 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-		 */
-		public void done(IJobChangeEvent event) {
-			Job	job = event.getJob();
+        /**
+         * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
+         */
+        public void done(IJobChangeEvent event) {
+            Job job = event.getJob();
 
-			if( job.belongsTo(BuildJob.FAMILY) ) {
-				BuildJob	buildJob = (BuildJob) job;
+            if (job.belongsTo(BuildJob.FAMILY)) {
+                BuildJob buildJob = (BuildJob) job;
 
-				fireProviderChangedEvent( buildJob.getDoxyfile() );
-			}
-		}
+                fireProviderChangedEvent(buildJob.getDoxyfile());
+            }
+        }
 
-		/**
-		 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#running(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-		 */
-		public void running(IJobChangeEvent event) {
-			Job	job = event.getJob();
+        /**
+         * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#running(org.eclipse.core.runtime.jobs.IJobChangeEvent)
+         */
+        public void running(IJobChangeEvent event) {
+            Job job = event.getJob();
 
-			if( job.belongsTo(BuildJob.FAMILY) ) {
-				BuildJob	buildJob = (BuildJob) job;
+            if (job.belongsTo(BuildJob.FAMILY)) {
+                BuildJob buildJob = (BuildJob) job;
 
-				fireProviderChangedEvent( buildJob.getDoxyfile() );
-			}
-		}
+                fireProviderChangedEvent(buildJob.getDoxyfile());
+            }
+        }
 
+    }
 
-	}
+    /**
+     * the collection of attached listeners
+     */
+    private Collection<ILabelProviderListener> listeners = new Vector<ILabelProviderListener>();
 
-	/**
-	 * the collection of attached listeners
-	 */
-	private Collection<ILabelProviderListener> listeners = new Vector<ILabelProviderListener>();
+    /**
+     * the job listener
+     */
+    private MyJobListener jobManagerListener = new MyJobListener();
 
-	/**
-	 * the job listener
-	 */
-	private MyJobListener jobManagerListener = new MyJobListener();
+    /**
+     * Constructor
+     */
+    public DoxyfileDecorator() {
+        Job.getJobManager().addJobChangeListener(jobManagerListener);
+    }
 
-	/**
-	 * Constructor
-	 */
-	public DoxyfileDecorator() {
-		Job.getJobManager().addJobChangeListener(jobManagerListener);
-	}
+    /**
+     * @see org.eclipse.jface.viewers.ILightweightLabelDecorator#decorate(java.lang.Object, org.eclipse.jface.viewers.IDecoration)
+     */
+    public void decorate(Object element, IDecoration decoration) {
+        if (Doxyfile.isDoxyfile(element)) {
+            Doxyfile doxyfile = new Doxyfile((IFile) element, null);
+            BuildJob job = BuildJob.findJob(doxyfile);
+            if (job != null && job.getState() == BuildJob.RUNNING) {
+                decoration.addOverlay(ImageDescriptor.createFromFile(this.getClass(), "build_co.gif"),
+                        IDecoration.BOTTOM_LEFT);
+                decoration.addSuffix(" (building...)");
+            }
+        }
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.ILightweightLabelDecorator#decorate(java.lang.Object, org.eclipse.jface.viewers.IDecoration)
-	 */
-	public void decorate(Object element, IDecoration decoration) {
-		if( Doxyfile.isDoxyfile(element) ) {
-			Doxyfile doxyfile	= new Doxyfile((IFile) element, null);
-			BuildJob job		= BuildJob.findJob(doxyfile);
-			if( job != null && job.getState() == BuildJob.RUNNING ) {
-				decoration.addOverlay( ImageDescriptor.createFromFile(this.getClass(), "build_co.gif"), IDecoration.BOTTOM_LEFT );
-				decoration.addSuffix(" (building...)");
-			}
-		}
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
+     */
+    public void addListener(ILabelProviderListener listener) {
+        listeners.add(listener);
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
-	public void addListener(ILabelProviderListener listener) {
-		listeners.add(listener);
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
+     */
+    public void dispose() {
+        Job.getJobManager().removeJobChangeListener(jobManagerListener);
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
-	 */
-	public void dispose() {
-		Job.getJobManager().removeJobChangeListener(jobManagerListener);
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
+     */
+    public boolean isLabelProperty(Object element, String property) {
+        return false;
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
-	 */
-	public boolean isLabelProperty(Object element, String property) {
-		return false;
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
+     */
+    public void removeListener(ILabelProviderListener listener) {
+        listeners.remove(listener);
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
-	 */
-	public void removeListener(ILabelProviderListener listener) {
-		listeners.remove(listener);
-	}
+    /**
+     * Notifies listerners that the given resource'l decoration need to be updated
+     *
+     * @param	resource	a resource to refresh
+     */
+    private void fireProviderChangedEvent(Object resource) {
+        Iterator<ILabelProviderListener> i = listeners.iterator();
+        LabelProviderChangedEvent event = new LabelProviderChangedEvent(this, resource);
 
-	/**
-	 * Notifies listerners that the given resource'l decoration need to be updated
-	 *
-	 * @param	resource	a resource to refresh
-	 */
-	private void fireProviderChangedEvent( Object resource ) {
-		Iterator<ILabelProviderListener>					i		= listeners.iterator();
-		LabelProviderChangedEvent	event	= new LabelProviderChangedEvent(this, resource);
+        while (i.hasNext()) {
+            ILabelProviderListener listener = (ILabelProviderListener) i.next();
 
-		while( i.hasNext() ) {
-			ILabelProviderListener	listener = (ILabelProviderListener) i.next();
-
-			listener.labelProviderChanged(event);
-		}
-	}
+            listener.labelProviderChanged(event);
+        }
+    }
 
 }

@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxyfiles;
 
@@ -19,4 +19,5 @@ package eclox.core.doxyfiles;
  * 
  * @author gbrocker
  */
-public interface ISettingListener {}
+public interface ISettingListener {
+}

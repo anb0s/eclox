@@ -31,7 +31,7 @@ import eclox.core.Plugin;
 
 public final class BundledDoxygen extends Doxygen {
 
-	private URL	url;
+    private URL url;
 
     /**
      * Constructor
@@ -43,78 +43,76 @@ public final class BundledDoxygen extends Doxygen {
      * Constructor
      */
     public BundledDoxygen(URL url) {
-        assert( url != null );
+        assert (url != null);
         this.url = url;
     }
 
-	/**
-	 * Retrieves all available bundled doxygen binaries.
-	 *
-	 * @return	a collection with all collected bundled doxygen wrappers
-	 */
-	public static Collection<BundledDoxygen> getAll() {
-		Collection<BundledDoxygen>			doxygens	= new Vector<BundledDoxygen>();
-		IExtensionRegistry	registry	= Platform.getExtensionRegistry();
-		IExtensionPoint		point		= registry.getExtensionPoint("org.gna.eclox.core.doxygen");
-		IExtension[]		extensions	= point.getExtensions();
-		for (int i = 0; i < extensions.length; i++) {
-			IExtension				extension	= extensions[i];
-			IConfigurationElement[] elements	= extension.getConfigurationElements();
-			for (int j = 0; j < elements.length; j++) {
-				final String	arch	= elements[j].getAttribute("arch");
-				final String	os		= elements[j].getAttribute("os");
-				if( Platform.getOS().equals(os) && Platform.getOSArch().equals(arch) ) {
-					String	path	= elements[j].getAttribute("path");
-					URL url;
+    /**
+     * Retrieves all available bundled doxygen binaries.
+     *
+     * @return	a collection with all collected bundled doxygen wrappers
+     */
+    public static Collection<BundledDoxygen> getAll() {
+        Collection<BundledDoxygen> doxygens = new Vector<BundledDoxygen>();
+        IExtensionRegistry registry = Platform.getExtensionRegistry();
+        IExtensionPoint point = registry.getExtensionPoint("org.gna.eclox.core.doxygen");
+        IExtension[] extensions = point.getExtensions();
+        for (int i = 0; i < extensions.length; i++) {
+            IExtension extension = extensions[i];
+            IConfigurationElement[] elements = extension.getConfigurationElements();
+            for (int j = 0; j < elements.length; j++) {
+                final String arch = elements[j].getAttribute("arch");
+                final String os = elements[j].getAttribute("os");
+                if (Platform.getOS().equals(os) && Platform.getOSArch().equals(arch)) {
+                    String path = elements[j].getAttribute("path");
+                    URL url;
                     try {
                         url = FileLocator.toFileURL(Platform.getBundle("org.gna.eclox.doxygen.core").getEntry(path));
                         // https://github.com/anb0s/eclox/issues/184
                         // [v0.11] bundled Doxygen binaries are not working (not executable) at Linux
-                        File exe = new File (FileLocator.resolve(url).getPath());
+                        File exe = new File(FileLocator.resolve(url).getPath());
                         if (!exe.canExecute()) {
-                        	exe.setExecutable(true);
+                            exe.setExecutable(true);
                         }
                         doxygens.add(new BundledDoxygen(url));
                     } catch (IOException e) {
                         //Plugin.getDefault().logError( path + ": not a valid doxygen path." );
                         Plugin.log(e);
                     }
-				}
-			}
-		}
-		return doxygens;
-	}
+                }
+            }
+        }
+        return doxygens;
+    }
 
-	@Override
-	public String getCommand() {
-		try {
-			return FileLocator.resolve(url).getPath();
-		}
-		catch(Throwable t) {
-			Plugin.log(t);
-			return null;
-		}
-	}
+    @Override
+    public String getCommand() {
+        try {
+            return FileLocator.resolve(url).getPath();
+        } catch (Throwable t) {
+            Plugin.log(t);
+            return null;
+        }
+    }
 
-	@Override
-	public String getDescription() {
-		return new String();
-	}
+    @Override
+    public String getDescription() {
+        return new String();
+    }
 
-	@Override
-	public String getIdentifier() {
-		return this.getClass().getName() + " " + url;
-	}
+    @Override
+    public String getIdentifier() {
+        return this.getClass().getName() + " " + url;
+    }
 
     @Override
     public void setLocation(String location) {
-        assert( location != null );
-        assert( location.length() != 0 );
+        assert (location != null);
+        assert (location.length() != 0);
         try {
             this.url = new URL(location);
-        }
-        catch( Throwable t ) {
-            Plugin.log( t );
+        } catch (Throwable t) {
+            Plugin.log(t);
         }
     }
 

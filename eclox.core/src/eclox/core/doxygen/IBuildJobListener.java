@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxygen;
 
@@ -21,26 +21,26 @@ package eclox.core.doxygen;
  */
 public interface IBuildJobListener {
 
-	/**
-	 * Notifies that the job build log has changed.
-	 * 
-	 * @param	job		the build job that raised the notification
-	 * @param	output	a string containing the new output from doxygen
-	 */
-	void buildJobLogUpdated( BuildJob job, String output );
-	
-	/**
-	 * Notifies that the build job log has been cleared.
-	 *  
-	 * @param job	the build job that raised the notification
-	 */
-	void buildJobLogCleared( BuildJob job );
-	
-	/**
-	 * Notifies that the given build job has been removed.
-	 * 
-	 * @param	job	the build job that raised the notification
-	 */
-	void buildJobRemoved( BuildJob job );
-	
+    /**
+     * Notifies that the job build log has changed.
+     * 
+     * @param	job		the build job that raised the notification
+     * @param	output	a string containing the new output from doxygen
+     */
+    void buildJobLogUpdated(BuildJob job, String output);
+
+    /**
+     * Notifies that the build job log has been cleared.
+     *  
+     * @param job	the build job that raised the notification
+     */
+    void buildJobLogCleared(BuildJob job);
+
+    /**
+     * Notifies that the given build job has been removed.
+     * 
+     * @param	job	the build job that raised the notification
+     */
+    void buildJobRemoved(BuildJob job);
+
 }

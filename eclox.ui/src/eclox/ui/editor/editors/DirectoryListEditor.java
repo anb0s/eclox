@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.editors;
 
@@ -24,9 +24,9 @@ import eclox.core.doxyfiles.Setting;
  */
 public class DirectoryListEditor extends ListEditor {
 
-
-	protected String editValueCompound( Shell parent, Setting setting, String compound ) {
-		return Convenience.browserForPath( parent, setting.getOwner(), compound, Convenience.BROWSE_FILESYSTEM_DIRECTORY );
-	}
+    protected String editValueCompound(Shell parent, Setting setting, String compound) {
+        return Convenience.browserForPath(parent, setting.getOwner(), compound,
+                Convenience.BROWSE_FILESYSTEM_DIRECTORY);
+    }
 
 }

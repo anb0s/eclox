@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxygen;
 
@@ -20,14 +20,14 @@ package eclox.core.doxygen;
  */
 public class InvokeException extends Exception {
 
-	private static final long serialVersionUID = -4531804107557361202L;
+    private static final long serialVersionUID = -4531804107557361202L;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param	cause	references the cause 
-	 */
-	InvokeException( Throwable cause ) {
-		super( cause );
-	}
+    /**
+     * Constructor
+     * 
+     * @param	cause	references the cause 
+     */
+    InvokeException(Throwable cause) {
+        super(cause);
+    }
 }

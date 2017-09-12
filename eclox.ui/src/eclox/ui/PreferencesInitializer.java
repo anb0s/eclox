@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui;
 
@@ -18,7 +18,6 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 import eclox.ui.IPreferences;
 
-
 /**
  * Implements the prefenrence initializer for the plugin.
  * 
@@ -26,15 +25,15 @@ import eclox.ui.IPreferences;
  */
 public class PreferencesInitializer extends AbstractPreferenceInitializer {
 
-	/**
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
-	public void initializeDefaultPreferences() {
-		IPreferenceStore	preferences = Plugin.getDefault().getPreferenceStore();
-		
-		preferences.setDefault( IPreferences.BUILD_HISTORY_SIZE, 5 );
-		preferences.setDefault( IPreferences.AUTO_SAVE, IPreferences.AUTO_SAVE_ASK );
-		preferences.setDefault( IPreferences.HANDLE_ESCAPED_VALUES, true );
-	}
+    /**
+     * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+     */
+    public void initializeDefaultPreferences() {
+        IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
+
+        preferences.setDefault(IPreferences.BUILD_HISTORY_SIZE, 5);
+        preferences.setDefault(IPreferences.AUTO_SAVE, IPreferences.AUTO_SAVE_ASK);
+        preferences.setDefault(IPreferences.HANDLE_ESCAPED_VALUES, true);
+    }
 
 }

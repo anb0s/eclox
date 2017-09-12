@@ -25,35 +25,35 @@ import java.util.Iterator;
  */
 public abstract class AbstractEditor implements IEditor {
 
-	/**
-	 * the registery of listeners
-	 */
-	private Collection<IEditorListener> listeners = new HashSet<IEditorListener>();
+    /**
+     * the registery of listeners
+     */
+    private Collection<IEditorListener> listeners = new HashSet<IEditorListener>();
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#addListener(eclox.ui.editor.editors.IEditorListener)
-	 */
-	public void addListener(IEditorListener listener) {
-		listeners.add(listener);
-	}
+    /**
+     * @see eclox.ui.editor.editors.IEditor#addListener(eclox.ui.editor.editors.IEditorListener)
+     */
+    public void addListener(IEditorListener listener) {
+        listeners.add(listener);
+    }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#removeListener(eclox.ui.editor.editors.IEditorListener)
-	 */
-	public void removeListener(IEditorListener listener) {
-		listeners.remove(listener);
-	}
+    /**
+     * @see eclox.ui.editor.editors.IEditor#removeListener(eclox.ui.editor.editors.IEditorListener)
+     */
+    public void removeListener(IEditorListener listener) {
+        listeners.remove(listener);
+    }
 
-	/**
-	 * Notifies registered listeners that the dirty state of the editor changed.
-	 */
-	protected void fireEditorChanged() {
-		Iterator<IEditorListener>	i = listeners.iterator();
-		while( i.hasNext() ) {
-			IEditorListener	listener = (IEditorListener) i.next();
+    /**
+     * Notifies registered listeners that the dirty state of the editor changed.
+     */
+    protected void fireEditorChanged() {
+        Iterator<IEditorListener> i = listeners.iterator();
+        while (i.hasNext()) {
+            IEditorListener listener = (IEditorListener) i.next();
 
-			listener.editorChanged(this);
-		}
-	}
+            listener.editorChanged(this);
+        }
+    }
 
 }

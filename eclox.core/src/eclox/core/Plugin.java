@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * Implements the core eclox plugin
  *
@@ -32,77 +31,78 @@ import org.osgi.framework.BundleContext;
  */
 public class Plugin extends org.eclipse.core.runtime.Plugin {
 
-	/**
-	 * the default plugin instance
-	 */
-	private static Plugin plugin;
+    /**
+     * the default plugin instance
+     */
+    private static Plugin plugin;
 
-	/**
-	 * The constructor.
-	 */
-	public Plugin() {
-		plugin = this;
-	}
+    /**
+     * The constructor.
+     */
+    public Plugin() {
+        plugin = this;
+    }
 
-	/**
-	 * This method is called upon plug-in activation
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-	}
+    /**
+     * This method is called upon plug-in activation
+     */
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+    }
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
-	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
-		plugin = null;
-	}
+    /**
+     * This method is called when the plug-in is stopped
+     */
+    public void stop(BundleContext context) throws Exception {
+        super.stop(context);
+        plugin = null;
+    }
 
-	/**
-	 * Returns the shared instance.
-	 */
-	public static Plugin getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance.
+     */
+    public static Plugin getDefault() {
+        return plugin;
+    }
 
-	/**
-	 * Adds the specified message into the plugin's log as a warning.
-	 *
-	 * @param message	a string containing a message to log as a warning
-	 */
-	public void logWarning( String message ) {
-	    getLog().log( new Status(Status.WARNING, getBundle().getSymbolicName(), 0, message, null) );
-	}
+    /**
+     * Adds the specified message into the plugin's log as a warning.
+     *
+     * @param message	a string containing a message to log as a warning
+     */
+    public void logWarning(String message) {
+        getLog().log(new Status(Status.WARNING, getBundle().getSymbolicName(), 0, message, null));
+    }
 
-	/**
-	 * Adds the specified message into the plugin's log as an error.
-	 *
-	 * @param message	a string containing a message to log as an error
-	 */
-	public void logError( String message ) {
-	    getLog().log( new Status(Status.ERROR, getBundle().getSymbolicName(), 0, message, null) );
-	}
+    /**
+     * Adds the specified message into the plugin's log as an error.
+     *
+     * @param message	a string containing a message to log as an error
+     */
+    public void logError(String message) {
+        getLog().log(new Status(Status.ERROR, getBundle().getSymbolicName(), 0, message, null));
+    }
 
-	/**
-	 * Adds the specified throwable object into the plugin's log as an error.
-	 *
-	 * @param throwable	a throwable instance to log
-	 */
-	public static void log( Throwable throwable ) {
-	    plugin.getLog().log( new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0, "Exception caught. " + throwable.toString(), throwable) );
-	}
+    /**
+     * Adds the specified throwable object into the plugin's log as an error.
+     *
+     * @param throwable	a throwable instance to log
+     */
+    public static void log(Throwable throwable) {
+        plugin.getLog().log(new Status(Status.ERROR, plugin.getBundle().getSymbolicName(), 0,
+                "Exception caught. " + throwable.toString(), throwable));
+    }
 
-	public static InputStream getResourceAsStream(IPath path) {
-	    try {
+    public static InputStream getResourceAsStream(IPath path) {
+        try {
             return FileLocator.openStream(plugin.getBundle(), path, true);
         } catch (IOException e) {
             log(e);
         }
         return null;
-	}
+    }
 
-	public static InputStream getResourceAsStream(String path) {
-	    return getResourceAsStream(new Path(path));
-	}
+    public static InputStream getResourceAsStream(String path) {
+        return getResourceAsStream(new Path(path));
+    }
 }

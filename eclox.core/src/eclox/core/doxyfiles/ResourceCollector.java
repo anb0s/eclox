@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
-
 /**
  * Implements a resource collector that will search for available doxyfiles
  * either from the workbenck resources' root or from a given resource.
@@ -43,7 +42,7 @@ public class ResourceCollector implements IResourceVisitor {
      * @return  a resource collector containing collected doxfiles
      */
     public static ResourceCollector run() throws CoreException {
-    	return run( ResourcesPlugin.getWorkspace().getRoot() );
+        return run(ResourcesPlugin.getWorkspace().getRoot());
     }
 
     /**
@@ -53,19 +52,19 @@ public class ResourceCollector implements IResourceVisitor {
      *
      * @return  a resource collector containing collected doxfiles
      */
-	public static ResourceCollector run(IResource root) throws CoreException {
-		ResourceCollector   collector = new ResourceCollector();
-		root.accept( collector );
-		return collector;
-	}
+    public static ResourceCollector run(IResource root) throws CoreException {
+        ResourceCollector collector = new ResourceCollector();
+        root.accept(collector);
+        return collector;
+    }
 
     /**
      * @see org.eclipse.core.resources.IResourceVisitor#visit(org.eclipse.core.resources.IResource)
      */
     public boolean visit(IResource resource) throws CoreException {
         // Determine if the current resource is  doxyfile, and if so, stores the resource
-        if( resource.isAccessible() && Doxyfile.isDoxyfile(resource) == true ) {
-            m_doxyfiles.add( resource );
+        if (resource.isAccessible() && Doxyfile.isDoxyfile(resource) == true) {
+            m_doxyfiles.add(resource);
         }
         return true;
     }
@@ -76,7 +75,7 @@ public class ResourceCollector implements IResourceVisitor {
      * @return	true or false
      */
     public boolean isEmpty() {
-    	return m_doxyfiles.isEmpty();
+        return m_doxyfiles.isEmpty();
     }
 
     /**
@@ -85,7 +84,7 @@ public class ResourceCollector implements IResourceVisitor {
      * @return	the first doxyfile, or null when none
      */
     public IFile getFirst() {
-    	return m_doxyfiles.isEmpty() ? null : (IFile) m_doxyfiles.iterator().next();
+        return m_doxyfiles.isEmpty() ? null : (IFile) m_doxyfiles.iterator().next();
     }
 
     /**
@@ -103,7 +102,7 @@ public class ResourceCollector implements IResourceVisitor {
      * @return	the number of collected doxyfiles
      */
     public int getSize() {
-    	return m_doxyfiles.size();
+        return m_doxyfiles.size();
     }
 
     /**

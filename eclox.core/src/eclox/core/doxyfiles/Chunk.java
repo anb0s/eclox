@@ -9,10 +9,9 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxyfiles;
-
 
 /**
  * Implements the default item that can be contained in a doxyfile.
@@ -23,35 +22,35 @@ package eclox.core.doxyfiles;
  * @author Guillaume Brocker
  */
 public abstract class Chunk {
-	
-	/**
-	 * the chunk owner (aka the doxyfile)
-	 */
-	private Doxyfile owner;
-	
-	/**
-	 * Retrieves the chunk owner.
-	 * 
-	 * @return	the chunk owner
-	 */
-	public Doxyfile getOwner() {
-		return owner;
-	}
-	
-	/**
-	 * Updates the chunk owner
-	 * 
-	 * @param	owner	the new owner
-	 */
-	public void setOwner( Doxyfile owner ) {
-		this.owner = owner; 
-	}
-	
-	/**
-	 * Converts the chunk into a string representing its content.
-	 * 
-	 * @return	a string containing the chunk content
-	 */
-	public abstract String toString();
-	
+
+    /**
+     * the chunk owner (aka the doxyfile)
+     */
+    private Doxyfile owner;
+
+    /**
+     * Retrieves the chunk owner.
+     * 
+     * @return	the chunk owner
+     */
+    public Doxyfile getOwner() {
+        return owner;
+    }
+
+    /**
+     * Updates the chunk owner
+     * 
+     * @param	owner	the new owner
+     */
+    public void setOwner(Doxyfile owner) {
+        this.owner = owner;
+    }
+
+    /**
+     * Converts the chunk into a string representing its content.
+     * 
+     * @return	a string containing the chunk content
+     */
+    public abstract String toString();
+
 }

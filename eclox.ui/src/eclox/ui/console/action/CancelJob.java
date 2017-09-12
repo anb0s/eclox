@@ -28,25 +28,25 @@ import eclox.ui.console.Console;
  */
 public class CancelJob extends Action {
 
-	/**
-	 * the console the action is attached to
-	 */
-	Console console;
+    /**
+     * the console the action is attached to
+     */
+    Console console;
 
-	/**
-	 * Constructor
-	 *
-	 * @param	console	the build console
-	 */
-	public CancelJob( Console console ) {
-		super( "Terminate", Plugin.getImageDescriptor(Images.TERMINATE.getId()) );
-		this.console = console;
-		setToolTipText( "Terminate Build" );
-		setEnabled( false );
-	}
+    /**
+     * Constructor
+     *
+     * @param	console	the build console
+     */
+    public CancelJob(Console console) {
+        super("Terminate", Plugin.getImageDescriptor(Images.TERMINATE.getId()));
+        this.console = console;
+        setToolTipText("Terminate Build");
+        setEnabled(false);
+    }
 
-	public void run() {
-		console.getJob().cancel();
-		super.run();
-	}
+    public void run() {
+        console.getJob().cancel();
+        super.run();
+    }
 }

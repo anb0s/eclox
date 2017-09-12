@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.basic;
 
@@ -29,61 +29,61 @@ import eclox.ui.editor.editors.TextEditor;
  */
 public class ProjectPart extends Part {
 
-	/**
-	 * the project name setting editor
-	 */
-	private TextEditor nameEditor = new TextEditor();
-	
-	/**
-	 * the project version or identifier editor
-	 */
-	private TextEditor versionEditor = new TextEditor();
-	
-	/**
-	 * the project input editor
-	 */
-	private DirectoryListEditor inputEditor = new DirectoryListEditor();
-	
-	/**
-	 * the recursive scan editor
-	 */
-	private CheckBoxEditor recursiveEditor = new CheckBoxEditor("Scan recursively");
-	
-	/**
-	 * the project output editor
-	 */
-	private DirectoryEditor outputEditor = new DirectoryEditor();
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	parent		the parent composite of the part content
-	 * @param	toolkit		the toolkit to use for control creations
-	 * @param	doxyfile	the doxyfile being edited
-	 */
-	ProjectPart( Composite parent, FormToolkit toolkit, Doxyfile doxyfile ) {
-		super( parent, toolkit, "Project", doxyfile );
-		
-		addEditor("Name:", nameEditor);
-		addEditor("Version or Identifier:", versionEditor);
-		addSperator();
-		addLabel("Input directories:");
-		addEditor(inputEditor);
-		addEditor(recursiveEditor);
-		addSperator();
-		addEditor("Output Directory:", outputEditor);
+    /**
+     * the project name setting editor
+     */
+    private TextEditor nameEditor = new TextEditor();
 
-		nameEditor     .setInput( doxyfile.getSetting("PROJECT_NAME")		);
-		versionEditor  .setInput( doxyfile.getSetting("PROJECT_NUMBER")		);
-		inputEditor    .setInput( doxyfile.getSetting("INPUT")				);
-		outputEditor   .setInput( doxyfile.getSetting("OUTPUT_DIRECTORY")	);
-		recursiveEditor.setInput( doxyfile.getSetting("RECURSIVE")			);
-		
-		nameEditor     .setEnabled( nameEditor.hasInput()      );
-		versionEditor  .setEnabled( versionEditor.hasInput()   );
-		inputEditor    .setEnabled( inputEditor.hasInput()     );
-		outputEditor   .setEnabled( outputEditor.hasInput()    );
-		recursiveEditor.setEnabled( recursiveEditor.hasInput() );
-	}
-	
+    /**
+     * the project version or identifier editor
+     */
+    private TextEditor versionEditor = new TextEditor();
+
+    /**
+     * the project input editor
+     */
+    private DirectoryListEditor inputEditor = new DirectoryListEditor();
+
+    /**
+     * the recursive scan editor
+     */
+    private CheckBoxEditor recursiveEditor = new CheckBoxEditor("Scan recursively");
+
+    /**
+     * the project output editor
+     */
+    private DirectoryEditor outputEditor = new DirectoryEditor();
+
+    /**
+     * Constructor
+     * 
+     * @param	parent		the parent composite of the part content
+     * @param	toolkit		the toolkit to use for control creations
+     * @param	doxyfile	the doxyfile being edited
+     */
+    ProjectPart(Composite parent, FormToolkit toolkit, Doxyfile doxyfile) {
+        super(parent, toolkit, "Project", doxyfile);
+
+        addEditor("Name:", nameEditor);
+        addEditor("Version or Identifier:", versionEditor);
+        addSperator();
+        addLabel("Input directories:");
+        addEditor(inputEditor);
+        addEditor(recursiveEditor);
+        addSperator();
+        addEditor("Output Directory:", outputEditor);
+
+        nameEditor.setInput(doxyfile.getSetting("PROJECT_NAME"));
+        versionEditor.setInput(doxyfile.getSetting("PROJECT_NUMBER"));
+        inputEditor.setInput(doxyfile.getSetting("INPUT"));
+        outputEditor.setInput(doxyfile.getSetting("OUTPUT_DIRECTORY"));
+        recursiveEditor.setInput(doxyfile.getSetting("RECURSIVE"));
+
+        nameEditor.setEnabled(nameEditor.hasInput());
+        versionEditor.setEnabled(versionEditor.hasInput());
+        inputEditor.setEnabled(inputEditor.hasInput());
+        outputEditor.setEnabled(outputEditor.hasInput());
+        recursiveEditor.setEnabled(recursiveEditor.hasInput());
+    }
+
 }

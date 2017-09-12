@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxyfiles;
 
@@ -19,12 +19,12 @@ package eclox.core.doxyfiles;
  * @author gbrocker
  */
 public interface ISettingValueListener extends ISettingListener {
-    
+
     /**
      * Notifies that a setting value changed.
      *
      * @param	setting	the setting that raised the event 
      */
-    void settingValueChanged( Setting setting );
+    void settingValueChanged(Setting setting);
 
 }

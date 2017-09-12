@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.editors;
 
@@ -27,16 +27,16 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author gbrocker
  */
 public class BooleanEditor extends SettingEditor {
-	
-	private static String YES = "YES";	///< the yes selection value
-	private static String NO = "NO";	///< the no selection value
-	
-	private Button  yesButton;		///< the yes button
-    private Button  noButton;		///< the no button
-    private Button  defaultButton;	///< the default button
-    
-    private boolean isDirty = false;	///< a boolean telling if the editor is dirty or not
-    
+
+    private static String YES = "YES"; ///< the yes selection value
+    private static String NO = "NO"; ///< the no selection value
+
+    private Button yesButton; ///< the yes button
+    private Button noButton; ///< the no button
+    private Button defaultButton; ///< the default button
+
+    private boolean isDirty = false; ///< a boolean telling if the editor is dirty or not
+
     /**
      * @brief   Implements a selection listener that will be attached to each button.
      */
@@ -59,110 +59,110 @@ public class BooleanEditor extends SettingEditor {
             fireEditorChanged();
             commit();
         }
-        
+
     }
-    
+
     /**
      * @see eclox.ui.editor.editors.IEditor#commit()
      */
     public void commit() {
-    	if( hasInput() ) {
-	    	getInput().setValue(getSelection());
-	        isDirty = false;
-	        fireEditorChanged();
-    	}
-	}
-
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
-	 */
-	public void createContent(Composite parent, FormToolkit formToolkit) {
-		// Initialize the parent control.
-		RowLayout	layout = new RowLayout(SWT.VERTICAL);
-		
-		layout.marginWidth = 0;		
-		parent.setLayout( layout );
-		
-		// Creates the buttons.
-		yesButton      = formToolkit.createButton( parent, "Yes", SWT.RADIO );
-		noButton       = formToolkit.createButton( parent, "No", SWT.RADIO );
-		defaultButton  = formToolkit.createButton( parent, "Default", SWT.RADIO );
-		
-		// Attaches a selection listener instance to each button.
-		yesButton.addSelectionListener( new MySelectionListener() );
-		noButton.addSelectionListener( new MySelectionListener() );
-		defaultButton.addSelectionListener( new MySelectionListener() );
+        if (hasInput()) {
+            getInput().setValue(getSelection());
+            isDirty = false;
+            fireEditorChanged();
+        }
     }
-    
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     */
+    public void createContent(Composite parent, FormToolkit formToolkit) {
+        // Initialize the parent control.
+        RowLayout layout = new RowLayout(SWT.VERTICAL);
+
+        layout.marginWidth = 0;
+        parent.setLayout(layout);
+
+        // Creates the buttons.
+        yesButton = formToolkit.createButton(parent, "Yes", SWT.RADIO);
+        noButton = formToolkit.createButton(parent, "No", SWT.RADIO);
+        defaultButton = formToolkit.createButton(parent, "Default", SWT.RADIO);
+
+        // Attaches a selection listener instance to each button.
+        yesButton.addSelectionListener(new MySelectionListener());
+        noButton.addSelectionListener(new MySelectionListener());
+        defaultButton.addSelectionListener(new MySelectionListener());
+    }
+
     /**
      * @see eclox.ui.editor.editors.IEditor#grabVerticalSpace()
      */
     public boolean grabVerticalSpace() {
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#dispose()
-	 */
-	public void dispose() {
-		// Pre-condition
-		assert yesButton != null;
-		assert noButton != null;
-		assert defaultButton != null;
-		
-		// Release all resources.
-		yesButton.dispose();
-		noButton.dispose();
-		defaultButton.dispose();
-		
-		yesButton = null;
-		noButton = null;
-		defaultButton = null;
-		
-		super.dispose();
-	}
-	
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#isDirty()
-	 */
-	public boolean isDirty() {
-		return isDirty;
-	}
-	
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#isStale()
-	 */
-	public boolean isStale() {
-		boolean	result = false;
-		
-		if( hasInput() ) {
-			result = getSelection().equalsIgnoreCase(getInput().getValue()) == false;
-		}		
-		return result;
-	}
-	
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#refresh()
-	 */
-	public void refresh() {
+    /**
+     * @see eclox.ui.editor.editors.IEditor#dispose()
+     */
+    public void dispose() {
         // Pre-condition
         assert yesButton != null;
         assert noButton != null;
         assert defaultButton != null;
-        
-        if( hasInput() ) {
-	        this.isDirty = false;
-	        
-	        String  value = getInput().getValue();
-	        
-	        yesButton.setSelection		( value.compareToIgnoreCase(YES) == 0 );
-	        noButton.setSelection		( value.compareToIgnoreCase(NO) == 0 );
-	        defaultButton.setSelection	( value.length() == 0 );
-	        
-	        fireEditorChanged();
+
+        // Release all resources.
+        yesButton.dispose();
+        noButton.dispose();
+        defaultButton.dispose();
+
+        yesButton = null;
+        noButton = null;
+        defaultButton = null;
+
+        super.dispose();
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#isDirty()
+     */
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#isStale()
+     */
+    public boolean isStale() {
+        boolean result = false;
+
+        if (hasInput()) {
+            result = getSelection().equalsIgnoreCase(getInput().getValue()) == false;
         }
-	}
-    
+        return result;
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#refresh()
+     */
+    public void refresh() {
+        // Pre-condition
+        assert yesButton != null;
+        assert noButton != null;
+        assert defaultButton != null;
+
+        if (hasInput()) {
+            this.isDirty = false;
+
+            String value = getInput().getValue();
+
+            yesButton.setSelection(value.compareToIgnoreCase(YES) == 0);
+            noButton.setSelection(value.compareToIgnoreCase(NO) == 0);
+            defaultButton.setSelection(value.length() == 0);
+
+            fireEditorChanged();
+        }
+    }
+
     /**
      * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
      */
@@ -175,9 +175,9 @@ public class BooleanEditor extends SettingEditor {
         yesButton.setEnabled(enabled);
         noButton.setEnabled(enabled);
         defaultButton.setEnabled(enabled);
-	}
+    }
 
-	/**
+    /**
      * @see eclox.ui.editor.editors.IEditor#setFocus()
      */
     public void setFocus() {
@@ -185,46 +185,40 @@ public class BooleanEditor extends SettingEditor {
         assert yesButton != null;
         assert noButton != null;
         assert defaultButton != null;
-        
-        Button  selectedButton = null;
-        if( yesButton.getSelection() == true ) {
+
+        Button selectedButton = null;
+        if (yesButton.getSelection() == true) {
             selectedButton = yesButton;
-        }
-        else if( noButton.getSelection() == true ) {
+        } else if (noButton.getSelection() == true) {
             selectedButton = noButton;
-        }
-        else if( defaultButton.getSelection() == true ) {
+        } else if (defaultButton.getSelection() == true) {
             selectedButton = defaultButton;
-        }
-        else {
-            assert false;   // What's wrong?
+        } else {
+            assert false; // What's wrong?
         }
         selectedButton.setFocus();
     }
 
-	/**
-	 * Retrieves the selected value from the ui controls
-	 * 
-	 * @return	a string containing the selected value
-	 */
-	private String getSelection() {
+    /**
+     * Retrieves the selected value from the ui controls
+     * 
+     * @return	a string containing the selected value
+     */
+    private String getSelection() {
         // Pre-condition
         assert yesButton != null;
         assert noButton != null;
         assert defaultButton != null;
-        
-        if( yesButton.getSelection() == true ) {
+
+        if (yesButton.getSelection() == true) {
             return new String(YES);
-        }
-        else if( noButton.getSelection() == true ) {
-        	return new String(NO);            
-        }
-        else if( defaultButton.getSelection() == true ) {
-        	return new String();
-        }
-        else {
+        } else if (noButton.getSelection() == true) {
+            return new String(NO);
+        } else if (defaultButton.getSelection() == true) {
+            return new String();
+        } else {
             assert false; // What's going on ?
             return new String();
         }
-	}
+    }
 }

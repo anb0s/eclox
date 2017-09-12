@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.editors;
 
@@ -19,7 +19,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-
 
 /**
  * Implements a setting editor that allows to browse for directories 
@@ -32,82 +31,81 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  */
 public class DirectoryEditor extends TextEditor {
-	
-	/**
-	 * the push button for browsing the file system
-	 */
-	private Button	browseFileSystemButton;
-	
-	/**
-	 * Implements the selection listener attached to the push buttons.
-	 */
-	class MySelectionListener implements SelectionListener {
 
-		/**
-		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetDefaultSelected(SelectionEvent e) {
-			if( e.widget == browseFileSystemButton ) {
-				browseFileSystem();
-			}
-		}
+    /**
+     * the push button for browsing the file system
+     */
+    private Button browseFileSystemButton;
 
-		/**
-		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetSelected(SelectionEvent e) {
-			if( e.widget == browseFileSystemButton ) {
-				browseFileSystem();
-			}
-		}
-		
-	}
-	
-	public void createContent(Composite parent, FormToolkit formToolkit) {
-		super.createContent(parent, formToolkit);
-		
-		// Create controls and their associated layout data.
-		SelectionListener	selectionListener	= new MySelectionListener();
-		GridLayout			layout				= (GridLayout) parent.getLayout();
-		
-		layout.numColumns = 2;
-		
-		browseFileSystemButton = formToolkit.createButton( parent, "Browse...", 0 );
-		browseFileSystemButton.addSelectionListener( selectionListener );
-	}
+    /**
+     * Implements the selection listener attached to the push buttons.
+     */
+    class MySelectionListener implements SelectionListener {
 
-	/**
-	 * @see eclox.ui.editor.editors.TextEditor#dispose()
-	 */
-	public void dispose() {
-		// Local cleaning.
-		browseFileSystemButton.dispose();
-		
-		// Default cleaning.
-		super.dispose();
-	}
-	
-	/**
-	 * Browses the file system for a path and updates the managed text field.
-	 */
-	private void browseFileSystem() {
-		String	result;
-		result = Convenience.browseFileSystemForDirectory( text.getShell(), getInput().getOwner(), getInput().getValue() );
-		if( result!= null ) {
-			super.text.setText( result );
-		}
-	}
+        /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            if (e.widget == browseFileSystemButton) {
+                browseFileSystem();
+            }
+        }
 
-	/**
-	 * @see eclox.ui.editor.editors.TextEditor#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean enabled) {
-		assert browseFileSystemButton != null;
+        /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetSelected(SelectionEvent e) {
+            if (e.widget == browseFileSystemButton) {
+                browseFileSystem();
+            }
+        }
 
-		browseFileSystemButton.setEnabled(enabled);
-		super.setEnabled(enabled);
-	}
-	
-	
-	
+    }
+
+    public void createContent(Composite parent, FormToolkit formToolkit) {
+        super.createContent(parent, formToolkit);
+
+        // Create controls and their associated layout data.
+        SelectionListener selectionListener = new MySelectionListener();
+        GridLayout layout = (GridLayout) parent.getLayout();
+
+        layout.numColumns = 2;
+
+        browseFileSystemButton = formToolkit.createButton(parent, "Browse...", 0);
+        browseFileSystemButton.addSelectionListener(selectionListener);
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.TextEditor#dispose()
+     */
+    public void dispose() {
+        // Local cleaning.
+        browseFileSystemButton.dispose();
+
+        // Default cleaning.
+        super.dispose();
+    }
+
+    /**
+     * Browses the file system for a path and updates the managed text field.
+     */
+    private void browseFileSystem() {
+        String result;
+        result = Convenience.browseFileSystemForDirectory(text.getShell(), getInput().getOwner(),
+                getInput().getValue());
+        if (result != null) {
+            super.text.setText(result);
+        }
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.TextEditor#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+        assert browseFileSystemButton != null;
+
+        browseFileSystemButton.setEnabled(enabled);
+        super.setEnabled(enabled);
+    }
+
 }

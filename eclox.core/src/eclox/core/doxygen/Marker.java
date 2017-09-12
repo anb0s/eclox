@@ -30,12 +30,12 @@ import eclox.core.Plugin;
  */
 public class Marker {
 
-    private static final String SEVERITY_WARNING = "warning";	///< Defines the warning severity string.
-    private static final String SEVERITY_ERROR = "error";		///< Defines the warning severity string.
+    private static final String SEVERITY_WARNING = "warning"; ///< Defines the warning severity string.
+    private static final String SEVERITY_ERROR = "error"; ///< Defines the warning severity string.
 
-    public static final String ECLOX_DOXYGEN_NAME  = Plugin.getDefault().getBundle().getSymbolicName();
-    public static final String DOXYGEN_MARKER      = ECLOX_DOXYGEN_NAME + ".doxygen.marker";	///< Defines the doxygen marker type attribute name
-    public static final String SETTING             = DOXYGEN_MARKER + ".setting";		///< Defines the optional attribute name that hold the name of a setting
+    public static final String ECLOX_DOXYGEN_NAME = Plugin.getDefault().getBundle().getSymbolicName();
+    public static final String DOXYGEN_MARKER = ECLOX_DOXYGEN_NAME + ".doxygen.marker"; ///< Defines the doxygen marker type attribute name
+    public static final String SETTING = DOXYGEN_MARKER + ".setting"; ///< Defines the optional attribute name that hold the name of a setting
 
     /**
      * Creates a single marker for the given file.
@@ -47,15 +47,15 @@ public class Marker {
      * @param	message		a message explaining the problem
      * @param	severity	a severity level
      */
-    public static IMarker create( IFile file, int line, String message, int severity ) throws CoreException {
-        IMarker	marker = null;
-        if( file != null && file.exists() ) {
-            marker = file.createMarker( Marker.DOXYGEN_MARKER );
-            marker.setAttribute( IMarker.MESSAGE, message );
-            marker.setAttribute( IMarker.LINE_NUMBER, line );
-            marker.setAttribute( IMarker.LOCATION, file.getProjectRelativePath().toPortableString() );
-            marker.setAttribute( IMarker.PRIORITY, IMarker.PRIORITY_NORMAL );
-            marker.setAttribute( IMarker.SEVERITY, severity );
+    public static IMarker create(IFile file, int line, String message, int severity) throws CoreException {
+        IMarker marker = null;
+        if (file != null && file.exists()) {
+            marker = file.createMarker(Marker.DOXYGEN_MARKER);
+            marker.setAttribute(IMarker.MESSAGE, message);
+            marker.setAttribute(IMarker.LINE_NUMBER, line);
+            marker.setAttribute(IMarker.LOCATION, file.getProjectRelativePath().toPortableString());
+            marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_NORMAL);
+            marker.setAttribute(IMarker.SEVERITY, severity);
         }
         return marker;
     }
@@ -71,14 +71,14 @@ public class Marker {
      * @param	message		a message explaining the problem
      * @param	severity	a severity level
      */
-    public static IMarker create( IFile file, String setting, int line, String message, int severity ) throws CoreException {
-        IMarker	marker = create(file, line, message, severity);
-        if(marker != null && setting != null) {
+    public static IMarker create(IFile file, String setting, int line, String message, int severity)
+            throws CoreException {
+        IMarker marker = create(file, line, message, severity);
+        if (marker != null && setting != null) {
             marker.setAttribute(SETTING, setting);
         }
         return marker;
     }
-
 
     /**
      * Retrieves the marker severity from the given text. The given
@@ -88,19 +88,14 @@ public class Marker {
      *
      * @return the marker severity value
      */
-    public static int toMarkerSeverity( String severity )
-    {
-        if( severity.compareToIgnoreCase(SEVERITY_ERROR) == 0 ) {
+    public static int toMarkerSeverity(String severity) {
+        if (severity.compareToIgnoreCase(SEVERITY_ERROR) == 0) {
             return IMarker.SEVERITY_ERROR;
-        }
-        else if( severity.compareToIgnoreCase(SEVERITY_WARNING) == 0 ) {
+        } else if (severity.compareToIgnoreCase(SEVERITY_WARNING) == 0) {
             return IMarker.SEVERITY_WARNING;
-        }
-        else {
+        } else {
             return IMarker.SEVERITY_ERROR;
         }
     }
-
-
 
 }

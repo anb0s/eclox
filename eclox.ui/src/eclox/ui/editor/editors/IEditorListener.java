@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.editors;
 
@@ -21,11 +21,11 @@ package eclox.ui.editor.editors;
  */
 public interface IEditorListener {
 
-	/**
-	 * Notifies the receiver that the given editor's state changed.
-	 * 
-	 * @param editor the editor that changed
-	 */
-	void editorChanged( IEditor editor );
-	
+    /**
+     * Notifies the receiver that the given editor's state changed.
+     * 
+     * @param editor the editor that changed
+     */
+    void editorChanged(IEditor editor);
+
 }

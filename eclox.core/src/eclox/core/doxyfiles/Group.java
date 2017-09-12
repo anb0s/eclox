@@ -39,8 +39,8 @@ public class Group {
      *
      * @param   name    a string containing the group name
      */
-    public Group( String name ) {
-        this.name = new String( name );
+    public Group(String name) {
+        this.name = new String(name);
     }
 
     /**
@@ -48,8 +48,8 @@ public class Group {
      *
      * @param   setting a setting to add to the group
      */
-    public void add( Setting setting ) {
-        settings.add( setting );
+    public void add(Setting setting) {
+        settings.add(setting);
     }
 
     /**
@@ -58,7 +58,7 @@ public class Group {
      * @return  a string containing the group name
      */
     public String getName() {
-        return new String( this.name );
+        return new String(this.name);
     }
 
     /**

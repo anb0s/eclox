@@ -23,19 +23,19 @@ package eclox.core.doxygen;
 public class DefaultDoxygen extends Doxygen {
 
     @Override
-	public String getCommand() {
-		return COMMAND_NAME;
-	}
+    public String getCommand() {
+        return COMMAND_NAME;
+    }
 
-	@Override
-	public String getDescription() {
-		return new String();
-	}
+    @Override
+    public String getDescription() {
+        return new String();
+    }
 
-	@Override
-	public String getIdentifier() {
-		return getClass().getName();
-	}
+    @Override
+    public String getIdentifier() {
+        return getClass().getName();
+    }
 
     @Override
     public void setLocation(String location) {

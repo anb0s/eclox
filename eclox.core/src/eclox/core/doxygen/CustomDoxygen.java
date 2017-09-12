@@ -29,19 +29,19 @@ import org.eclipse.core.variables.VariablesPlugin;
  */
 public final class CustomDoxygen extends Doxygen {
 
-	/**
-	 * a string containing the location where doxygen should available
-	 *
-	 * This can be either a path to a directory or the full path to the
-	 * doxygen binary executable file.
-	 */
-	private String location;
+    /**
+     * a string containing the location where doxygen should available
+     *
+     * This can be either a path to a directory or the full path to the
+     * doxygen binary executable file.
+     */
+    private String location;
 
-	/**
-	 * Builds a local doxygen wrapper.
-	 */
-	public CustomDoxygen() {
-	}
+    /**
+     * Builds a local doxygen wrapper.
+     */
+    public CustomDoxygen() {
+    }
 
     /**
      * Builds a local doxygen wrapper that uses the given path to search for doxygen.
@@ -51,43 +51,41 @@ public final class CustomDoxygen extends Doxygen {
     }
 
     @Override
-	public String getCommand() {
-		// anb0s: support of variables
-		IStringVariableManager variableManager = VariablesPlugin.getDefault()
-				.getStringVariableManager();
-		String resolved_location = null;
-		try {
-			resolved_location = variableManager.performStringSubstitution(this.location);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		// Retrieves the real location where doxygen may be.
-		File	realLocation = new File(resolved_location);
-		// Builds the path.
-		if( realLocation.isFile() == true ) {
-			return realLocation.getPath();
-		}
-		else {
-			return realLocation.getPath() + File.separator + COMMAND_NAME;
-		}
-	}
+    public String getCommand() {
+        // anb0s: support of variables
+        IStringVariableManager variableManager = VariablesPlugin.getDefault().getStringVariableManager();
+        String resolved_location = null;
+        try {
+            resolved_location = variableManager.performStringSubstitution(this.location);
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
+        // Retrieves the real location where doxygen may be.
+        File realLocation = new File(resolved_location);
+        // Builds the path.
+        if (realLocation.isFile() == true) {
+            return realLocation.getPath();
+        } else {
+            return realLocation.getPath() + File.separator + COMMAND_NAME;
+        }
+    }
 
     @Override
-	public String getDescription() {
-		return "Using location: '" + getLocation() + "'";
-	}
+    public String getDescription() {
+        return "Using location: '" + getLocation() + "'";
+    }
 
     @Override
-	public String getIdentifier() {
-		return this.getClass().getName() + " " + location;
-	}
+    public String getIdentifier() {
+        return this.getClass().getName() + " " + location;
+    }
 
-	@Override
-	public void setLocation(String location) {
-        assert( location != null );
-        assert( location.length() != 0 );
+    @Override
+    public void setLocation(String location) {
+        assert (location != null);
+        assert (location.length() != 0);
         this.location = new String(location);
-	}
+    }
 
     /**
      * Retrieves the location of the custom doxygen.

@@ -62,65 +62,65 @@ import eclox.ui.wizard.NewDoxyfileWizard;
  * @author gbrocker
  */
 public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
-	/**
-	 * Listens for the popup menu items pointing to doxyfiles to build.
-	 *
-	 * @author Guillaume Brocker
-	 */
-	private class MenuSelectionListener implements SelectionListener {
-		public void widgetSelected(SelectionEvent e) {
-			processData(e.widget.getData());
-		}
+    /**
+     * Listens for the popup menu items pointing to doxyfiles to build.
+     *
+     * @author Guillaume Brocker
+     */
+    private class MenuSelectionListener implements SelectionListener {
+        public void widgetSelected(SelectionEvent e) {
+            processData(e.widget.getData());
+        }
 
-		public void widgetDefaultSelected(SelectionEvent e) {
-			processData(e.widget.getData());
-		}
+        public void widgetDefaultSelected(SelectionEvent e) {
+            processData(e.widget.getData());
+        }
 
-		private void processData(Object data) {
-		    MenuItemType itemType = MenuItemType.unknown;
-		    Doxyfile doxyfile = null;
-			if(data != null) {
-			    if (data instanceof MenuItemType) {
-			        itemType = (MenuItemType)data;
-			    } else {
-			        itemType = MenuItemType.buildDoxyfile;
-	                if (data instanceof Doxyfile) {
-	                    doxyfile = (Doxyfile)data;
-	                } else if (data instanceof IFile) {
-	                    doxyfile = new Doxyfile((IFile)data, null);
-	                } else if (data instanceof File) {
-	                    doxyfile = new Doxyfile(null, (File)data);
-	                }
-			    }
-			}
-			if (itemType != MenuItemType.unknown) {
-			    if (doxyfile != null) {
-			        nextDoxyfile = doxyfile;
-			    }
-			    doRun(itemType);
-			}
-		}
-	}
+        private void processData(Object data) {
+            MenuItemType itemType = MenuItemType.unknown;
+            Doxyfile doxyfile = null;
+            if (data != null) {
+                if (data instanceof MenuItemType) {
+                    itemType = (MenuItemType) data;
+                } else {
+                    itemType = MenuItemType.buildDoxyfile;
+                    if (data instanceof Doxyfile) {
+                        doxyfile = (Doxyfile) data;
+                    } else if (data instanceof IFile) {
+                        doxyfile = new Doxyfile((IFile) data, null);
+                    } else if (data instanceof File) {
+                        doxyfile = new Doxyfile(null, (File) data);
+                    }
+                }
+            }
+            if (itemType != MenuItemType.unknown) {
+                if (doxyfile != null) {
+                    nextDoxyfile = doxyfile;
+                }
+                doRun(itemType);
+            }
+        }
+    }
 
-	private Menu				menu;			///< The managed contextual menu.
-	private Doxyfile			nextDoxyfile;	///< Rembers the next doxyfile to build.
-	private IWorkbenchWindow	window;			///< Holds the reference to the workbench window where the action takes place.
+    private Menu menu; ///< The managed contextual menu.
+    private Doxyfile nextDoxyfile; ///< Rembers the next doxyfile to build.
+    private IWorkbenchWindow window; ///< Holds the reference to the workbench window where the action takes place.
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
-	 */
-	public Menu getMenu(Control parent) {
-		disposeMenu();
-		this.menu = new Menu(parent);
+    /**
+     * @see org.eclipse.ui.IWorkbenchWindowPulldownDelegate#getMenu(org.eclipse.swt.widgets.Control)
+     */
+    public Menu getMenu(Control parent) {
+        disposeMenu();
+        this.menu = new Menu(parent);
 
-		boolean historyIsEmpty = true;
-		for (MenuItemType itemType : MenuItemType.getValidValues()) {
-		    if (itemType == MenuItemType.buildDoxyfile) {
-		        // Fill it up with the build history items:
-		        BuildJob[]  buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
-		        for (BuildJob job : buildJobs) {
+        boolean historyIsEmpty = true;
+        for (MenuItemType itemType : MenuItemType.getValidValues()) {
+            if (itemType == MenuItemType.buildDoxyfile) {
+                // Fill it up with the build history items:
+                BuildJob[] buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
+                for (BuildJob job : buildJobs) {
                     MenuItem menuItem = new MenuItem(this.menu, SWT.PUSH);
-                    menuItem.addSelectionListener( new MenuSelectionListener() );
+                    menuItem.addSelectionListener(new MenuSelectionListener());
                     Doxyfile currentDoxyfile = job.getDoxyfile();
                     menuItem.setData(currentDoxyfile);
                     menuItem.setText(currentDoxyfile.getName() + " [" + currentDoxyfile.getFullPath() + "]");
@@ -129,140 +129,130 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
                     } else {
                         menuItem.setImage(Plugin.getImage(Images.USER.getId()));
                     }
-		        }
-		        // Add some sugar in the ui
-		        if( buildJobs.length > 0 ) {
-		            new MenuItem(this.menu, SWT.SEPARATOR);
-		            historyIsEmpty = false;
-		        }
-		    } else {
-		        // Add the special menu items, e.g. fall-back menu item to let the user choose another doxyfile or clear history:
+                }
+                // Add some sugar in the ui
+                if (buildJobs.length > 0) {
+                    new MenuItem(this.menu, SWT.SEPARATOR);
+                    historyIsEmpty = false;
+                }
+            } else {
+                // Add the special menu items, e.g. fall-back menu item to let the user choose another doxyfile or clear history:
                 MenuItem specialMenuItem = new MenuItem(this.menu, SWT.PUSH);
                 specialMenuItem.addSelectionListener(new MenuSelectionListener());
-	            specialMenuItem.setData(itemType);
-	            specialMenuItem.setText(itemType.getName() + "...");
-	            specialMenuItem.setImage(Plugin.getImage(itemType.getImageId()));
-	            // disable some entries
-	            if (historyIsEmpty && (itemType == MenuItemType.clearHistory)) {
-	                specialMenuItem.setEnabled(false);
-	            }
-		    }
-		}
-
-		// Job's done.
-		return this.menu;
-	}
-
-	/**
-	 * Dispose the delegate.
-	 */
-	public void dispose() {
-		// Frees all resources and references.
-		disposeMenu();
-		nextDoxyfile = null;
-		window = null;
-	}
-
-
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-	 */
-	public void init(IWorkbenchWindow window) {
-		this.window = window;
-	}
-
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public void run(IAction action) {
-		try {
-			doRun(MenuItemType.buildDoxyfile);
-		}
-		catch( Throwable throwable ) {
-			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
-		}
-	}
-
-
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		try {
-			// Retrieve the next doxyfile to build from the current selection.
-		    IFile nextIFile = getDoxyfileFromSelection(selection);
-
-			// Retrieve the next doxyfile from the current editor.
-			if( nextIFile != null ) {
-			    nextDoxyfile = new Doxyfile(nextIFile, null);
-			} else {
-			    nextDoxyfile = getDoxyfileFromActiveEditor(window);
-			}
-
-			// If there is no next doxyfile to build and the history is not empty
-			// set the first history element as the next doxyfile.
-			if( nextDoxyfile == null ) {
-				BuildJob[] buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
-				if(buildJobs.length > 0) {
-					nextDoxyfile = buildJobs[0].getDoxyfile();
-				}
-			}
-
-			// Check the existence of the doxyfile.
-			if( nextDoxyfile != null && nextDoxyfile.exists(true) == false ) {
-				nextDoxyfile = null;
-			}
-
-			// Update the tooltip.
-			String	tooltipText = nextDoxyfile != null ?
-				"Build " + nextDoxyfile.getFullPath() :
-				"Choose Next Doxyfile";
-
-			action.setToolTipText(tooltipText);
-		}
-		catch(Throwable throwable) {
-			MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
-		}
-	}
-
-
-	/**
-	 * Uses the next doxyfile specified to determine what to do.
-	 */
-	protected void doRun(MenuItemType itemType) {
-        try {
-            switch(itemType) {
-                case chooseDoxyfile:
-                    doBuild(chooseDoxyfile());
-                    break;
-                case clearHistory:
-                    clearHistory(Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed(), null);
-                    break;
-                case buildDoxyfile:
-                    doBuild(nextDoxyfile);
-                    break;
-                case updateDoxyfile:
-                    doUpdate(chooseDoxyfile());
-                    break;
-                case unknown:
-                    break;
-                default:
-                    break;
+                specialMenuItem.setData(itemType);
+                specialMenuItem.setText(itemType.getName() + "...");
+                specialMenuItem.setImage(Plugin.getImage(itemType.getImageId()));
+                // disable some entries
+                if (historyIsEmpty && (itemType == MenuItemType.clearHistory)) {
+                    specialMenuItem.setEnabled(false);
+                }
             }
         }
-        catch( Throwable throwable ) {
+
+        // Job's done.
+        return this.menu;
+    }
+
+    /**
+     * Dispose the delegate.
+     */
+    public void dispose() {
+        // Frees all resources and references.
+        disposeMenu();
+        nextDoxyfile = null;
+        window = null;
+    }
+
+    /**
+     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+     */
+    public void init(IWorkbenchWindow window) {
+        this.window = window;
+    }
+
+    /**
+     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+     */
+    public void run(IAction action) {
+        try {
+            doRun(MenuItemType.buildDoxyfile);
+        } catch (Throwable throwable) {
             MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
         }
-	}
+    }
+
+    /**
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+        try {
+            // Retrieve the next doxyfile to build from the current selection.
+            IFile nextIFile = getDoxyfileFromSelection(selection);
+
+            // Retrieve the next doxyfile from the current editor.
+            if (nextIFile != null) {
+                nextDoxyfile = new Doxyfile(nextIFile, null);
+            } else {
+                nextDoxyfile = getDoxyfileFromActiveEditor(window);
+            }
+
+            // If there is no next doxyfile to build and the history is not empty
+            // set the first history element as the next doxyfile.
+            if (nextDoxyfile == null) {
+                BuildJob[] buildJobs = Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed();
+                if (buildJobs.length > 0) {
+                    nextDoxyfile = buildJobs[0].getDoxyfile();
+                }
+            }
+
+            // Check the existence of the doxyfile.
+            if (nextDoxyfile != null && nextDoxyfile.exists(true) == false) {
+                nextDoxyfile = null;
+            }
+
+            // Update the tooltip.
+            String tooltipText = nextDoxyfile != null ? "Build " + nextDoxyfile.getFullPath() : "Choose Next Doxyfile";
+
+            action.setToolTipText(tooltipText);
+        } catch (Throwable throwable) {
+            MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
+        }
+    }
+
+    /**
+     * Uses the next doxyfile specified to determine what to do.
+     */
+    protected void doRun(MenuItemType itemType) {
+        try {
+            switch (itemType) {
+            case chooseDoxyfile:
+                doBuild(chooseDoxyfile());
+                break;
+            case clearHistory:
+                clearHistory(Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed(), null);
+                break;
+            case buildDoxyfile:
+                doBuild(nextDoxyfile);
+                break;
+            case updateDoxyfile:
+                doUpdate(chooseDoxyfile());
+                break;
+            case unknown:
+                break;
+            default:
+                break;
+            }
+        } catch (Throwable throwable) {
+            MessageDialog.openError(window.getShell(), "Unexpected Error", throwable.toString());
+        }
+    }
 
     private void clearHistory(BuildJob[] buildJobs, BuildJob[] selectedJobs) {
         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-        ListSelectionDialog dialog =
-           new ListSelectionDialog(shell, buildJobs, ArrayContentProvider.getInstance(),
-                    new BuildJobLabelProvider(), "Select Doxyfiles you want to remove from history");
+        ListSelectionDialog dialog = new ListSelectionDialog(shell, buildJobs, ArrayContentProvider.getInstance(),
+                new BuildJobLabelProvider(), "Select Doxyfiles you want to remove from history");
         dialog.setTitle("Clear History");
-        if ( (selectedJobs != null) && (selectedJobs.length > 0) ) {
+        if ((selectedJobs != null) && (selectedJobs.length > 0)) {
             dialog.setInitialSelections(selectedJobs);
         }
         if (dialog.open() == Window.OK) {
@@ -297,16 +287,15 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
         return doxyfile;
     }
 
-	protected void doBuild(Doxyfile doxyfile) {
+    protected void doBuild(Doxyfile doxyfile) {
         if (doxyfile != null) {
             if (doxyfile.exists(true)) {
                 Plugin.getDefault().getBuildManager().build(doxyfile);
             } else {
-                MessageDialog dialog = new MessageDialog(
-                        null, "Missing Doxyfile", null, "Cannot find Doxyfile '" + doxyfile.getFullPath() + "'\n\nDo you want to delete the missing Doxyfile from the history?",
-                        MessageDialog.WARNING,
-                        new String[] {"Yes", "No"},
-                        1); // no is the default
+                MessageDialog dialog = new MessageDialog(null, "Missing Doxyfile", null,
+                        "Cannot find Doxyfile '" + doxyfile.getFullPath()
+                                + "'\n\nDo you want to delete the missing Doxyfile from the history?",
+                        MessageDialog.WARNING, new String[] { "Yes", "No" }, 1); // no is the default
                 int result = dialog.open();
                 if (result == 0) {
                     BuildJob[] clearJobs = new BuildJob[1];
@@ -315,14 +304,14 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
                 }
             }
         }
-	}
+    }
 
     protected void doUpdate(Doxyfile doxyfile) {
         if (doxyfile != null) {
             if (doxyfile.exists(true)) {
                 try {
                     IFile doxyIFile = doxyfile.getIFile();
-                    File doxyFile   = doxyfile.getFile();
+                    File doxyFile = doxyfile.getFile();
                     if (doxyIFile != null) {
                         Doxygen.getDefault().update(doxyIFile);
                     } else {
@@ -330,44 +319,43 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
                     }
                 }
                 // Doxygen returned an error.
-                catch( RunException runException ) {
+                catch (RunException runException) {
                     //MessageDialog.openError(getShell(), "Doxygen Error", "An error occured while running doxygen. " + runException.toString());
                 }
                 // Doxygen was impossible to run.
-                catch( InvokeException invokeException ) {
+                catch (InvokeException invokeException) {
                     //
                 }
             }
         }
     }
 
-	/**
-	 * Dispose the owned menu.
-	 */
-	private void disposeMenu() {
-		if(this.menu != null) {
-			this.menu.dispose();
-			this.menu = null;
-		}
-	}
+    /**
+     * Dispose the owned menu.
+     */
+    private void disposeMenu() {
+        if (this.menu != null) {
+            this.menu.dispose();
+            this.menu = null;
+        }
+    }
 
-
-	/**
-	 * Retrieves a doxyfile from the active editor.
-	 *
-	 * @param	window	a reference to a workbench window
-	 *
-	 * @return	a doxfile retrieved from the active editor input.
-	 */
-	private static Doxyfile getDoxyfileFromActiveEditor( IWorkbenchWindow window ) {
+    /**
+     * Retrieves a doxyfile from the active editor.
+     *
+     * @param	window	a reference to a workbench window
+     *
+     * @return	a doxfile retrieved from the active editor input.
+     */
+    private static Doxyfile getDoxyfileFromActiveEditor(IWorkbenchWindow window) {
         IFile ifile = null;
-        File   file = null;
-		IWorkbenchPage activePage		= window.getActivePage();
-		IEditorPart    activeEditorPart	= activePage != null ? window.getActivePage().getActiveEditor() : null;
-		if(activeEditorPart != null) {
-			IEditorInput input  = activeEditorPart.getEditorInput();
+        File file = null;
+        IWorkbenchPage activePage = window.getActivePage();
+        IEditorPart activeEditorPart = activePage != null ? window.getActivePage().getActiveEditor() : null;
+        if (activeEditorPart != null) {
+            IEditorInput input = activeEditorPart.getEditorInput();
             if (input instanceof IFileEditorInput) {
-                ifile = ((IFileEditorInput)input).getFile();
+                ifile = ((IFileEditorInput) input).getFile();
             } else if (input instanceof IAdaptable) {
                 IAdaptable adaptable = (IAdaptable) input;
                 ifile = (IFile) adaptable.getAdapter(IFile.class);
@@ -383,67 +371,68 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
             if (ifile != null && !Doxyfile.isDoxyfile(ifile)) {
                 ifile = null;
             }
-		}
-		if (ifile != null || file != null) {
-		    return new Doxyfile(ifile, file);
-		} else {
-		    return null;
-		}
-	}
+        }
+        if (ifile != null || file != null) {
+            return new Doxyfile(ifile, file);
+        } else {
+            return null;
+        }
+    }
 
+    /**
+     * Retrieves a doxyfile from the specified selection.
+     *
+     * @return	a doxyfile retrieved from the specified selection.
+     */
+    private static IFile getDoxyfileFromSelection(ISelection selection) {
+        IFile doxyfile = null;
 
-	/**
-	 * Retrieves a doxyfile from the specified selection.
-	 *
-	 * @return	a doxyfile retrieved from the specified selection.
-	 */
-	private static IFile getDoxyfileFromSelection(ISelection selection) {
-		IFile doxyfile = null;
+        // Test if the current selection is not empty.
+        if (selection instanceof IStructuredSelection && selection.isEmpty() == false) {
+            IStructuredSelection structSel = (IStructuredSelection) selection;
+            Object element = structSel.getFirstElement();
 
-		// Test if the current selection is not empty.
-		if(selection instanceof IStructuredSelection && selection.isEmpty() == false) {
-			IStructuredSelection	structSel = (IStructuredSelection) selection;
-			Object					element = structSel.getFirstElement();
+            if (element != null && element instanceof IFile) {
+                IFile fileElement = (IFile) element;
 
-			if(element != null && element instanceof IFile) {
-				IFile	fileElement = (IFile) element;
+                if (fileElement.exists() == true && Doxyfile.isDoxyfile(fileElement) == true) {
+                    doxyfile = fileElement;
+                }
+            }
+        }
 
-				if(fileElement.exists() == true && Doxyfile.isDoxyfile(fileElement) == true) {
-					doxyfile = fileElement;
-				}
-			}
-		}
+        // Job's done.
+        return doxyfile;
+    }
 
+    /**
+     * Prompts the user to create a new doxyfile.
+     *
+     * @return	a doxyfile, or null if none.
+     */
+    private static IFile askUserToCreateDoxyfile() {
+        IFile doxyfile = null;
+        Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        boolean wantDoxyfile = MessageDialog.openQuestion(shell, "No Doxyfile Found",
+                "No doxyfile has been found in opened projects.\n\nDo you want to create a new doxyfile now ?");
 
-		// Job's done.
-		return doxyfile;
-	}
+        if (wantDoxyfile) {
+            NewDoxyfileWizard wizard = new NewDoxyfileWizard();
+            ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService()
+                    .getSelection();
+            IStructuredSelection strcSelection = (selection != null && selection instanceof IStructuredSelection)
+                    ? (IStructuredSelection) selection
+                    : new StructuredSelection();
 
-	/**
-	 * Prompts the user to create a new doxyfile.
-	 *
-	 * @return	a doxyfile, or null if none.
-	 */
-	private static IFile askUserToCreateDoxyfile() {
-		IFile	doxyfile		= null;
-		Shell	shell			= PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		boolean	wantDoxyfile	= MessageDialog.openQuestion(shell, "No Doxyfile Found", "No doxyfile has been found in opened projects.\n\nDo you want to create a new doxyfile now ?" );
+            wizard.init(PlatformUI.getWorkbench(), strcSelection);
 
-		if( wantDoxyfile ) {
-			NewDoxyfileWizard		wizard = new NewDoxyfileWizard();
-			ISelection				selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
-			IStructuredSelection	strcSelection = (selection != null && selection instanceof IStructuredSelection) ? (IStructuredSelection) selection : new StructuredSelection();
+            WizardDialog wizardDialog = new WizardDialog(shell, wizard);
 
-			wizard.init(PlatformUI.getWorkbench(), strcSelection);
+            wizardDialog.open();
+            doxyfile = wizard.getDoxyfile();
+        }
 
-
-			WizardDialog	wizardDialog = new WizardDialog(shell, wizard);
-
-			wizardDialog.open();
-			doxyfile = wizard.getDoxyfile();
-		}
-
-		return doxyfile;
-	}
+        return doxyfile;
+    }
 
 }

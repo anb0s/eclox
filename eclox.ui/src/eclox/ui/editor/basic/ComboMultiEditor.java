@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.basic;
 
@@ -27,115 +27,115 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Guillaume Brocker
  */
 public class ComboMultiEditor extends MultiEditor {
-	
-	/**
-	 * Implements a selection listener that will handle selection changes in the combo control.
-	 */
-	private class MySelectionListener implements SelectionListener {
 
-		/**
-		 * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);
-		}
+    /**
+     * Implements a selection listener that will handle selection changes in the combo control.
+     */
+    private class MySelectionListener implements SelectionListener {
 
-		/**
-		 * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
-		 */
-		public void widgetSelected(SelectionEvent e) {
-			selectState( combo.getItem(combo.getSelectionIndex()) );
-			commit();
-		}
-		
-	}
-	/**
-	 * the combo control that is the representation of the editor
-	 */
-	Combo combo;
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	states	an array of string representing all posible states
-	 */
-	ComboMultiEditor( String [] states ) {
-		super( states );
-	}
+        /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetDefaultSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetDefaultSelected(SelectionEvent e) {
+            widgetSelected(e);
+        }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
-	 */
-	public void createContent(Composite parent, FormToolkit formToolkit) {
-		// Pre-condition
-		assert combo != null;
-		
-		// Creates the combo control.
-		combo = new Combo(parent, SWT.DROP_DOWN|SWT.READ_ONLY);
-		combo.addSelectionListener( new MySelectionListener() );
-		formToolkit.adapt(combo, true, true);
-		
-		// Fills the combo with the state names.
-		for( int i = 0; i != states.length; ++i ) {
-			combo.add( states[i].getName() );
-		}
-		combo.setVisibleItemCount(states.length);
-		
-		// Installs a layout in the parent composite
-		parent.setLayout(new FillLayout());
-	}
+        /**
+         * @see org.eclipse.swt.events.SelectionListener#widgetSelected(org.eclipse.swt.events.SelectionEvent)
+         */
+        public void widgetSelected(SelectionEvent e) {
+            selectState(combo.getItem(combo.getSelectionIndex()));
+            commit();
+        }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#dispose()
-	 */
-	public void dispose() {
-		combo = null;
-	}
+    }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#grabVerticalSpace()
-	 */
-	public boolean grabVerticalSpace() {
-		return false;
-	}
-	
-	/**
-	 * @see eclox.ui.editor.basic.MultiEditor#refresh()
-	 */
-	public void refresh() {
-		// Pre-condition
-		assert combo != null;
-		
-		super.refresh();
-		
-		// Selectes the string corresponding to the current selection
-		State	selection = getSelectionAsState();
-		if( selection != null ) {
-			combo.select( combo.indexOf(selection.getName()) );
-		}
-		else {
-			combo.deselectAll();
-		}
-	}
+    /**
+     * the combo control that is the representation of the editor
+     */
+    Combo combo;
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean enabled) {
-		// Pre-condition
-		assert combo != null;
-		
-		combo.setEnabled(enabled);
-	}
+    /**
+     * Constructor
+     * 
+     * @param	states	an array of string representing all posible states
+     */
+    ComboMultiEditor(String[] states) {
+        super(states);
+    }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#setFocus()
-	 */
-	public void setFocus() {
-		// Pre-condition
-		assert combo != null;
-		
-		combo.setFocus();
-	}
+    /**
+     * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     */
+    public void createContent(Composite parent, FormToolkit formToolkit) {
+        // Pre-condition
+        assert combo != null;
+
+        // Creates the combo control.
+        combo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+        combo.addSelectionListener(new MySelectionListener());
+        formToolkit.adapt(combo, true, true);
+
+        // Fills the combo with the state names.
+        for (int i = 0; i != states.length; ++i) {
+            combo.add(states[i].getName());
+        }
+        combo.setVisibleItemCount(states.length);
+
+        // Installs a layout in the parent composite
+        parent.setLayout(new FillLayout());
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#dispose()
+     */
+    public void dispose() {
+        combo = null;
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#grabVerticalSpace()
+     */
+    public boolean grabVerticalSpace() {
+        return false;
+    }
+
+    /**
+     * @see eclox.ui.editor.basic.MultiEditor#refresh()
+     */
+    public void refresh() {
+        // Pre-condition
+        assert combo != null;
+
+        super.refresh();
+
+        // Selectes the string corresponding to the current selection
+        State selection = getSelectionAsState();
+        if (selection != null) {
+            combo.select(combo.indexOf(selection.getName()));
+        } else {
+            combo.deselectAll();
+        }
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+        // Pre-condition
+        assert combo != null;
+
+        combo.setEnabled(enabled);
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#setFocus()
+     */
+    public void setFocus() {
+        // Pre-condition
+        assert combo != null;
+
+        combo.setFocus();
+    }
 
 }

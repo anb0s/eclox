@@ -63,7 +63,6 @@ import org.eclipse.core.filesystem.URIUtil;
 import eclox.core.Plugin;
 import eclox.core.doxyfiles.Doxyfile;
 
-
 /**
  * Implement a build job.
  *
@@ -79,13 +78,14 @@ public class BuildJob extends Job {
     /**
      * Defines the pattern used to match doxygen warnings and errors
      */
-    private static final Pattern problemPattern = Pattern.compile("^(.+?):\\s*(\\d+)\\s*:\\s*(.+?)\\s*:\\s*(.*$(\\s+^  .*$)*)", Pattern.MULTILINE);
+    private static final Pattern problemPattern = Pattern
+            .compile("^(.+?):\\s*(\\d+)\\s*:\\s*(.+?)\\s*:\\s*(.*$(\\s+^  .*$)*)", Pattern.MULTILINE);
 
     /**
      * Defines the pattern used to match doxygen warnings about obsolete tags.
      */
-    private static final Pattern obsoleteTagWarningPattern = Pattern.compile("(?i)^warning: Tag `(.+)' at line (\\d+) of file `(.+)' has become obsolete.$", Pattern.MULTILINE);
-
+    private static final Pattern obsoleteTagWarningPattern = Pattern
+            .compile("(?i)^warning: Tag `(.+)' at line (\\d+) of file `(.+)' has become obsolete.$", Pattern.MULTILINE);
 
     /**
      * Implements a runnable log feeder that reads the given input stream
@@ -94,13 +94,12 @@ public class BuildJob extends Job {
      *
      * @author	Guillaume Brocker
      */
-    private class MyLogFeeder implements Runnable
-    {
+    private class MyLogFeeder implements Runnable {
 
         /**
          * the input stream to read and write by to the log
          */
-        private InputStream	input;
+        private InputStream input;
 
         private boolean cancel = false;
 
@@ -109,39 +108,33 @@ public class BuildJob extends Job {
          *
          * @param	input	the input stream to read to write back to the log
          */
-        public MyLogFeeder( InputStream input )
-        {
+        public MyLogFeeder(InputStream input) {
             this.input = input;
         }
 
-        public void run()
-        {
-            try
-            {
-                BufferedReader	reader = new BufferedReader( new InputStreamReader(input) );
-                String			newLine;
+        public void run() {
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                String newLine;
 
-                for(;;)	{
+                for (;;) {
                     // check if cancel
                     if (cancel) {
                         break;
                     }
                     // Processes a new process output line.
                     newLine = reader.readLine();
-                    if( newLine != null ) {
-                        newLine = newLine.concat( "\n" );
-                        log.append( newLine );
-                        fireLogUpdated( newLine );
-                    }
-                    else {
+                    if (newLine != null) {
+                        newLine = newLine.concat("\n");
+                        log.append(newLine);
+                        fireLogUpdated(newLine);
+                    } else {
                         break;
                     }
                     Thread.yield();
                 }
-            }
-            catch( Throwable t )
-            {
-                Plugin.log( t );
+            } catch (Throwable t) {
+                Plugin.log(t);
             }
         }
 
@@ -150,35 +143,31 @@ public class BuildJob extends Job {
         }
     }
 
-
     /**
      * Implements a resource change listener that will remove a given job if its
      * doxyfile gets deleted.
      *
      * @author	Guillaume Brocker
      */
-    private class MyResourceChangeListener implements IResourceChangeListener
-    {
+    private class MyResourceChangeListener implements IResourceChangeListener {
         /**
          * the build job whose doxyfile will be monitored
          */
         private BuildJob job;
 
-        public MyResourceChangeListener( BuildJob job )
-        {
+        public MyResourceChangeListener(BuildJob job) {
             this.job = job;
         }
 
         public void resourceChanged(IResourceChangeEvent event) {
             IFile ifile = job.getDoxyfile().getIFile();
             if (ifile != null) {
-                IResourceDelta	doxyfileDelta = event.getDelta().findMember( ifile.getFullPath() );
-                if( doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED )
-                {
+                IResourceDelta doxyfileDelta = event.getDelta().findMember(ifile.getFullPath());
+                if (doxyfileDelta != null && doxyfileDelta.getKind() == IResourceDelta.REMOVED) {
                     job.clearMarkers();
-                    jobs.remove( job );
+                    jobs.remove(job);
                     job.fireRemoved();
-                    ResourcesPlugin.getWorkspace().removeResourceChangeListener( this );
+                    ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
                 }
             }
         }
@@ -198,7 +187,7 @@ public class BuildJob extends Job {
     /**
      * the path of the doxygen
      */
-    private String	command;
+    private String command;
 
     /**
      * the path of the doxyfile to build
@@ -220,7 +209,6 @@ public class BuildJob extends Job {
      */
     private Collection<IMarker> markers = new Vector<IMarker>();
 
-
     /**
      * Constructor.
      */
@@ -231,23 +219,22 @@ public class BuildJob extends Job {
 
         updateJobName();
 
-        setPriority( Job.BUILD );
+        setPriority(Job.BUILD);
         setUser(true);
 
         // References the jobs in the global collection and add a doxyfile listener.
-        jobs.add( this );
-        ResourcesPlugin.getWorkspace().addResourceChangeListener( new MyResourceChangeListener(this), IResourceChangeEvent.POST_CHANGE );
+        jobs.add(this);
+        ResourcesPlugin.getWorkspace().addResourceChangeListener(new MyResourceChangeListener(this),
+                IResourceChangeEvent.POST_CHANGE);
     }
-
 
     /**
      * Retrieves all doxygen build jobs.
      *
      * @return	an array containing all doxygen build jobs (can be empty).
      */
-    public static BuildJob[] getAllJobs()
-    {
-        return (BuildJob[]) jobs.toArray( new BuildJob[0] );
+    public static BuildJob[] getAllJobs() {
+        return (BuildJob[]) jobs.toArray(new BuildJob[0]);
     }
 
     /**
@@ -258,13 +245,11 @@ public class BuildJob extends Job {
      *
      * @return	a build job that is in charge of building the given doxyfile
      */
-    public static BuildJob getJob( Doxyfile doxyfile )
-    {
-        BuildJob	result = findJob( doxyfile );
+    public static BuildJob getJob(Doxyfile doxyfile) {
+        BuildJob result = findJob(doxyfile);
 
         // If no jobs has been found, then creates a new one.
-        if( result == null )
-        {
+        if (result == null) {
             result = new BuildJob(doxyfile);
         }
 
@@ -282,17 +267,14 @@ public class BuildJob extends Job {
      *
      * @return	a build job for the given doxyfile or null if none
      */
-    public static BuildJob findJob( Doxyfile doxyfile )
-    {
-        BuildJob	result = null;
+    public static BuildJob findJob(Doxyfile doxyfile) {
+        BuildJob result = null;
 
         // Walks through the found jobs to find a relevant build job.
-        Iterator<BuildJob>	i = jobs.iterator();
-        while( i.hasNext() )
-        {
-            BuildJob buildJob = (BuildJob)i.next();
-            if( buildJob.getDoxyfile().equals(doxyfile) )
-            {
+        Iterator<BuildJob> i = jobs.iterator();
+        while (i.hasNext()) {
+            BuildJob buildJob = (BuildJob) i.next();
+            if (buildJob.getDoxyfile().equals(doxyfile)) {
                 result = buildJob;
                 break;
             }
@@ -306,10 +288,9 @@ public class BuildJob extends Job {
      *
      * @param	listener	a given listener instance
      */
-    public void addBuidJobListener( IBuildJobListener listener )
-    {
-        synchronized ( listeners ) {
-            listeners.add( listener );
+    public void addBuidJobListener(IBuildJobListener listener) {
+        synchronized (listeners) {
+            listeners.add(listener);
         }
     }
 
@@ -318,10 +299,9 @@ public class BuildJob extends Job {
      *
      * @param	listener	a given listener instance
      */
-    public void removeBuidJobListener( IBuildJobListener listener )
-    {
-        synchronized( listeners ) {
-            listeners.remove( listener );
+    public void removeBuidJobListener(IBuildJobListener listener) {
+        synchronized (listeners) {
+            listeners.remove(listener);
         }
     }
 
@@ -329,27 +309,22 @@ public class BuildJob extends Job {
      * Clears the log and notifies attached listeners
      */
     public void clearLog() {
-        log.delete( 0, log.length() );
+        log.delete(0, log.length());
         fireLogCleared();
     }
 
     /**
      * Clears the markers managed by the build job.
      */
-    public void clearMarkers()
-    {
+    public void clearMarkers() {
         // Removes all markers from their respective resource
-        Iterator<IMarker>	i = markers.iterator();
-        while( i.hasNext() )
-        {
-            IMarker	marker = (IMarker) i.next();
-            try
-            {
+        Iterator<IMarker> i = markers.iterator();
+        while (i.hasNext()) {
+            IMarker marker = (IMarker) i.next();
+            try {
                 marker.delete();
-            }
-            catch( Throwable t )
-            {
-                Plugin.log( t );
+            } catch (Throwable t) {
+                Plugin.log(t);
             }
         }
 
@@ -376,7 +351,7 @@ public class BuildJob extends Job {
     }
 
     public void updateJobName() {
-        setName("Doxygen Build ["+ command + " -b " + doxyfile.getFullPath()+"]");
+        setName("Doxygen Build [" + command + " -b " + doxyfile.getFullPath() + "]");
     }
 
     /**
@@ -388,28 +363,23 @@ public class BuildJob extends Job {
         return log.toString();
     }
 
-
     /**
      * @see org.eclipse.core.runtime.jobs.Job#belongsTo(java.lang.Object)
      */
     public boolean belongsTo(Object family) {
-        if( family == FAMILY )
-        {
+        if (family == FAMILY) {
             return true;
-        }
-        else
-        {
-            return super.belongsTo( family );
+        } else {
+            return super.belongsTo(family);
         }
     }
-
 
     /**
      * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
      */
-    protected IStatus run( IProgressMonitor monitor ) {
+    protected IStatus run(IProgressMonitor monitor) {
         IFile doxyIFile = getDoxyfile().getIFile();
-        File doxyFile   = getDoxyfile().getFile();
+        File doxyFile = getDoxyfile().getFile();
         try {
             // Initializes the progress monitor.
             SubMonitor subMonitor = SubMonitor.convert(monitor, doxyfile.getFullPath(), 6);
@@ -417,7 +387,7 @@ public class BuildJob extends Job {
             // Clears log and markers.
             clearLog();
             clearMarkers();
-            subMonitor.worked( 1 );
+            subMonitor.worked(1);
 
             // Locks access to the doxyfile.
             if (doxyIFile != null) {
@@ -425,7 +395,7 @@ public class BuildJob extends Job {
             }
 
             // Creates the doxygen build process and log feeders.
-            Process	buildProcess	= null;
+            Process buildProcess = null;
             if (doxyIFile != null) {
                 buildProcess = Doxygen.getDefault().build(doxyIFile);
             } else {
@@ -434,21 +404,21 @@ public class BuildJob extends Job {
 
             // stdin and stderr
             MyLogFeeder inputLogFeeder = new MyLogFeeder(buildProcess.getInputStream());
-            Thread	inputLogThread	= new Thread(inputLogFeeder);
+            Thread inputLogThread = new Thread(inputLogFeeder);
             MyLogFeeder errorLogFeeder = new MyLogFeeder(buildProcess.getErrorStream());
-            Thread	errorLogThread	= new Thread(errorLogFeeder);
+            Thread errorLogThread = new Thread(errorLogFeeder);
 
             // Wait either for the feeders to terminate or the user to cancel the job.
             inputLogThread.start();
             errorLogThread.start();
-            for(;;)	{
+            for (;;) {
                 // Tests of the log feeders have terminated.
-                if( inputLogThread.isAlive() == false && errorLogThread.isAlive() == false ) {
+                if (inputLogThread.isAlive() == false && errorLogThread.isAlive() == false) {
                     break;
                 }
 
                 // Tests if the jobs is supposed to terminate.
-                if( monitor.isCanceled() == true ) {
+                if (monitor.isCanceled() == true) {
                     // stop the log threads
                     inputLogFeeder.cancel();
                     errorLogFeeder.cancel();
@@ -460,7 +430,7 @@ public class BuildJob extends Job {
                 // Allows other threads to run (and cancel!)
                 Thread.yield();
             }
-            subMonitor.worked( 2 );
+            subMonitor.worked(2);
 
             // Unlocks the doxyfile.
             if (doxyIFile != null) {
@@ -469,42 +439,33 @@ public class BuildJob extends Job {
             }
 
             // Builds error and warning markers
-            createMarkers( subMonitor );
-            subMonitor.worked( 3 );
+            createMarkers(subMonitor);
+            subMonitor.worked(3);
 
             // Ensure that doxygen process has finished.
             buildProcess.waitFor();
-            subMonitor.worked( 4 );
+            subMonitor.worked(4);
 
             // Refreshes the container that has received the documentation outputs.
-            Doxyfile parsedDoxyfile	= getDoxyfile();
+            Doxyfile parsedDoxyfile = getDoxyfile();
             parsedDoxyfile.load();
-            IContainer	outputContainer = parsedDoxyfile.getOutputContainer();
-            if( outputContainer != null ) {
-                outputContainer.refreshLocal( IResource.DEPTH_INFINITE, SubMonitor.convert(subMonitor, "Refresh doxygen output folder...", 1) );
+            IContainer outputContainer = parsedDoxyfile.getOutputContainer();
+            if (outputContainer != null) {
+                outputContainer.refreshLocal(IResource.DEPTH_INFINITE,
+                        SubMonitor.convert(subMonitor, "Refresh doxygen output folder...", 1));
             }
             subMonitor.done();
 
             // Job's done.
             return Status.OK_STATUS;
-        } catch(OperationCanceledException e) {
+        } catch (OperationCanceledException e) {
             return Status.CANCEL_STATUS;
-        } catch( InvokeException e ) {
-            return new Status(
-                    Status.WARNING,
-                    Plugin.getDefault().getBundle().getSymbolicName(),
-                    ERROR_DOXYGEN_NOT_FOUND,
-                    "Doxygen was not found.",
-                    e );
-        } catch( Throwable t ) {
-            return new Status(
-                    Status.ERROR,
-                    Plugin.getDefault().getBundle().getSymbolicName(),
-                    0,
-                    t.getMessage(),
-                    t );
-        }
-        finally {
+        } catch (InvokeException e) {
+            return new Status(Status.WARNING, Plugin.getDefault().getBundle().getSymbolicName(),
+                    ERROR_DOXYGEN_NOT_FOUND, "Doxygen was not found.", e);
+        } catch (Throwable t) {
+            return new Status(Status.ERROR, Plugin.getDefault().getBundle().getSymbolicName(), 0, t.getMessage(), t);
+        } finally {
             if (doxyIFile != null) {
                 getJobManager().endRule(doxyIFile);
             }
@@ -518,40 +479,41 @@ public class BuildJob extends Job {
      * @param   monitor	the progress monitor used to watch for cancel requests.
      * @throws  CoreException, URISyntaxException
      */
-    private void createMarkers( IProgressMonitor monitor ) throws CoreException, URISyntaxException {
-        Matcher			matcher = null;
+    private void createMarkers(IProgressMonitor monitor) throws CoreException, URISyntaxException {
+        Matcher matcher = null;
 
         // Searches documentation errors and warnings.
-        matcher = problemPattern.matcher( log );
-        while( matcher.find() == true ) {
-            Path		resourcePath = new Path( matcher.group(1) );
-            Integer		lineNumer    = new Integer( matcher.group(2) );
-            int			severity     = Marker.toMarkerSeverity( matcher.group(3) );
-            String		message      = new String( matcher.group(4) );
+        matcher = problemPattern.matcher(log);
+        while (matcher.find() == true) {
+            Path resourcePath = new Path(matcher.group(1));
+            Integer lineNumer = new Integer(matcher.group(2));
+            int severity = Marker.toMarkerSeverity(matcher.group(3));
+            String message = new String(matcher.group(4));
             createMarkersForResource(resourcePath, null, lineNumer, severity, message);
         }
         matcher = null;
 
         // Searches obsolete tags warnings.
-        matcher = obsoleteTagWarningPattern.matcher( log );
-        while( matcher.find() == true ) {
-            String		message = new String( matcher.group(0) );
-            String		setting = new String( matcher.group(1) );
-            Integer		lineNumer = new Integer( matcher.group(2) );
-            Path		resourcePath = new Path( matcher.group(3) );
+        matcher = obsoleteTagWarningPattern.matcher(log);
+        while (matcher.find() == true) {
+            String message = new String(matcher.group(0));
+            String setting = new String(matcher.group(1));
+            Integer lineNumer = new Integer(matcher.group(2));
+            Path resourcePath = new Path(matcher.group(3));
             createMarkersForResource(resourcePath, setting, lineNumer, IMarker.SEVERITY_WARNING, message);
         }
         matcher = null;
     }
 
-    private void createMarkersForResource(Path resourcePath, String setting, Integer lineNumer, int severity, String message) throws CoreException {
+    private void createMarkersForResource(Path resourcePath, String setting, Integer lineNumer, int severity,
+            String message) throws CoreException {
         if (resourcePath != null) {
-            IWorkspaceRoot  workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
+            IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace().getRoot();
             try {
                 IFile[] files = workspaceRoot.findFilesForLocationURI(URIUtil.toURI(resourcePath));
                 for (IFile file : files) {
                     IMarker marker = Marker.create(file, setting, lineNumer.intValue(), message, severity);
-                    if( marker != null ) {
+                    if (marker != null) {
                         markers.add(marker);
                         break; // exit loop
                     }
@@ -570,12 +532,12 @@ public class BuildJob extends Job {
      * Notifies observers that the log has been cleared.
      */
     private void fireLogCleared() {
-        synchronized ( listeners ) {
-            Iterator<IBuildJobListener>	i = listeners.iterator();
-            while( i.hasNext() ) {
-                IBuildJobListener	listener = (IBuildJobListener) i.next();
+        synchronized (listeners) {
+            Iterator<IBuildJobListener> i = listeners.iterator();
+            while (i.hasNext()) {
+                IBuildJobListener listener = (IBuildJobListener) i.next();
 
-                listener.buildJobLogCleared( this );
+                listener.buildJobLogCleared(this);
             }
         }
     }
@@ -585,13 +547,13 @@ public class BuildJob extends Job {
      *
      * @param newText	a string containing the new text of the log
      */
-    private void fireLogUpdated( String newText ) {
-        synchronized ( listeners ) {
-            Iterator<IBuildJobListener>	i = listeners.iterator();
-            while( i.hasNext() ) {
-                IBuildJobListener	listener = (IBuildJobListener) i.next();
+    private void fireLogUpdated(String newText) {
+        synchronized (listeners) {
+            Iterator<IBuildJobListener> i = listeners.iterator();
+            while (i.hasNext()) {
+                IBuildJobListener listener = (IBuildJobListener) i.next();
 
-                listener.buildJobLogUpdated( this, newText );
+                listener.buildJobLogUpdated(this, newText);
             }
         }
     }
@@ -600,12 +562,12 @@ public class BuildJob extends Job {
      * Notifies observers that the job has been removed.
      */
     private void fireRemoved() {
-        synchronized ( listeners ) {
-            Iterator<IBuildJobListener>	i = listeners.iterator();
-            while( i.hasNext() ) {
-                IBuildJobListener	listener = (IBuildJobListener) i.next();
+        synchronized (listeners) {
+            Iterator<IBuildJobListener> i = listeners.iterator();
+            while (i.hasNext()) {
+                IBuildJobListener listener = (IBuildJobListener) i.next();
 
-                listener.buildJobRemoved( this );
+                listener.buildJobRemoved(this);
             }
         }
     }

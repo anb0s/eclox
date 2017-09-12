@@ -9,13 +9,11 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxyfiles;
 
 import eclox.core.doxyfiles.Chunk;
-
-
 
 /**
  * Implements a raw text chunk.
@@ -24,27 +22,27 @@ import eclox.core.doxyfiles.Chunk;
  */
 public class RawText extends Chunk {
 
-	/**
-	 * a string containing the raw text piece
-	 */
-	private String content = new String();
-	
-	/**
-	 * Appends a new piece of text to the raw text chunk.
-	 * 
-	 * @param	text	a string containing a piece of text to append
-	 */
-	public void append( String text ) {
-		content += text;
-	}
-	
-	/**
-	 * Retrieves the raw text content as a string.
-	 * 
-	 * @return	a string containing the raw text content
-	 */
-	public String toString() {
-		return new String( content );
-	}
-	
+    /**
+     * a string containing the raw text piece
+     */
+    private String content = new String();
+
+    /**
+     * Appends a new piece of text to the raw text chunk.
+     * 
+     * @param	text	a string containing a piece of text to append
+     */
+    public void append(String text) {
+        content += text;
+    }
+
+    /**
+     * Retrieves the raw text content as a string.
+     * 
+     * @return	a string containing the raw text content
+     */
+    public String toString() {
+        return new String(content);
+    }
+
 }

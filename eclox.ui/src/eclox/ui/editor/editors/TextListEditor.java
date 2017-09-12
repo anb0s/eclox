@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.editors;
 
@@ -25,39 +25,33 @@ import eclox.core.doxyfiles.Setting;
  * @author gbrocker
  */
 public class TextListEditor extends ListEditor {
-	
-	/**
-	 * Implements an input validator for the input dialog used to edit value compunds.
-	 */
-	private class MyInputValidator implements IInputValidator {
 
-		public String isValid(String newText) {
-			if( newText.length() == 0 ) {
-				return "Empty value is not allowed.";
-			}
-			else {
-				return null;
-			}
-		}
-		
-	}
-	
-	protected String editValueCompound(Shell parent, Setting setting, String compound) {
-		// Creates the edition dialog.
-		InputDialog	dialog = new InputDialog(
-				parent,
-				"Value Edition",
-				"Enter the new text for the value.",
-				Convenience.unescapeValue( compound ),
-				new MyInputValidator() );
-		
-		// Lauches the value edition
-		if( dialog.open() == InputDialog.OK ) {			
-			return Convenience.escapeValue( dialog.getValue() );
-		}
-		else {
-			return null;
-		}
-	}
+    /**
+     * Implements an input validator for the input dialog used to edit value compunds.
+     */
+    private class MyInputValidator implements IInputValidator {
+
+        public String isValid(String newText) {
+            if (newText.length() == 0) {
+                return "Empty value is not allowed.";
+            } else {
+                return null;
+            }
+        }
+
+    }
+
+    protected String editValueCompound(Shell parent, Setting setting, String compound) {
+        // Creates the edition dialog.
+        InputDialog dialog = new InputDialog(parent, "Value Edition", "Enter the new text for the value.",
+                Convenience.unescapeValue(compound), new MyInputValidator());
+
+        // Lauches the value edition
+        if (dialog.open() == InputDialog.OK) {
+            return Convenience.escapeValue(dialog.getValue());
+        } else {
+            return null;
+        }
+    }
 
 }

@@ -39,7 +39,6 @@ import org.eclipse.core.runtime.content.IContentType;
 
 import eclox.core.doxyfiles.io.Parser;
 
-
 /**
  * Implements the Doxyfile wrapper.
  *
@@ -102,19 +101,18 @@ public class Doxyfile {
      * @return	<code>true</code> or <code>false</code>
      */
     public static boolean isDoxyfile(IFile file) {
-        String          name = file.getName();
-        IContentType	contentType = Platform.getContentTypeManager().findContentTypeFor( name );
+        String name = file.getName();
+        IContentType contentType = Platform.getContentTypeManager().findContentTypeFor(name);
 
         return contentType != null ? contentType.getId().equals("org.gna.eclox.core.doxyfile") : false;
     }
-
 
     /**
      * Constructor
      *
      * @param	file	a file resource instance that is assumed to be a doxyfile
      */
-    public Doxyfile( IFile ifile, File file ) {
+    public Doxyfile(IFile ifile, File file) {
         this.ifile = ifile;
         this.file = file;
     }
@@ -126,7 +124,7 @@ public class Doxyfile {
         else
             input = new BufferedInputStream(new FileInputStream(file));
         Parser parser = new Parser(input);
-        parser.read( this );
+        parser.read(this);
     }
 
     /**
@@ -134,33 +132,33 @@ public class Doxyfile {
      *
      * @param	chunk	a chunk to append to the doxyfile
      */
-    public void append( Chunk chunk ) {
+    public void append(Chunk chunk) {
         // Pre-condition
         assert chunk.getOwner() == null;
 
         // References the chunk.
-        chunk.setOwner( this );
-        this.chunks.add( chunk );
+        chunk.setOwner(this);
+        this.chunks.add(chunk);
 
         // Do special handling for settings.
-        if( chunk instanceof Setting ) {
-            Setting	setting = (Setting) chunk;
-            this.settings.put( setting.getIdentifier(), setting );
+        if (chunk instanceof Setting) {
+            Setting setting = (Setting) chunk;
+            this.settings.put(setting.getIdentifier(), setting);
 
             // Retrieves the setting group name.
-            String groupName = setting.getProperty( Setting.GROUP );
-            if( groupName == null ) {
-                groupName = new String( "Others" );
-                setting.setProperty( Setting.GROUP, groupName );
+            String groupName = setting.getProperty(Setting.GROUP);
+            if (groupName == null) {
+                groupName = new String("Others");
+                setting.setProperty(Setting.GROUP, groupName);
             }
 
             // Retrieves the setting group and stores the setting in it.
-            Group group = (Group) this.groups.get( groupName );
-            if( group == null ) {
-                group = new Group( groupName );
-                this.groups.put( groupName, group );
+            Group group = (Group) this.groups.get(groupName);
+            if (group == null) {
+                group = new Group(groupName);
+                this.groups.put(groupName, group);
             }
-            group.add( setting );
+            group.add(setting);
         }
     }
 
@@ -197,10 +195,9 @@ public class Doxyfile {
      * @return	the last added chunk or null if none
      */
     public Chunk getLastChunk() {
-        if( this.chunks.isEmpty() == false ) {
-            return (Chunk) this.chunks.get( this.chunks.size() - 1 );
-        }
-        else {
+        if (this.chunks.isEmpty() == false) {
+            return (Chunk) this.chunks.get(this.chunks.size() - 1);
+        } else {
             return null;
         }
     }
@@ -211,17 +208,17 @@ public class Doxyfile {
      * @return	a folder, or null when none
      */
     public IContainer getOutputContainer() {
-        IContainer	outputContainer	= null;
-        Setting		outputSetting	= getSetting("OUTPUT_DIRECTORY");
-        if(outputSetting != null) {
+        IContainer outputContainer = null;
+        Setting outputSetting = getSetting("OUTPUT_DIRECTORY");
+        if (outputSetting != null) {
             Path outputPath = new Path(outputSetting.getValue());
-            if(outputPath.isEmpty()) {
+            if (outputPath.isEmpty()) {
                 if (ifile != null) {
                     outputContainer = ifile.getParent();
                 }
             } else {
                 File containerFile = null;
-                if(outputPath.isAbsolute()) {
+                if (outputPath.isAbsolute()) {
                     containerFile = outputPath.toFile();
                 } else {
                     if (ifile != null) {
@@ -231,9 +228,10 @@ public class Doxyfile {
                     }
                 }
                 if (containerFile != null && containerFile.exists()) {
-                    IContainer[] foundContainers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocationURI(containerFile.toURI());
+                    IContainer[] foundContainers = ResourcesPlugin.getWorkspace().getRoot()
+                            .findContainersForLocationURI(containerFile.toURI());
                     if (foundContainers.length >= 1) {
-                        outputContainer =  foundContainers[0];
+                        outputContainer = foundContainers[0];
                     }
                 }
             }
@@ -248,7 +246,7 @@ public class Doxyfile {
      *
      * @return	the found setting or null if none
      */
-    public Setting getSetting( String identifier ) {
+    public Setting getSetting(String identifier) {
         return (Setting) settings.get(identifier);
     }
 
@@ -268,7 +266,7 @@ public class Doxyfile {
      *
      * @return	true or false
      */
-    public boolean hasSetting( String identifier ) {
+    public boolean hasSetting(String identifier) {
         return settings.get(identifier) != null;
     }
 
@@ -277,9 +275,9 @@ public class Doxyfile {
      *
      * @return	true or false
      */
-    public boolean isPathRelative( IPath path ) {
+    public boolean isPathRelative(IPath path) {
         if (ifile != null)
-            return ifile.getLocation().removeLastSegments(1).isPrefixOf( path );
+            return ifile.getLocation().removeLastSegments(1).isPrefixOf(path);
         else
             return false;
     }
@@ -291,13 +289,12 @@ public class Doxyfile {
      *
      * @return	the argument path made relative to the doxyfile
      */
-    public IPath makePathRelative( IPath path ) {
-        if( isPathRelative(path) ) {
-            int		matchingCount = ifile.getLocation().removeLastSegments(1).matchingFirstSegments( path );
-            IPath	relativePath = path.removeFirstSegments( matchingCount ).setDevice( new String() );
+    public IPath makePathRelative(IPath path) {
+        if (isPathRelative(path)) {
+            int matchingCount = ifile.getLocation().removeLastSegments(1).matchingFirstSegments(path);
+            IPath relativePath = path.removeFirstSegments(matchingCount).setDevice(new String());
             return relativePath.isEmpty() ? new Path(".") : relativePath;
-        }
-        else {
+        } else {
             return path;
         }
     }
@@ -351,7 +348,7 @@ public class Doxyfile {
     @Override
     public boolean equals(Object arg0) {
         if (arg0 instanceof Doxyfile) {
-            Doxyfile doxyTo = (Doxyfile)arg0;
+            Doxyfile doxyTo = (Doxyfile) arg0;
             return getFullPath().equals(doxyTo.getFullPath());
         }
         return false;

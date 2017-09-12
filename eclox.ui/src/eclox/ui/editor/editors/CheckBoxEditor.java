@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.editors;
 
@@ -26,166 +26,166 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  *
  */
 public class CheckBoxEditor extends SettingEditor {
-	
-	/**
-	 * Implements a selection listener for the button
-	 */
-	private class MySelectionListener implements SelectionListener {
 
-		public void widgetDefaultSelected(SelectionEvent e) {
-			widgetSelected(e);
-		}
+    /**
+     * Implements a selection listener for the button
+     */
+    private class MySelectionListener implements SelectionListener {
 
-		public void widgetSelected(SelectionEvent e) {
-			dirty = true;
-			fireEditorChanged();
-			commit();
-		}
-		
-	}
-	
-	private static String YES = "YES";	///< Defines the yes setting value
-	private static String NO = "NO";	///< Defines the no setting value
-	
-	private String text;	///< the text of the check box button
-	private Button button;	///< the check box button
-	
-	private boolean dirty = false;	///< the current dirty state
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param	text	the text to set along to the check box button
-	 */
-	public CheckBoxEditor( String text ) {
-		this.text = new String(text);
-	}
-	
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#commit()
-	 */
-	public void commit() {
-		if( hasInput() ) {
-			getInput().setValue( getSelection() );
-			dirty = false;
-			fireEditorChanged();
-		}
-	}
+        public void widgetDefaultSelected(SelectionEvent e) {
+            widgetSelected(e);
+        }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
-	 */
-	public void createContent(Composite parent, FormToolkit formToolkit) {
-		// Pre-condition
-		assert button == null;
-		
-		button = formToolkit.createButton(parent, text, SWT.CHECK);
-		button.addSelectionListener(new MySelectionListener());
-		parent.setLayout(new FillLayout() );
-		
-		// Post-condition
-		assert button != null;
-	}
+        public void widgetSelected(SelectionEvent e) {
+            dirty = true;
+            fireEditorChanged();
+            commit();
+        }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#dispose()
-	 */
-	public void dispose() {
-		// Pre-condition
-		assert button != null;
-		
-		button.dispose();
-		button = null;
-		
-		super.dispose();
-	}
+    }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#grabVerticalSpace()
-	 */
-	public boolean grabVerticalSpace() {
-		return false;
-	}
+    private static String YES = "YES"; ///< Defines the yes setting value
+    private static String NO = "NO"; ///< Defines the no setting value
 
-	/**
-	 * Retrieves the current value of the editor.
-	 * 
-	 * @return	the current value of the editor
-	 */
-	public boolean getValue() {
-		// Pre-condition
-		assert button != null;
-		
-		return button.getSelection();
-	}
+    private String text; ///< the text of the check box button
+    private Button button; ///< the check box button
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#isDirty()
-	 */
-	public boolean isDirty() {
-		return dirty;
-	}
+    private boolean dirty = false; ///< the current dirty state
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#isStale()
-	 */
-	public boolean isStale() {
-		boolean	result = false;
-		
-		if( hasInput() ) {
-			result = getSelection().equalsIgnoreCase(getInput().getValue()) == false;
-		}
-		return result;
-	}
+    /**
+     * Constructor
+     * 
+     * @param	text	the text to set along to the check box button
+     */
+    public CheckBoxEditor(String text) {
+        this.text = new String(text);
+    }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#refresh()
-	 */
-	public void refresh() {
-		// Pre-condition
-		assert getInput() != null;
-		assert button != null;
-		assert button.isDisposed() == false;
-		
-		if( hasInput() ) {
-			// Updates the button state.
-			button.setSelection( getInput().getValue().equalsIgnoreCase(YES) );
-			
-			fireEditorChanged();
-		}
-	}
+    /**
+     * @see eclox.ui.editor.editors.IEditor#commit()
+     */
+    public void commit() {
+        if (hasInput()) {
+            getInput().setValue(getSelection());
+            dirty = false;
+            fireEditorChanged();
+        }
+    }
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean enabled) {
-		// Pre-condition
-		assert button != null;
-		
-		button.setEnabled(enabled);
-	}
+    /**
+     * @see eclox.ui.editor.editors.IEditor#createContent(org.eclipse.swt.widgets.Composite, org.eclipse.ui.forms.widgets.FormToolkit)
+     */
+    public void createContent(Composite parent, FormToolkit formToolkit) {
+        // Pre-condition
+        assert button == null;
 
-	/**
-	 * @see eclox.ui.editor.editors.IEditor#setFocus()
-	 */
-	public void setFocus() {
-		// Pre-condition
-		assert button != null;
-		assert button.isDisposed() == false;
+        button = formToolkit.createButton(parent, text, SWT.CHECK);
+        button.addSelectionListener(new MySelectionListener());
+        parent.setLayout(new FillLayout());
 
-		button.setFocus();
-	}
-	
-	/**
-	 * Retrieves the current value selected in the user interface button.
-	 * 
-	 * @return	a string containing the selected value
-	 */
-	private String getSelection() {
-		// Pre-condition
-		assert button != null;
-		assert button.isDisposed() == false;
-		
-		return button.getSelection() == true ? YES : NO;		
-	}
+        // Post-condition
+        assert button != null;
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#dispose()
+     */
+    public void dispose() {
+        // Pre-condition
+        assert button != null;
+
+        button.dispose();
+        button = null;
+
+        super.dispose();
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#grabVerticalSpace()
+     */
+    public boolean grabVerticalSpace() {
+        return false;
+    }
+
+    /**
+     * Retrieves the current value of the editor.
+     * 
+     * @return	the current value of the editor
+     */
+    public boolean getValue() {
+        // Pre-condition
+        assert button != null;
+
+        return button.getSelection();
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#isDirty()
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#isStale()
+     */
+    public boolean isStale() {
+        boolean result = false;
+
+        if (hasInput()) {
+            result = getSelection().equalsIgnoreCase(getInput().getValue()) == false;
+        }
+        return result;
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#refresh()
+     */
+    public void refresh() {
+        // Pre-condition
+        assert getInput() != null;
+        assert button != null;
+        assert button.isDisposed() == false;
+
+        if (hasInput()) {
+            // Updates the button state.
+            button.setSelection(getInput().getValue().equalsIgnoreCase(YES));
+
+            fireEditorChanged();
+        }
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#setEnabled(boolean)
+     */
+    public void setEnabled(boolean enabled) {
+        // Pre-condition
+        assert button != null;
+
+        button.setEnabled(enabled);
+    }
+
+    /**
+     * @see eclox.ui.editor.editors.IEditor#setFocus()
+     */
+    public void setFocus() {
+        // Pre-condition
+        assert button != null;
+        assert button.isDisposed() == false;
+
+        button.setFocus();
+    }
+
+    /**
+     * Retrieves the current value selected in the user interface button.
+     * 
+     * @return	a string containing the selected value
+     */
+    private String getSelection() {
+        // Pre-condition
+        assert button != null;
+        assert button.isDisposed() == false;
+
+        return button.getSelection() == true ? YES : NO;
+    }
 }

@@ -93,7 +93,7 @@ public abstract class Doxygen {
         final String PLUGIN_ID = Plugin.getDefault().getBundle().getSymbolicName();
         IEclipsePreferences defaultNode = DefaultScope.INSTANCE.getNode(PLUGIN_ID);
         IEclipsePreferences instanceNode = InstanceScope.INSTANCE.getNode(PLUGIN_ID);
-        IEclipsePreferences[] nodes = new IEclipsePreferences[] {instanceNode, defaultNode};
+        IEclipsePreferences[] nodes = new IEclipsePreferences[] { instanceNode, defaultNode };
         final String identifier = service.get(IPreferences.DEFAULT_DOXYGEN, "", nodes);
 
         List<Class<? extends Doxygen>> doxygenClassList = new ArrayList<Class<? extends Doxygen>>();
@@ -110,13 +110,13 @@ public abstract class Doxygen {
 
     public static Doxygen getFromClassAndIdentifier(Class<? extends Doxygen> doxygenClass, String identifier) {
         Doxygen doxygen = null;
-        if( identifier.startsWith(doxygenClass.getName()) ) {
+        if (identifier.startsWith(doxygenClass.getName())) {
             String location = null;
             int locationIndex = identifier.indexOf('=');
             if (locationIndex == -1)
                 locationIndex = identifier.indexOf(' ');
             if (locationIndex != -1)
-                location = identifier.substring(locationIndex  + 1 );
+                location = identifier.substring(locationIndex + 1);
             try {
                 doxygen = doxygenClass.newInstance();
                 if (location != null)
@@ -138,14 +138,15 @@ public abstract class Doxygen {
             // create process builder with doxygen command
             ProcessBuilder pb = new ProcessBuilder(getCommand(), COMMAND_OPTION_HELP);
             // Runs the command and retrieves the version string.
-            Process	process	= pb.start();
+            Process process = pb.start();
             /*int ret = */process.waitFor();
 
-            BufferedReader input	= new BufferedReader( new InputStreamReader(process.getInputStream()) );
-            BufferedReader error	= new BufferedReader( new InputStreamReader(process.getErrorStream()) );
+            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
             // Matches the doxygen welcome message.
-            Pattern	pattern	= Pattern.compile( "^doxygen\\s+version\\s+([\\d\\.]+).*", Pattern.CASE_INSENSITIVE|Pattern.DOTALL );
+            Pattern pattern = Pattern.compile("^doxygen\\s+version\\s+([\\d\\.]+).*",
+                    Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
             Matcher matcher = null;
             String inputLine = input.readLine();
 
@@ -153,20 +154,18 @@ public abstract class Doxygen {
                 matcher = pattern.matcher(inputLine);
             }
 
-            if( matcher != null && matcher.matches() ) {
-                return matcher.group( 1 );
-            }
-            else {
-                String	errorMessage = new String();
-                String	line;
-                while( (line = error.readLine()) != null ) {
+            if (matcher != null && matcher.matches()) {
+                return matcher.group(1);
+            } else {
+                String errorMessage = new String();
+                String line;
+                while ((line = error.readLine()) != null) {
                     errorMessage = errorMessage.concat(line);
                 }
-                throw new RuntimeException( "Unable to get doxygen version: " + errorMessage );
+                throw new RuntimeException("Unable to get doxygen version: " + errorMessage);
             }
-        }
-        catch( Throwable t ) {
-            Plugin.log( t );
+        } catch (Throwable t) {
+            Plugin.log(t);
             return null;
         }
     }
@@ -174,11 +173,9 @@ public abstract class Doxygen {
     private String resolveOneVariable(String key, IStringVariableManager variableManager, boolean dynamicAllowed) {
         if (key != null) {
             if (variableManager == null) {
-                variableManager = VariablesPlugin.getDefault()
-                        .getStringVariableManager();
+                variableManager = VariablesPlugin.getDefault().getStringVariableManager();
             }
-            if (variableManager != null)
-            {
+            if (variableManager != null) {
                 // static variable
                 IValueVariable staticVar = variableManager.getValueVariable(key);
                 if (staticVar != null) {
@@ -196,8 +193,7 @@ public abstract class Doxygen {
                             valuePar = key.substring(index + 1);
                     }
                     // get dynamic variable
-                    IDynamicVariable dynVar = variableManager
-                            .getDynamicVariable(varName);
+                    IDynamicVariable dynVar = variableManager.getDynamicVariable(varName);
                     if (dynVar == null)
                         return null;
                     try {
@@ -212,12 +208,10 @@ public abstract class Doxygen {
     }
 
     private void resolveAllVariables(Map<String, String> varMap) {
-        IStringVariableManager variableManager = VariablesPlugin.getDefault()
-                .getStringVariableManager();
+        IStringVariableManager variableManager = VariablesPlugin.getDefault().getStringVariableManager();
         for (IStringVariable strVar : variableManager.getVariables()) {
             String name = strVar.getName();
-            if (name != null && !name.isEmpty())
-            {
+            if (name != null && !name.isEmpty()) {
                 String value = resolveOneVariable(name, variableManager, false);
                 if (value != null) {
                     varMap.put(name, value);
@@ -233,8 +227,9 @@ public abstract class Doxygen {
      *
      * @return  The process that run the build.
      */
-    public Process run(File file, boolean checkIfFileExisting, String commandOption) throws InvokeException, RunException {
-        if(checkIfFileExisting && (file.exists() == false) ) {
+    public Process run(File file, boolean checkIfFileExisting, String commandOption)
+            throws InvokeException, RunException {
+        if (checkIfFileExisting && (file.exists() == false)) {
             throw new RunException("Missing or bad doxyfile");
         }
         try {
@@ -250,8 +245,7 @@ public abstract class Doxygen {
             addAllVarsToEnvironment(env);
             // return the process
             return pb.start();
-        }
-        catch(IOException ioException) {
+        } catch (IOException ioException) {
             throw new InvokeException(ioException);
         }
     }
@@ -309,7 +303,7 @@ public abstract class Doxygen {
         generate(ifile.getLocation().makeAbsolute().toFile());
         // Force some refresh to display the file.
         try {
-            ifile.refreshLocal( 0, null );
+            ifile.refreshLocal(0, null);
         } catch (Throwable throwable) {
             Plugin.log(throwable);
         }
@@ -329,30 +323,26 @@ public abstract class Doxygen {
      *
      * @param	file	the configuration file to generate.
      */
-    public void run_local(File file, boolean checkIfFileExisting, String commandOption) throws InvokeException, RunException {
-        try
-        {
+    public void run_local(File file, boolean checkIfFileExisting, String commandOption)
+            throws InvokeException, RunException {
+        try {
             Process process = run(file, checkIfFileExisting, commandOption);
-            if(process.waitFor() != 0) {
-                BufferedReader	reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String			errorMsg = new String();
-                String			line;
-                for(line=reader.readLine(); line != null; line=reader.readLine()) {
+            if (process.waitFor() != 0) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                String errorMsg = new String();
+                String line;
+                for (line = reader.readLine(); line != null; line = reader.readLine()) {
                     errorMsg = errorMsg.concat(line);
                 }
-                throw new RunException( errorMsg );
+                throw new RunException(errorMsg);
             }
-        }
-        catch( RunException runException ) {
+        } catch (RunException runException) {
             throw runException;
-        }
-        catch( SecurityException securityException ) {
+        } catch (SecurityException securityException) {
             throw new InvokeException(securityException);
-        }
-        catch( IOException ioException ) {
+        } catch (IOException ioException) {
             throw new InvokeException(ioException);
-        }
-        catch( Throwable throwable ) {
+        } catch (Throwable throwable) {
             Plugin.log(throwable);
         }
     }
@@ -366,7 +356,7 @@ public abstract class Doxygen {
         update(ifile.getLocation().makeAbsolute().toFile());
         // Force some refresh to display the file.
         try {
-            ifile.refreshLocal( 0, null );
+            ifile.refreshLocal(0, null);
         } catch (Throwable throwable) {
             Plugin.log(throwable);
         }

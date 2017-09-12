@@ -29,25 +29,25 @@ import eclox.ui.console.ConsolePage;
  */
 public class LockScroll extends Action {
 
-	/**
-	 * the console page to act on
-	 */
-	private ConsolePage consolePage;
+    /**
+     * the console page to act on
+     */
+    private ConsolePage consolePage;
 
-	/**
-	 * Constructor
-	 *
-	 * @param consolePage	the console to act on
-	 */
-	public LockScroll( ConsolePage consolePage ) {
-		super("Scroll Lock", AS_CHECK_BOX);
-		this.consolePage = consolePage;
-		setImageDescriptor( Plugin.getImageDescriptor(Images.LOCK_CONSOLE.getId()) );
-		setToolTipText( "Scroll Lock" );
-	}
+    /**
+     * Constructor
+     *
+     * @param consolePage	the console to act on
+     */
+    public LockScroll(ConsolePage consolePage) {
+        super("Scroll Lock", AS_CHECK_BOX);
+        this.consolePage = consolePage;
+        setImageDescriptor(Plugin.getImageDescriptor(Images.LOCK_CONSOLE.getId()));
+        setToolTipText("Scroll Lock");
+    }
 
-	public void run() {
-		consolePage.setScrollLocked( isChecked() );
-		super.run();
-	}
+    public void run() {
+        consolePage.setScrollLocked(isChecked());
+        super.run();
+    }
 }

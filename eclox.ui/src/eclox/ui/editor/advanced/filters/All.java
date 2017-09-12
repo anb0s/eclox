@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.advanced.filters;
 
@@ -19,7 +19,6 @@ import org.eclipse.ui.forms.IManagedForm;
 
 import eclox.core.doxyfiles.Doxyfile;
 
-
 /**
  * Implements a setting filter that shows all settings.
  * 
@@ -27,30 +26,35 @@ import eclox.core.doxyfiles.Doxyfile;
  */
 public class All implements IFilter {
 
-	/**
-	 * @see eclox.ui.editor.advanced.filters.IFilter#setDoxyfile(eclox.doxyfiles.Doxyfile)
-	 */
-	public void setDoxyfile(Doxyfile doxyfile) {}
+    /**
+     * @see eclox.ui.editor.advanced.filters.IFilter#setDoxyfile(eclox.doxyfiles.Doxyfile)
+     */
+    public void setDoxyfile(Doxyfile doxyfile) {
+    }
 
-	/**
+    /**
      * @see eclox.ui.editor.advanced.filters.IFilter#createControls(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
      */
-    public void createControls(IManagedForm managedForm, Composite parent) {}
+    public void createControls(IManagedForm managedForm, Composite parent) {
+    }
 
     /**
      * @see eclox.ui.editor.advanced.filters.IFilter#createViewerFilters(org.eclipse.jface.viewers.StructuredViewer)
      */
-    public void createViewerFilters(StructuredViewer viewer) {}
+    public void createViewerFilters(StructuredViewer viewer) {
+    }
 
-   /**
+    /**
      * @see eclox.ui.editor.advanced.filters.IFilter#disposeControls()
      */
-    public void disposeControls() {}
+    public void disposeControls() {
+    }
 
     /**
      * @see eclox.ui.editor.advanced.filters.IFilter#disposeViewerFilers(org.eclipse.jface.viewers.StructuredViewer)
      */
-    public void disposeViewerFilers(StructuredViewer viewer) {}
+    public void disposeViewerFilers(StructuredViewer viewer) {
+    }
 
     /**
      * @see eclox.ui.editor.advanced.filters.IFilter#getName()

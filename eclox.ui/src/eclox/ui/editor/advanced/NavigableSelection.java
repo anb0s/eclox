@@ -28,131 +28,130 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public class NavigableSelection implements IStructuredSelection {
 
-	private Stack<Object>	previousElements = new Stack<Object>();	///< Contains all previously selected elements.
-	private Stack<Object>	nextElements = new Stack<Object>();		///< Contains all next selected elements.
-	private Vector<Object>	elements = new Vector<Object>();		///< References the current element of the selection.
+    private Stack<Object> previousElements = new Stack<Object>(); ///< Contains all previously selected elements.
+    private Stack<Object> nextElements = new Stack<Object>(); ///< Contains all next selected elements.
+    private Vector<Object> elements = new Vector<Object>(); ///< References the current element of the selection.
 
-	/**
-	 * @brief	Builds a new selection that holds the given object.
-	 *
-	 * @param	object	the new object to select
-	 *
-	 * @return	the new selection
-	 */
-	public NavigableSelection select(Object object) {
-		NavigableSelection	result;
-		if( getFirstElement() != object ) {
-			result = new NavigableSelection();
-			if( isEmpty() == false ) {
-				result.previousElements.addAll(previousElements);
-				result.previousElements.push(elements.firstElement());
-			}
-			result.elements.add(object);
-		}
-		else {
-			result = this;
-		}
-		return result;
-	}
+    /**
+     * @brief	Builds a new selection that holds the given object.
+     *
+     * @param	object	the new object to select
+     *
+     * @return	the new selection
+     */
+    public NavigableSelection select(Object object) {
+        NavigableSelection result;
+        if (getFirstElement() != object) {
+            result = new NavigableSelection();
+            if (isEmpty() == false) {
+                result.previousElements.addAll(previousElements);
+                result.previousElements.push(elements.firstElement());
+            }
+            result.elements.add(object);
+        } else {
+            result = this;
+        }
+        return result;
+    }
 
-	/**
-	 * @brief	Retrieves the collection of items that follow the current item
-	 * 			in the history.
-	 *
-	 * @return	a stack of items
-	 */
-	public Stack<Object> getNextElements() {
-		return nextElements;
-	}
+    /**
+     * @brief	Retrieves the collection of items that follow the current item
+     * 			in the history.
+     *
+     * @return	a stack of items
+     */
+    public Stack<Object> getNextElements() {
+        return nextElements;
+    }
 
-	/**
-	 * @brief	Builds the selection that follows in the history.
-	 *
-	 * @return	a selection or null if none
-	 */
-	public NavigableSelection getNextSelection() {
-		NavigableSelection result = null;
-		if( nextElements.empty() == false ) {
-			result = new NavigableSelection();
-			result.previousElements.addAll(previousElements);
-			result.previousElements.push(elements.firstElement());
-			result.elements.add(nextElements.peek());
-			result.nextElements.addAll(nextElements);
-			result.nextElements.pop();
-		}
-		return result;
-	}
+    /**
+     * @brief	Builds the selection that follows in the history.
+     *
+     * @return	a selection or null if none
+     */
+    public NavigableSelection getNextSelection() {
+        NavigableSelection result = null;
+        if (nextElements.empty() == false) {
+            result = new NavigableSelection();
+            result.previousElements.addAll(previousElements);
+            result.previousElements.push(elements.firstElement());
+            result.elements.add(nextElements.peek());
+            result.nextElements.addAll(nextElements);
+            result.nextElements.pop();
+        }
+        return result;
+    }
 
-	/**
-	 * @brief	Retrieves the collection of items that preceed the current item
-	 * 			in the history.
-	 *
-	 * @return	a stack of items
-	 */
-	public Stack<Object> getPreviousElements() {
-		return previousElements;
-	}
+    /**
+     * @brief	Retrieves the collection of items that preceed the current item
+     * 			in the history.
+     *
+     * @return	a stack of items
+     */
+    public Stack<Object> getPreviousElements() {
+        return previousElements;
+    }
 
-	/**
-	 * @brief	Builds the selection that preceeds in the history.
-	 *
-	 * @return	a selection or null if none
-	 */
-	public NavigableSelection getPreviousSelection() {
-		NavigableSelection result = null;
-		if( previousElements.empty() == false ) {
-			result = new NavigableSelection();
-			result.previousElements.addAll(previousElements);
-			result.previousElements.pop();
-			result.elements.add(previousElements.peek());
-			result.nextElements.addAll(nextElements);
-			result.nextElements.push(elements.firstElement());
-		}
-		return result;
-	}
+    /**
+     * @brief	Builds the selection that preceeds in the history.
+     *
+     * @return	a selection or null if none
+     */
+    public NavigableSelection getPreviousSelection() {
+        NavigableSelection result = null;
+        if (previousElements.empty() == false) {
+            result = new NavigableSelection();
+            result.previousElements.addAll(previousElements);
+            result.previousElements.pop();
+            result.elements.add(previousElements.peek());
+            result.nextElements.addAll(nextElements);
+            result.nextElements.push(elements.firstElement());
+        }
+        return result;
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.ISelection#isEmpty()
-	 */
-	public boolean isEmpty() {
-		return elements.isEmpty();
-	}
+    /**
+     * @see org.eclipse.jface.viewers.ISelection#isEmpty()
+     */
+    public boolean isEmpty() {
+        return elements.isEmpty();
+    }
 
-	/**
-	 * Retrieves the selected element.
-	 *
-	 * @see org.eclipse.jface.viewers.IStructuredSelection#getFirstElement()
-	 */
-	public Object getFirstElement() {
-		return elements.isEmpty() ? null : elements.firstElement();
-	}
+    /**
+     * Retrieves the selected element.
+     *
+     * @see org.eclipse.jface.viewers.IStructuredSelection#getFirstElement()
+     */
+    public Object getFirstElement() {
+        return elements.isEmpty() ? null : elements.firstElement();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredSelection#iterator()
-	 */
-	public Iterator<Object> iterator() {
-		return elements.iterator();
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IStructuredSelection#iterator()
+     */
+    public Iterator<Object> iterator() {
+        return elements.iterator();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredSelection#size()
-	 */
-	public int size() {
-		return elements.size();
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IStructuredSelection#size()
+     */
+    public int size() {
+        return elements.size();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredSelection#toArray()
-	 */
-	public Object[] toArray() {
-		return elements.toArray();
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IStructuredSelection#toArray()
+     */
+    public Object[] toArray() {
+        return elements.toArray();
+    }
 
-	/**
-	 * @see org.eclipse.jface.viewers.IStructuredSelection#toList()
-	 */
-	public List<Object> toList() {
-		return new Vector<Object>(elements);
-	}
+    /**
+     * @see org.eclipse.jface.viewers.IStructuredSelection#toList()
+     */
+    public List<Object> toList() {
+        return new Vector<Object>(elements);
+    }
 
 }

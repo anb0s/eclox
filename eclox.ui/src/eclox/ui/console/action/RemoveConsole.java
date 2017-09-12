@@ -30,24 +30,24 @@ import eclox.ui.console.Console;
  */
 public class RemoveConsole extends Action {
 
-	/**
-	 * the console the action is attached to
-	 */
-	Console console;
+    /**
+     * the console the action is attached to
+     */
+    Console console;
 
-	/**
-	 * Constructor
-	 *
-	 * @param	console	the build console
-	 */
-	public RemoveConsole( Console console ) {
-		super( "Remove", Plugin.getImageDescriptor(Images.REMOVE.getId()) );
-		this.console = console;
-		setToolTipText( "Remove Doxygen Build Console" );
-	}
+    /**
+     * Constructor
+     *
+     * @param	console	the build console
+     */
+    public RemoveConsole(Console console) {
+        super("Remove", Plugin.getImageDescriptor(Images.REMOVE.getId()));
+        this.console = console;
+        setToolTipText("Remove Doxygen Build Console");
+    }
 
-	public void run() {
-		ConsolePlugin.getDefault().getConsoleManager().removeConsoles( new IConsole[] {console} );
-		super.run();
-	}
+    public void run() {
+        ConsolePlugin.getDefault().getConsoleManager().removeConsoles(new IConsole[] { console });
+        super.run();
+    }
 }

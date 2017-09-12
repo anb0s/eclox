@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui;
 
@@ -19,61 +19,60 @@ package eclox.ui;
  * @author gbrocker
  */
 public interface IPreferences {
-	
-	/**
-	 * Constant name for the build history content.
-	 */
-//	public static final String BUILD_HISTORY_CONTENT = "build-history-content";
-	
-	/**
-	 * Constant name for the build history size.
-	 */
-//	public static final String BUILD_HISTORY_SIZE = "build-history-size";
-	
-	/**
-	 * Constant name for the build job history size.
-	 */
-	public static final String BUILD_HISTORY_SIZE = "buildHistory.size";
 
-	/**
-	 * Constant name for workspace autosave flag.
-	 * 
-	 * @see	AUTO_SAVE_NEVER
-	 * @see AUTO_SAVE_ALWAYS
-	 * @see AUTO_SAVE_ASK
-	 */
-	public static final String AUTO_SAVE = "editor.autosave";
-	
-	
-	/**
-	 * Constant for AUTO_SAVE never state.
-	 * 
-	 * @see	AUTO_SAVE
-	 * @see AUTO_SAVE_ALWAYS
-	 * @see AUTO_SAVE_ASK
-	 */
-	public static final String AUTO_SAVE_NEVER = "never";
-	
-	/**
-	 * Constant for AUTO_SAVE always state.
-	 * 
-	 * @see	AUTO_SAVE
-	 * @see AUTO_SAVE_NEVER
-	 * @see AUTO_SAVE_ASK
-	 */
-	public static final String AUTO_SAVE_ALWAYS = "always";
-	
-	/**
-	 * Constant for AUTO_SAVE ask state.
-	 * 
-	 * @see	AUTO_SAVE
-	 * @see AUTO_SAVE_ALWAYS
-	 * @see AUTO_SAVE_NEVER
-	 */
-	public static final String AUTO_SAVE_ASK = "ask";
-	
-	/**
-	 * Constant name for the automatic value string escapes.
-	 */
-	public static final String HANDLE_ESCAPED_VALUES = "editor.handleEscapedValues";
+    /**
+     * Constant name for the build history content.
+     */
+    //	public static final String BUILD_HISTORY_CONTENT = "build-history-content";
+
+    /**
+     * Constant name for the build history size.
+     */
+    //	public static final String BUILD_HISTORY_SIZE = "build-history-size";
+
+    /**
+     * Constant name for the build job history size.
+     */
+    public static final String BUILD_HISTORY_SIZE = "buildHistory.size";
+
+    /**
+     * Constant name for workspace autosave flag.
+     * 
+     * @see	AUTO_SAVE_NEVER
+     * @see AUTO_SAVE_ALWAYS
+     * @see AUTO_SAVE_ASK
+     */
+    public static final String AUTO_SAVE = "editor.autosave";
+
+    /**
+     * Constant for AUTO_SAVE never state.
+     * 
+     * @see	AUTO_SAVE
+     * @see AUTO_SAVE_ALWAYS
+     * @see AUTO_SAVE_ASK
+     */
+    public static final String AUTO_SAVE_NEVER = "never";
+
+    /**
+     * Constant for AUTO_SAVE always state.
+     * 
+     * @see	AUTO_SAVE
+     * @see AUTO_SAVE_NEVER
+     * @see AUTO_SAVE_ASK
+     */
+    public static final String AUTO_SAVE_ALWAYS = "always";
+
+    /**
+     * Constant for AUTO_SAVE ask state.
+     * 
+     * @see	AUTO_SAVE
+     * @see AUTO_SAVE_ALWAYS
+     * @see AUTO_SAVE_NEVER
+     */
+    public static final String AUTO_SAVE_ASK = "ask";
+
+    /**
+     * Constant name for the automatic value string escapes.
+     */
+    public static final String HANDLE_ESCAPED_VALUES = "editor.handleEscapedValues";
 }

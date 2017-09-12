@@ -54,13 +54,13 @@ public class BuildJobLabelProvider implements ILabelProvider {
     @Override
     public Image getImage(Object element) {
         if (element instanceof BuildJob) {
-            Doxyfile doxyfile = ((BuildJob)element).getDoxyfile();
+            Doxyfile doxyfile = ((BuildJob) element).getDoxyfile();
             IFile ifile = doxyfile.getIFile();
             if (ifile != null) {
-                Image               result = null;
-                IResource           resourse = (IResource)ifile;
-                IWorkbenchAdapter   workbenchAdapter = (IWorkbenchAdapter) resourse.getAdapter( IWorkbenchAdapter.class );
-                if( workbenchAdapter != null ) {
+                Image result = null;
+                IResource resourse = (IResource) ifile;
+                IWorkbenchAdapter workbenchAdapter = (IWorkbenchAdapter) resourse.getAdapter(IWorkbenchAdapter.class);
+                if (workbenchAdapter != null) {
                     result = workbenchAdapter.getImageDescriptor(ifile).createImage();
                 }
                 return result;
@@ -74,7 +74,7 @@ public class BuildJobLabelProvider implements ILabelProvider {
     @Override
     public String getText(Object element) {
         if (element instanceof BuildJob) {
-            Doxyfile doxyfile = ((BuildJob)element).getDoxyfile();
+            Doxyfile doxyfile = ((BuildJob) element).getDoxyfile();
             return doxyfile.getFullPath();
         }
         return null;

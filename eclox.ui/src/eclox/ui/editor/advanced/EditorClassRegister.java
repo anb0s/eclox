@@ -42,13 +42,13 @@ public class EditorClassRegister {
      * Constructor.
      */
     public EditorClassRegister() {
-    		register.put( "file",			FileEditor.class );
-    		register.put( "directory",		DirectoryEditor.class );
-    		register.put( "text",			TextEditor.class );
-    		register.put( "boolean",		BooleanEditor.class );
-    		register.put( "text list",		TextListEditor.class );
-    		register.put( "directory list",	DirectoryListEditor.class );
-    		register.put( "path list",		PathListEditor.class );
+        register.put("file", FileEditor.class);
+        register.put("directory", DirectoryEditor.class);
+        register.put("text", TextEditor.class);
+        register.put("boolean", BooleanEditor.class);
+        register.put("text list", TextListEditor.class);
+        register.put("directory list", DirectoryListEditor.class);
+        register.put("path list", PathListEditor.class);
     }
 
     /**
@@ -60,12 +60,12 @@ public class EditorClassRegister {
      */
     public Class<?> find(Setting setting) {
         // Retrieves the editor class for that type
-        String type = setting.getProperty( Setting.TYPE );
+        String type = setting.getProperty(Setting.TYPE);
         Class<?> result = (Class<?>) register.get(type);
 
         // Little fallback if no matching editor class was found.
-        if(result == null) {
-        	Plugin.log(setting.getIdentifier() + ": missing or wrong TYPE property.");
+        if (result == null) {
+            Plugin.log(setting.getIdentifier() + ": missing or wrong TYPE property.");
             result = TextEditor.class;
         }
 

@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxygen;
 
@@ -20,14 +20,14 @@ package eclox.core.doxygen;
  */
 public class RunException extends Exception {
 
-	private static final long serialVersionUID = -694030339432059044L;
+    private static final long serialVersionUID = -694030339432059044L;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param	message	a string containing the reson of the exception
-	 */
-	RunException( String message ) {
-		super( message );
-	}
+    /**
+     * Constructor
+     * 
+     * @param	message	a string containing the reson of the exception
+     */
+    RunException(String message) {
+        super(message);
+    }
 }

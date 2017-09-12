@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui;
 
@@ -27,24 +27,21 @@ import eclox.core.doxygen.BuildJob;
  */
 public class JobMonitor extends JobChangeAdapter {
 
-	/**
-	 * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
-	 */
-	public void done(IJobChangeEvent event) {
-		
-		if( event.getJob().belongsTo(BuildJob.FAMILY) && event.getResult().getCode() == BuildJob.ERROR_DOXYGEN_NOT_FOUND ) {
-				Display	display = Plugin.getDefault().getWorkbench().getDisplay();
-				
-				display.asyncExec(
-						new Runnable()
-						{
-							public void run()
-							{
-								Plugin.editPreferencesAfterDoxygenInvocationFailed();		
-							}
-						}
-					);
-		}
-	}
+    /**
+     * @see org.eclipse.core.runtime.jobs.JobChangeAdapter#done(org.eclipse.core.runtime.jobs.IJobChangeEvent)
+     */
+    public void done(IJobChangeEvent event) {
+
+        if (event.getJob().belongsTo(BuildJob.FAMILY)
+                && event.getResult().getCode() == BuildJob.ERROR_DOXYGEN_NOT_FOUND) {
+            Display display = Plugin.getDefault().getWorkbench().getDisplay();
+
+            display.asyncExec(new Runnable() {
+                public void run() {
+                    Plugin.editPreferencesAfterDoxygenInvocationFailed();
+                }
+            });
+        }
+    }
 
 }

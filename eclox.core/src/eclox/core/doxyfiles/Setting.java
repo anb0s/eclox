@@ -34,7 +34,7 @@ import eclox.core.doxyfiles.Chunk;
  */
 public class Setting extends Chunk {
 
-	/**
+    /**
      * The value pattern.
      */
     private static Pattern valuePattern = Pattern.compile("([^ \"]+)\\s*|\"((\\\\\"|.)*?)\"\\s*");
@@ -64,7 +64,6 @@ public class Setting extends Chunk {
      */
     private Properties properties = new Properties();
 
-
     /**
      * Defines the group property name.
      */
@@ -85,21 +84,19 @@ public class Setting extends Chunk {
      */
     public static final String TYPE = "type";
 
-
     /**
      * Initializes all setting default properties.
      */
     private static void initDefaultProperties() {
         // Ensures that properties have been loaded.
-        if( defaultProperties == null ) {
+        if (defaultProperties == null) {
             try {
                 InputStream propertiesInput = Plugin.getResourceAsStream("/misc/setting-properties.txt");
                 defaultProperties = new Properties();
                 if (propertiesInput != null)
-                    defaultProperties.load( propertiesInput );
-            }
-            catch( Throwable throwable ) {
-                Plugin.log( throwable );
+                    defaultProperties.load(propertiesInput);
+            } catch (Throwable throwable) {
+                Plugin.log(throwable);
             }
         }
     }
@@ -113,10 +110,10 @@ public class Setting extends Chunk {
      * @return  a string containing the desired property value or null when
      *          no such property exists
      */
-	private static String getDefaultPropertyValue( Setting setting, String property ) {
-		initDefaultProperties();
-		String	propertyIdentifier = setting.getIdentifier() + "." + property;
-        return defaultProperties.getProperty( propertyIdentifier );
+    private static String getDefaultPropertyValue(Setting setting, String property) {
+        initDefaultProperties();
+        String propertyIdentifier = setting.getIdentifier() + "." + property;
+        return defaultProperties.getProperty(propertyIdentifier);
     }
 
     /**
@@ -136,7 +133,7 @@ public class Setting extends Chunk {
      * @param	listener	a new setting listener instance
      */
     public void addSettingListener(ISettingListener listener) {
-        this.listeners.add( listener );
+        this.listeners.add(listener);
     }
 
     /**
@@ -155,13 +152,12 @@ public class Setting extends Chunk {
      *
      * @return  a string containing the property value or null when the property was not found
      */
-    public String getProperty( String property ) {
-    		if( properties.containsKey( property) ) {
-    			return properties.getProperty( property );
-    		}
-    		else {
-    			return getDefaultPropertyValue( this, property );
-    		}
+    public String getProperty(String property) {
+        if (properties.containsKey(property)) {
+            return properties.getProperty(property);
+        } else {
+            return getDefaultPropertyValue(this, property);
+        }
     }
 
     /**
@@ -182,12 +178,12 @@ public class Setting extends Chunk {
      */
     public Collection<String> getSplittedValue(Collection<String> collection) {
         Matcher valueMatcher = valuePattern.matcher(value);
-        while( valueMatcher.find() == true ) {
-        		String	value = valueMatcher.group( 1 );
-        		if( value == null ) {
-        			value = valueMatcher.group( 2 ).trim();
-        		}
-        		collection.add( value );
+        while (valueMatcher.find() == true) {
+            String value = valueMatcher.group(1);
+            if (value == null) {
+                value = valueMatcher.group(2).trim();
+            }
+            collection.add(value);
         }
         return collection;
     }
@@ -199,13 +195,12 @@ public class Setting extends Chunk {
      *
      * @return	a boolean
      */
-    public boolean hasProperty( String property ) {
-    		if( properties.containsKey( property) ) {
-			return true;
-		}
-		else {
-			return getDefaultPropertyValue( this, property ) != null;
-		}
+    public boolean hasProperty(String property) {
+        if (properties.containsKey(property)) {
+            return true;
+        } else {
+            return getDefaultPropertyValue(this, property) != null;
+        }
     }
 
     /**
@@ -214,7 +209,7 @@ public class Setting extends Chunk {
      * @param	listener	a attached setting listener instance
      */
     public void removeSettingListener(ISettingListener listener) {
-        this.listeners.remove( listener );
+        this.listeners.remove(listener);
     }
 
     /**
@@ -223,41 +218,41 @@ public class Setting extends Chunk {
      * @param	property	a string containing the name of property
      * @param	value		a string containing the property value
      */
-	public void setProperty( String property, String value ) {
-		// Updates the given property.
-		properties.setProperty( property, value );
+    public void setProperty(String property, String value) {
+        // Updates the given property.
+        properties.setProperty(property, value);
 
         // Walks through the attached listeners and notify them.
         Iterator<ISettingListener> i = this.listeners.iterator();
-        while( i.hasNext() == true ) {
-        		ISettingListener		listener = (ISettingListener) i.next();
-        		if( listener instanceof ISettingPropertyListener ) {
-        			ISettingPropertyListener propertyListener = (ISettingPropertyListener) listener;
-        			propertyListener.settingPropertyChanged( this, property );
-        		}
+        while (i.hasNext() == true) {
+            ISettingListener listener = (ISettingListener) i.next();
+            if (listener instanceof ISettingPropertyListener) {
+                ISettingPropertyListener propertyListener = (ISettingPropertyListener) listener;
+                propertyListener.settingPropertyChanged(this, property);
+            }
         }
-	}
+    }
 
-	/**
-	 * Removes the given property for the setting.
-	 *
-	 * @param	property		a string containing a property name
-	 */
-	public void removeProperty( String property ) {
-		if( properties.containsKey( property ) ) {
-			properties.remove( property );
+    /**
+     * Removes the given property for the setting.
+     *
+     * @param	property		a string containing a property name
+     */
+    public void removeProperty(String property) {
+        if (properties.containsKey(property)) {
+            properties.remove(property);
 
-	        // Walks through the attached listeners and notify them.
-	        Iterator<ISettingListener> i = this.listeners.iterator();
-	        while( i.hasNext() == true ) {
-	        		ISettingListener		listener = (ISettingListener) i.next();
-	        		if( listener instanceof ISettingPropertyListener ) {
-	        			ISettingPropertyListener propertyListener = (ISettingPropertyListener) listener;
-	        			propertyListener.settingPropertyRemoved( this, property );
-	        		}
-	        }
-		}
-	}
+            // Walks through the attached listeners and notify them.
+            Iterator<ISettingListener> i = this.listeners.iterator();
+            while (i.hasNext() == true) {
+                ISettingListener listener = (ISettingListener) i.next();
+                if (listener instanceof ISettingPropertyListener) {
+                    ISettingPropertyListener propertyListener = (ISettingPropertyListener) listener;
+                    propertyListener.settingPropertyRemoved(this, property);
+                }
+            }
+        }
+    }
 
     /**
      * Updates the value of the setting.
@@ -275,59 +270,56 @@ public class Setting extends Chunk {
      *
      * @param compounds	a collection of objects representing compounds of the new value
      */
-    public void setValue( Collection<?> compounds ) {
-    		// Resets the managed value string.
-		value = new String();
+    public void setValue(Collection<?> compounds) {
+        // Resets the managed value string.
+        value = new String();
 
-		// Walks through the comounds to rebuild the value.
-		Iterator<?>		i = compounds.iterator();
-		while( i.hasNext() ) {
-			// Retrieves the current compound.
-			String	compound = i.next().toString();
+        // Walks through the comounds to rebuild the value.
+        Iterator<?> i = compounds.iterator();
+        while (i.hasNext()) {
+            // Retrieves the current compound.
+            String compound = i.next().toString();
 
-			// Removes any leading and tralling spaces and manage the insertion.
-			compound = compound.trim();
-			if( compound.length() == 0 ) {
-				continue;
-			}
-			else if( compound.indexOf(' ') != -1 ) {
-				value = value.concat( "\"" + compound + "\" " );
-			}
-			else {
-				value = value.concat( compound + " " );
-			}
-		}
+            // Removes any leading and tralling spaces and manage the insertion.
+            compound = compound.trim();
+            if (compound.length() == 0) {
+                continue;
+            } else if (compound.indexOf(' ') != -1) {
+                value = value.concat("\"" + compound + "\" ");
+            } else {
+                value = value.concat(compound + " ");
+            }
+        }
 
-		// Notifies all observers.
-		fireValueChangedEvent();
+        // Notifies all observers.
+        fireValueChangedEvent();
     }
 
     public String toString() {
-    		return this.identifier + " = " + this.value + "\n";
+        return this.identifier + " = " + this.value + "\n";
     }
 
     /**
      * Notifies all observers that the setting value has changed.
      */
     private void fireValueChangedEvent() {
-		Iterator<ISettingListener> i = listeners.iterator();
-		while( i.hasNext() == true ) {
-			ISettingListener		listener = (ISettingListener) i.next();
-			if( listener instanceof ISettingValueListener ) {
-				ISettingValueListener valueListener = (ISettingValueListener) listener;
-				valueListener.settingValueChanged( this );
-			}
-		}
+        Iterator<ISettingListener> i = listeners.iterator();
+        while (i.hasNext() == true) {
+            ISettingListener listener = (ISettingListener) i.next();
+            if (listener instanceof ISettingValueListener) {
+                ISettingValueListener valueListener = (ISettingValueListener) listener;
+                valueListener.settingValueChanged(this);
+            }
+        }
     }
 
     public String getTextLabel(String propDirty) {
         String columnText;
-            columnText = hasProperty(Setting.TEXT) ? getProperty(Setting.TEXT)
-                    : getIdentifier();
-            columnText = hasProperty(propDirty) ? ("*").concat(columnText) : columnText;
+        columnText = hasProperty(Setting.TEXT) ? getProperty(Setting.TEXT) : getIdentifier();
+        columnText = hasProperty(propDirty) ? ("*").concat(columnText) : columnText;
         return columnText;
     }
-    
+
     public String getValueLabel() {
         return getValue();
     }

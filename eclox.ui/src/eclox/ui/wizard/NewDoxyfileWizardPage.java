@@ -30,50 +30,51 @@ import eclox.ui.Plugin;
  */
 public class NewDoxyfileWizardPage extends WizardNewFileCreationPage {
 
-	/**
-	 * Retrieves the initial doxyfile name relative to the given object that
-	 * is supposed to be a resource.
-	 *
-	 * If the object is not an IResourec instance, and adapter is searched for it.
-	 */
-	private static String getInitialFileName( Object object ) {
-		IResource resource;
+    /**
+     * Retrieves the initial doxyfile name relative to the given object that
+     * is supposed to be a resource.
+     *
+     * If the object is not an IResourec instance, and adapter is searched for it.
+     */
+    private static String getInitialFileName(Object object) {
+        IResource resource;
 
-		// Skip null objects
-		if( object == null ) {
-			resource = null;
-		}
-		// Try the direct convertion to a IResource
-		else if( object instanceof IResource ) {
-			resource = (IResource) object;
-		}
-		// Try to find an adapter
-		else {
-			resource = (IResource) org.eclipse.core.runtime.Platform.getAdapterManager().getAdapter(object, IResource.class);
-		}
+        // Skip null objects
+        if (object == null) {
+            resource = null;
+        }
+        // Try the direct convertion to a IResource
+        else if (object instanceof IResource) {
+            resource = (IResource) object;
+        }
+        // Try to find an adapter
+        else {
+            resource = (IResource) org.eclipse.core.runtime.Platform.getAdapterManager().getAdapter(object,
+                    IResource.class);
+        }
 
-		// Finally, gets the project name for the resource (if one has been found).
-		return (resource != null) ? (resource.getProject().getName() + ".doxyfile") : new String();
-	}
+        // Finally, gets the project name for the resource (if one has been found).
+        return (resource != null) ? (resource.getProject().getName() + ".doxyfile") : new String();
+    }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param selection	The current selection object.
-	 */
-	public NewDoxyfileWizardPage(IStructuredSelection selection) {
-		super("page", selection);
-		setTitle("Doxygen Configuration");
-		setDescription("Creates a new Doxygen configuration file.");
-		setFileName( selection != null ? getInitialFileName(selection.getFirstElement()) : new String() );
-		setImageDescriptor(Plugin.getImageDescriptor(Images.DOXYFILE_WIZARD.getId()));
-	}
+    /**
+     * Constructor.
+     *
+     * @param selection	The current selection object.
+     */
+    public NewDoxyfileWizardPage(IStructuredSelection selection) {
+        super("page", selection);
+        setTitle("Doxygen Configuration");
+        setDescription("Creates a new Doxygen configuration file.");
+        setFileName(selection != null ? getInitialFileName(selection.getFirstElement()) : new String());
+        setImageDescriptor(Plugin.getImageDescriptor(Images.DOXYFILE_WIZARD.getId()));
+    }
 
-	/**
-	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#getNewFileLabel()
-	 */
-	protected String getNewFileLabel() {
-		return "Doxyfile &name:";
-	}
+    /**
+     * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#getNewFileLabel()
+     */
+    protected String getNewFileLabel() {
+        return "Doxyfile &name:";
+    }
 
 }

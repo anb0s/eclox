@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.core.doxyfiles;
 
@@ -26,14 +26,14 @@ public interface ISettingPropertyListener extends ISettingListener {
      * @param	setting		the setting that raised the event
      * @param	property		a string containing a property name	
      */
-    void settingPropertyChanged( Setting setting, String property );
-    
+    void settingPropertyChanged(Setting setting, String property);
+
     /**
      * Notifies that a setting property has been removed.
      * 
      * @param	setting		the setting that raised the event
      * @param	property		a string containing a property name
      */
-    void settingPropertyRemoved( Setting setting, String property );
+    void settingPropertyRemoved(Setting setting, String property);
 
 }

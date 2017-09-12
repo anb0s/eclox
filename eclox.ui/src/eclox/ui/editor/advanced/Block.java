@@ -10,7 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor.advanced;
 
@@ -26,26 +26,26 @@ import eclox.core.doxyfiles.Setting;
  * @author gbrocker
  */
 public class Block extends MasterDetailsBlock {
-    
+
     /**
      * the doxyfile to edit
      */
     private Doxyfile doxyfile;
-    
+
     /**
      * Constructor
      * 
      * @param	doxyfile	the doxyfile to edit
      */
-    Block( Doxyfile doxyfile ) {
-    	this.doxyfile = doxyfile;
+    Block(Doxyfile doxyfile) {
+        this.doxyfile = doxyfile;
     }
-        
+
     /**
      * @see org.eclipse.ui.forms.MasterDetailsBlock#createMasterPart(org.eclipse.ui.forms.IManagedForm, org.eclipse.swt.widgets.Composite)
      */
     protected void createMasterPart(IManagedForm managedForm, Composite parent) {
-        managedForm.addPart( new MasterPart(parent, managedForm.getToolkit(), doxyfile) );
+        managedForm.addPart(new MasterPart(parent, managedForm.getToolkit(), doxyfile));
     }
 
     /**
@@ -58,6 +58,7 @@ public class Block extends MasterDetailsBlock {
     /**
      * @see org.eclipse.ui.forms.MasterDetailsBlock#createToolBarActions(org.eclipse.ui.forms.IManagedForm)
      */
-    protected void createToolBarActions(IManagedForm managedForm) {}
+    protected void createToolBarActions(IManagedForm managedForm) {
+    }
 
 }

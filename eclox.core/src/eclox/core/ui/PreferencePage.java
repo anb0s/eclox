@@ -35,37 +35,36 @@ public class PreferencePage extends FieldEditorPreferencePage implements IWorkbe
 
     public static final String ID = "eclox.core.PreferencePage"; ///< Holds the identifier of the property page.
 
-    public PreferencePage()	{
-        super( GRID );
+    public PreferencePage() {
+        super(GRID);
     }
 
     /**
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
-    public void init(IWorkbench workbench)	{
-        setPreferenceStore( new ScopedPreferenceStore( InstanceScope.INSTANCE, Plugin.getDefault().getBundle().getSymbolicName() ) );
+    public void init(IWorkbench workbench) {
+        setPreferenceStore(
+                new ScopedPreferenceStore(InstanceScope.INSTANCE, Plugin.getDefault().getBundle().getSymbolicName()));
     }
 
     /**
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
      */
-    protected void createFieldEditors()	{
+    protected void createFieldEditors() {
         // Creates all control instances.
-        Label						doxygenLabel	= new Label( getFieldEditorParent(), SWT.WRAP );
-        DefaultDoxygenFieldEditor	doxygen			= new DefaultDoxygenFieldEditor( getFieldEditorParent() );
-
+        Label doxygenLabel = new Label(getFieldEditorParent(), SWT.WRAP);
+        DefaultDoxygenFieldEditor doxygen = new DefaultDoxygenFieldEditor(getFieldEditorParent());
 
         // Configures field editors.
-        addField( doxygen );
-
+        addField(doxygen);
 
         // Configures the default doxygen label.
-        GridData	doxygenLabelData = new GridData();
+        GridData doxygenLabelData = new GridData();
 
         doxygenLabelData.horizontalSpan = 3;
         doxygenLabelData.horizontalAlignment = SWT.FILL;
-        doxygenLabel.setText( "Choose among available doxygen versions, the one you would like to use." );
-        doxygenLabel.setLayoutData( doxygenLabelData );
+        doxygenLabel.setText("Choose among available doxygen versions, the one you would like to use.");
+        doxygenLabel.setLayoutData(doxygenLabelData);
     }
 
 }

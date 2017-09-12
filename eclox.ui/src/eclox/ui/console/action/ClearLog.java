@@ -24,29 +24,29 @@ import eclox.ui.console.Console;
 
 public class ClearLog extends Action {
 
-	/**
-	 * the console to act on
-	 */
-	private Console	console;
+    /**
+     * the console to act on
+     */
+    private Console console;
 
-	/**
-	 * Constructor
-	 *
-	 * @param	console	the console to act on
-	 */
-	public ClearLog( Console console ) {
-		super("Clear Console", Plugin.getImageDescriptor(Images.CLEAR_CONSOLE.getId()));
-		this.console = console;
-		setToolTipText( "Clear Build Log" );
-	}
+    /**
+     * Constructor
+     *
+     * @param	console	the console to act on
+     */
+    public ClearLog(Console console) {
+        super("Clear Console", Plugin.getImageDescriptor(Images.CLEAR_CONSOLE.getId()));
+        this.console = console;
+        setToolTipText("Clear Build Log");
+    }
 
-	public void run() {
-		BuildJob	job = console.getJob();
-		if( job != null ) {
-			job.clearLog();
-		}
+    public void run() {
+        BuildJob job = console.getJob();
+        if (job != null) {
+            job.clearLog();
+        }
 
-		super.run();
-	}
+        super.run();
+    }
 
 }

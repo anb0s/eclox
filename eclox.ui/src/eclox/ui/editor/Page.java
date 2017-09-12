@@ -9,7 +9,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *
- ******************************************************************************/ 
+ ******************************************************************************/
 
 package eclox.ui.editor;
 
@@ -19,10 +19,11 @@ import eclox.core.doxyfiles.Setting;
 
 public abstract class Page extends FormPage {
 
-	public Page( Editor editor, String id, String title ) {
-		super(editor, id, title);
-	}
-	
-	public abstract Setting getCurrentSetting();
-	public abstract void setCurrentSetting( Setting setting );
+    public Page(Editor editor, String id, String title) {
+        super(editor, id, title);
+    }
+
+    public abstract Setting getCurrentSetting();
+
+    public abstract void setCurrentSetting(Setting setting);
 }

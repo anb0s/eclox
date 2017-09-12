@@ -80,44 +80,43 @@ public class Custom implements IFilter {
      */
     private class MyRunnable implements Runnable {
 
-    		private String referenceText;
+        private String referenceText;
 
-    		public MyRunnable( String referenceText ) {
-    			this.referenceText = new String( referenceText );
-    		}
+        public MyRunnable(String referenceText) {
+            this.referenceText = new String(referenceText);
+        }
 
-		public void run() {
-			// Pre-condition
-			assert combo != null;
-			assert viewer != null;
+        public void run() {
+            // Pre-condition
+            assert combo != null;
+            assert viewer != null;
 
-			// Retrieves the combo text and checks that the user has not entered additionnal text.
-			String	comboText = combo.getText();
-			if( comboText.equalsIgnoreCase(referenceText) == false ) {
-				return;
-			}
+            // Retrieves the combo text and checks that the user has not entered additionnal text.
+            String comboText = combo.getText();
+            if (comboText.equalsIgnoreCase(referenceText) == false) {
+                return;
+            }
 
-			if( comboText.length() == 0 ) {
-				combo.select( -1 );
-			}
-			else {
-				// Scans combo text items for the combo text.
-				String	comboItems[] = combo.getItems();
-				boolean	found = false;
-				for( int i = 0; i < comboItems.length; ++i ) {
-					if( comboItems[i].equalsIgnoreCase(comboText) == true ) {
-						found = true;
-						break;
-					}
-				}
-				if( found == false ) {
-					combo.add( comboText, 0 );
-				}
-			}
+            if (comboText.length() == 0) {
+                combo.select(-1);
+            } else {
+                // Scans combo text items for the combo text.
+                String comboItems[] = combo.getItems();
+                boolean found = false;
+                for (int i = 0; i < comboItems.length; ++i) {
+                    if (comboItems[i].equalsIgnoreCase(comboText) == true) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found == false) {
+                    combo.add(comboText, 0);
+                }
+            }
 
-			// Refreshes the combo so the elements will be refiltered.
-			viewer.refresh();
-		}
+            // Refreshes the combo so the elements will be refiltered.
+            viewer.refresh();
+        }
     };
 
     /**
@@ -126,27 +125,25 @@ public class Custom implements IFilter {
      */
     private class MyViewerFiler extends ViewerFilter {
 
-    	/**
+        /**
          * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
          */
         public boolean select(Viewer viewer, Object parentElement, Object element) {
-			// Pre-condition
-			assert element instanceof Setting;
+            // Pre-condition
+            assert element instanceof Setting;
 
-			// Tests if the current setting matches the query string.
-			if( filterText != null ) {
-				Setting			setting		= (Setting) element;
-				final String	settingText	= setting.getProperty(Setting.TEXT);
+            // Tests if the current setting matches the query string.
+            if (filterText != null) {
+                Setting setting = (Setting) element;
+                final String settingText = setting.getProperty(Setting.TEXT);
 
-				return	( settingText != null ) &&
-						( settingText.toLowerCase().indexOf(filterText.toLowerCase()) != -1 );
-			}
-			else {
-				return true;
-			}
+                return (settingText != null) && (settingText.toLowerCase().indexOf(filterText.toLowerCase()) != -1);
+            } else {
+                return true;
+            }
         }
 
-	};
+    };
 
     /**
      * Implements a combo modification listener that will trigger
@@ -154,13 +151,13 @@ public class Custom implements IFilter {
      */
     private class MyComboModifyListener implements ModifyListener {
 
-		public void modifyText(ModifyEvent e) {
-			// Pre-condition
-			assert combo != null;
+        public void modifyText(ModifyEvent e) {
+            // Pre-condition
+            assert combo != null;
 
-			filterText = new String( combo.getText() );
-			combo.getDisplay().timerExec( 450, new MyRunnable(filterText) );
-		}
+            filterText = new String(combo.getText());
+            combo.getDisplay().timerExec(450, new MyRunnable(filterText));
+        }
 
     };
 
@@ -169,23 +166,23 @@ public class Custom implements IFilter {
      */
     private class MyClearSelectionListener implements SelectionListener {
 
-		public void widgetDefaultSelected(SelectionEvent e) {
-			// Pre-condition
-			assert combo != null;
+        public void widgetDefaultSelected(SelectionEvent e) {
+            // Pre-condition
+            assert combo != null;
 
-			// Clears the managed combo text.
-			combo.select( -1 );
-			combo.setText( new String() );
-		}
+            // Clears the managed combo text.
+            combo.select(-1);
+            combo.setText(new String());
+        }
 
-		public void widgetSelected(SelectionEvent e) {
-			// Pre-condition
-			assert combo != null;
+        public void widgetSelected(SelectionEvent e) {
+            // Pre-condition
+            assert combo != null;
 
-			// Clears the managed combo text.
-			combo.select( -1 );
-			combo.setText( new String() );
-		}
+            // Clears the managed combo text.
+            combo.select(-1);
+            combo.setText(new String());
+        }
 
     }
 
@@ -198,35 +195,34 @@ public class Custom implements IFilter {
         assert clearButton == null;
 
         // Creates the combo control allowing the user to enter text to search.
-        combo = new Combo( parent, SWT.FLAT|SWT.BORDER );
+        combo = new Combo(parent, SWT.FLAT | SWT.BORDER);
         // Fills the combo with the eventual saved items.
-        if( this.savedComboItems != null ) {
-        		combo.setItems( this.savedComboItems );
-        }
-        else {
-        		combo.setText("type filter text");
+        if (this.savedComboItems != null) {
+            combo.setItems(this.savedComboItems);
+        } else {
+            combo.setText("type filter text");
         }
         // Restores the saved combo selected item.
-        combo.setText( this.savedComboText );
-        combo.setSelection( new Point(0,combo.getText().length()) );
+        combo.setText(this.savedComboText);
+        combo.setSelection(new Point(0, combo.getText().length()));
         // Attaches a modify listener.
-        combo.addModifyListener( new MyComboModifyListener() );
+        combo.addModifyListener(new MyComboModifyListener());
 
         // Creates the clear button.
-        clearButton = managedForm.getToolkit().createButton( parent, null, SWT.FLAT );
+        clearButton = managedForm.getToolkit().createButton(parent, null, SWT.FLAT);
         clearButton.setImage(Plugin.getImage(Images.ERASE.getId()));
-        clearButton.addSelectionListener( new MyClearSelectionListener() );
+        clearButton.addSelectionListener(new MyClearSelectionListener());
 
         // Installs the layout into the parent, and layout data on controls
-        GridLayout	layout = new GridLayout( 2, false );
+        GridLayout layout = new GridLayout(2, false);
         layout.marginTop = 0;
         layout.marginRight = 0;
         layout.marginBottom = 0;
         layout.marginLeft = 0;
         layout.marginWidth = 0;
         layout.marginHeight = 0;
-        parent.setLayout( layout );
-        combo.setLayoutData( new GridData(GridData.FILL_BOTH|GridData.GRAB_HORIZONTAL) );
+        parent.setLayout(layout);
+        combo.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.GRAB_HORIZONTAL));
 
         // Post-condition
         assert combo != null;
@@ -238,17 +234,17 @@ public class Custom implements IFilter {
      */
     public void createViewerFilters(StructuredViewer viewer) {
         // Pre-condition
-    	assert viewer == null;
-    	assert viewerFilter == null;
+        assert viewer == null;
+        assert viewerFilter == null;
 
-    	// Installes the viewer filter.
-    	this.viewer = viewer;
-    	this.viewerFilter = new MyViewerFiler();
-    	this.viewer.addFilter( this.viewerFilter );
+        // Installes the viewer filter.
+        this.viewer = viewer;
+        this.viewerFilter = new MyViewerFiler();
+        this.viewer.addFilter(this.viewerFilter);
 
-    	// Post-condition
-    	assert this.viewer != null;
-    	assert this.viewerFilter != null;
+        // Post-condition
+        assert this.viewer != null;
+        assert this.viewerFilter != null;
     }
 
     /**
@@ -279,17 +275,17 @@ public class Custom implements IFilter {
      */
     public void disposeViewerFilers(StructuredViewer viewer) {
         // Pre-condition
-    	assert this.viewer != null;
-    	assert viewerFilter != null;
+        assert this.viewer != null;
+        assert viewerFilter != null;
 
-    	// Uninstalles the viewer filter.
-    	viewer.removeFilter( this.viewerFilter );
-    	this.viewerFilter = null;
-    	this.viewer = null;
+        // Uninstalles the viewer filter.
+        viewer.removeFilter(this.viewerFilter);
+        this.viewerFilter = null;
+        this.viewer = null;
 
-    	// Post-condition
-    	assert this.viewer == null;
-    	assert this.viewerFilter == null;
+        // Post-condition
+        assert this.viewer == null;
+        assert this.viewerFilter == null;
     }
 
     /**

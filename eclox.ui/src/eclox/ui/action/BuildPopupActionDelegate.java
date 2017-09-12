@@ -40,79 +40,78 @@ import eclox.ui.ResourceType;
  */
 public class BuildPopupActionDelegate implements IObjectActionDelegate {
 
-	private IResource		resource;	///< References the resource that is under the contextual menu.
-	private IWorkbenchPart	targetPart;	///< References the part where the action taks place.
+    private IResource resource; ///< References the resource that is under the contextual menu.
+    private IWorkbenchPart targetPart; ///< References the part where the action taks place.
 
-	/**
-	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
-	}
+    /**
+     * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
+     */
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        this.targetPart = targetPart;
+    }
 
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-	 */
-	public void run(IAction action) {
-		try {
-			IFile	doxyIFile = null;
-			// If there is a resource, it is either a doxyfile
-			// and if not, we prompt the user to get one.
-			if( resource != null ) {
-			    doxyIFile = Doxyfile.isDoxyfile(resource) ? (IFile) resource : DoxyfileSelector.open(resource);
-			}
-			if( doxyIFile != null ) {
-				Plugin.getDefault().getBuildManager().build( new Doxyfile(doxyIFile, null) );
-			}
-		}
-		catch(Throwable throwable) {
-		    if (targetPart != null) {
-		        MessageDialog.openError(targetPart.getSite().getShell(), "Unexpected Error", throwable.toString());
-		    }
-		}
-	}
+    /**
+     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+     */
+    public void run(IAction action) {
+        try {
+            IFile doxyIFile = null;
+            // If there is a resource, it is either a doxyfile
+            // and if not, we prompt the user to get one.
+            if (resource != null) {
+                doxyIFile = Doxyfile.isDoxyfile(resource) ? (IFile) resource : DoxyfileSelector.open(resource);
+            }
+            if (doxyIFile != null) {
+                Plugin.getDefault().getBuildManager().build(new Doxyfile(doxyIFile, null));
+            }
+        } catch (Throwable throwable) {
+            if (targetPart != null) {
+                MessageDialog.openError(targetPart.getSite().getShell(), "Unexpected Error", throwable.toString());
+            }
+        }
+    }
 
-	/**
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-	    this.resource = getDoxygenResourceRoot(selection, this.targetPart);
-	    if (action != null) {
-	        action.setEnabled(this.resource != null);
-	    }
-	}
+    /**
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+        this.resource = getDoxygenResourceRoot(selection, this.targetPart);
+        if (action != null) {
+            action.setEnabled(this.resource != null);
+        }
+    }
 
-	static public IResource getDoxygenResourceForType(ISelection selection, IWorkbenchPart targetPart, ResourceType resType) {
-	    IResource resource = null;
-	    if (resType != ResourceType.resourceTypeUnknown) {
-    	    resource = getDoxygenResourceRoot(selection, targetPart);
-    	    if (resource != null) {
-    	        if (resType != ResourceType.resourceTypeFileOrDirectory) {
-            	    boolean isDoxyfile = Doxyfile.isDoxyfile(resource);
-            	    if (resType == ResourceType.resourceTypeFile) {
-            	        if (!isDoxyfile) {
-            	            resource = null;
-            	        }
-            	    }
-            	    else if (resType == ResourceType.resourceTypeDirectory) {
+    static public IResource getDoxygenResourceForType(ISelection selection, IWorkbenchPart targetPart,
+            ResourceType resType) {
+        IResource resource = null;
+        if (resType != ResourceType.resourceTypeUnknown) {
+            resource = getDoxygenResourceRoot(selection, targetPart);
+            if (resource != null) {
+                if (resType != ResourceType.resourceTypeFileOrDirectory) {
+                    boolean isDoxyfile = Doxyfile.isDoxyfile(resource);
+                    if (resType == ResourceType.resourceTypeFile) {
+                        if (!isDoxyfile) {
+                            resource = null;
+                        }
+                    } else if (resType == ResourceType.resourceTypeDirectory) {
                         if (isDoxyfile) {
                             resource = null;
                         }
-            	    }
-    	        }
-    	    }
-	    }
-	    return resource;
-	}
+                    }
+                }
+            }
+        }
+        return resource;
+    }
 
     static public IResource getDoxygenResourceRoot(ISelection selection, IWorkbenchPart targetPart) {
         IResource resource = null;
         IStructuredSelection strSelection = (IStructuredSelection) selection;
         try {
-            if( strSelection.size() == 1 ) {
+            if (strSelection.size() == 1) {
                 Object object = strSelection.getFirstElement();
                 resource = (IResource) Platform.getAdapterManager().getAdapter(object, IResource.class);
-                if( resource != null && resource.isAccessible() ) {
+                if (resource != null && resource.isAccessible()) {
                     ResourceCollector collector = ResourceCollector.run(resource);
                     if (!collector.isEmpty()) {
                         // if there is only one collected doxyfile, then assigns that doxyfile as the current resource
@@ -129,8 +128,7 @@ public class BuildPopupActionDelegate implements IObjectActionDelegate {
                     resource = null;
                 }
             }
-        }
-        catch(Throwable throwable) {
+        } catch (Throwable throwable) {
             if (targetPart != null) {
                 MessageDialog.openError(targetPart.getSite().getShell(), "Unexpected Error", throwable.toString());
             }
