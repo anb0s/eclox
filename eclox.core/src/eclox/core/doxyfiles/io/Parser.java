@@ -10,6 +10,9 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #211: Added support for the += operator
+ *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
+ *                   - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -144,9 +147,9 @@ public class Parser {
             // Retrieves the setting identifier and its values.
             String identifier = matcher.group(1);
             String values = matcher.group(2);
-
+            String continued = matcher.group(3);
             // Call the traitement for the setting assignment and pull out.
-            this.processSettingAssignment(doxyfile, identifier, values);
+            this.processSettingAssignment(doxyfile, identifier, values, continued != null);
             return;
         }
 
@@ -156,9 +159,9 @@ public class Parser {
             // Retrieves the setting identifier and its values.
             String identifier = matcher.group(1);
             String values = matcher.group(2);
-
+            String continued = matcher.group(3);
             // Call the treatment for the setting assignment and pull out.
-            this.processSettingIncrement(doxyfile, identifier, values);
+            this.processSettingIncrement(doxyfile, identifier, values, continued != null);
             return;
         }
 
@@ -182,7 +185,6 @@ public class Parser {
             // Retrieves the setting identifier and its values.
             String values = matcher.group(1);
             String continued = matcher.group(2);
-
             // Call the treatment for the continued setting assignment and pull out.
             this.processContinuedSettingAssignment(doxyfile, values, continued != null);
             return;
@@ -212,7 +214,7 @@ public class Parser {
 
         // Stores the line's text in the raw text chunk.
         rawText.append(text);
-        rawText.append("\n");
+        rawText.append(Plugin.getDefault().getLineSeparator());
     }
 
     /**
@@ -221,17 +223,22 @@ public class Parser {
      * @param	doxyfile	a doxyfile where the setting assignment will be stored
      * @param	identifier	a string containing the setting identifier
      * @param	value		a string containing the assigned value
+     * @param   continued   a boolean telling if the setting assignment is continued on multiple line
      */
-    private void processSettingAssignment(Doxyfile doxyfile, String identifier, String value) throws IOException {
-        // Retrieves the setting.
+    private void processSettingAssignment(Doxyfile doxyfile, String identifier, String value, boolean continued) throws IOException {
+        // Retrieves the setting from the doxyfile.
         Setting setting = doxyfile.getSetting(identifier);
-        if (setting == null) {
-            setting = new Setting(identifier, value);
+        if (setting != null) {
+            // Overwrites the continued setting's value,
+            // because the last assignment operator wins!
+            setting.setValue(value);
+            setting.setOperator(Setting.ASSIGNMENT);
+            setting.setContinued(continued);
+        } else {
+            setting = new Setting(identifier, value, Setting.ASSIGNMENT, continued);
             doxyfile.append(setting);
         }
 
-        // Updates the setting value.
-        setting.setValue(value);
     }
 
     /**
@@ -240,17 +247,19 @@ public class Parser {
      * @param   doxyfile    a doxyfile where the setting assignment will be stored
      * @param   identifier  a string containing the setting identifier
      * @param   value       a string containing the assigned value
+     * @param   continued   a boolean telling if the setting assignment is continued on multiple line
      */
-    private void processSettingIncrement(Doxyfile doxyfile, String identifier, String value) throws IOException {
+    private void processSettingIncrement(Doxyfile doxyfile, String identifier, String value, boolean continued) throws IOException {
         // Retrieves the setting from the doxyfile.
         Setting setting = doxyfile.getSetting(identifier);
         if (setting != null) {
-            // Updates the continued setting's value independent of the type (assignment or increment)
-            // because the first operator wins!
+            // Updates the continued setting's value independent of the type (assignment or increment),
+            // because the previous operator wins!
             setting.setValue(setting.getValue() + " " + value);
+            setting.setContinued(continued);
         } else {
             Plugin.getDefault().logWarning("At line " + lineNumber + ": the setting was not declared before. But it may be declared in included file!");
-            setting = new Setting(identifier, value, Setting.INCREMENT);
+            setting = new Setting(identifier, value, Setting.INCREMENT, continued);
             doxyfile.append(setting);
         }
     }
@@ -265,12 +274,15 @@ public class Parser {
     private void processContinuedSettingAssignment(Doxyfile doxyfile, String value, boolean continued)
             throws IOException {
         Chunk lastChunk = doxyfile.getLastChunk();
-
         // Ensures that a continued setting has been remembered
         // and updates it.
         if (lastChunk instanceof Setting) {
             Setting continuedSetting = (Setting) lastChunk;
-            continuedSetting.setValue(continuedSetting.getValue() + " " + value);
+            if (continuedSetting.isContinued()) {
+                continuedSetting.setValue(continuedSetting.getValue() + " " + value);
+            } else {
+                Plugin.getDefault().logWarning("At line " + lineNumber + ": value delcared without a multiline (continued) setting.");
+            }
         } else {
             Plugin.getDefault().logWarning("At line " + lineNumber + ": value delcared without a setting name.");
         }

@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,9 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - Improvement static declaration of plugin relative identifier
+ *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
+ *                   - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -41,6 +44,27 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
      */
     public Plugin() {
         plugin = this;
+    }
+
+    public String getLineSeparator() {
+        return System.lineSeparator();
+    }
+
+    public int listSeparateMode() {
+        // TODO: add UI option for this:
+        // LIST format:
+        //   - do not change (default) = 0
+        //   - separate = 1
+        //   - one line = 2
+        return 0;
+    }
+
+    public boolean isIdFixedLengthEnabled() {
+        // TODO: add UI option for this:
+        // TAG format:
+        //   - trimmed length (default) = false
+        //   - fixed length = true
+        return false;
     }
 
     /**

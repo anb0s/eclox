@@ -11,6 +11,8 @@
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #171: added sorting column in advanced tab
  *                   - #211: Added support for the += operator
+ *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -21,6 +23,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.Vector;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -39,6 +42,8 @@ public class Setting extends Chunk {
      * The value pattern.
      */
     private static Pattern valuePattern = Pattern.compile("([^ \"]+)\\s*|\"((\\\\\"|.)*?)\"\\s*");
+
+    private static String fixedLinePrefix = new String("                         ");
 
     /**
      * The default setting properties.
@@ -64,6 +69,11 @@ public class Setting extends Chunk {
      * The string containing the setting value.
      */
     private String value;
+
+    /**
+     * The boolean telling if the setting assignment is continued on multiple line.
+     */
+    private boolean continued;
 
     /**
      * The setting local properties.
@@ -139,20 +149,11 @@ public class Setting extends Chunk {
      * @param   value       a string containing the setting value
      * @param   operator    a string containing the setting operator
      */
-    public Setting(String identifier, String value, String operator) {
+    public Setting(String identifier, String value, String operator, boolean continued) {
         this.identifier = new String(identifier);
         this.value = new String(value);
         this.operator = new String(operator);
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param	identifier	a string containing the setting identifier
-     * @param	value		a string containing the setting value
-     */
-    public Setting(String identifier, String value) {
-        this(identifier, value, ASSIGNMENT);
+        this.continued = continued;
     }
 
     /**
@@ -204,6 +205,15 @@ public class Setting extends Chunk {
      */
     public String getValue() {
         return value;
+    }
+
+    /**
+     * Retrieves the setting continued flag.
+     *
+     * @return  a boolean containing the setting continued flag
+     */
+    public boolean isContinued() {
+        return this.continued;
     }
 
     /**
@@ -311,6 +321,15 @@ public class Setting extends Chunk {
     }
 
     /**
+     * Updates the continued flag of the setting.
+     *
+     * @param   continued   a boolean representing a continued flag to set
+     */
+    public void setContinued(boolean continued) {
+        this.continued = continued;
+    }
+
+    /**
      * Updates the value of the string with the given object collection. All objects
      * of the given collection will be converted to strings.
      *
@@ -319,13 +338,11 @@ public class Setting extends Chunk {
     public void setValue(Collection<?> compounds) {
         // Resets the managed value string.
         value = new String();
-
         // Walks through the comounds to rebuild the value.
         Iterator<?> i = compounds.iterator();
         while (i.hasNext()) {
             // Retrieves the current compound.
             String compound = i.next().toString();
-
             // Removes any leading and tralling spaces and manage the insertion.
             compound = compound.trim();
             if (compound.length() == 0) {
@@ -341,8 +358,79 @@ public class Setting extends Chunk {
         fireValueChangedEvent();
     }
 
+    private String toString_ListSeparated(String linePrefix) {
+        String valueOut = new String();
+        Collection<String> compounds = new Vector<String>();
+        getSplittedValue(compounds);
+        // Walks through the comounds to rebuild the value.
+        Iterator<?> i = compounds.iterator();
+        boolean first = true;
+        while (i.hasNext()) {
+            // Retrieves the current compound.
+            String compound = i.next().toString();
+            // Removes any leading and tralling spaces and manage the insertion.
+            compound = compound.trim();
+            if (compound.length() == 0) {
+                continue;
+            } else {
+                // add quotes ?
+                String quotes = new String();
+                if (compound.indexOf(' ') != -1) {
+                    quotes = "\"";
+                }
+                if (first) {
+                    first = false;
+                } else {
+                    valueOut = valueOut.concat(" \\" + Plugin.getDefault().getLineSeparator() + linePrefix);
+                }
+                valueOut = valueOut.concat(quotes + compound + quotes);
+            }
+        }
+        return valueOut;
+    }
+
+    private String toString_ListSeparate() {
+        if (Plugin.getDefault().isIdFixedLengthEnabled()) {
+            return toString_ListSeparated(fixedLinePrefix);
+        } else {
+            String linePrefix = new String();
+            //ID.=.
+            for (int i=0;i<(this.identifier.length() + 1 + this.operator.length() + 1);i++) {
+                linePrefix = linePrefix.concat(" ");
+            }
+            return toString_ListSeparated(linePrefix);
+        }
+    }
+
+    private String toString_List() {
+        switch(Plugin.getDefault().listSeparateMode()) {
+            case 1 : return toString_ListSeparate();
+            case 2 : return value;
+            //case 0 :
+            default: return this.continued ? toString_ListSeparate() : value;
+        }
+    }
+
+    private String toString_IdLengthFixed(String valueOut) {
+        String idStr = String.format("%-" + Integer.toString(fixedLinePrefix.length() - 1 - this.operator.length()) + "s", this.identifier);
+        String valueStr = ((valueOut != null && !valueOut.isEmpty()) ? " " + valueOut : "");
+        return idStr + this.operator + valueStr + Plugin.getDefault().getLineSeparator();
+    }
+
+    private String toString_IdLengthTrimmed(String valueOut) {
+        return this.identifier + " " + this.operator + ((valueOut != null && !valueOut.isEmpty()) ? " " : "") + valueOut + Plugin.getDefault().getLineSeparator();
+    }
+
+    private String toString_Id(String valueOut) {
+        if (Plugin.getDefault().isIdFixedLengthEnabled()) {
+            return toString_IdLengthFixed(valueOut);
+        } else {
+            return toString_IdLengthTrimmed(valueOut);
+        }
+    }
+
     public String toString() {
-        return this.identifier + " " + this.operator + " " + this.value + "\n";
+        return toString_Id(toString_List());
     }
 
     /**
