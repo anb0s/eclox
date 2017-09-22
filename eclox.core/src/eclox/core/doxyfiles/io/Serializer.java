@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
- *     Andre Bossert -
+ *     Andre Bossert - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -30,6 +30,11 @@ import eclox.core.doxyfiles.Doxyfile;
 public class Serializer extends InputStream {
 
     /**
+     * The line separator.
+     */
+    private String lineSeparator;
+
+    /**
      * an iterator on the doxyfile chunks
      */
     private Iterator<?> chunkIterator;
@@ -44,7 +49,8 @@ public class Serializer extends InputStream {
      *
      * @param	doxyfile	a doxyfile to serialize
      */
-    public Serializer(Doxyfile doxyfile) {
+    public Serializer(Doxyfile doxyfile, String lineSeparator) {
+        this.lineSeparator = lineSeparator;
         this.chunkIterator = doxyfile.iterator();
         this.stringBuffer = getNextStringBuffer();
     }
@@ -80,7 +86,7 @@ public class Serializer extends InputStream {
         StringBuffer result = null;
         if (this.chunkIterator.hasNext() == true) {
             Chunk chunk = (Chunk) this.chunkIterator.next();
-            result = new StringBuffer(chunk.toString());
+            result = new StringBuffer(chunk.getString(lineSeparator));
         }
         return result;
     }

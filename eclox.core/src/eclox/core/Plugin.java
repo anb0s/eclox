@@ -46,10 +46,6 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
         plugin = this;
     }
 
-    public String getLineSeparator() {
-        return System.lineSeparator();
-    }
-
     public int listSeparateMode() {
         // TODO: add UI option for this:
         // LIST format:

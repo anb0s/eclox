@@ -213,8 +213,7 @@ public class Parser {
         }
 
         // Stores the line's text in the raw text chunk.
-        rawText.append(text);
-        rawText.append(Plugin.getDefault().getLineSeparator());
+        rawText.addLine(text);
     }
 
     /**

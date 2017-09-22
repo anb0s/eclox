@@ -13,6 +13,7 @@
  *                   - #211: Added support for the += operator
  *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
  *                   - #214: add support for TAG and VALUE format
+ *                   - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -358,7 +359,7 @@ public class Setting extends Chunk {
         fireValueChangedEvent();
     }
 
-    private String toString_ListSeparated(String linePrefix) {
+    private String toString_ListSeparated(String linePrefix, String lineSeparator) {
         String valueOut = new String();
         Collection<String> compounds = new Vector<String>();
         getSplittedValue(compounds);
@@ -381,7 +382,7 @@ public class Setting extends Chunk {
                 if (first) {
                     first = false;
                 } else {
-                    valueOut = valueOut.concat(" \\" + Plugin.getDefault().getLineSeparator() + linePrefix);
+                    valueOut = valueOut.concat(" \\" + lineSeparator + linePrefix);
                 }
                 valueOut = valueOut.concat(quotes + compound + quotes);
             }
@@ -389,48 +390,48 @@ public class Setting extends Chunk {
         return valueOut;
     }
 
-    private String toString_ListSeparate() {
+    private String toString_ListSeparate(String lineSeparator) {
         if (Plugin.getDefault().isIdFixedLengthEnabled()) {
-            return toString_ListSeparated(fixedLinePrefix);
+            return toString_ListSeparated(fixedLinePrefix, lineSeparator);
         } else {
             String linePrefix = new String();
             //ID.=.
             for (int i=0;i<(this.identifier.length() + 1 + this.operator.length() + 1);i++) {
                 linePrefix = linePrefix.concat(" ");
             }
-            return toString_ListSeparated(linePrefix);
+            return toString_ListSeparated(linePrefix, lineSeparator);
         }
     }
 
-    private String toString_List() {
+    private String toString_List(String lineSeparator) {
         switch(Plugin.getDefault().listSeparateMode()) {
-            case 1 : return toString_ListSeparate();
+            case 1 : return toString_ListSeparate(lineSeparator);
             case 2 : return value;
             //case 0 :
-            default: return this.continued ? toString_ListSeparate() : value;
+            default: return this.continued ? toString_ListSeparate(lineSeparator) : value;
         }
     }
 
-    private String toString_IdLengthFixed(String valueOut) {
+    private String toString_IdLengthFixed(String valueOut, String lineSeparator) {
         String idStr = String.format("%-" + Integer.toString(fixedLinePrefix.length() - 1 - this.operator.length()) + "s", this.identifier);
         String valueStr = ((valueOut != null && !valueOut.isEmpty()) ? " " + valueOut : "");
-        return idStr + this.operator + valueStr + Plugin.getDefault().getLineSeparator();
+        return idStr + this.operator + valueStr + lineSeparator;
     }
 
-    private String toString_IdLengthTrimmed(String valueOut) {
-        return this.identifier + " " + this.operator + ((valueOut != null && !valueOut.isEmpty()) ? " " : "") + valueOut + Plugin.getDefault().getLineSeparator();
+    private String toString_IdLengthTrimmed(String valueOut, String lineSeparator) {
+        return this.identifier + " " + this.operator + ((valueOut != null && !valueOut.isEmpty()) ? " " : "") + valueOut + lineSeparator;
     }
 
-    private String toString_Id(String valueOut) {
+    private String toString_Id(String valueOut, String lineSeparator) {
         if (Plugin.getDefault().isIdFixedLengthEnabled()) {
-            return toString_IdLengthFixed(valueOut);
+            return toString_IdLengthFixed(valueOut, lineSeparator);
         } else {
-            return toString_IdLengthTrimmed(valueOut);
+            return toString_IdLengthTrimmed(valueOut, lineSeparator);
         }
     }
 
-    public String toString() {
-        return toString_Id(toString_List());
+    public String getString(String lineSeparator) {
+        return toString_Id(toString_List(lineSeparator), lineSeparator);
     }
 
     /**

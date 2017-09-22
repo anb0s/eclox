@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * Copyright (C) 2015-2016, Andre Bossert
+ * Copyright (C) 2015-2017, Andre Bossert
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -10,6 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - Add ability to use Doxyfile not in project scope
+ *                   - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -27,6 +28,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -41,7 +43,10 @@ import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ISettingValueListener;
 import eclox.core.doxyfiles.Setting;
 import eclox.core.doxyfiles.io.Serializer;
+import eclox.ui.IPreferences;
+import eclox.ui.Plugin;
 import eclox.ui.editor.internal.ResourceChangeListener;
+import eclox.ui.LineSeparator;
 
 /**
  * Implements the doxyfile editor.
@@ -85,8 +90,12 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
             // Commits all pending changes.
             commitPages(true);
 
+            // get preferences
+            IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
+            final String lineSepID = preferences.getString(IPreferences.LINE_SEPARATOR);
+
             // Stores the doxyfile content.
-            Serializer serializer = new Serializer(doxyfile);
+            Serializer serializer = new Serializer(doxyfile, LineSeparator.getValueFromId(lineSepID));
             if (ifile != null) {
                 if (ifile.exists()) {
                     ifile.setContents(serializer, false, true, monitor);

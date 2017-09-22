@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2003-2006, 2013, Guillaume Brocker
- * 
+ * Copyright (C) 2015-2017, Andre Bossert
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -20,7 +22,7 @@ import eclox.ui.IPreferences;
 
 /**
  * Implements the prefenrence initializer for the plugin.
- * 
+ *
  * @author gbrocker
  */
 public class PreferencesInitializer extends AbstractPreferenceInitializer {
@@ -30,10 +32,10 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
      */
     public void initializeDefaultPreferences() {
         IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
-
         preferences.setDefault(IPreferences.BUILD_HISTORY_SIZE, 5);
         preferences.setDefault(IPreferences.AUTO_SAVE, IPreferences.AUTO_SAVE_ASK);
         preferences.setDefault(IPreferences.HANDLE_ESCAPED_VALUES, true);
+        preferences.setDefault(IPreferences.LINE_SEPARATOR, LineSeparator.lineSeparatorSystem.name());
     }
 
 }

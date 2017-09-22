@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2004, 2007, 2013, Guillaume Brocker
- * 
+ * Copyright (C) 2015-2017, Andre Bossert
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -15,10 +17,10 @@ package eclox.core.doxyfiles;
 
 /**
  * Implements the default item that can be contained in a doxyfile.
- * 
+ *
  * A chunk is a piece of text extracted from e doxyfile. It can represent comments,
  * empty lines or whatever.
- * 
+ *
  * @author Guillaume Brocker
  */
 public abstract class Chunk {
@@ -30,7 +32,7 @@ public abstract class Chunk {
 
     /**
      * Retrieves the chunk owner.
-     * 
+     *
      * @return	the chunk owner
      */
     public Doxyfile getOwner() {
@@ -39,7 +41,7 @@ public abstract class Chunk {
 
     /**
      * Updates the chunk owner
-     * 
+     *
      * @param	owner	the new owner
      */
     public void setOwner(Doxyfile owner) {
@@ -48,9 +50,9 @@ public abstract class Chunk {
 
     /**
      * Converts the chunk into a string representing its content.
-     * 
+     *
      * @return	a string containing the chunk content
      */
-    public abstract String toString();
+    public abstract String getString(String lineSeparator);
 
 }

@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright (C) 2003-2004, 2013, Guillaume Brocker
- * 
+ * Copyright (C) 2015-2017, Andre Bossert
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +9,7 @@
  *
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
+ *     Andre Bossert - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -22,7 +24,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * Implements the plugin preference page.
- * 
+ *
  * @author gbrocker
  */
 public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPreferencePage
@@ -65,6 +67,18 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
                 rootControl, true);
         autoSave.setPreferenceStore(getPreferenceStore());
         addField(autoSave);
+
+        int lineSepLength = LineSeparator.values().length;
+        String[][] lineSepNames = new String[lineSepLength][2];
+        for(int i=0;i<lineSepLength;i++) {
+            lineSepNames[i][0] = LineSeparator.values()[i].getName();
+            lineSepNames[i][1] = LineSeparator.values()[i].name();
+        }
+        RadioGroupFieldEditor lineSeparator = new RadioGroupFieldEditor(IPreferences.LINE_SEPARATOR,
+                "Line separator", 1, lineSepNames, rootControl, true);
+        lineSeparator.setPreferenceStore(getPreferenceStore());
+        addField(lineSeparator);
+
     }
 
 }
