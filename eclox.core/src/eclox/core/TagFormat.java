@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum TagFormat {
+    tagFormatDoNotChange("Do not change"),
     tagFormatTrimmed("Trimmed length: 'TAG = VALUE'"),
     tagFormatFixed("Fixed length: 25 characters for TAG, operator and space, e.g.: 'TAG.[..].=.VALUE'");
     // attributes
@@ -32,7 +33,7 @@ public enum TagFormat {
     }
 
     public static TagFormat getFromName(String name) {
-        TagFormat ret = tagFormatTrimmed;
+        TagFormat ret = tagFormatDoNotChange;
         for (int i = 0; i < TagFormat.values().length; i++) {
             if (TagFormat.values()[i].getName().equals(name)) {
                 ret = TagFormat.values()[i];

@@ -62,12 +62,12 @@ public class Parser {
     /**
      * the setting assignment pattern
      */
-    private Pattern settingAssignmentPattern = Pattern.compile("(\\w+)\\s*=\\s*(.*?)\\s*(\\\\)?");
+    private Pattern settingAssignmentPattern = Pattern.compile("(\\w+)(\\s*)=\\s*(.*?)\\s*(\\\\)?");
 
     /**
      * the setting increment pattern
      */
-    private Pattern settingIncrementPattern = Pattern.compile("(\\w+)\\s*\\+=\\s*(.*?)\\s*(\\\\)?");
+    private Pattern settingIncrementPattern = Pattern.compile("(\\w+)(\\s*)\\+=\\s*(.*?)\\s*(\\\\)?");
 
     /**
      * the continued setting assignment pattern
@@ -146,10 +146,11 @@ public class Parser {
         if (matcher.matches() == true) {
             // Retrieves the setting identifier and its values.
             String identifier = matcher.group(1);
-            String values = matcher.group(2);
-            String continued = matcher.group(3);
+            String spaces = matcher.group(2);
+            String values = matcher.group(3);
+            String continued = matcher.group(4);
             // Call the traitement for the setting assignment and pull out.
-            this.processSettingAssignment(doxyfile, identifier, values, continued != null);
+            this.processSettingAssignment(doxyfile, identifier, spaces, values, continued != null);
             return;
         }
 
@@ -158,10 +159,11 @@ public class Parser {
         if (matcher.matches() == true) {
             // Retrieves the setting identifier and its values.
             String identifier = matcher.group(1);
-            String values = matcher.group(2);
-            String continued = matcher.group(3);
+            String spaces = matcher.group(2);
+            String values = matcher.group(3);
+            String continued = matcher.group(4);
             // Call the treatment for the setting assignment and pull out.
-            this.processSettingIncrement(doxyfile, identifier, values, continued != null);
+            this.processSettingIncrement(doxyfile, identifier, spaces, values, continued != null);
             return;
         }
 
@@ -224,7 +226,7 @@ public class Parser {
      * @param	value		a string containing the assigned value
      * @param   continued   a boolean telling if the setting assignment is continued on multiple line
      */
-    private void processSettingAssignment(Doxyfile doxyfile, String identifier, String value, boolean continued) throws IOException {
+    private void processSettingAssignment(Doxyfile doxyfile, String identifier, String spaces, String value, boolean continued) throws IOException {
         // Retrieves the setting from the doxyfile.
         Setting setting = doxyfile.getSetting(identifier);
         if (setting != null) {
@@ -234,7 +236,7 @@ public class Parser {
             setting.setOperator(Setting.ASSIGNMENT);
             setting.setContinued(continued);
         } else {
-            setting = new Setting(identifier, value, Setting.ASSIGNMENT, continued);
+            setting = new Setting(identifier, spaces, value, Setting.ASSIGNMENT, continued);
             doxyfile.append(setting);
         }
 
@@ -248,7 +250,7 @@ public class Parser {
      * @param   value       a string containing the assigned value
      * @param   continued   a boolean telling if the setting assignment is continued on multiple line
      */
-    private void processSettingIncrement(Doxyfile doxyfile, String identifier, String value, boolean continued) throws IOException {
+    private void processSettingIncrement(Doxyfile doxyfile, String identifier, String spaces, String value, boolean continued) throws IOException {
         // Retrieves the setting from the doxyfile.
         Setting setting = doxyfile.getSetting(identifier);
         if (setting != null) {
@@ -258,7 +260,7 @@ public class Parser {
             setting.setContinued(continued);
         } else {
             Plugin.getDefault().logWarning("At line " + lineNumber + ": the setting was not declared before. But it may be declared in included file!");
-            setting = new Setting(identifier, value, Setting.INCREMENT, continued);
+            setting = new Setting(identifier, spaces, value, Setting.INCREMENT, continued);
             doxyfile.append(setting);
         }
     }

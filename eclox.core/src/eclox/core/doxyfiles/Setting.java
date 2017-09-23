@@ -59,6 +59,11 @@ public class Setting extends Chunk {
     private final String identifier;
 
     /**
+     * A string containing the node identifier.
+     */
+    private final String spaces;
+
+    /**
      * A collection with all attached listeners
      */
     private Set<ISettingListener> listeners = new HashSet<ISettingListener>();
@@ -149,11 +154,14 @@ public class Setting extends Chunk {
      * Constructor.
      *
      * @param   identifier  a string containing the setting identifier
+     * @param   spaces      a string containing the spaces between identifier and operator
      * @param   value       a string containing the setting value
      * @param   operator    a string containing the setting operator
+     * @param   continued   a boolean shows if the line is continued with '\'
      */
-    public Setting(String identifier, String value, String operator, boolean continued) {
+    public Setting(String identifier, String spaces, String value, String operator, boolean continued) {
         this.identifier = new String(identifier);
+        this.spaces = new String(spaces);
         this.value = new String(value);
         this.operator = new String(operator);
         this.continued = continued;
@@ -393,18 +401,26 @@ public class Setting extends Chunk {
     }
 
     private String toString_ListSeparate(String lineSeparator, TagFormat tagFormat) {
+        String linePrefix = new String();
         switch(tagFormat) {
+        case tagFormatDoNotChange:
+            //ID+SPACES=.
+            for (int i=0;i<(this.identifier.length() + this.spaces.length() + this.operator.length() + 1);i++) {
+                linePrefix = linePrefix.concat(" ");
+            }
+        break;
         case tagFormatFixed:
-            return toString_ListSeparated(fixedLinePrefix, lineSeparator);
+            linePrefix = fixedLinePrefix;
+            break;
         case tagFormatTrimmed:
         default:
-            String linePrefix = new String();
             //ID.=.
             for (int i=0;i<(this.identifier.length() + 1 + this.operator.length() + 1);i++) {
                 linePrefix = linePrefix.concat(" ");
             }
-            return toString_ListSeparated(linePrefix, lineSeparator);
+        break;
         }
+        return toString_ListSeparated(linePrefix, lineSeparator);
     }
 
     private String toString_List(String lineSeparator, ListSeparateMode listSepMode, TagFormat tagFormat) {
@@ -414,6 +430,12 @@ public class Setting extends Chunk {
             //listSeparateModeDoNotChange:
             default: return this.continued ? toString_ListSeparate(lineSeparator, tagFormat) : value;
         }
+    }
+
+    private String toString_IdLengthDoNotChange(String valueOut, String lineSeparator) {
+        String idStr = this.identifier + this.spaces;
+        String valueStr = ((valueOut != null && !valueOut.isEmpty()) ? " " + valueOut : "");
+        return idStr + this.operator + valueStr + lineSeparator;
     }
 
     private String toString_IdLengthFixed(String valueOut, String lineSeparator) {
@@ -428,6 +450,8 @@ public class Setting extends Chunk {
 
     private String toString_Id(String valueOut, String lineSeparator, TagFormat tagFormat) {
         switch(tagFormat) {
+        case tagFormatDoNotChange:
+            return toString_IdLengthDoNotChange(valueOut, lineSeparator);
         case tagFormatFixed:
             return toString_IdLengthFixed(valueOut, lineSeparator);
         case tagFormatTrimmed:
