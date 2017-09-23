@@ -11,6 +11,7 @@
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
  *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -23,6 +24,7 @@ import java.util.Iterator;
 import eclox.core.ListSeparateMode;
 import eclox.core.doxyfiles.Chunk;
 import eclox.core.doxyfiles.Doxyfile;
+import eclox.core.TagFormat;
 
 /**
  * Implements a doxyfile content serializer.
@@ -42,6 +44,11 @@ public class Serializer extends InputStream {
     ListSeparateMode listSeparateMode;
 
     /**
+     * The list separate mode.
+     */
+    TagFormat tagFormat;
+
+    /**
      * an iterator on the doxyfile chunks
      */
     private Iterator<?> chunkIterator;
@@ -56,9 +63,10 @@ public class Serializer extends InputStream {
      *
      * @param	doxyfile	a doxyfile to serialize
      */
-    public Serializer(Doxyfile doxyfile, String lineSeparator, ListSeparateMode listSeparateMode) {
+    public Serializer(Doxyfile doxyfile, String lineSeparator, ListSeparateMode listSeparateMode, TagFormat tagFormat) {
         this.lineSeparator = lineSeparator;
         this.listSeparateMode = listSeparateMode;
+        this.tagFormat = tagFormat;
         this.chunkIterator = doxyfile.iterator();
         this.stringBuffer = getNextStringBuffer();
     }
@@ -94,7 +102,7 @@ public class Serializer extends InputStream {
         StringBuffer result = null;
         if (this.chunkIterator.hasNext() == true) {
             Chunk chunk = (Chunk) this.chunkIterator.next();
-            result = new StringBuffer(chunk.getString(lineSeparator, listSeparateMode));
+            result = new StringBuffer(chunk.getString(lineSeparator, listSeparateMode, tagFormat));
         }
         return result;
     }

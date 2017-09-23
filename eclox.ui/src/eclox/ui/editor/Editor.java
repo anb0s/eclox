@@ -12,6 +12,7 @@
  *     Andre Bossert - Add ability to use Doxyfile not in project scope
  *                   - #215: add support for line separator
  *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -41,6 +42,7 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 import eclox.core.ListSeparateMode;
+import eclox.core.TagFormat;
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxyfiles.ISettingValueListener;
 import eclox.core.doxyfiles.Setting;
@@ -96,9 +98,10 @@ public class Editor extends FormEditor implements ISettingValueListener, IPersis
             IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
             final String lineSeparator = LineSeparator.getValueFromEnum(preferences.getString(IPreferences.LINE_SEPARATOR));
             final ListSeparateMode listSeparateMode = ListSeparateMode.getFromEnum(preferences.getString(IPreferences.LIST_SEPARATE_MODE));
+            final TagFormat tagFormat = TagFormat.getFromEnum(preferences.getString(IPreferences.TAG_FORMAT));
 
             // Stores the doxyfile content.
-            Serializer serializer = new Serializer(doxyfile, lineSeparator, listSeparateMode);
+            Serializer serializer = new Serializer(doxyfile, lineSeparator, listSeparateMode, tagFormat);
             if (ifile != null) {
                 if (ifile.exists()) {
                     ifile.setContents(serializer, false, true, monitor);

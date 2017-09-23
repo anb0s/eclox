@@ -11,6 +11,7 @@
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
  *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -20,6 +21,7 @@ import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 
 import eclox.core.ListSeparateMode;
+import eclox.core.TagFormat;
 import eclox.ui.IPreferences;
 
 /**
@@ -39,6 +41,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
         preferences.setDefault(IPreferences.HANDLE_ESCAPED_VALUES, true);
         preferences.setDefault(IPreferences.LINE_SEPARATOR, LineSeparator.lineSeparatorSystem.name());
         preferences.setDefault(IPreferences.LIST_SEPARATE_MODE, ListSeparateMode.listSeparateModeDoNotChange.name());
+        preferences.setDefault(IPreferences.TAG_FORMAT, TagFormat.tagFormatTrimmed.name());
     }
 
 }

@@ -11,6 +11,7 @@
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
  *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -24,6 +25,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import eclox.core.ListSeparateMode;
+import eclox.core.TagFormat;
 
 /**
  * Implements the plugin preference page.
@@ -92,6 +94,17 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
                 "List separate mode", 1, listSepModeNames, rootControl, true);
         listSepModeField.setPreferenceStore(getPreferenceStore());
         addField(listSepModeField);
+
+        int tagFormatLength = TagFormat.values().length;
+        String[][] tagFormatNames = new String[tagFormatLength][2];
+        for(int i=0;i<tagFormatLength;i++) {
+            tagFormatNames[i][0] = TagFormat.values()[i].getName();
+            tagFormatNames[i][1] = TagFormat.values()[i].name();
+        }
+        RadioGroupFieldEditor tagFormatField = new RadioGroupFieldEditor(IPreferences.TAG_FORMAT,
+                "TAG format", 1, tagFormatNames, rootControl, true);
+        tagFormatField.setPreferenceStore(getPreferenceStore());
+        addField(tagFormatField);
 
     }
 

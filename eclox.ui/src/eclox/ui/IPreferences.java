@@ -10,6 +10,8 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
+ *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -87,5 +89,10 @@ public interface IPreferences {
      * Constant name for the list separate mode.
      */
     public static final String LIST_SEPARATE_MODE = "editor.listSeparateMode";
+
+    /**
+     * Constant name for the tag format.
+     */
+    public static final String TAG_FORMAT = "editor.tagFormat";
 
 }

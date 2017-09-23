@@ -11,12 +11,14 @@
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
  *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
 package eclox.core.doxyfiles;
 
 import eclox.core.ListSeparateMode;
+import eclox.core.TagFormat;
 
 /**
  * Implements the default item that can be contained in a doxyfile.
@@ -56,6 +58,6 @@ public abstract class Chunk {
      *
      * @return	a string containing the chunk content
      */
-    public abstract String getString(String lineSeparator, ListSeparateMode listSepMode);
+    public abstract String getString(String lineSeparator, ListSeparateMode listSepMode, TagFormat tagFormat);
 
 }

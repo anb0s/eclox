@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 
 import eclox.core.ListSeparateMode;
 import eclox.core.Plugin;
+import eclox.core.TagFormat;
 import eclox.core.doxyfiles.Chunk;
 
 /**
@@ -391,10 +392,12 @@ public class Setting extends Chunk {
         return valueOut;
     }
 
-    private String toString_ListSeparate(String lineSeparator) {
-        if (Plugin.getDefault().isIdFixedLengthEnabled()) {
+    private String toString_ListSeparate(String lineSeparator, TagFormat tagFormat) {
+        switch(tagFormat) {
+        case tagFormatFixed:
             return toString_ListSeparated(fixedLinePrefix, lineSeparator);
-        } else {
+        case tagFormatTrimmed:
+        default:
             String linePrefix = new String();
             //ID.=.
             for (int i=0;i<(this.identifier.length() + 1 + this.operator.length() + 1);i++) {
@@ -404,12 +407,12 @@ public class Setting extends Chunk {
         }
     }
 
-    private String toString_List(String lineSeparator, ListSeparateMode listSepMode) {
+    private String toString_List(String lineSeparator, ListSeparateMode listSepMode, TagFormat tagFormat) {
         switch(listSepMode) {
-            case listSeparateModeSeparate : return toString_ListSeparate(lineSeparator);
+            case listSeparateModeSeparate : return toString_ListSeparate(lineSeparator, tagFormat);
             case listSeparateOneLine : return value;
             //listSeparateModeDoNotChange:
-            default: return this.continued ? toString_ListSeparate(lineSeparator) : value;
+            default: return this.continued ? toString_ListSeparate(lineSeparator, tagFormat) : value;
         }
     }
 
@@ -423,16 +426,18 @@ public class Setting extends Chunk {
         return this.identifier + " " + this.operator + ((valueOut != null && !valueOut.isEmpty()) ? " " : "") + valueOut + lineSeparator;
     }
 
-    private String toString_Id(String valueOut, String lineSeparator) {
-        if (Plugin.getDefault().isIdFixedLengthEnabled()) {
+    private String toString_Id(String valueOut, String lineSeparator, TagFormat tagFormat) {
+        switch(tagFormat) {
+        case tagFormatFixed:
             return toString_IdLengthFixed(valueOut, lineSeparator);
-        } else {
+        case tagFormatTrimmed:
+        default:
             return toString_IdLengthTrimmed(valueOut, lineSeparator);
         }
     }
 
-    public String getString(String lineSeparator, ListSeparateMode listSepMode) {
-        return toString_Id(toString_List(lineSeparator, listSepMode), lineSeparator);
+    public String getString(String lineSeparator, ListSeparateMode listSepMode, TagFormat tagFormat) {
+        return toString_Id(toString_List(lineSeparator, listSepMode, tagFormat), lineSeparator, tagFormat);
     }
 
     /**

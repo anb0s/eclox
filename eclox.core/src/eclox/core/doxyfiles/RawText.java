@@ -11,6 +11,7 @@
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
  *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
+ *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import eclox.core.ListSeparateMode;
+import eclox.core.TagFormat;
 import eclox.core.doxyfiles.Chunk;
 
 /**
@@ -48,7 +50,7 @@ public class RawText extends Chunk {
      *
      * @return	a string containing the raw text content
      */
-    public String getString(String lineSeparator, ListSeparateMode listSepMode) {
+    public String getString(String lineSeparator, ListSeparateMode listSepMode, TagFormat tagFormat) {
         String ret = new String();
         for(String line : content) {
             ret += line + lineSeparator;

@@ -10,7 +10,6 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - Improvement static declaration of plugin relative identifier
- *                   - #214: add support for TAG and VALUE format
  *
  ******************************************************************************/
 
@@ -42,14 +41,6 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
      */
     public Plugin() {
         plugin = this;
-    }
-
-    public boolean isIdFixedLengthEnabled() {
-        // TODO: add UI option for this:
-        // TAG format:
-        //   - trimmed length (default) = false
-        //   - fixed length = true
-        return false;
     }
 
     /**
