@@ -37,10 +37,6 @@ public enum LineSeparator {
         return value;
     }
 
-    public static LineSeparator getFromId(String id) {
-        return valueOf(id);
-    }
-
     public static LineSeparator getFromName(String name) {
         LineSeparator ret = lineSeparatorSystem;
         for (int i = 0; i < LineSeparator.values().length; i++) {
@@ -64,7 +60,7 @@ public enum LineSeparator {
     }
 
     public static LineSeparator getFromEnum(String name) {
-        return LineSeparator.valueOf(name);
+        return valueOf(name);
     }
 
     public static List<String> getNamesAsList() {
@@ -84,12 +80,12 @@ public enum LineSeparator {
         return arr;
     }
 
-    public static String getValueFromId(String id) {
-        return getFromId(id).getValue();
+    public static String getValueFromEnum(String enumId) {
+        return getFromEnum(enumId).getValue();
     }
 
-    public static String getNameFromId(String id) {
-        return getFromId(id).getName();
+    public static String getNameFromEnum(String enumId) {
+        return getFromEnum(enumId).getName();
     }
 
 }

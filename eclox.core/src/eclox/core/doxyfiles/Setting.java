@@ -29,6 +29,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import eclox.core.ListSeparateMode;
 import eclox.core.Plugin;
 import eclox.core.doxyfiles.Chunk;
 
@@ -403,11 +404,11 @@ public class Setting extends Chunk {
         }
     }
 
-    private String toString_List(String lineSeparator) {
-        switch(Plugin.getDefault().listSeparateMode()) {
-            case 1 : return toString_ListSeparate(lineSeparator);
-            case 2 : return value;
-            //case 0 :
+    private String toString_List(String lineSeparator, ListSeparateMode listSepMode) {
+        switch(listSepMode) {
+            case listSeparateModeSeparate : return toString_ListSeparate(lineSeparator);
+            case listSeparateOneLine : return value;
+            //listSeparateModeDoNotChange:
             default: return this.continued ? toString_ListSeparate(lineSeparator) : value;
         }
     }
@@ -430,8 +431,8 @@ public class Setting extends Chunk {
         }
     }
 
-    public String getString(String lineSeparator) {
-        return toString_Id(toString_List(lineSeparator), lineSeparator);
+    public String getString(String lineSeparator, ListSeparateMode listSepMode) {
+        return toString_Id(toString_List(lineSeparator, listSepMode), lineSeparator);
     }
 
     /**

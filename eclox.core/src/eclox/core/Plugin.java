@@ -10,9 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - Improvement static declaration of plugin relative identifier
- *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
  *                   - #214: add support for TAG and VALUE format
- *                   - #215: add support for line separator
  *
  ******************************************************************************/
 
@@ -44,15 +42,6 @@ public class Plugin extends org.eclipse.core.runtime.Plugin {
      */
     public Plugin() {
         plugin = this;
-    }
-
-    public int listSeparateMode() {
-        // TODO: add UI option for this:
-        // LIST format:
-        //   - do not change (default) = 0
-        //   - separate = 1
-        //   - one line = 2
-        return 0;
     }
 
     public boolean isIdFixedLengthEnabled() {

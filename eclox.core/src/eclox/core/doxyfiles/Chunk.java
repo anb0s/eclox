@@ -10,10 +10,13 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
+ *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
  *
  ******************************************************************************/
 
 package eclox.core.doxyfiles;
+
+import eclox.core.ListSeparateMode;
 
 /**
  * Implements the default item that can be contained in a doxyfile.
@@ -53,6 +56,6 @@ public abstract class Chunk {
      *
      * @return	a string containing the chunk content
      */
-    public abstract String getString(String lineSeparator);
+    public abstract String getString(String lineSeparator, ListSeparateMode listSepMode);
 
 }

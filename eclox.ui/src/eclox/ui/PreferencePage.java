@@ -10,6 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
+ *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
  *
  ******************************************************************************/
 
@@ -21,6 +22,8 @@ import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+
+import eclox.core.ListSeparateMode;
 
 /**
  * Implements the plugin preference page.
@@ -59,14 +62,14 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
         historySize.setValidRange(1, 100);
         addField(historySize);
 
-        RadioGroupFieldEditor autoSave = new RadioGroupFieldEditor(IPreferences.AUTO_SAVE,
+        RadioGroupFieldEditor autoSaveField = new RadioGroupFieldEditor(IPreferences.AUTO_SAVE,
                 "Save all modified files before building", 1,
                 new String[][] { { IPreferences.AUTO_SAVE_NEVER, IPreferences.AUTO_SAVE_NEVER },
                         { IPreferences.AUTO_SAVE_ALWAYS, IPreferences.AUTO_SAVE_ALWAYS },
                         { IPreferences.AUTO_SAVE_ASK, IPreferences.AUTO_SAVE_ASK }, },
                 rootControl, true);
-        autoSave.setPreferenceStore(getPreferenceStore());
-        addField(autoSave);
+        autoSaveField.setPreferenceStore(getPreferenceStore());
+        addField(autoSaveField);
 
         int lineSepLength = LineSeparator.values().length;
         String[][] lineSepNames = new String[lineSepLength][2];
@@ -74,10 +77,21 @@ public class PreferencePage extends org.eclipse.jface.preference.FieldEditorPref
             lineSepNames[i][0] = LineSeparator.values()[i].getName();
             lineSepNames[i][1] = LineSeparator.values()[i].name();
         }
-        RadioGroupFieldEditor lineSeparator = new RadioGroupFieldEditor(IPreferences.LINE_SEPARATOR,
+        RadioGroupFieldEditor lineSeparatorField = new RadioGroupFieldEditor(IPreferences.LINE_SEPARATOR,
                 "Line separator", 1, lineSepNames, rootControl, true);
-        lineSeparator.setPreferenceStore(getPreferenceStore());
-        addField(lineSeparator);
+        lineSeparatorField.setPreferenceStore(getPreferenceStore());
+        addField(lineSeparatorField);
+
+        int listSepModeLength = ListSeparateMode.values().length;
+        String[][] listSepModeNames = new String[listSepModeLength][2];
+        for(int i=0;i<listSepModeLength;i++) {
+            listSepModeNames[i][0] = ListSeparateMode.values()[i].getName();
+            listSepModeNames[i][1] = ListSeparateMode.values()[i].name();
+        }
+        RadioGroupFieldEditor listSepModeField = new RadioGroupFieldEditor(IPreferences.LIST_SEPARATE_MODE,
+                "List separate mode", 1, listSepModeNames, rootControl, true);
+        listSepModeField.setPreferenceStore(getPreferenceStore());
+        addField(listSepModeField);
 
     }
 

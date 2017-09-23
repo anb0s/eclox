@@ -10,6 +10,7 @@
  * Contributors:
  *     Guillaume Brocker - Initial API and implementation
  *     Andre Bossert - #215: add support for line separator
+ *                   - #212: add support for multiple lines (lists) concatenated by backslash (\)
  *
  ******************************************************************************/
 
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import eclox.core.ListSeparateMode;
 import eclox.core.doxyfiles.Chunk;
 import eclox.core.doxyfiles.Doxyfile;
 
@@ -35,6 +37,11 @@ public class Serializer extends InputStream {
     private String lineSeparator;
 
     /**
+     * The list separate mode.
+     */
+    ListSeparateMode listSeparateMode;
+
+    /**
      * an iterator on the doxyfile chunks
      */
     private Iterator<?> chunkIterator;
@@ -49,8 +56,9 @@ public class Serializer extends InputStream {
      *
      * @param	doxyfile	a doxyfile to serialize
      */
-    public Serializer(Doxyfile doxyfile, String lineSeparator) {
+    public Serializer(Doxyfile doxyfile, String lineSeparator, ListSeparateMode listSeparateMode) {
         this.lineSeparator = lineSeparator;
+        this.listSeparateMode = listSeparateMode;
         this.chunkIterator = doxyfile.iterator();
         this.stringBuffer = getNextStringBuffer();
     }
@@ -86,7 +94,7 @@ public class Serializer extends InputStream {
         StringBuffer result = null;
         if (this.chunkIterator.hasNext() == true) {
             Chunk chunk = (Chunk) this.chunkIterator.next();
-            result = new StringBuffer(chunk.getString(lineSeparator));
+            result = new StringBuffer(chunk.getString(lineSeparator, listSeparateMode));
         }
         return result;
     }
