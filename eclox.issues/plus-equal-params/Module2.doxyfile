@@ -20,4 +20,4 @@
 # Add here the module specific directories which should be considered to
 # collect documentation relevant files
 
-INPUT = ..\10_Testcases "new value" ..\11_Features "new value 3" "new value 4"
+INPUT += ..\10_Testcases 
