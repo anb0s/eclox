@@ -41,7 +41,7 @@ public class PreferencesInitializer extends AbstractPreferenceInitializer {
         preferences.setDefault(IPreferences.HANDLE_ESCAPED_VALUES, true);
         preferences.setDefault(IPreferences.LINE_SEPARATOR, LineSeparator.lineSeparatorSystem.name());
         preferences.setDefault(IPreferences.LIST_SEPARATE_MODE, ListSeparateMode.listSeparateModeDoNotChange.name());
-        preferences.setDefault(IPreferences.TAG_FORMAT, TagFormat.tagFormatTrimmed.name());
+        preferences.setDefault(IPreferences.TAG_FORMAT, TagFormat.tagFormatDoNotChange.name());
     }
 
 }
