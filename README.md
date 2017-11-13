@@ -68,3 +68,11 @@ For developers and contributors
 -------------------------------
 Please checkout the wiki page:
 https://github.com/anb0s/eclox/wiki/How-to-build
+
+License:
+--------
+https://eclipse.org/org/documents/epl-v10.html
+
+<a href="http://with-eclipse.github.io/" target="_blank">
+<img alt="with-Eclipse logo" src="http://with-eclipse.github.io/with-eclipse-0.jpg" />
+</a>
