@@ -97,11 +97,29 @@ public class BuildManager {
     }
 
     /**
+     * Launches the update of the given doxyfile.
+     *
+     * @param   doxyfile    the doxyfile to update
+     */
+    public void update(Doxyfile doxyfile) {
+        buildOrUpdate(doxyfile, false);
+    }
+
+    /**
+     * Launches the build of the given doxyfile.
+     *
+     * @param   doxyfile    the doxyfile to build
+     */
+    public void build(Doxyfile doxyfile) {
+        buildOrUpdate(doxyfile, true);
+    }
+
+    /**
      * Launches the build of the given doxyfile.
      *
      * @param	doxyfile	the doxyfile to build
      */
-    public void build(Doxyfile doxyfile) {
+    public void buildOrUpdate(Doxyfile doxyfile, boolean doBuild) {
         // Retrieves the plug-in preferences.
         IPreferenceStore preferences = Plugin.getDefault().getPreferenceStore();
 
@@ -125,7 +143,7 @@ public class BuildManager {
         }
 
         // Retrieves the build job for the given doxyfile.
-        BuildJob job = BuildJob.getJob(doxyfile);
+        BuildJob job = BuildJob.getJob(doxyfile, doBuild);
 
         // Attaches a listener if applicable.
         if (jobHistory.contains(job) == false) {
@@ -194,7 +212,7 @@ public class BuildManager {
                         doxyFile = new File(stateLine);
                     }
                     Doxyfile doxyfile = new Doxyfile(doxyIFile, doxyFile);
-                    BuildJob job = BuildJob.getJob(doxyfile);
+                    BuildJob job = BuildJob.getJob(doxyfile, true);
                     if (jobHistory.isEmpty()) {
                         jobHistory.add(job);
                     } else {

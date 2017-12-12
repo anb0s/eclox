@@ -25,7 +25,7 @@ public enum Images {
             "remove_console"),
     // other
     DEFAULT("default"), DOXYFILE("doxyfile"), ECLIPSE("eclipse"), ECLOX("eclox"), EXPLORE("explore2"), RUN("run"), USER(
-            "user");
+            "user"), UPDATE("update-mode");
     // attributes
     private final String id;
 

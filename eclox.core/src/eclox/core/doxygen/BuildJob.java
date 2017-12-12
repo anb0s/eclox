@@ -30,6 +30,8 @@ package eclox.core.doxygen;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
@@ -195,6 +197,11 @@ public class BuildJob extends Job {
     private Doxyfile doxyfile;
 
     /**
+     * the build type, true = build, false = update
+     */
+    private boolean doBuildType;
+
+    /**
      * the buffer containing the whole build output log
      */
     private StringBuffer log = new StringBuffer();
@@ -212,10 +219,12 @@ public class BuildJob extends Job {
     /**
      * Constructor.
      */
-    private BuildJob(Doxyfile dxfile) {
+    private BuildJob(Doxyfile dxfile, boolean doBuild) {
         super("");
 
         doxyfile = dxfile;
+
+        doBuildType = doBuild;
 
         updateJobName();
 
@@ -245,12 +254,14 @@ public class BuildJob extends Job {
      *
      * @return	a build job that is in charge of building the given doxyfile
      */
-    public static BuildJob getJob(Doxyfile doxyfile) {
+    public static BuildJob getJob(Doxyfile doxyfile, boolean doBuild) {
         BuildJob result = findJob(doxyfile);
 
         // If no jobs has been found, then creates a new one.
         if (result == null) {
-            result = new BuildJob(doxyfile);
+            result = new BuildJob(doxyfile, doBuild);
+        } else {
+            result.setDoBuild(doBuild);
         }
 
         // set new command
@@ -258,6 +269,11 @@ public class BuildJob extends Job {
 
         // Job's done.
         return result;
+    }
+
+    private void setDoBuild(boolean doBuild) {
+        doBuildType = doBuild;
+        updateJobName();
     }
 
     /**
@@ -351,7 +367,9 @@ public class BuildJob extends Job {
     }
 
     public void updateJobName() {
-        setName("Doxygen Build [" + command + " -b " + doxyfile.getFullPath() + "]");
+        Doxygen.getDefault();
+        Doxygen.getDefault();
+        setName("Doxygen Build [" + command + " " + (doBuildType ? Doxygen.getCommandOptionBuild() : Doxygen.getCommandOptionUpdate()) + " " + doxyfile.getFullPath() + "]");
     }
 
     /**
@@ -374,12 +392,60 @@ public class BuildJob extends Job {
         }
     }
 
+    protected void lockBuildFile(IFile doxyIFile, SubMonitor subMonitor) {
+        if (doxyIFile != null) {
+            getJobManager().beginRule(doxyIFile, subMonitor);
+        }
+    }
+
+    protected IFile releaseBuildFile(IFile doxyIFile) {
+        if (doxyIFile != null) {
+            getJobManager().endRule(doxyIFile);
+        }
+        return null;
+    }
+
+    Process createBuildProcess() throws InvokeException, RunException {
+        IFile doxyIFile = getDoxyfile().getIFile();
+        File doxyFile = getDoxyfile().getFile();
+        if (doBuildType) {
+            if (doxyIFile != null) {
+                return Doxygen.getDefault().build(doxyIFile);
+            } else {
+                return Doxygen.getDefault().build(doxyFile);
+            }
+        } else {
+            if (doxyIFile != null) {
+                return Doxygen.getDefault().update(doxyIFile);
+            } else {
+                return Doxygen.getDefault().update(doxyFile);
+            }
+        }
+    }
+
+    private void refreshFiles(IFile doxyIFile, SubMonitor subMonitor) throws CoreException, FileNotFoundException, IOException {
+        if (doxyIFile != null) {
+            if (doBuildType) {
+                // Refreshes the container that has received the documentation outputs.
+                Doxyfile parsedDoxyfile = getDoxyfile();
+                parsedDoxyfile.load();
+                IContainer outputContainer = parsedDoxyfile.getOutputContainer();
+                if (outputContainer != null) {
+                    outputContainer.refreshLocal(IResource.DEPTH_INFINITE,
+                            SubMonitor.convert(subMonitor, "Refresh doxygen output folder...", 1));
+                }
+            } else {
+                doxyIFile.refreshLocal(IResource.DEPTH_ZERO, subMonitor);
+            }
+        }
+    }
+
     /**
      * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
      */
     protected IStatus run(IProgressMonitor monitor) {
         IFile doxyIFile = getDoxyfile().getIFile();
-        File doxyFile = getDoxyfile().getFile();
+
         try {
             // Initializes the progress monitor.
             SubMonitor subMonitor = SubMonitor.convert(monitor, doxyfile.getFullPath(), 6);
@@ -389,18 +455,11 @@ public class BuildJob extends Job {
             clearMarkers();
             subMonitor.worked(1);
 
-            // Locks access to the doxyfile.
-            if (doxyIFile != null) {
-                getJobManager().beginRule(doxyIFile, subMonitor);
-            }
+            // Locks access to the doxyfile
+            lockBuildFile(doxyIFile, subMonitor);
 
             // Creates the doxygen build process and log feeders.
-            Process buildProcess = null;
-            if (doxyIFile != null) {
-                buildProcess = Doxygen.getDefault().build(doxyIFile);
-            } else {
-                buildProcess = Doxygen.getDefault().build(doxyFile);
-            }
+            Process buildProcess = createBuildProcess();
 
             // stdin and stderr
             MyLogFeeder inputLogFeeder = new MyLogFeeder(buildProcess.getInputStream());
@@ -432,11 +491,8 @@ public class BuildJob extends Job {
             }
             subMonitor.worked(2);
 
-            // Unlocks the doxyfile.
-            if (doxyIFile != null) {
-                getJobManager().endRule(doxyIFile);
-                doxyIFile = null;
-            }
+            // Unlocks the doxyfile
+            doxyIFile = releaseBuildFile(doxyIFile);
 
             // Builds error and warning markers
             createMarkers(subMonitor);
@@ -446,17 +502,12 @@ public class BuildJob extends Job {
             buildProcess.waitFor();
             subMonitor.worked(4);
 
-            // Refreshes the container that has received the documentation outputs.
-            Doxyfile parsedDoxyfile = getDoxyfile();
-            parsedDoxyfile.load();
-            IContainer outputContainer = parsedDoxyfile.getOutputContainer();
-            if (outputContainer != null) {
-                outputContainer.refreshLocal(IResource.DEPTH_INFINITE,
-                        SubMonitor.convert(subMonitor, "Refresh doxygen output folder...", 1));
-            }
-            subMonitor.done();
+            // refresh the file
+            refreshFiles(doxyIFile, subMonitor);
 
             // Job's done.
+            subMonitor.done();
+
             return Status.OK_STATUS;
         } catch (OperationCanceledException e) {
             return Status.CANCEL_STATUS;
@@ -466,9 +517,7 @@ public class BuildJob extends Job {
         } catch (Throwable t) {
             return new Status(Status.ERROR, Plugin.getDefault().getBundle().getSymbolicName(), 0, t.getMessage(), t);
         } finally {
-            if (doxyIFile != null) {
-                getJobManager().endRule(doxyIFile);
-            }
+            doxyIFile = releaseBuildFile(doxyIFile);
         }
     }
 

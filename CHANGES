@@ -1,7 +1,7 @@
 see too: https://github.com/anb0s/eclox/releases
 
 ----------------------------------------------------------------
-v0.12.0 (??.09.2017)
+v0.12.0 (12.12.2017)
 ----------------------------------------------------------------
 Second minor release @github
 Fixed issues (https://github.com/anb0s/eclox/milestone/3?closed=1):
@@ -20,6 +20,10 @@ Fixed issues (https://github.com/anb0s/eclox/milestone/3?closed=1):
 - [x] #206 [v0.12] console icons are not shown
 - [x] #207 [v0.12] exception if new file created
 - [x] #208 [v0.12] java.lang.NullPointerException in Advanced tab
+- [x] #211 add support for the += operator
+- [x] #212 add support for multiple lines (lists) concatenated by backslash (\)
+- [x] #214 add support for TAG and VALUE format #214
+- [x] #215 add support for line separator
 
 ----------------------------------------------------------------
 v0.11.2 (09.05.2017)

@@ -352,8 +352,8 @@ public abstract class Doxygen {
      *
      * @param   ifile   the configuration file to update.
      */
-    public void update(IFile ifile) throws InvokeException, RunException {
-        update(ifile.getLocation().makeAbsolute().toFile());
+    public void updateLocal(IFile ifile) throws InvokeException, RunException {
+        updateLocal(ifile.getLocation().makeAbsolute().toFile());
         // Force some refresh to display the file.
         try {
             ifile.refreshLocal(0, null);
@@ -367,8 +367,30 @@ public abstract class Doxygen {
      *
      * @param   file   the configuration file to update.
      */
-    public void update(File file) throws InvokeException, RunException {
+    public void updateLocal(File file) throws InvokeException, RunException {
         run_local(file, true, COMMAND_OPTION_UPDATE);
+    }
+
+    /**
+     * Launch update for configuration file.
+     *
+     * @param   file   the configuration file to update.
+     *
+     * @return  The process that run the update.
+     */
+    public Process update(File file) throws InvokeException, RunException {
+        return run(file, true, COMMAND_OPTION_UPDATE);
+    }
+
+    /**
+     * Launch update for configuration file.
+     *
+     * @param   ifile   the configuration file to update.
+     *
+     * @return  The process that run the update.
+     */
+    public Process update(IFile ifile) throws InvokeException, RunException {
+        return update(ifile.getLocation().makeAbsolute().toFile());
     }
 
     public static String getCommandOptionHelp() {

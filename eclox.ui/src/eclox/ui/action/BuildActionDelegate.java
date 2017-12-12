@@ -47,9 +47,6 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 
 import eclox.core.doxyfiles.Doxyfile;
 import eclox.core.doxygen.BuildJob;
-import eclox.core.doxygen.Doxygen;
-import eclox.core.doxygen.InvokeException;
-import eclox.core.doxygen.RunException;
 import eclox.ui.DoxyfileSelector;
 import eclox.ui.Images;
 import eclox.ui.MenuItemType;
@@ -287,10 +284,10 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
         return doxyfile;
     }
 
-    protected void doBuild(Doxyfile doxyfile) {
+    protected void doBuildOrUpdate(Doxyfile doxyfile, boolean doBuild) {
         if (doxyfile != null) {
             if (doxyfile.exists(true)) {
-                Plugin.getDefault().getBuildManager().build(doxyfile);
+                Plugin.getDefault().getBuildManager().buildOrUpdate(doxyfile, doBuild);
             } else {
                 MessageDialog dialog = new MessageDialog(null, "Missing Doxyfile", null,
                         "Cannot find Doxyfile '" + doxyfile.getFullPath()
@@ -299,13 +296,22 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
                 int result = dialog.open();
                 if (result == 0) {
                     BuildJob[] clearJobs = new BuildJob[1];
-                    clearJobs[0] = BuildJob.getJob(doxyfile);
+                    clearJobs[0] = BuildJob.getJob(doxyfile, doBuild);
                     clearHistory(Plugin.getDefault().getBuildManager().getRecentBuildJobsReversed(), clearJobs);
                 }
             }
         }
     }
 
+    protected void doBuild(Doxyfile doxyfile) {
+        doBuildOrUpdate(doxyfile, true);
+    }
+
+    protected void doUpdate(Doxyfile doxyfile) {
+        doBuildOrUpdate(doxyfile, false);
+    }
+
+    /*
     protected void doUpdate(Doxyfile doxyfile) {
         if (doxyfile != null) {
             if (doxyfile.exists(true)) {
@@ -329,6 +335,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
             }
         }
     }
+    */
 
     /**
      * Dispose the owned menu.
