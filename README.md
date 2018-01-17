@@ -1,4 +1,4 @@
-# eclox  [![Build Status](https://travis-ci.org/anb0s/eclox.svg)](https://travis-ci.org/anb0s/eclox)
+# eclox [![Version](https://img.shields.io/github/release/anb0s/eclox.svg)](https://github.com/anb0s/eclox/releases) [![Issues](https://img.shields.io/github/issues/anb0s/eclox.svg)](https://github.com/anb0s/eclox/issues) [![Build Status](https://travis-ci.org/anb0s/eclox.svg)](https://travis-ci.org/anb0s/eclox) [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://eclipse.org/org/documents/epl-v10.html)
 
 Eclox is a simple doxygen frontend plug-in for eclipse. It aims to provide a slim and sleek integration of the code documentation process into eclipse.
 
