@@ -65,16 +65,26 @@ public final class BundledDoxygen extends Doxygen {
                 final String os = elements[j].getAttribute("os");
                 if (Platform.getOS().equals(os) && Platform.getOSArch().equals(arch)) {
                     String path = elements[j].getAttribute("path");
+                    // split folder and file name
+                    String folderPath = "";
+                    String fileName = path;
+                    int index = path.lastIndexOf("/");
+                    if (i > -1) {
+                        folderPath = path.substring(0, index);
+                        fileName = path.substring(index + 1, path.length());
+                    }
                     URL url;
                     try {
-                        url = FileLocator.toFileURL(Platform.getBundle("org.gna.eclox.doxygen.core").getEntry(path));
+                        // https://github.com/anb0s/eclox/issues/222
+                        // extract the folder
+                        url = FileLocator.toFileURL(Platform.getBundle("org.gna.eclox.doxygen.core").getEntry(folderPath));
                         // https://github.com/anb0s/eclox/issues/184
                         // [v0.11] bundled Doxygen binaries are not working (not executable) at Linux
-                        File exe = new File(FileLocator.resolve(url).getPath());
+                        File exe = new File(FileLocator.resolve(url).getPath() + fileName);
                         if (!exe.canExecute()) {
                             exe.setExecutable(true);
                         }
-                        doxygens.add(new BundledDoxygen(url));
+                        doxygens.add(new BundledDoxygen(new URL(url.toString() + fileName)));
                     } catch (IOException e) {
                         //Plugin.getDefault().logError( path + ": not a valid doxygen path." );
                         Plugin.log(e);
