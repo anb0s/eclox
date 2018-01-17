@@ -3,7 +3,7 @@
    <description name="Eclox Update Site" url="http://anb0s.github.io/eclox">
       This is the official eclox&apos;s update site.
    </description>
-   <feature url="features/org.gna.eclox.feature_0.12.0.qualifier.jar" id="org.gna.eclox.feature" version="0.12.0.qualifier">
+   <feature url="features/org.gna.eclox.feature_0.12.1.qualifier.jar" id="org.gna.eclox.feature" version="0.12.1.qualifier">
       <category name="Eclox-0.12"/>
    </feature>
    <category-def name="Eclox-0.12" label="Eclox 0.12">
