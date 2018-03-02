@@ -3,6 +3,10 @@ jdk:
   - openjdk8
   - oraclejdk8
 
+env:
+  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.7
+  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.8
+
 before_script: cd eclox.root
 
-script: mvn clean verify
+script: mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
