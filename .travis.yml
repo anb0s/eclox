@@ -11,5 +11,6 @@ env:
 
 install: true
 
-script: cd eclox.root && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
-script: cd eclox.doxygen.root && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
+script:
+  - cd eclox.root && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
+  - cd eclox.doxygen.root && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
