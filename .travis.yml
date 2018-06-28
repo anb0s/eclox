@@ -9,8 +9,10 @@ env:
   - ECLIPSE_TARGET_PLATFORM=Eclipse-4.7
   - ECLIPSE_TARGET_PLATFORM=Eclipse-4.8
 
+env:
+  - ECLOX_ROOT_DIR=eclox.root
+  - ECLOX_ROOT_DIR=eclox.doxygen.root
+
 install: true
 
-script:
-  - cd eclox.root && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
-  - cd eclox.doxygen.root && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
+script: cd $ECLOX_ROOT_DIR && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
