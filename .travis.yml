@@ -6,12 +6,10 @@ jdk:
   - oraclejdk9
 
 env:
-  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.7
-  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.8
-
-env:
-  - ECLOX_ROOT_DIR=eclox.root
-  - ECLOX_ROOT_DIR=eclox.doxygen.root
+  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.7 ECLOX_ROOT_DIR=eclox.root
+  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.7 ECLOX_ROOT_DIR=eclox.doxygen.root
+  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.8 ECLOX_ROOT_DIR=eclox.root
+  - ECLIPSE_TARGET_PLATFORM=Eclipse-4.8 ECLOX_ROOT_DIR=eclox.doxygen.root
 
 install: true
 
