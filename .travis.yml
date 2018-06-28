@@ -15,8 +15,6 @@ env:
 
 install: true
 
-before_script: cd $TRAVIS_BUILD_DIR
-
 script:
-  - cd $ECLOX_ROOT_FOLDER && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
-  - cd $ECLOX_DOXYGEN_ROOT_FOLDER && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
+  - cd $TRAVIS_BUILD_DIR/$ECLOX_ROOT_FOLDER && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
+  - cd $TRAVIS_BUILD_DIR/$ECLOX_DOXYGEN_ROOT_FOLDER && mvn -Dtarget.platform=$ECLIPSE_TARGET_PLATFORM clean verify
