@@ -6,4 +6,5 @@ Bundle-Version: 0.13.0.qualifier
 Bundle-Vendor: Andre Bossert
 Bundle-Localization: 
 Bundle-ClassPath: target/eclox-branding-lib.jar
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.gna.eclox.branding

@@ -250,7 +250,7 @@ public class BuildActionDelegate implements IWorkbenchWindowPulldownDelegate {
                 new BuildJobLabelProvider(), "Select Doxyfiles you want to remove from history");
         dialog.setTitle("Clear History");
         if ((selectedJobs != null) && (selectedJobs.length > 0)) {
-            dialog.setInitialSelections(selectedJobs);
+            dialog.setInitialSelections((Object[])selectedJobs);
         }
         if (dialog.open() == Window.OK) {
             Object[] result = dialog.getResult();

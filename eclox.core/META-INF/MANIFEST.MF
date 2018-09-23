@@ -21,6 +21,7 @@ Export-Package: eclox.core;uses:="org.eclipse.core.runtime.preferences,org.osgi.
    org.eclipse.jface.viewers,
    org.eclipse.swt.widgets,
    org.eclipse.ui"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: target/eclox-core-lib.jar
+Automatic-Module-Name: org.gna.eclox.core
