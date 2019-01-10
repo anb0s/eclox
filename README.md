@@ -1,15 +1,24 @@
 # eclox [![Version](https://img.shields.io/github/release/anb0s/eclox.svg)](https://github.com/anb0s/eclox/releases) [![Issues](https://img.shields.io/github/issues/anb0s/eclox.svg)](https://github.com/anb0s/eclox/issues) [![Build Status](https://travis-ci.org/anb0s/eclox.svg)](https://travis-ci.org/anb0s/eclox) [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://eclipse.org/org/documents/epl-v10.html)
 
-Eclox is a simple doxygen frontend plug-in for eclipse. It aims to provide a slim and sleek integration of the code documentation process into eclipse.
+Eclox is a simple [Doxygen](http://www.doxygen.nl) frontend plug-in for [Eclipse](http://www.eclipse.org). It aims to provide a slim and sleek integration of the code documentation process into Eclipse.
 
 ![eclox_arch](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox.png "Eclox Architecture")
 
 Features Overview:
 ------------------
-- Graphical edition of doxyfile settings
-- integrated doxygen invocation
-- doxygen outputs logging and
-- optional packaged doxygen binaries (for windows and linux)
+- Graphical edition of Doxygen settings (Doxyfile)
+- Integrated Doxygen invocation
+- Doxygen outputs logging
+- Optional packaged Doxygen binaries (for Windows and Linux)
+
+Not supported:
+--------------
+- Content assist for Doxygen comments --> Eclipse C/C++ (CDT) supports it
+
+Prerequisites:
+-------------
+- **Java SE 1.7 or newer**
+- **Doxygen executable in PATH or bundled with Eclox or custom location** (see Installation and Configuration below)
 
 Installation:
 -------------
@@ -24,33 +33,51 @@ OR
 Using the update site located at:
 http://anb0s.github.io/eclox
 
+Select Eclox Plugin and optional bundled Doxygen executable:
+
+![Eclox install](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-install.png)
+
 OR
 
-You can download the update site for offline install --> go to: https://github.com/anb0s/eclox/releases
-and download the org.gna.eclox.site-X.zip file, e.g. for latest stable version: https://github.com/anb0s/eclox/releases/latest
+You can download the update sites for offline install --> go to: https://github.com/anb0s/eclox/releases
+and download the **org.gna.eclox.site-0.12.1-SNAPSHOT.zip** and optional bundled doxygen executable **org.gna.eclox.doxygen.site-X.Y.Z-SNAPSHOT.zip** files, e.g. for latest stable version: https://github.com/anb0s/eclox/releases/latest
 
-Now use inside Eclipse: "Help-> Install New Software... -> Add... -> Archive...", select the zip file and enter name:
+Now use inside Eclipse: "**Help-> Install New Software... -> Add... -> Archive...**", select the zip file and enter name:
 
-![image](https://user-images.githubusercontent.com/95811/28266004-008a8bfc-6af3-11e7-9569-095445024e0a.png)
+![Eclox instal local](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-install-local.png)
 
 and select it:
 
-![image](https://user-images.githubusercontent.com/95811/28266031-2517479e-6af3-11e7-945e-75d85a448630.png)
+![Eclox instal local-2](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-install-local-2.png)
 
+**Optional: similar installation for Doxygen binaries:**
 
-For additional details, please refer to eclipse's user guide.
+![Eclox Doxygen instal local](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-doxygen-install-local.png)
+
+![Eclox instal local-2](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-doxygen-install-local-2.png)
+
+For additional details, please refer to Eclipse user guide.
 
 Configuration
 -------------
 
-Once the plugin installed, you must ensure that the default PATH environment variable makes the Doxygen binary reachable for the plugin. If not, you can update PATH to include to directory containing the Doxygen binary, or you can tell eclox where that binary is located on your system (which is in my opinion the better solution). To do this, open eclipse's preference edition dialog window and go into the new "Doxygen" section.
+Once the plugin installed, you must ensure that the default PATH environment variable makes the Doxygen binary reachable for the plugin or you have installed the bundled Doxygen executable from Eclox site. If not, you can update PATH to include to directory containing the Doxygen binary, or you can tell eclox where that binary is located on your system (which is in my opinion the better solution). To do this, open eclipse's preference edition dialog window and go into the new "Doxygen" section.
+
+If you have installed Doxygen executable from Eclox update site, check if it was automaticaly selected:
+![Eclox Doxygen Bundled](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-bundled-doxygen.png)
+
+If not you can select custom Doxygen location with "Add..." and "Browse...":
+![Eclox Doxygen Custom](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-custom-doxygen.png)
+
+Now just select and apply:
+![Eclox Doxygen Custom](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-custom-doxygen-enabled.png)
 
 For **Mac OS X** users there is an excellent HowTo: https://github.com/theolind/mahm3lib/wiki/Integrating-Doxygen-with-Eclipse
 
 Usage
 -----
 
-You can create new Doxygen projects (also called doxyfiles) using the creation wizard. Go to "File->New->Other->Other->Doxygen Configuration". Press next and set both file location and name. Then a empty doxyfile will be created at the specified location, the wizard automatically adds the ".Doxyfile" extension.
+You can create new Doxygen projects (also called doxyfiles) using the creation wizard. Go to "**File -> New -> Other -> Other -> Doxyfile**". Press next and set both file location and name. Then an empty doxyfile will be created at the specified location. The wizard automatically adds the ".Doxyfile" extension.
 
 You should now see a file with a blue @-sign icon. This is your new doxyfile. Double-clicking on it will open the editor. You can now browse and edit the settings.
 
@@ -58,9 +85,9 @@ You should now see a file with a blue @-sign icon. This is your new doxyfile. Do
 
 ![eclox_editor_advanced](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/editor-advanced.png "Eclox advanced editor")
 
-Once your have properly set all doxyfile fields, you can launch a documentation build using the toolbar icon showing a blue @-sign. In the case the button is not visible in the toolbar, your current perspective needs to get configured. Go to "Window->Customize perspective->Commands" and in "Available command groups" check "Doxygen". Additionally, you can browse the latest builds by clicking the down arrow right to the toolbar button.
+Once your have properly set all doxyfile fields, you can launch a documentation build using the toolbar icon showing a blue @-sign. In the case the button is not visible in the toolbar, your current perspective needs to get configured. Go to "**Window -> Customize perspective -> Commands**" and in "**Available command groups**" check "**Doxygen**". Additionally, you can browse the latest builds by clicking the down arrow right to the toolbar button.
 
-When the documentation build starts, a new view showing the build log opens. In its toolbar, a button named "Stop" allows you to halt the current build process. The current build also appears in the Eclipse job progress view and you can control the job from there.
+When the documentation build starts, a new view showing the build log opens. In its toolbar, a button named "**Stop**" allows you to halt the current build process. The current build also appears in the Eclipse job progress view and you can control the job from there.
 
 The build toolbar action determine the next doxyfile to build depending on the current active workbench part (editor or view) and the current selection in that part. For example, if the active part is a doxyfile editor, the next doxyfile to build will be the one being edited. If the active part is the resource explorer and the current selection is a doxyfile, that doxyfile will be next to get build. In the case the active part selection doesn't correspond to a doxyfile, the last built doxyfile will be rebuiled. And if the build history is empty, you will be asked for the doxyfile to build.
 
