@@ -81,15 +81,26 @@ You can create new Doxygen projects (also called doxyfiles) using the creation w
 
 You should now see a file with a blue @-sign icon. This is your new doxyfile. Double-clicking on it will open the editor. You can now browse and edit the settings.
 
-![eclox_editor_basic](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/editor-basic.png "Eclox basic editor")
+![Eclox basic editor](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/editor-basic.png)
 
-![eclox_editor_advanced](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/editor-advanced.png "Eclox advanced editor")
+![Eclox advanced editor](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/editor-advanced.png)
 
-Once your have properly set all doxyfile fields, you can launch a documentation build using the toolbar icon showing a blue @-sign. In the case the button is not visible in the toolbar, your current perspective needs to get configured. Go to "**Window -> Customize perspective -> Commands**" and in "**Available command groups**" check "**Doxygen**". Additionally, you can browse the latest builds by clicking the down arrow right to the toolbar button.
+Once your have properly set all doxyfile fields, you can launch a documentation build using the toolbar icon showing a blue @-sign.
+![Eclox toolbar icon](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-toolbar-icon.png)
 
-When the documentation build starts, a new view showing the build log opens. In its toolbar, a button named "**Stop**" allows you to halt the current build process. The current build also appears in the Eclipse job progress view and you can control the job from there.
+In the case the button is not visible in the toolbar, your current perspective needs to get configured. Go to "**Window -> Customize perspective -> Commands**" and in "**Available command groups**" check "**Doxygen**". Additionally, you can browse the latest builds by clicking the down arrow right to the toolbar button.
+
+![Eclox toolbar icon menu](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-toolbar-icon-menu.png)
+
+When the documentation build starts, a new view showing the build log opens.
+
+![Eclox console](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-console.png)
+
+In its toolbar, a button named "**Stop**" allows you to halt the current build process. The current build also appears in the Eclipse job progress view and you can control the job from there.
 
 The build toolbar action determine the next doxyfile to build depending on the current active workbench part (editor or view) and the current selection in that part. For example, if the active part is a doxyfile editor, the next doxyfile to build will be the one being edited. If the active part is the resource explorer and the current selection is a doxyfile, that doxyfile will be next to get build. In the case the active part selection doesn't correspond to a doxyfile, the last built doxyfile will be rebuiled. And if the build history is empty, you will be asked for the doxyfile to build.
+
+![Eclox select doxyfile](https://raw.githubusercontent.com/anb0s/eclox/master/eclox.site/images/eclox-select-doxyfile.png)
 
 For developers and contributors
 -------------------------------
