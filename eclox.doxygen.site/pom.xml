@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.gna.eclox.doxygen.group</groupId>
         <artifactId>org.gna.eclox.doxygen.releng</artifactId>
-        <version>1.8.13-SNAPSHOT</version>
+        <version>1.8.14-SNAPSHOT</version>
         <relativePath>../eclox.doxygen.releng</relativePath>
     </parent>
 
