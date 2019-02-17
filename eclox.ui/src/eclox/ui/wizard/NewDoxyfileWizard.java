@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2003, 2004, 2007, 2008, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -30,7 +30,7 @@ import eclox.ui.Plugin;
 /**
  * Implement the new file wizard extension to provide a way to create
  * new doxyfiles.
- * 
+ *
  * @author gbrocker
  */
 public class NewDoxyfileWizard extends Wizard implements INewWizard {
@@ -40,7 +40,7 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 
     /**
      * Retrieves the created doxyfile.
-     * 
+     *
      * @return	the created doxyfile, null if none
      */
     public IFile getDoxyfile() {
@@ -83,12 +83,11 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
                         "An error occured while running doxygen. " + runException.toString());
                 return true;
             }
-            // Doxygen was impossible to run. 
-            catch (InvokeException invokeException) {
+            // Doxygen was impossible to run.
+            catch (InvokeException exception) {
                 if (Plugin.editPreferencesAfterDoxygenInvocationFailed()) {
                     continue;
                 }
-
                 // Stops the wizard.
                 return true;
             }
@@ -97,10 +96,10 @@ public class NewDoxyfileWizard extends Wizard implements INewWizard {
 
     /**
      * Create the resource file.
-     * 
+     *
      * @param containerPath	The path to the container for the resource to create.
      * @param fileName		A string containnig the name of the file resource to create.
-     * 
+     *
      * @return	The created file resource. The file system's file hasn't been created at this step.
      */
     private IFile createFile(IPath containerPath, String fileName) {

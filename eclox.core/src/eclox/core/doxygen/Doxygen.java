@@ -128,48 +128,6 @@ public abstract class Doxygen {
         return doxygen;
     }
 
-    /**
-     * Retrieves the version string of wrapped doxygen.
-     *
-     * @return	a string containing the doxygen version string
-     */
-    public String getVersion() {
-        try {
-            // create process builder with doxygen command
-            ProcessBuilder pb = new ProcessBuilder(getCommand(), COMMAND_OPTION_HELP);
-            // Runs the command and retrieves the version string.
-            Process process = pb.start();
-            /*int ret = */process.waitFor();
-
-            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-
-            // Matches the doxygen welcome message.
-            Pattern pattern = Pattern.compile("^doxygen\\s+version\\s+([\\d\\.]+).*",
-                    Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
-            Matcher matcher = null;
-            String inputLine = input.readLine();
-
-            if (inputLine != null && inputLine.length() > 0) {
-                matcher = pattern.matcher(inputLine);
-            }
-
-            if (matcher != null && matcher.matches()) {
-                return matcher.group(1);
-            } else {
-                String errorMessage = new String();
-                String line;
-                while ((line = error.readLine()) != null) {
-                    errorMessage = errorMessage.concat(line);
-                }
-                throw new RuntimeException("Unable to get doxygen version: " + errorMessage);
-            }
-        } catch (Throwable t) {
-            Plugin.log(t);
-            return null;
-        }
-    }
-
     private String resolveOneVariable(String key, IStringVariableManager variableManager, boolean dynamicAllowed) {
         if (key != null) {
             if (variableManager == null) {
@@ -220,6 +178,99 @@ public abstract class Doxygen {
         }
     }
 
+    private void addAllVarsToEnvironment(Map<String, String> env) {
+        Map<String, String> resolvedVars = new HashMap<String, String>();
+        resolveAllVariables(resolvedVars);
+        env.putAll(resolvedVars);
+    }
+
+    /*
+    private void addEcloxVarsToEnvironment(Map<String, String> env) {
+        List<String> vars = new ArrayList<String>();
+        vars.add("GRAPHVIZ_PATH");
+        for (String name : vars) {
+            if (name != null && !name.isEmpty())
+            {
+                String value = resolveOneVariable(name, null, true);
+                if (value != null) {
+                    env.put(name, value);
+                }
+            }
+        }
+    }
+    */
+
+    private void setEnvironment(ProcessBuilder pb) {
+    	// get passed system environment
+        Map<String, String> envs = pb.environment();
+        /*
+         * the library search path environment variable name differs between different systems:
+         * Windows: PATH
+         * Linux  : LD_LIBRARY_PATH
+         */
+        String commandFolder = getCommandFolder();
+        if ((commandFolder != null) && !commandFolder.isEmpty()) {
+            envs.put("PATH", commandFolder + File.pathSeparator + System.getenv("PATH"));
+            envs.put("LD_LIBRARY_PATH", commandFolder + File.pathSeparator + System.getenv("LD_LIBRARY_PATH"));
+        }
+
+        // add own variables, like GRAPHVIZ_PATH etc.
+        //addEcloxVarsToEnvironment(envs);
+        // add all defined variables
+        addAllVarsToEnvironment(envs);
+    }
+
+    private Process createProcess(List<String> command, File workingDir) throws IOException {
+        ProcessBuilder pb = new ProcessBuilder(command);
+        setEnvironment(pb);
+        if ((workingDir != null) && workingDir.exists()) {
+        	pb.directory(workingDir);
+        }
+        return pb.start();
+    }
+
+	/**
+     * Retrieves the version string of wrapped doxygen.
+     *
+     * @return	a string containing the doxygen version string
+     */
+    public String getVersion() {
+        try {
+        	List<String> command = new ArrayList<String>();
+        	command.add(getCommand());
+        	command.add(COMMAND_OPTION_HELP);
+        	Process process = createProcess(command, null);
+            process.waitFor();
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            // matches the doxygen welcome message
+            Pattern pattern = Pattern.compile("^doxygen\\s+version\\s+([\\d\\.]+).*",
+                    Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+            Matcher matcher = null;
+            String inputLine = input.readLine();
+
+            if (inputLine != null && inputLine.length() > 0) {
+                matcher = pattern.matcher(inputLine);
+            }
+
+            if (matcher != null && matcher.matches()) {
+                return matcher.group(1);
+            } else {
+                String errorMessage = new String();
+                String line;
+                while ((line = error.readLine()) != null) {
+                    errorMessage = errorMessage.concat(line);
+                }
+                throw new RuntimeException("Unable to get doxygen version: " + errorMessage);
+            }
+        } catch (Throwable t) {
+            Plugin.log(t);
+            return null;
+        }
+    }
+
     /**
      * Launch a doxygen with given file an mode
      *
@@ -233,18 +284,12 @@ public abstract class Doxygen {
             throw new RunException("Missing or bad doxyfile");
         }
         try {
-            // create process builder with doxygen command and doxyfile
-            ProcessBuilder pb = new ProcessBuilder(getCommand(), commandOption, file.getAbsolutePath());
-            // set working directory
-            pb.directory(file.getParentFile().getAbsoluteFile());
-            // get passed system environment
-            Map<String, String> env = pb.environment();
-            // add own variables, like GRAPHVIZ_PATH etc.
-            //addEcloxVarsToEnvironment(env);
-            // add all defined variables
-            addAllVarsToEnvironment(env);
-            // return the process
-            return pb.start();
+        	// create process with doxygen command
+        	List<String> command = new ArrayList<String>();
+        	command.add(getCommand());
+        	command.add(commandOption);
+        	command.add(file.getCanonicalPath());
+        	return createProcess(command, file.getParentFile().getAbsoluteFile());
         } catch (IOException ioException) {
             throw new InvokeException(ioException);
         }
@@ -270,28 +315,6 @@ public abstract class Doxygen {
      */
     public Process build(File file) throws InvokeException, RunException {
         return run(file, true, COMMAND_OPTION_BUILD);
-    }
-
-    /*
-    private void addEcloxVarsToEnvironment(Map<String, String> env) {
-        List<String> vars = new ArrayList<String>();
-        vars.add("GRAPHVIZ_PATH");
-        for (String name : vars) {
-            if (name != null && !name.isEmpty())
-            {
-                String value = resolveOneVariable(name, null, true);
-                if (value != null) {
-                    env.put(name, value);
-                }
-            }
-        }
-    }
-    */
-
-    private void addAllVarsToEnvironment(Map<String, String> env) {
-        Map<String, String> resolvedVars = new HashMap<String, String>();
-        resolveAllVariables(resolvedVars);
-        env.putAll(resolvedVars);
     }
 
     /**
@@ -336,6 +359,8 @@ public abstract class Doxygen {
                 }
                 throw new RunException(errorMsg);
             }
+        } catch (InvokeException invokeExpection) {
+            throw invokeExpection;
         } catch (RunException runException) {
             throw runException;
         } catch (SecurityException securityException) {
@@ -421,6 +446,14 @@ public abstract class Doxygen {
      * @return	a string containing the path to the doxygen binary file
      */
     public abstract String getCommand();
+
+    /**
+     * Retrieves the string containing the folder of the doxygen binary.
+     * Sub-classes must implement this method.
+     *
+     * @return	a string containing the path to the folder of the doxygen binary file
+     */
+    public abstract String getCommandFolder();
 
     /**
      * Retrieves the description string of the doxygen wrapper instance.

@@ -34,6 +34,10 @@ import eclox.core.Plugin;
 
 public final class BundledDoxygen extends Doxygen {
 
+    /**
+     * a string containing the URL to the bundled doxygen
+     *
+     */
     private URL url;
 
     /**
@@ -101,9 +105,19 @@ public final class BundledDoxygen extends Doxygen {
     @Override
     public String getCommand() {
         try {
-            return FileLocator.resolve(url).getPath();
-        } catch (Throwable t) {
-            Plugin.log(t);
+            return new File(FileLocator.resolve(url).getPath()).getCanonicalPath();
+        } catch (IOException e) {
+            Plugin.log(e);
+            return null;
+        }
+    }
+
+    @Override
+    public String getCommandFolder() {
+    	try {
+			return new File(FileLocator.resolve(url).getPath()).getParentFile().getCanonicalPath();
+        } catch (IOException e) {
+            Plugin.log(e);
             return null;
         }
     }

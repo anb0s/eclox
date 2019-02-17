@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (C) 2008, 2013, Guillaume Brocker
- * 
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import eclox.core.doxygen.BuildJob;
 /**
  * @brief	Monitors all doxygen build jobs and report errors
  * 			concerning doxygen invokation failures.
- * 
+ *
  * @author gbrocker
  */
 public class JobMonitor extends JobChangeAdapter {
@@ -38,7 +38,9 @@ public class JobMonitor extends JobChangeAdapter {
 
             display.asyncExec(new Runnable() {
                 public void run() {
-                    Plugin.editPreferencesAfterDoxygenInvocationFailed();
+                	if (Plugin.editPreferencesAfterDoxygenInvocationFailed()) {
+                		event.getJob().schedule();
+                	}
                 }
             });
         }

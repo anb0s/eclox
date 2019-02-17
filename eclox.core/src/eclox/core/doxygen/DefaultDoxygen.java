@@ -28,6 +28,11 @@ public class DefaultDoxygen extends Doxygen {
     }
 
     @Override
+    public String getCommandFolder() {
+    	return "";
+    }
+
+    @Override
     public String getDescription() {
         return new String();
     }

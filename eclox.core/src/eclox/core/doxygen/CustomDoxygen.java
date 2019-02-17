@@ -71,6 +71,11 @@ public final class CustomDoxygen extends Doxygen {
     }
 
     @Override
+    public String getCommandFolder() {
+    	return new File(location).getParentFile().getPath();
+    }
+
+    @Override
     public String getDescription() {
         return "Using location: '" + getLocation() + "'";
     }
