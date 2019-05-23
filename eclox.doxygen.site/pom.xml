@@ -24,7 +24,7 @@
         <version>${tycho.version}</version>
         <configuration>
           <!-- IMPORTANT: DO NOT split the arg line -->
-          <appArgLine>-application org.eclipse.ant.core.antRunner -buildfile packaging-p2composite.ant p2.composite.add -Dsite.label="Eclox" -Dsite.dir=${site.dir} -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -DbuildQualifier=${buildQualifier}</appArgLine>
+          <appArgLine>-application org.eclipse.ant.core.antRunner -buildfile ../eclox.site/packaging-p2composite.ant p2.composite.add -Dsite.label="Eclox" -Dsite.dir=${site.dir} -Dproject.build.directory=${project.build.directory} -DunqualifiedVersion=${unqualifiedVersion} -DbuildQualifier=${buildQualifier}</appArgLine>
           <repositories>
             <repository>
               <id>Oxygen</id>
