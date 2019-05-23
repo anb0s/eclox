@@ -25,7 +25,7 @@
   </repositories>
 
   <modules>
-      <module>../eclox.doxygen.platform</module>
+    <module>../eclox.doxygen.platform</module>
     <module>../eclox.doxygen.core</module>
     <module>../eclox.doxygen.feature</module>
     <module>../eclox.doxygen.site</module>

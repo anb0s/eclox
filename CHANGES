@@ -1,6 +1,15 @@
 see too: https://github.com/anb0s/eclox/releases
 
 ----------------------------------------------------------------
+v0.12.1 (18.01.2018)
+----------------------------------------------------------------
+Bug fixes for the second minor release @github
+Fixed issues (https://github.com/anb0s/eclox/milestone/6?closed=1):
+- [x] #220 Cannot get eclox doxygen to run in the code composer studio eclipse package
+- [x] #222 bundled doxygen cannot be used
+- [x] #223 create bundled doxygen with all needed files
+
+----------------------------------------------------------------
 v0.12.0 (12.12.2017)
 ----------------------------------------------------------------
 Second minor release @github
