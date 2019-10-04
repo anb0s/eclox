@@ -9,10 +9,44 @@ Features:
 - optional packaged doxygen binaries (for windows and linux)
 
 Eclox is a free software distributed under the term of the:
-- Eclipse Public Licence v 1.0 from version 0-10-0
-- GNU General Public Licence (GPL) for version 0-8-x and older
+- Eclipse Public Licence v2.0 for version 0.13.x and newer
+- Eclipse Public Licence v1.0 for version 0.10.x - 0.12.x
+- GNU General Public Licence (GPL) for version 0.8.x and older
 
 Project page and update site: http://anb0s.github.io/eclox
+
+eclox-0.12.1: Bug fixes for the second minor release @github
+Fixed issues (https://github.com/anb0s/eclox/milestone/6?closed=1):
+- [x] #220: Cannot get eclox doxygen to run in the code composer studio
+eclipse package
+- [x] #222: bundled doxygen cannot be used
+- [x] #223: create bundled doxygen with all needed files
+
+eclox-0.12.0: Second minor release @github
+Fixed issues (https://github.com/anb0s/eclox/milestone/3?closed=1):
+- [x] #18 Support doxygen upgrade feature
+- [x] #83 context menu entry shown unnecessarily
+- [x] #91 Implement saveas feature
+- [x] #108 improve detection of warnings concerning undocumented
+parameters
+- [x] #195 java.lang.IllegalArgumentException in
+createMarkersForResource
+- [x] #196 terminate build is not working like expected
+- [x] #197 doxygen history menu shows multiple entries for same file
+- [x] #198 doxyfile selection dialog does not show nested elements
+- [x] #199 add "clear history" to history menu
+- [x] #200 invalid custom doxygen identifier found
+- [x] #201 Doxygen Build Console: stderr and stdin are not synchronized
+- [x] #203 remove from history if "eclox.core.doxygen.RunException:
+Missing or bad doxyfile"
+- [x] #206 [v0.12] console icons are not shown
+- [x] #207 [v0.12] exception if new file created
+- [x] #208 [v0.12] java.lang.NullPointerException in Advanced tab
+- [x] #211 add support for the += operator
+- [x] #212 add support for multiple lines (lists) concatenated by
+backslash (\)
+- [x] #214 add support for TAG and VALUE format #214
+- [x] #215 add support for line separator
 
 v0.11.2: Bug fixes for the first minor release @GitHub
 Fixed issues (https://github.com/anb0s/eclox/milestone/5?closed=1):
@@ -39,6 +73,7 @@ Main changes:
 - add update site with bundled Doxygen executables #182
 - updated project structure and build process
 - added composite site to support testing and release update streams Fixed execution of bundled linux x86_64 binary.
+
 All fixed issues (https://github.com/anb0s/eclox/milestone/1?closed=1):
 - #11 muliple Doxyfiles - editing
 - #12 Import of existing configuration files
