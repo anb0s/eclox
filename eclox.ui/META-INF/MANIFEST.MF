@@ -19,3 +19,15 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: target/eclox-ui-lib.jar
 Automatic-Module-Name: org.gna.eclox.ui
+Export-Package: eclox.ui,
+ eclox.ui.action,
+ eclox.ui.console,
+ eclox.ui.console.action,
+ eclox.ui.editor,
+ eclox.ui.editor.advanced,
+ eclox.ui.editor.advanced.filters,
+ eclox.ui.editor.basic,
+ eclox.ui.editor.editors,
+ eclox.ui.editor.internal;x-internal:=true,
+ eclox.ui.handlers,
+ eclox.ui.wizard
