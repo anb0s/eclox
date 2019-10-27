@@ -1,4 +1,4 @@
-# eclox [![Version](https://img.shields.io/github/release/anb0s/eclox.svg)](https://github.com/anb0s/eclox/releases) [![Issues](https://img.shields.io/github/issues/anb0s/eclox.svg)](https://github.com/anb0s/eclox/issues) [![Build Status](https://travis-ci.org/anb0s/eclox.svg)](https://travis-ci.org/anb0s/eclox) [![License](https://img.shields.io/badge/License-EPL%201.0-blue.svg)](https://eclipse.org/org/documents/epl-v10.html)
+# eclox [![Version](https://img.shields.io/github/release/anb0s/eclox.svg)](https://github.com/anb0s/eclox/releases) [![Issues](https://img.shields.io/github/issues/anb0s/eclox.svg)](https://github.com/anb0s/eclox/issues) [![Build Status](https://travis-ci.org/anb0s/eclox.svg)](https://travis-ci.org/anb0s/eclox) [![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0)
 
 Eclox is a simple [Doxygen](http://www.doxygen.nl) frontend plug-in for [Eclipse](http://www.eclipse.org). It aims to provide a slim and sleek integration of the code documentation process into Eclipse.
 
@@ -17,7 +17,7 @@ Not supported:
 
 Prerequisites:
 -------------
-- **Java SE 1.7 or newer**
+- **Java SE 1.8 or newer**
 - **Doxygen executable in PATH or bundled with Eclox or custom location** (see Installation and Configuration below)
 
 Installation:
@@ -109,4 +109,4 @@ https://github.com/anb0s/eclox/wiki/How-to-build
 
 License:
 --------
-https://eclipse.org/org/documents/epl-v10.html
+https://www.eclipse.org/legal/epl-2.0
