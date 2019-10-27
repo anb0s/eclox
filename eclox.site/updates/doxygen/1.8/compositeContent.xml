@@ -2,11 +2,12 @@
 <?compositeMetadataRepository version='1.0.0'?>
 <repository name='Eclox 1.8' type='org.eclipse.equinox.internal.p2.metadata.repository.CompositeMetadataRepository' version='1.0.0'>
   <properties size='2'>
-    <property name='p2.timestamp' value='1516298042790'/>
+    <property name='p2.timestamp' value='1572204926632'/>
     <property name='p2.atomic.composite.loading' value='true'/>
   </properties>
-  <children size='2'>
+  <children size='3'>
     <child location='1.8.13.v20170413-1543'/>
     <child location='1.8.13.v20180118-1753'/>
+    <child location='1.8.14.v20191027-1935'/>
   </children>
 </repository>
