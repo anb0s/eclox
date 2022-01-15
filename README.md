@@ -1,4 +1,4 @@
-# eclox [![Version](https://img.shields.io/github/release/anb0s/eclox.svg)](https://github.com/anb0s/eclox/releases) [![Issues](https://img.shields.io/github/issues/anb0s/eclox.svg)](https://github.com/anb0s/eclox/issues) [![Build Status](https://app.travis-ci.com/anb0s/eclox.svg?branch=main)](https://app.travis-ci.com/anb0s/eclox) [![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0)
+# eclox [![Version](https://img.shields.io/github/release/anb0s/eclox.svg)](https://github.com/anb0s/eclox/releases) [![Issues](https://img.shields.io/github/issues/anb0s/eclox.svg)](https://github.com/anb0s/eclox/issues) [![build](https://github.com/anb0s/eclox/actions/workflows/maven.yml/badge.svg)](https://github.com/anb0s/eclox/actions/workflows/maven.yml) [![License](https://img.shields.io/badge/License-EPL%202.0-blue.svg)](https://www.eclipse.org/legal/epl-2.0)
 
 Eclox is a simple [Doxygen](http://www.doxygen.nl) frontend plug-in for [Eclipse](http://www.eclipse.org). It aims to provide a slim and sleek integration of the code documentation process into Eclipse.
 
